@@ -6,6 +6,7 @@ gem "mongo_mapper"
 gem "bson_ext"
 gem "i18n"
 gem "haml"
+gem "rack-flash"
 
 group :development, :test do
   gem 'rack-test'

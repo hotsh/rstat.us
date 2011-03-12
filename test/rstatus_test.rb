@@ -31,19 +31,26 @@ class RstatusTest < MiniTest::Unit::TestCase
   def test_hello_world
     get '/'
     assert last_response.ok?
-    #assert_equal "Hello, world!", last_response.body
   end
 
   def login
     get '/auth/twitter'
     follow_redirect!
+    follow_redirect!
   end
 
   def test_login_with_twitter
     login
-    assert_equal "You're now logged in.", last_response.body
+    assert_match /You're now logged in\./, last_response.body
   end
 
+  def test_dashboard_page
+    login
+    assert_match /Post Update/, last_response.body
+    assert_match /@/, last_response.body
+    assert_match /private/, last_response.body
+    assert_match /#{app.current_user.username}/, last_response.body
+  end
 
 end
 

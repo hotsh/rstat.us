@@ -2,10 +2,35 @@ require 'sinatra/base'
 
 require 'omniauth'
 require 'mongo_mapper'
+require 'haml'
 
 require_relative 'models'
 
+module Sinatra
+  module UserHelper
+    def current_user
+      @current_user ||= User.first(:id => session[:user_id])
+    end
+
+    def logged_in?
+      !!current_user
+    end
+
+    def current_user=(user)
+      @current_user = user
+      session[:user_id] = user.id
+    end
+  end
+
+  helpers UserHelper
+end
+
+
 class Rstatus < Sinatra::Base
+  use Rack::Session::Cookie, :secret => ENV['COOKIE_SECRET']
+
+  require 'rack-flash'
+  use Rack::Flash
 
   configure do
     enable :sessions
@@ -20,21 +45,8 @@ class Rstatus < Sinatra::Base
     end
   end
 
-  helpers do
-    def current_user
-      @current_user ||= User.first(:id => session[:user_id])
-    end
-
-    def signed_in?
-      !!current_user
-    end
-
-    def current_user=(user)
-      @current_user = user
-      session[:user_id] = user.id
-    end
-    
-  end
+  helpers Sinatra::UserHelper
+  
 
   use OmniAuth::Builder do
     cfg = YAML.load_file("config.yml")[ENV['RACK_ENV']]
@@ -42,9 +54,13 @@ class Rstatus < Sinatra::Base
   end
 
  get '/' do
+   if logged_in?
+     haml :dashboard
+   else
     <<-HTML
     <a href='/auth/twitter'>Sign in with Twitter</a>
     HTML
+   end
   end
 
   get '/auth/twitter/callback' do
@@ -55,7 +71,14 @@ class Rstatus < Sinatra::Base
     end
     self.current_user = @auth.user
 
-    "You're now logged in."
+    flash[:notice] = "You're now logged in."
+    redirect '/'
+  end
+
+  get "/logout" do
+    session[:user_id] = nil
+    flash[:notice] = "You've been logged out."
+    redirect '/'
   end
 
 end 
