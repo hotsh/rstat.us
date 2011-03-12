@@ -3,6 +3,8 @@ require 'sinatra/base'
 require 'omniauth'
 require 'mongo_mapper'
 
+require_relative 'models'
+
 class Rstatus < Sinatra::Base
 
   configure do
@@ -14,8 +16,24 @@ class Rstatus < Sinatra::Base
       MongoMapper.connect("production")
     else
       MongoMapper.connection = Mongo::Connection.new('localhost')
-      MongoMapper.database = "hackety-#{settings.environment}"
+      MongoMapper.database = "rstatus-#{settings.environment}"
     end
+  end
+
+  helpers do
+    def current_user
+      @current_user ||= User.first(:id => session[:user_id])
+    end
+
+    def signed_in?
+      !!current_user
+    end
+
+    def current_user=(user)
+      @current_user = user
+      session[:user_id] = user.id
+    end
+    
   end
 
   use OmniAuth::Builder do
@@ -30,7 +48,13 @@ class Rstatus < Sinatra::Base
   end
 
   get '/auth/twitter/callback' do
-    #request.env['omniauth.auth'].to_s
+
+    auth = request.env['omniauth.auth']
+    unless @auth = Authorization.find_from_hash(auth)
+      @auth = Authorization.create_from_hash(auth, current_user)
+    end
+    self.current_user = @auth.user
+
     "You're now logged in."
   end
 

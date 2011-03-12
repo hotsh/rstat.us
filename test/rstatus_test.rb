@@ -7,6 +7,16 @@ class RstatusTest < MiniTest::Unit::TestCase
 
   def app() Rstatus end
 
+  def setup
+    DatabaseCleaner.strategy = :truncation
+    DatabaseCleaner.clean_with(:truncation)
+    DatabaseCleaner.start
+  end
+
+  def teardown
+    DatabaseCleaner.clean
+  end
+
   def test_hello_world
     get '/'
     assert last_response.ok?
