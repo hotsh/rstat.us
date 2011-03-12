@@ -4,6 +4,17 @@ class RstatusTest < MiniTest::Unit::TestCase
 
   include Rack::Test::Methods
   OmniAuth.config.test_mode = true
+  OmniAuth.config.add_mock(:twitter, {
+    :uid => '12345',
+    :user_info => {
+      :name => "Joe Public",
+      :nickname => "joepublic",
+      :urls => { :Website => "http://rstat.us" },
+      :description => "A description",
+      :image => "/images/something.png"
+    }
+  })
+  
 
   def app() Rstatus end
 
