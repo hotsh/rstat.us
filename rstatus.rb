@@ -20,7 +20,8 @@ class Rstatus < Sinatra::Base
   end
 
   get '/auth/twitter/callback' do
-    request.env['omniauth.auth'].to_s
+    #request.env['omniauth.auth'].to_s
+    "You're now logged in."
   end
 
 end 
