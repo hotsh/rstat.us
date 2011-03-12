@@ -28,6 +28,8 @@ end
 
 class Rstatus < Sinatra::Base
   use Rack::Session::Cookie, :secret => ENV['COOKIE_SECRET']
+  set :root, File.dirname(__FILE__)
+  
 
   require 'rack-flash'
   use Rack::Flash
@@ -57,9 +59,7 @@ class Rstatus < Sinatra::Base
    if logged_in?
      haml :dashboard
    else
-    <<-HTML
-    <a href='/auth/twitter'>Sign in with Twitter</a>
-    HTML
+     haml :index
    end
   end
 
