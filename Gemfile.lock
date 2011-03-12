@@ -1,12 +1,24 @@
 GEM
   remote: http://rubygems.org/
   specs:
+    activesupport (3.0.5)
     addressable (2.2.4)
+    bson (1.2.4)
+    bson_ext (1.2.4)
     faraday (0.5.7)
       addressable (~> 2.2.4)
       multipart-post (~> 1.1.0)
       rack (>= 1.1.0, < 2)
+    i18n (0.5.0)
+    jnunemaker-validatable (1.8.4)
+      activesupport (>= 2.3.4)
     mime-types (1.16)
+    mongo (1.2.4)
+      bson (>= 1.2.4)
+    mongo_mapper (0.8.6)
+      activesupport (>= 2.3.4)
+      jnunemaker-validatable (~> 1.8.4)
+      plucky (~> 0.3.6)
     multi_json (0.0.5)
     multipart-post (1.1.0)
     net-ldap (0.1.1)
@@ -49,6 +61,8 @@ GEM
       oa-more (= 0.2.0)
       oa-oauth (= 0.2.0)
       oa-openid (= 0.2.0)
+    plucky (0.3.7)
+      mongo (~> 1.1)
     pyu-ruby-sasl (0.0.3.2)
     rack (1.2.1)
     rack-openid (1.2.0)
@@ -71,6 +85,9 @@ PLATFORMS
   ruby
 
 DEPENDENCIES
+  bson_ext
+  i18n
+  mongo_mapper
   omniauth
   rack-test
   sinatra

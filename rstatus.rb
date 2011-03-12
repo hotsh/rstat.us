@@ -1,11 +1,21 @@
 require 'sinatra/base'
 
 require 'omniauth'
+require 'mongo_mapper'
 
 class Rstatus < Sinatra::Base
 
   configure do
     enable :sessions
+
+    if ENV['MONGOHQ_URL']
+      MongoMapper.config = {ENV['RACK_ENV'] => {'uri' => ENV['MONGOHQ_URL']}}
+      MongoMapper.database = ENV['MONGOHQ_DATABASE']
+      MongoMapper.connect("production")
+    else
+      MongoMapper.connection = Mongo::Connection.new('localhost')
+      MongoMapper.database = "hackety-#{settings.environment}"
+    end
   end
 
   use OmniAuth::Builder do
