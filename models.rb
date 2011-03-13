@@ -7,7 +7,7 @@ class Update
   belongs_to :user
   key :text, String
 
-  validates_length_of :text, :maximum => 140
+  validates_length_of :text, :minimum => 1, :maximum => 140
 
   def to_html
     out = CGI.escapeHTML(text)
