@@ -11,6 +11,7 @@ class Update
     #first, usernames
     out = CGI.escapeHTML(text)
     out.gsub!(/@(\w+)/, "<a href='/users/\\1'>@\\1</a>")
+    out.gsub!(/(http:\/\/\S+[a-zA-Z\/])/, "<a href='\\1'>\\1</a>")
     out
   end
 
