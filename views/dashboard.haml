@@ -3,9 +3,9 @@
     %img{:alt => "avatar", :src => current_user.twitter_image}/
     %span.name= current_user.username
     %br/
-    following: #{current_user.following.count}
+    following: <a href="/users/#{current_user.username}/following">#{current_user.following.count}</a>
     %br/
-    followers: #{current_user.followers.count}
+    followers: <a href="/users/#{current_user.username}/followers">#{current_user.followers.count}</a>
     %br/
     updates: #{current_user.updates.count}
     %br/
