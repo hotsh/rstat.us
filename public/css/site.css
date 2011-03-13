@@ -638,7 +638,7 @@ body {
   float: left;
   margin-right: 10px;
 }
-#main #left #logo, #main #left #user {
+#main #left #logo, #main #left #profile {
   padding-left: 80px;
   width: 230px;
   float: left;
@@ -653,6 +653,34 @@ body {
   width: 159px;
   height: 45px;
 }
+#main #left #profile {
+  display: block;
+  padding-top: 2em;
+  width: 200px;
+}
+#main #left #profile:after {
+  content: "\0020";
+  display: block;
+  height: 0;
+  clear: both;
+  visibility: hidden;
+  overflow: hidden;
+}
+#main #left #profile h3 {
+  color: #888;
+  padding-bottom: 0.5em;
+  border-bottom: 1px solid #ddd;
+}
+#main #left #profile .avatar, #main #left #profile .userinfo {
+  float: left;
+}
+#main #left #profile .userinfo {
+  padding-left: 1em;
+}
+#main #left #profile .userinfo .name {
+  font-weight: bold;
+  font-size: 1.4em;
+}
 #main #right {
   width: 630px;
   float: left;
@@ -665,10 +693,6 @@ body {
   width: 550px;
   float: left;
   margin-right: 10px;
-}
-#user .name {
-  font-weight: bold;
-  font-size: 1.4em;
 }
 /* the textarea where the user types an update */
 form#update-form {
@@ -756,7 +780,7 @@ form#update-form #update-info #update-count {
   margin-bottom: 1em;
 }
 /* update from a user followed by the current logged in user */
-#updates .update {
+.updates .update {
   display: block;
   background: white;
   padding: 1em;
@@ -764,7 +788,7 @@ form#update-form #update-info #update-count {
   clear: both;
   overflow: auto;
 }
-#updates .update:after {
+.updates .update:after {
   content: "\0020";
   display: block;
   height: 0;
@@ -772,22 +796,22 @@ form#update-form #update-info #update-count {
   visibility: hidden;
   overflow: hidden;
 }
-#updates .update .avatar {
+.updates .update .avatar {
   float: left;
   width: 48px;
   padding-right: 1em;
 }
-#updates .update .content {
+.updates .update .content {
   float: left;
   width: 450px;
 }
-#updates .update .content .name {
+.updates .update .content .name {
   font-weight: bold;
 }
-#updates .update .content .text {
+.updates .update .content .text {
   font-size: 1.1em;
 }
-#updates .update .content .date {
+.updates .update .content .date {
   font-size: 0.9em;
   color: #aaa;
 }
@@ -800,4 +824,19 @@ form#update-form #update-info #update-count {
   background-position: 0 -121px;
   background-color: #D84743;
   border-color: #911D1B;
+}
+/* Footer */
+#footer {
+  padding: 1em 0;
+  width: 950px;
+  margin: 0 auto;
+  display: block;
+}
+#footer:after {
+  content: "\0020";
+  display: block;
+  height: 0;
+  clear: both;
+  visibility: hidden;
+  overflow: hidden;
 }

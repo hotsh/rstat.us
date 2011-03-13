@@ -4,5 +4,5 @@
 - content_for :javascript do
   %script{:src => "/js/update.js"}
 
-#at_replies
+#replies.updates
   != haml :_updates, :locals => {:updates =>  current_user.at_replies.to_a.sort{|a, b| b.created_at <=> a.created_at }}

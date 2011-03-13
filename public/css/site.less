@@ -53,7 +53,7 @@ body {
   #left {
     .column(8);   
     
-    #logo, #user {
+    #logo, #profile {
       .prepend(2);
       .column(6);
       .last;
@@ -62,6 +62,27 @@ body {
     #logo {
       h2 {
         .image-replaced("../images/logo-sm.png", 159px, 45px)        
+      }
+    }
+    
+    #profile {
+      .clearfix;
+      padding-top: 2em;
+      width: 200px;
+      h3 {
+        color: #888;
+        padding-bottom: 0.5em;
+        border-bottom: 1px solid #ddd;
+      }
+      .avatar, .userinfo {
+        float: left;
+      }
+      .userinfo {
+        padding-left: 1em;
+        .name {
+        	font-weight: bold;
+        	font-size: 1.4em;
+        }
       }
     }
   }
@@ -74,13 +95,6 @@ body {
 
 #content {
   .column(14);
-}
-
-#user {
-  .name {
-  	font-weight: bold;
-  	font-size: 1.4em;
-  }
 }
 
 /* the textarea where the user types an update */
@@ -156,7 +170,7 @@ form#update-form {
 }
 
 /* update from a user followed by the current logged in user */
-#updates {
+.updates {
   .update {
     .clearfix;
     background: white;
@@ -193,4 +207,10 @@ form#update-form {
 .negative {
   a.button:hover { color: #FFFFFF; background-position: 0 -121px; background-color: #D84743; border-color: #911D1B; }
   color: red;
+}
+
+/* Footer */
+#footer {
+  padding: 1em 0;
+  .container();
 }

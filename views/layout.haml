@@ -28,19 +28,20 @@
             %h2
               rstat.us
 
-        #user
+        #profile
           %h3 Profile
-          .user-pic
+          .avatar
             %img{:alt => "avatar", :src => current_user.twitter_image}/
-          .user-name
-            %span.name= current_user.username
-          .user-stats
-            .following
-              Following: <a href="/users/#{current_user.username}/following">#{current_user.following.count}</a>
-            .followers
-              Followers: <a href="/users/#{current_user.username}/followers">#{current_user.followers.count}</a>
-            .updates
-              Updates: #{current_user.updates.count}
+          .userinfo
+            .name
+              %span.name= current_user.username
+            .stats
+              .following
+                Following: <a href="/users/#{current_user.username}/following">#{current_user.following.count}</a>
+              .followers
+                Followers: <a href="/users/#{current_user.username}/followers">#{current_user.followers.count}</a>
+              .updates
+                Updates: #{current_user.updates.count}
 
       #right
         #content
@@ -48,8 +49,10 @@
           
           - if flash[:notice] || flash[:error]
             #flash
-              You have been successfully signed in
               = flash[:notice]
           
           != haml :_navigation
           != yield 
+          
+    #footer
+      Footer
