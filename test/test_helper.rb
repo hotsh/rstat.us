@@ -40,5 +40,5 @@ module TestHelper
     session.follow_redirect!
     session.follow_redirect!
   end
-end
 
+end
