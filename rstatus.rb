@@ -93,7 +93,7 @@ class Rstatus < Sinatra::Base
     unless @auth = Authorization.find_from_hash(auth)
       @auth = Authorization.create_from_hash(auth, current_user)
     end
-    self.current_user = @auth.user
+    session[:user_id] = @auth.user.id
 
     flash[:notice] = "You're now logged in."
     redirect '/'
