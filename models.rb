@@ -53,6 +53,9 @@ class Update
 
   belongs_to :user
   key :text, String
+
+  validates_length_of :text, :maximum => 140
+
   timestamps!
 end
 
