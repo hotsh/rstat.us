@@ -80,16 +80,15 @@ class Rstatus < Sinatra::Base
     provider :twitter, cfg["CONSUMER_KEY"], cfg["CONSUMER_SECRET"]
   end
 
- get '/' do
-   if logged_in?
-     haml :dashboard
-   else
-     haml :index
-   end
+  get '/' do
+    if logged_in?
+      haml :dashboard
+    else
+      haml :index
+    end
   end
 
   get '/auth/twitter/callback' do
-
     auth = request.env['omniauth.auth']
     unless @auth = Authorization.find_from_hash(auth)
       @auth = Authorization.create_from_hash(auth, current_user)

@@ -1,27 +1,36 @@
 #main
-  #stats
-    %img{:alt => "avatar", :src => current_user.twitter_image}/
-    %span.name= current_user.username
-    %br/
-    following: <a href="/users/#{current_user.username}/following">#{current_user.following.count}</a>
-    %br/
-    followers: <a href="/users/#{current_user.username}/followers">#{current_user.followers.count}</a>
-    %br/
-    updates: #{current_user.updates.count}
-    %br/
-  %form{ :action => "/updates", :method => "POST", :name => "update_form"}
-    %textarea#update{:name => "text"}
-    #update_box
-      %span#update_count
-        0/140
+  #left
+    %h2#title
+      rstat.us
+  #right
+    %form#update-form{ :action => "/updates", :method => "POST", :name => "update_form"}
+      #update-content
+        %textarea#update{:name => "text"}
+      #update-info
         %a#update_button.button{:href => "javascript:document.update_form.submit()"} Update
-  - current_user.updates.each do |update|
-    .feed_item
-      .avatar
-        %img{:alt => "avatar", :src => update.user.twitter_image}/
-      .feed_text
-        %span.name= update.user.username
-        %br/
-        = update.text
-        .feed_date= update.created_at.ago_in_words
-      %div
+        #update_count
+          0/140
+
+    #updates
+      - current_user.updates.each do |update|
+        .update
+          .avatar
+            %img{:alt => "avatar", :src => update.user.twitter_image}/
+          .update-text-wrap
+            %span.name= update.user.username
+            .update-text
+              = update.text
+            .update-date= update.created_at.ago_in_words
+
+    #user
+      .user-pic
+        %img{:alt => "avatar", :src => current_user.twitter_image}/
+      .user-name
+        %span.name= current_user.username
+      .user-stats
+        .following
+          following: <a href="/users/#{current_user.username}/following">#{current_user.following.count}</a>
+        .followers
+          followers: <a href="/users/#{current_user.username}/followers">#{current_user.followers.count}</a>
+        .updates
+          updates: #{current_user.updates.count}

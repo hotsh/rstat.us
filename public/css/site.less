@@ -1,0 +1,119 @@
+@import "blueless/blueless/screen";
+
+body {
+	background-color: #efefef;
+	font-family: helvetica, Arial, sans-serif;
+	margin: 1em;
+}
+
+/* begin user status page css */
+
+#main {
+	-moz-border-radius: 1em;
+	-webkit-border-radius: 1em;
+  .container();
+	margin: auto;
+	background-color: #fff;
+	padding: 1em;
+	overflow: auto;
+
+  #left {
+    padding-top: 1em;
+    
+    .column(4); 
+    
+    h2 {
+      text-align: right;
+      padding: 0.5em;
+    }
+  }
+  
+  #right {
+    padding-top: 2em;
+    
+    .column(20);
+    .last;
+  }
+}
+
+/* stats box at the top of the page with the currently 
+	logged in user's information */
+#user {
+  .prepend(1);
+  .column(5);
+  .last;
+	font-size: 0.8em;
+	overflow: auto;
+
+  .name {
+  	font-weight: bold;
+  	font-size: 2em;
+  }
+
+  img {
+  	float: left;
+  	padding-right: 1em;
+  }
+
+}
+
+/* the textarea where the user types an update */
+form#update-form {
+  .clearfix;
+  padding-bottom: 1.5em;
+  border-bottom: 1px solid #ddd;
+  margin-bottom: 1.5em;
+  #update-content {
+    .column(14);
+
+    textarea {    
+      width: 100%;
+      height: 2.5em;
+      margin: 0;
+    }    
+
+  }
+
+  /* div below this textarea with the update button and counter */
+  #update-info {
+    .prepend(1);
+    .column(5);
+    .last; 
+  }
+}
+
+#update-form:focus {
+	-moz-box-shadow: 5px 3px 5px #efefef;
+}
+
+/* update from a user followed by the current logged in user */
+#updates {
+  .column(14);
+  .update {
+    padding-bottom: 1em;
+  	border-bottom: solid 1px #efefef;
+    margin-bottom: 1em;
+
+  	clear: both;
+  	overflow: auto;
+  	font-size: 0.8em;
+
+    .avatar {
+    	float: left;
+    	padding-right: 1em;
+    }
+
+    .name {
+    	font-weight: bold;
+    }
+
+    .feed_date {
+    	text-align: right;
+    	font-style: italic;
+    	font-size: 0.9em;
+    }  
+  }
+}
+
+
+/* end user status page css */
