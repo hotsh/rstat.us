@@ -15,3 +15,8 @@ Just do this:
     $ git push heroku master
 
 Bam!
+
+# BUT DON"T YET!!!!1111
+
+This is nowhere near done. Jump on Freenode and ping 'steveklabnik' if
+you want to contribute in some way.
