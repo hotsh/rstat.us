@@ -41,5 +41,12 @@
       var update = $("#update")
       update.keyup(function(){
         $("#update_count").text((140 - update.val().length) + "/140");
+        if(update.val().length > 140) {
+          $("#update_button").addClass("negative");
+          $("#update_button").attr("href", "#");
+        } else {
+          $("#update_button").removeClass("negative");
+          $("#update_button").attr("href", "javascript:document.update_form.submit()");
+        }
       });
     });
