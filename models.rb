@@ -1,10 +1,18 @@
 class Update
+  require 'cgi'
   include MongoMapper::Document
 
   belongs_to :user
   key :text, String
 
   validates_length_of :text, :maximum => 140
+
+  def to_html
+    #first, usernames
+    out = CGI.escapeHTML(text)
+    out.gsub!(/@(\w+)/, "<a href='/users/\\1'>@\\1</a>")
+    out
+  end
 
   timestamps!
 end
@@ -95,4 +103,3 @@ class Authorization
   timestamps!
 
 end
-

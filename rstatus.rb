@@ -53,6 +53,8 @@ end
 class Rstatus < Sinatra::Base
   use Rack::Session::Cookie, :secret => ENV['COOKIE_SECRET']
   set :root, File.dirname(__FILE__)
+  set :haml, :escape_html => true
+  
 
   require 'rack-flash'
   use Rack::Flash
