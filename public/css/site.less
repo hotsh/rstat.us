@@ -36,6 +36,10 @@ body {
   }
 }
 
+#content {
+  .column(14);
+}
+
 /* stats box at the top of the page with the currently 
 	logged in user's information */
 #user {
@@ -115,5 +119,8 @@ form#update-form {
   }
 }
 
-
-/* end user status page css */
+/* Negative is red */
+.negative {
+  a.button:hover { color: #FFFFFF; background-position: 0 -121px; background-color: #D84743; border-color: #911D1B; }
+  color: red;
+}

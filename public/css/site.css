@@ -628,6 +628,11 @@ body {
   padding-right: 0;
   margin-right: 0;
 }
+#content {
+  width: 550px;
+  float: left;
+  margin-right: 10px;
+}
 /* stats box at the top of the page with the currently 
 	logged in user's information */
 #user {
@@ -714,4 +719,13 @@ form#update-form #update-info {
   font-style: italic;
   font-size: 0.9em;
 }
-/* end user status page css */
+/* Negative is red */
+.negative {
+  color: red;
+}
+.negative a.button:hover {
+  color: #FFFFFF;
+  background-position: 0 -121px;
+  background-color: #D84743;
+  border-color: #911D1B;
+}
