@@ -1,5 +1,5 @@
 - updates.each do |update|
-  .update
+  .update{:class => update.mentioned?(current_user.username) ? "mention" : ""}
     .avatar
       %img{:alt => "avatar", :src => update.user.twitter_image}/
     .content

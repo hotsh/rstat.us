@@ -815,6 +815,9 @@ form#update-form #update-info #update-count {
   font-size: 0.9em;
   color: #aaa;
 }
+.updates .mention {
+  background: #e4feff;
+}
 /* Negative is red */
 .negative {
   color: red;

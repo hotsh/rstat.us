@@ -16,6 +16,11 @@ class Update
     out
   end
 
+  def mentioned? search 
+    matches = text.match(/^@#{search}/)
+    matches.nil? ? false : matches.length > 0
+  end
+
   after_create :tweet
 
   timestamps!
