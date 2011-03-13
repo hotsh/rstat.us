@@ -2,6 +2,8 @@ class Update
   require 'cgi'
   include MongoMapper::Document
 
+  attr_accessor :oauth_secret, :oauth_token
+
   belongs_to :user
   key :text, String
 
@@ -24,8 +26,8 @@ class Update
     Twitter.configure do |config|
       config.consumer_key = Rstatus.settings.config["CONSUMER_KEY"]
       config.consumer_secret = Rstatus.settings.config["CONSUMER_SECRET"]
-      config.oauth_token = Rstatus.session['oauth_token']
-      config.oauth_token_secret = Rstatus.session['oauth_secret']
+      config.oauth_token = oauth_token
+      config.oauth_token_secret = oauth_secret
     end
 
     Twitter.update(text)
@@ -36,6 +38,7 @@ end
 
 class Authorization
   include MongoMapper::Document
+
   
   belongs_to :user
 
