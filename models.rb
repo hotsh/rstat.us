@@ -23,6 +23,8 @@ class Update
   protected
 
   def tweet
+    return if ENV['RACK_ENV'] != "production"
+
     Twitter.configure do |config|
       config.consumer_key = Rstatus.settings.config["CONSUMER_KEY"]
       config.consumer_secret = Rstatus.settings.config["CONSUMER_SECRET"]
@@ -114,6 +116,10 @@ class User
 
   def timeline
     following.map(&:updates).flatten
+  end
+
+  def at_replies
+    Update.all(:text => /^@#{username} /)
   end
 
   after_create :follow_yo_self
