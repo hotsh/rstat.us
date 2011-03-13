@@ -29,8 +29,8 @@ class User
     followee.save
   end
 
-  def following? hacker
-    following.include? hacker
+  def following? user 
+    following.include? user
   end
 
   many :updates
