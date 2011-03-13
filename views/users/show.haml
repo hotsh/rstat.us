@@ -1,0 +1,20 @@
+#main
+  #stats
+    %img{:alt => "avatar", :src => current_user.twitter_image}/
+    %span.name= current_user.username
+    %br/
+    following: #{current_user.following.count}
+    %br/
+    followers: #{current_user.followers.count}
+    %br/
+    updates: #{current_user.updates.count}
+    %br/
+  .feed_item
+    .avatar
+      %img{:alt => "avatar", :src => current_user.twitter_image}/
+    .feed_text
+      %span.name= current_user.username
+      %br/
+      Testing testing this stuff. Testing some more. Then some more testing and some test. Some text in this text. More. More. More. Text. More...
+      .feed_date posted 3 minutes ago
+    %div

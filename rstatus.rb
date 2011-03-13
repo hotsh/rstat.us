@@ -8,17 +8,38 @@ require_relative 'models'
 
 module Sinatra
   module UserHelper
+
+    # This incredibly useful helper gives us the currently logged in user. We
+    # keep track of that by just setting a session variable with their id. If it
+    # doesn't exist, we just want to return nil.
     def current_user
-      @current_user ||= User.first(:id => session[:user_id])
+      return User.first(:id => session[:user_id]) if session[:user_id]
+      nil
     end
 
+    # This very simple method checks if we've got a logged in user. That's pretty
+    # easy: just check our current_user.
     def logged_in?
-      !!current_user
+      current_user != nil
     end
 
-    def current_user=(user)
-      @current_user = user
-      session[:user_id] = user.id
+    # Our `admin_only!` helper will only let admin users visit the page. If
+    # they're not an admin, we redirect them to either / or the page that we
+    # specified when we called it.
+    def admin_only!(opts = {:return => "/"})
+      unless logged_in? && current_user.admin?
+        flash[:error] = "Sorry, buddy"
+        redirect opts[:return]
+      end
+    end
+
+    # Similar to `admin_only!`, `require_login!` only lets logged in users access
+    # a particular page, and redirects them if they're not.
+    def require_login!(opts = {:return => "/"})
+      unless logged_in?
+        flash[:error] = "Sorry, buddy"
+        redirect opts[:return]
+      end
     end
   end
 
@@ -77,6 +98,65 @@ class Rstatus < Sinatra::Base
     session[:user_id] = nil
     flash[:notice] = "You've been logged out."
     redirect '/'
+  end
+
+  get "/users/:slug" do
+    @user = User.first :username => params[:slug]
+    haml :"users/show"
+  end
+
+  # users can follow each other, and this route takes care of it!
+  get '/users/:name/follow' do
+    require_login! :return => "/users/#{params[:name]}/follow"
+
+    @user = User.first(:username => params[:name])
+
+    #make sure we're not following them already
+    if current_user.following? @user
+      flash[:notice] = "You're already following #{params[:name]}."
+      redirect "/users/#{current_user.username}"
+      return
+    end
+
+    # then follow them!
+    current_user.follow! @user
+
+    flash[:notice] = "Now following #{params[:name]}."
+    redirect "/users/#{current_user.username}"
+  end
+
+  #this lets you unfollow a user
+  get '/users/:name/unfollow' do
+    require_login! :return => "/users/#{params[:name]}/unfollow"
+
+    @user = User.first(:username => params[:name])
+
+    #make sure we're following them already
+    unless current_user.following? @user
+      flash[:notice] = "You're already not following #{params[:name]}."
+      redirect "/users/#{current_user.username}"
+      return
+    end
+
+    #unfollow them!
+    current_user.unfollow! @user
+
+    flash[:notice] = "No longer following #{params[:name]}."
+    redirect "/users/#{current_user.username}"
+  end
+
+  # this lets us see followers.
+  get '/users/:name/followers' do
+    @user = User.first(:username => params[:name])
+
+    haml :"users/followers"
+  end
+
+  # This lets us see who is following.
+  get '/users/:name/following' do
+    @user = User.first(:username => params[:name])
+
+    haml :"users/following"
   end
 
 end
