@@ -9,7 +9,7 @@ Running your own
 
 Just do this:
 
-    $ git clone http://github.com/steveklabnik/rstat.us
+    $ git clone https://github.com/hotsh/rstat.us.git
     $ cd rstat.us
     $ heroku create
     $ git push heroku master
