@@ -160,8 +160,16 @@ class Rstatus < Sinatra::Base
   # This lets us see who is following.
   get '/users/:name/following' do
     @user = User.first(:username => params[:name])
-
     haml :"users/following"
+  end
+
+  post '/updates' do
+    update = Update.new(:text => params[:text])
+    update.user = current_user
+    update.save
+
+    flash[:notice] = "Update created."
+    redirect "/"
   end
 
 end
