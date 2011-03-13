@@ -33,7 +33,7 @@ class User
     following.include? user
   end
 
-  many :updates
+  many :updates, :dependent => :destroy
 
   def self.create_from_hash!(hsh)
     create!(
@@ -46,6 +46,10 @@ class User
   end
 
   timestamps!
+
+  def timeline
+    following.map(&:updates).flatten
+  end
 
   after_create :follow_yo_self
 
