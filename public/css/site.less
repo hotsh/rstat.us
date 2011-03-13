@@ -9,6 +9,10 @@
   height: @height;
 }
 
+/* Color
+*******************************************/
+@highlight: #65bfc2;
+
 /* Typography
 *******************************************/
 .title-face {
@@ -17,6 +21,15 @@
 
 h1,h2,h3,h4,h5 {
   .title-face;
+}
+
+a {
+  color: @highlight;
+  text-decoration: none;
+}
+
+a:hover {
+  text-decoration: underline;
 }
 
 /* Layout
@@ -72,52 +85,96 @@ body {
 /* the textarea where the user types an update */
 form#update-form {
   .clearfix;
-  padding: 1.5em 0;
+  padding: 1.5em 0 1em;
   border-bottom: 1px solid #ddd;
-  margin-bottom: 1.5em;
+  margin-bottom: 2em;
   #update-content {
-    .column(14);
-
-    textarea {    
-      width: 100%;
+    textarea {
+      width: 540px;
+      padding: 5px;
       height: 2.5em;
       margin: 0;
     }    
-
   }
 
+  #update-info {
+    .clearfix;
+    #update-button, #update-count {
+      float: left;
+    }    
+    #update-count {
+      color: #999;
+      padding-left: 0.75em;
+      padding-top: 0.6em;
+    }
+  }
+}
+
+.no-js #update-count {
+  display: none;
 }
 
 #update-form:focus {
 	-moz-box-shadow: 5px 3px 5px #efefef;
 }
 
+#navigation {
+  ul {
+    margin: 0;
+    padding: 0;
+    
+    .clearfix;
+    li {
+      padding: 0.5em;
+      list-style-type: none;
+      float: left;
+      .title-face;
+      font-size: 1.4em;
+      a {
+        color: #8f8f8f;
+      }
+    }
+    li.active {
+      background: @highlight;
+      a { 
+        color: white;
+      }
+    }
+  }
+}
+
 /* update from a user followed by the current logged in user */
 #updates {
-  .column(14);
+  padding-bottom: 1em;
   .update {
-    padding-bottom: 1em;
+    .clearfix;
+    background: white;
+    padding: 1em;
   	border-bottom: solid 1px #efefef;
-    margin-bottom: 1em;
 
   	clear: both;
   	overflow: auto;
-  	font-size: 0.8em;
 
     .avatar {
     	float: left;
+      width: 48px;
     	padding-right: 1em;
     }
-
-    .name {
-    	font-weight: bold;
+    
+    .content {
+      float: left;
+      width: 450px;
+      .name {
+      	font-weight: bold;
+      }
+      .text {
+        font-size: 1.1em;
+      }
+      .date {
+      	font-size: 0.9em;
+      	color: #aaa;
+      }
     }
-
-    .feed_date {
-    	text-align: right;
-    	font-style: italic;
-    	font-size: 0.9em;
-    }  
   }
 }
 

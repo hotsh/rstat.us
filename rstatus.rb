@@ -102,6 +102,7 @@ class Rstatus < Sinatra::Base
   end
 
   get '/auth/:provider/callback' do
+    puts "foo"
     auth = request.env['omniauth.auth']
     unless @auth = Authorization.find_from_hash(auth)
       @auth = Authorization.create_from_hash(auth, current_user)

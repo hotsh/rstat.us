@@ -1,31 +1,31 @@
-%form#update-form{ :action => "/updates", :method => "POST", :name => "update_form"}
-  %h3 What's going on?
-  #update-content
-    %textarea#update{:name => "text"}
-  #update-info
-    %a#update_button.button{:href => "#"} Update
-    #update_count
-      0/140
+- content_for :top do
+  %form#update-form{ :action => "/updates", :method => "POST", :name => "update_form"}
+    %h3 What's going on?
+    #update-content
+      %textarea#update{:name => "text"}
+    #update-info
+      %input#update-button.button{:type => "submit", :value => "Share"}
+      #update-count
 
 #updates
   - current_user.timeline.to_a.sort{|a, b| b.created_at <=> a.created_at }.each do |update|
     .update
       .avatar
         %img{:alt => "avatar", :src => update.user.twitter_image}/
-      .update-text-wrap
-        %span.name= update.user.username
-        .update-text
+      .content
+        .name= "#{update.user.name} (#{update.user.username})"
+        .text
           != update.to_html
-        .update-date= update.created_at.ago_in_words
+        .date= update.created_at.ago_in_words
 
 #at_replies
   - current_user.at_replies.to_a.sort{|a, b| b.created_at <=> a.created_at }.each do |update|
     .update
       .avatar
         %img{:alt => "avatar", :src => update.user.twitter_image}/
-      .update-text-wrap
-        %span.name= update.user.username
-        .update-text
+      .content
+        .name= update.user.username
+        .text
           != update.to_html
         .update-date= update.created_at.ago_in_words
 

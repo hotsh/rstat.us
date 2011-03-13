@@ -586,6 +586,8 @@ next column, or to pull it into the previous column.  */
    apply to column that should drop below previous ones. */
 /* Helper functions 
  *******************************************/
+/* Color
+*******************************************/
 /* Typography
 *******************************************/
 .title-face {
@@ -597,6 +599,13 @@ h3,
 h4,
 h5 {
   font-family: "Arial Black", Arial, sans-serif;
+}
+a {
+  color: #65bfc2;
+  text-decoration: none;
+}
+a:hover {
+  text-decoration: underline;
 }
 /* Layout
 *******************************************/
@@ -663,9 +672,9 @@ body {
 /* the textarea where the user types an update */
 form#update-form {
   display: block;
-  padding: 1.5em 0;
+  padding: 1.5em 0 1em;
   border-bottom: 1px solid #ddd;
-  margin-bottom: 1.5em;
+  margin-bottom: 2em;
 }
 form#update-form:after {
   content: "\0020";
@@ -675,44 +684,104 @@ form#update-form:after {
   visibility: hidden;
   overflow: hidden;
 }
-form#update-form #update-content {
-  width: 550px;
-  float: left;
-  margin-right: 10px;
-}
 form#update-form #update-content textarea {
-  width: 100%;
+  width: 540px;
+  padding: 5px;
   height: 2.5em;
   margin: 0;
+}
+form#update-form #update-info {
+  display: block;
+}
+form#update-form #update-info:after {
+  content: "\0020";
+  display: block;
+  height: 0;
+  clear: both;
+  visibility: hidden;
+  overflow: hidden;
+}
+form#update-form #update-info #update-button, form#update-form #update-info #update-count {
+  float: left;
+}
+form#update-form #update-info #update-count {
+  color: #999;
+  padding-left: 0.75em;
+  padding-top: 0.6em;
+}
+.no-js #update-count {
+  display: none;
 }
 #update-form:focus {
   -moz-box-shadow: 5px 3px 5px #efefef;
 }
+#navigation ul {
+  margin: 0;
+  padding: 0;
+  display: block;
+}
+#navigation ul:after {
+  content: "\0020";
+  display: block;
+  height: 0;
+  clear: both;
+  visibility: hidden;
+  overflow: hidden;
+}
+#navigation ul li {
+  padding: 0.5em;
+  list-style-type: none;
+  float: left;
+  font-family: "Arial Black", Arial, sans-serif;
+  font-size: 1.4em;
+}
+#navigation ul li a {
+  color: #8f8f8f;
+}
+#navigation ul li.active {
+  background: #65bfc2;
+}
+#navigation ul li.active a {
+  color: white;
+}
 /* update from a user followed by the current logged in user */
 #updates {
-  width: 550px;
-  float: left;
-  margin-right: 10px;
+  padding-bottom: 1em;
 }
 #updates .update {
-  padding-bottom: 1em;
+  display: block;
+  background: white;
+  padding: 1em;
   border-bottom: solid 1px #efefef;
-  margin-bottom: 1em;
   clear: both;
   overflow: auto;
-  font-size: 0.8em;
+}
+#updates .update:after {
+  content: "\0020";
+  display: block;
+  height: 0;
+  clear: both;
+  visibility: hidden;
+  overflow: hidden;
 }
 #updates .update .avatar {
   float: left;
+  width: 48px;
   padding-right: 1em;
 }
-#updates .update .name {
+#updates .update .content {
+  float: left;
+  width: 450px;
+}
+#updates .update .content .name {
   font-weight: bold;
 }
-#updates .update .feed_date {
-  text-align: right;
-  font-style: italic;
+#updates .update .content .text {
+  font-size: 1.1em;
+}
+#updates .update .content .date {
   font-size: 0.9em;
+  color: #aaa;
 }
 /* Negative is red */
 .negative {

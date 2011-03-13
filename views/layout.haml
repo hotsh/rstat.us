@@ -1,5 +1,5 @@
 !!! 5
-%html
+%html.no-js
   %head
     %meta{:charset => "utf-8"}
     %title rstat.us
@@ -21,26 +21,31 @@
     != yield_content :javascript
   %body
     #main
-      #flash
-        %p= flash[:notice]
       #left
         #logo
           %h2
             rstat.us
 
         #user
+          %h3 Profile
           .user-pic
             %img{:alt => "avatar", :src => current_user.twitter_image}/
           .user-name
             %span.name= current_user.username
           .user-stats
             .following
-              following: <a href="/users/#{current_user.username}/following">#{current_user.following.count}</a>
+              Following: <a href="/users/#{current_user.username}/following">#{current_user.following.count}</a>
             .followers
-              followers: <a href="/users/#{current_user.username}/followers">#{current_user.followers.count}</a>
+              Followers: <a href="/users/#{current_user.username}/followers">#{current_user.followers.count}</a>
             .updates
-              updates: #{current_user.updates.count}
+              Updates: #{current_user.updates.count}
 
       #right
         #content
+          != yield_content :top
+          
+          #flash
+            = flash[:notice]
+          
+          != haml :_navigation
           != yield 
