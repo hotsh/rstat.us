@@ -1,4 +1,5 @@
 require 'sinatra/base'
+require 'sinatra/reloader'
 
 require 'omniauth'
 require 'mongo_mapper'
@@ -53,6 +54,10 @@ class Rstatus < Sinatra::Base
 
   require 'rack-flash'
   use Rack::Flash
+
+  configure :development do
+    register Sinatra::Reloader
+  end
 
   configure do
     enable :sessions

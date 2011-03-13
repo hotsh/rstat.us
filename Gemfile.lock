@@ -3,6 +3,7 @@ GEM
   specs:
     activesupport (3.0.5)
     addressable (2.2.4)
+    backports (2.0.2)
     bson (1.2.4)
     bson_ext (1.2.4)
     database_cleaner (0.6.5)
@@ -21,6 +22,8 @@ GEM
       activesupport (>= 2.3.4)
       jnunemaker-validatable (~> 1.8.4)
       plucky (~> 0.3.6)
+    monkey-lib (0.5.4)
+      backports
     multi_json (0.0.5)
     multipart-post (1.1.0)
     net-ldap (0.1.1)
@@ -83,6 +86,16 @@ GEM
     sinatra (1.2.0)
       rack (~> 1.1)
       tilt (>= 1.2.2, < 2.0)
+    sinatra-advanced-routes (0.5.1)
+      monkey-lib (~> 0.5.0)
+      sinatra (~> 1.0)
+      sinatra-sugar (~> 0.5.0)
+    sinatra-reloader (0.5.0)
+      sinatra (~> 1.0)
+      sinatra-advanced-routes (~> 0.5.0)
+    sinatra-sugar (0.5.0)
+      monkey-lib (~> 0.5.0)
+      sinatra (~> 1.0)
     tilt (1.2.2)
 
 PLATFORMS
@@ -98,3 +111,4 @@ DEPENDENCIES
   rack-flash
   rack-test
   sinatra
+  sinatra-reloader
