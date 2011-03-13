@@ -1,6 +1,6 @@
 $(document).ready(function(){
   $("html").removeClass("no-js").addClass("js")
-  var update = $("#update")
+  var update = $("#update-textarea")
 
   function updateCounter(){
     $("#update-count").text((140 - update.val().length) + "/140");

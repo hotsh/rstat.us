@@ -64,12 +64,13 @@ body {
 
 #content {
   .column(14);
+  padding-top: 1.5em;
 }
 
 /* the textarea where the user types an update */
 form#update-form {
   .clearfix;
-  padding: 1.5em 0 1em;
+  padding: 0 0 1em 0;
   border-bottom: 1px solid #ddd;
   margin-bottom: 1em;
   #update-content {
@@ -91,6 +92,9 @@ form#update-form {
       padding-left: 0.75em;
       padding-top: 0.6em;
     }
+  }
+  #update-info.negative #update-count {
+    color: red;
   }
 }
 
@@ -162,6 +166,7 @@ form#update-form {
       	font-weight: bold;
       }
       .text {
+        word-wrap: break-word;
         font-size: 1.1em;
       }
       .date {

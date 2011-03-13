@@ -693,11 +693,12 @@ body {
   width: 550px;
   float: left;
   margin-right: 10px;
+  padding-top: 1.5em;
 }
 /* the textarea where the user types an update */
 form#update-form {
   display: block;
-  padding: 1.5em 0 1em;
+  padding: 0 0 1em 0;
   border-bottom: 1px solid #ddd;
   margin-bottom: 1em;
 }
@@ -733,6 +734,9 @@ form#update-form #update-info #update-count {
   color: #999;
   padding-left: 0.75em;
   padding-top: 0.6em;
+}
+form#update-form #update-info.negative #update-count {
+  color: red;
 }
 .no-js #update-count {
   display: none;
@@ -809,6 +813,7 @@ form#update-form #update-info #update-count {
   font-weight: bold;
 }
 .updates .update .content .text {
+  word-wrap: break-word;
   font-size: 1.1em;
 }
 .updates .update .content .date {

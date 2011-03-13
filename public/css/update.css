@@ -619,6 +619,7 @@ a:hover {
   padding: 1em;
 }
 #update .update .update-text-wrap .update-text {
+  word-wrap: break-word;
   font-size: 2.5em;
 }
 #update .update .byline {

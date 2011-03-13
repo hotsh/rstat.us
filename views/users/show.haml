@@ -1,4 +1,8 @@
-- content_for :header do
-  %p Bio and such goes here.
-#updates
+%h3= @user.name
+.username
+  @#{@user.username}
+
+%p Bio and such goes here.
+
+#updates.updates
   != haml :_updates, :locals => {:updates => @user.updates.to_a.sort{|a, b| b.created_at <=> a.created_at }}
