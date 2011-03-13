@@ -191,5 +191,10 @@ class Rstatus < Sinatra::Base
     redirect "/"
   end
 
+  get '/updates/:id' do
+    @update = Update.first :id => params[:id]
+    haml :"updates/show"
+  end
+
 end
 
