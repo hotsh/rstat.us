@@ -171,7 +171,9 @@ class Rstatus < Sinatra::Base
   end
 
   post '/updates' do
-    update = Update.new(:text => params[:text])
+    update = Update.new(:text => params[:text], 
+                        :oauth_secret => session[:oauth_secret],
+                        :oauth_token => session[:oauth_token])
     update.user = current_user
     update.save
 
