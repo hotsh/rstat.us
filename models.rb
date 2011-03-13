@@ -44,6 +44,8 @@ class User
       :twitter_image => hsh['user_info']['image']
     )
   end
+
+  timestamps!
 end
 
 class Update
@@ -51,6 +53,7 @@ class Update
 
   belongs_to :user
   key :text, String
+  timestamps!
 end
 
 class Authorization
@@ -71,6 +74,8 @@ class Authorization
     user ||= User.create_from_hash!(hsh)
     create!(:user => user, :uid => hsh['uid'], :provider => hsh['provider'])
   end
+
+  timestamps!
 
 end
 
