@@ -41,7 +41,6 @@ end
 class Authorization
   include MongoMapper::Document
 
-  
   belongs_to :user
 
   key :uid, Integer, :required => true
@@ -102,6 +101,12 @@ class User
 
   many :updates, :dependent => :destroy
 
+  alias :my_updates :updates
+
+  def updates
+    my_updates.reject{|u| u.text =~ /^d /}
+  end
+
   def self.create_from_hash!(hsh)
     create!(
       :name => hsh['user_info']['name'],
@@ -120,6 +125,10 @@ class User
 
   def at_replies
     Update.all(:text => /^@#{username} /)
+  end
+
+  def dm_replies
+    Update.all(:text => /^d #{username} /)
   end
 
   after_create :follow_yo_self
