@@ -1,3 +1,32 @@
-%p Post Update
-%p @
-%p private
+!!!
+%head
+  %title rstat.us
+  %link{:href => "/css/reset.css", :media => "screen", :rel => "stylesheet"}
+  %link{:href => "/css/css3buttons.css", :media => "screen", :rel => "stylesheet"}
+  %link{:href => "/css/site.css", :media => "screen", :rel => "stylesheet"}
+%body
+  #main
+    #stats
+      %img{:alt => "avatar", :src => "http://placekitten.com/g/100/100"}/
+      %span.name username
+      %br/
+      following: 100
+      %br/
+      followers: 100
+      %br/
+      updates: 1337
+      %br/
+    %textarea#update
+    #update_box
+      %span#update_count
+        0/140
+        %a#update_button.button{:href => "#"} Update
+    .feed_item
+      .avatar
+        %img{:alt => "avatar", :src => "http://placekitten.com/g/50/50"}/
+      .feed_text
+        %span.name username
+        %br/
+        Testing testing this stuff. Testing some more. Then some more testing and some test. Some text in this text. More. More. More. Text. More...
+        .feed_date posted 3 minutes ago
+      %div
