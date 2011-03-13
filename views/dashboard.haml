@@ -8,7 +8,7 @@
       0/140
 
 #updates
-  - current_user.updates.to_a.sort{|a, b| b.created_at <=> a.created_at }.each do |update|
+  - current_user.timeline.to_a.sort{|a, b| b.created_at <=> a.created_at }.each do |update|
     .update
       .avatar
         %img{:alt => "avatar", :src => update.user.twitter_image}/
