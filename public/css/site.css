@@ -1,0 +1,86 @@
+body {
+	background-color: #efefef;
+	font-family: helvetica, Arial, sans-serif;
+	margin: 1em;
+}
+
+/* begin user status page css */
+
+#main {
+	-moz-border-radius: 1em;
+	-webkit-border-radius: 1em;
+	width: 70%;
+	max-width: 1000px;
+	margin: auto;
+	background-color: #fff;
+	padding: 1em;
+	overflow: auto;
+}
+
+/* stats box at the top of the page with the currently 
+	logged in user's information */
+#stats {
+	font-size: 0.8em;
+	overflow: auto;
+}
+
+#stats .name {
+	font-weight: bold;
+	font-size: 2em;
+}
+
+#stats img {
+	float: left;
+	padding-right: 1em;
+}
+
+/* the textarea where the user types an update */
+#update {
+	border: solid 1px #aaa;
+	-moz-border-radius: 0.5em;
+	width: 95%;
+	height: 1.5em;
+	padding: 0.5em;
+	margin: 1em;
+	font-family: helvetica, Arial, sans-serif;
+}
+
+#update:focus {
+	-moz-box-shadow: 5px 3px 5px #efefef;
+}
+
+/* div below this textarea with the update button and counter */
+#update_box {
+	float: right;
+}
+
+#update_count {
+	font-weight: bold;
+	font-size: 1.5em;
+	color: #aaa;
+}
+
+/* update from a user followed by the current logged in user */
+.feed_item {
+	border-bottom: solid 1px #efefef;
+	clear: both;
+	overflow: auto;
+	font-size: 0.8em;
+}
+
+.avatar {
+	float: left;
+	padding-right: 1em;
+}
+
+.feed_item .name {
+	font-weight: bold;
+}
+
+.feed_date {
+	text-align: right;
+	font-style: italic;
+	font-size: 0.9em;
+}
+
+/* end user status page css */
