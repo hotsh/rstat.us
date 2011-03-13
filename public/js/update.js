@@ -1,7 +1,7 @@
 $(document).ready(function(){
   var update = $("#update")
 
-  update.keyup(function(){
+  update.keypress(function(){
     $("#update_count").text((140 - update.val().length) + "/140");
     if(update.val().length > 140) {
       $("#update-info").addClass("negative");
