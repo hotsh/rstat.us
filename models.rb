@@ -1,3 +1,14 @@
+class Update
+  include MongoMapper::Document
+
+  belongs_to :user
+  key :text, String
+
+  validates_length_of :text, :maximum => 140
+
+  timestamps!
+end
+
 class User
   include MongoMapper::Document
   many :authorizations
@@ -60,17 +71,6 @@ class User
     followers << self
     save
   end
-end
-
-class Update
-  include MongoMapper::Document
-
-  belongs_to :user
-  key :text, String
-
-  validates_length_of :text, :maximum => 140
-
-  timestamps!
 end
 
 class Authorization
