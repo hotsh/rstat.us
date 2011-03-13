@@ -1,35 +1,8 @@
 - content_for :top do
-  %form#update-form{ :action => "/updates", :method => "POST", :name => "update_form"}
-    %h3 What's going on?
-    #update-content
-      %textarea#update{:name => "text"}
-    #update-info
-      %input#update-button.button{:type => "submit", :value => "Share"}
-      #update-count
-
-#updates
-  - current_user.timeline.to_a.sort{|a, b| b.created_at <=> a.created_at }.each do |update|
-    .update
-      .avatar
-        %img{:alt => "avatar", :src => update.user.twitter_image}/
-      .content
-        .name= "#{update.user.name} (#{update.user.username})"
-        .text
-          != update.to_html
-        .date
-          %a{:href => "/updates/#{update.id}"}= update.created_at.ago_in_words
-#at_replies
-  - current_user.at_replies.to_a.sort{|a, b| b.created_at <=> a.created_at }.each do |update|
-    .update
-      .avatar
-        %img{:alt => "avatar", :src => update.user.twitter_image}/
-      .content
-        .name= update.user.username
-        .text
-          != update.to_html
-        .update-date
-          %a{:href => "/updates/#{update.id}"}= update.created_at.ago_in_words
+  != haml :_update_form
 
 - content_for :javascript do
   %script{:src => "/js/update.js"}
 
+#updates
+  != haml :_updates, :locals => {:updates => current_user.timeline.to_a.sort{|a, b| b.created_at <=> a.created_at }}

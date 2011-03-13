@@ -46,8 +46,9 @@ body {
 #main {
   background: #f3f3f3;
   .container();
-  padding-top: 2em;
+  padding-top: 3em;
   margin-top: 0;
+  padding-bottom: 2em;
 
   #left {
     .column(8);   
@@ -120,12 +121,14 @@ form#update-form {
 
 #navigation {
   ul {
-    margin: 0;
+    margin: 0 0 0 0;
     padding: 0;
     
     .clearfix;
     li {
-      padding: 0.5em;
+      background: #dadada;
+      padding: 0.5em 1em;
+      margin: 0 2px 2px 0;
       list-style-type: none;
       float: left;
       .title-face;
@@ -145,7 +148,6 @@ form#update-form {
 
 /* update from a user followed by the current logged in user */
 #updates {
-  padding-bottom: 1em;
   .update {
     .clearfix;
     background: white;

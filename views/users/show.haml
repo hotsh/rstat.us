@@ -1,12 +1,4 @@
 - content_for :header do
   %p Bio and such goes here.
 #updates
-  - @user.updates.to_a.sort{|a, b| b.created_at <=> a.created_at }.each do |update|
-    .update
-      .avatar
-        %img{:alt => "avatar", :src => update.user.twitter_image}/
-      .update-text-wrap
-        %span.name= update.user.username
-        .update-text
-          != update.to_html
-        .update-date= update.created_at.ago_in_words
+  != haml :_updates, :locals => {:updates => @user.updates.to_a.sort{|a, b| b.created_at <=> a.created_at }}

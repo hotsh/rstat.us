@@ -1,8 +1,7 @@
+- nav = [{:url => "/", :name => "Timeline"}, {:url => "/replies", :name => "Replies"}]
 #navigation
   %ul
-    %li
-      %a{:href => "/"}
-        Timeline
-    %li
-      %a{:href => "/replies"}
-        Replies
+    - nav.each do |item|
+      %li{:class => request.path_info == item[:url] ? "active" : ""}
+        %a{:href => item[:url]}
+          = item[:name]

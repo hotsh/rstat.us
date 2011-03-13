@@ -621,8 +621,9 @@ body {
   width: 950px;
   margin: 0 auto;
   display: block;
-  padding-top: 2em;
+  padding-top: 3em;
   margin-top: 0;
+  padding-bottom: 2em;
 }
 #main:after {
   content: "\0020";
@@ -716,7 +717,7 @@ form#update-form #update-info #update-count {
   -moz-box-shadow: 5px 3px 5px #efefef;
 }
 #navigation ul {
-  margin: 0;
+  margin: 0 0 0 0;
   padding: 0;
   display: block;
 }
@@ -729,7 +730,9 @@ form#update-form #update-info #update-count {
   overflow: hidden;
 }
 #navigation ul li {
-  padding: 0.5em;
+  background: #dadada;
+  padding: 0.5em 1em;
+  margin: 0 2px 2px 0;
   list-style-type: none;
   float: left;
   font-family: "Arial Black", Arial, sans-serif;
@@ -745,9 +748,6 @@ form#update-form #update-info #update-count {
   color: white;
 }
 /* update from a user followed by the current logged in user */
-#updates {
-  padding-bottom: 1em;
-}
 #updates .update {
   display: block;
   background: white;

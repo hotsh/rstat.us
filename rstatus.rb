@@ -101,6 +101,14 @@ class Rstatus < Sinatra::Base
     end
   end
 
+  get '/replies' do
+    if logged_in?
+      haml :replies
+    else
+      haml :index, :layout => false
+    end
+  end
+
   get '/auth/:provider/callback' do
     puts "foo"
     auth = request.env['omniauth.auth']
