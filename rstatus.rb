@@ -80,6 +80,14 @@ class Rstatus < Sinatra::Base
   helpers Sinatra::UserHelper
   helpers Sinatra::ContentFor
 
+  helpers do
+    [:development, :production, :test].each do |environment|
+      define_method "#{environment.to_s}?" do
+        return settings.environment == environment.to_sym
+      end
+    end
+  end
+
   use OmniAuth::Builder do
     provider :twitter, Rstatus.settings.config["CONSUMER_KEY"], Rstatus.settings.config["CONSUMER_SECRET"]
   end
