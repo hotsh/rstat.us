@@ -18,6 +18,16 @@ class User
       :twitter_image => hsh['user_info']['image']
     )
   end
+
+  def following
+    []
+  end
+  def followers
+    []
+  end
+  def updates
+    []
+  end
 end
 
 class Authorization

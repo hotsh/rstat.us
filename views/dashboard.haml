@@ -1,13 +1,13 @@
 #main
   #stats
-    %img{:alt => "avatar", :src => "http://placekitten.com/g/100/100"}/
-    %span.name username
+    %img{:alt => "avatar", :src => current_user.twitter_image}/
+    %span.name= current_user.username
     %br/
-    following: 100
+    following: #{current_user.following.count}
     %br/
-    followers: 100
+    followers: #{current_user.followers.count}
     %br/
-    updates: 1337
+    updates: #{current_user.updates.count}
     %br/
   %textarea#update
   #update_box
@@ -16,9 +16,9 @@
       %a#update_button.button{:href => "#"} Update
   .feed_item
     .avatar
-      %img{:alt => "avatar", :src => "http://placekitten.com/g/50/50"}/
+      %img{:alt => "avatar", :src => current_user.twitter_image}/
     .feed_text
-      %span.name username
+      %span.name= current_user.username
       %br/
       Testing testing this stuff. Testing some more. Then some more testing and some test. Some text in this text. More. More. More. Text. More...
       .feed_date posted 3 minutes ago
