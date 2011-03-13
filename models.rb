@@ -23,7 +23,7 @@ class Update
   protected
 
   def tweet
-    return if ENV['RACK_ENV'] = "test" #uuuuugh
+    return if ENV['RACK_ENV'] != "production"
 
     Twitter.configure do |config|
       config.consumer_key = Rstatus.settings.config["CONSUMER_KEY"]
