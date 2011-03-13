@@ -28,20 +28,21 @@
             %h2
               rstat.us
 
-        #profile
-          %h3 Profile
-          .avatar
-            %img{:alt => "avatar", :src => current_user.twitter_image}/
-          .userinfo
-            .name
-              %span.name= current_user.username
-            .stats
-              .following
-                Following: <a href="/users/#{current_user.username}/following">#{current_user.following.count}</a>
-              .followers
-                Followers: <a href="/users/#{current_user.username}/followers">#{current_user.followers.count}</a>
-              .updates
-                Updates: #{current_user.updates.count}
+        - if current_user
+          #profile
+            %h3 Profile
+            .avatar
+              %img{:alt => "avatar", :src => current_user.twitter_image}/
+            .userinfo
+              .name
+                %span.name= current_user.username
+              .stats
+                .following
+                  Following: <a href="/users/#{current_user.username}/following">#{current_user.following.count}</a>
+                .followers
+                  Followers: <a href="/users/#{current_user.username}/followers">#{current_user.followers.count}</a>
+                .updates
+                  Updates: #{current_user.updates.count}
 
       #right
         #content
@@ -51,7 +52,6 @@
             #flash
               = flash[:notice]
           
-          != haml :_navigation
           != yield 
           
     #footer

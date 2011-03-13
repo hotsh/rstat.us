@@ -1,0 +1,36 @@
+/* Helper functions 
+ *******************************************/
+.image-replaced(@image, @width: auto, @height: auto) {
+  background: url(@image) no-repeat;
+  text-indent: -9999px;
+  width: @width;
+  height: @height;
+}
+
+.rounded(@radius:5px) {
+  border-radius: @radius;
+}
+
+/* Color
+*******************************************/
+@highlight: #65bfc2;
+@mention: #e4feff;
+
+/* Typography
+*******************************************/
+.title-face {
+  font-family: "Arial Black", Arial, sans-serif;
+}
+
+h1,h2,h3,h4,h5 {
+  .title-face;
+}
+
+a {
+  color: @highlight;
+  text-decoration: none;
+}
+
+a:hover {
+  text-decoration: underline;
+}

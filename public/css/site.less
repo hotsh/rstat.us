@@ -1,37 +1,5 @@
 @import "blueless/blueless/screen";
-
-/* Helper functions 
- *******************************************/
-.image-replaced(@image, @width: auto, @height: auto) {
-  background: url(@image) no-repeat;
-  text-indent: -9999px;
-  width: @width;
-  height: @height;
-}
-
-/* Color
-*******************************************/
-@highlight: #65bfc2;
-@mention: #e4feff;
-
-/* Typography
-*******************************************/
-.title-face {
-  font-family: "Arial Black", Arial, sans-serif;
-}
-
-h1,h2,h3,h4,h5 {
-  .title-face;
-}
-
-a {
-  color: @highlight;
-  text-decoration: none;
-}
-
-a:hover {
-  text-decoration: underline;
-}
+@import "_shared";
 
 /* Layout
 *******************************************/
@@ -208,6 +176,42 @@ form#update-form {
   background: @mention;
 }
 
+#update {
+  background: #f3f3f3;
+  padding-top: 3em;
+  width: 520px;
+  margin: auto;
+
+  .update {
+    .update-text-wrap {
+      .rounded(5px);
+      background: white;
+      padding: 1em;
+    
+      .update-text {
+        font-size: 2.5em;
+      }
+    }
+  
+    .byline {
+      .clearfix;
+      padding: 1em;
+      .update-date, .avatar, .name {
+        float: left;
+        padding-right: 5px;
+      }
+      .avatar {
+        img { 
+          height: 18px;
+        }
+      }
+    }
+  }
+  
+  #footer {
+    border-top: 1px solid #ccc;
+  }
+}
 
 /* Negative is red */
 .negative {

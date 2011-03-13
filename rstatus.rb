@@ -201,7 +201,7 @@ class Rstatus < Sinatra::Base
 
   get '/updates/:id' do
     @update = Update.first :id => params[:id]
-    haml :"updates/show"
+    haml :"updates/show", :layout => :'updates/layout'
   end
 
 end

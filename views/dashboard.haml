@@ -4,5 +4,6 @@
 - content_for :javascript do
   %script{:src => "/js/update.js"}
 
+!= haml :_navigation
 #timeline.updates
   != haml :_updates, :locals => {:updates => current_user.timeline.to_a.sort{|a, b| b.created_at <=> a.created_at }}
