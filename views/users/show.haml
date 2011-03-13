@@ -1,20 +1,12 @@
-#main
-  #stats
-    %img{:alt => "avatar", :src => @user.twitter_image}/
-    %span.name= @user.username
-    %br/
-    following: <a href="/users/#{@user.username}/following">#{@user.following.count}</a>
-    %br/
-    followers: <a href="/users/#{@user.username}/followers">#{@user.followers.count}</a>
-    %br/
-    updates: #{@user.updates.count}
-    %br/
-  .feed_item
-    .avatar
-      %img{:alt => "avatar", :src => @user.twitter_image}/
-    .feed_text
-      %span.name= @user.username
-      %br/
-      Testing testing this stuff. Testing some more. Then some more testing and some test. Some text in this text. More. More. More. Text. More...
-      .feed_date posted 3 minutes ago
-    %div
+- content_for :header do
+  %p Bio and such goes here.
+#updates
+  - @user.updates.to_a.sort{|a, b| b.created_at <=> a.created_at }.each do |update|
+    .update
+      .avatar
+        %img{:alt => "avatar", :src => update.user.twitter_image}/
+      .update-text-wrap
+        %span.name= update.user.username
+        .update-text
+          != update.to_html
+        .update-date= update.created_at.ago_in_words

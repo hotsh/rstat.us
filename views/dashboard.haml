@@ -1,27 +1,22 @@
-#main
-  #stats
-    %img{:alt => "avatar", :src => current_user.twitter_image}/
-    %span.name= current_user.username
-    %br/
-    following: <a href="/users/#{current_user.username}/following">#{current_user.following.count}</a>
-    %br/
-    followers: <a href="/users/#{current_user.username}/followers">#{current_user.followers.count}</a>
-    %br/
-    updates: #{current_user.updates.count}
-    %br/
-  %form{ :action => "/updates", :method => "POST", :name => "update_form"}
-    %textarea#update{:name => "text"}
-    #update_box
-      %span#update_count
+- content_for :header do
+  %form#update-form{ :action => "/updates", :method => "POST", :name => "update_form"}
+    #update-content
+      %textarea#update{:name => "text"}
+    #update-info
+      %a#update_button.button{:href => "#"} Update
+      #update_count
         0/140
-        %a#update_button.button{:href => "javascript:document.update_form.submit()"} Update
-  - current_user.updates.each do |update|
-    .feed_item
+#updates
+  - current_user.updates.to_a.sort{|a, b| b.created_at <=> a.created_at }.each do |update|
+    .update
       .avatar
         %img{:alt => "avatar", :src => update.user.twitter_image}/
-      .feed_text
+      .update-text-wrap
         %span.name= update.user.username
-        %br/
-        = update.text
-        .feed_date= update.created_at
-      %div
+        .update-text
+          != update.to_html
+        .update-date= update.created_at.ago_in_words
+
+- content_for :javascript do
+  %script{:src => "/js/update.js"}
+

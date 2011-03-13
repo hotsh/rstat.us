@@ -1,6 +1,68 @@
+class Update
+  require 'cgi'
+  include MongoMapper::Document
+
+  belongs_to :user
+  key :text, String
+
+  validates_length_of :text, :maximum => 140
+
+  def to_html
+    out = CGI.escapeHTML(text)
+    out.gsub!(/@(\w+)/, "<a href='/users/\\1'>@\\1</a>")
+    out.gsub!(/(http:\/\/\S+[a-zA-Z\/])/, "<a href='\\1'>\\1</a>")
+    out
+  end
+
+  after_create :tweet
+
+  timestamps!
+
+  protected
+
+  def tweet
+    Twitter.configure do |config|
+      config.consumer_key = Rstatus.settings.config["CONSUMER_KEY"]
+      config.consumer_secret = Rstatus.settings.config["CONSUMER_SECRET"]
+      config.oauth_token = Rstatus.session['oauth_token']
+      config.oauth_token_secret = Rstatus.session['oauth_secret']
+    end
+
+    Twitter.update(text)
+
+  end
+
+end
+
+class Authorization
+  include MongoMapper::Document
+  
+  belongs_to :user
+
+  key :uid, Integer, :required => true
+  key :provider, String, :required => true
+
+  validates_uniqueness_of :uid, :scope => :provider
+
+  def self.find_from_hash(hsh)
+    first :provider => hsh['provider'], :uid => hsh['uid'].to_i
+  end
+
+  def self.create_from_hash(hsh, user = nil)
+    user ||= User.create_from_hash!(hsh)
+    create!(:user => user, 
+            :uid => hsh['uid'], 
+            :provider => hsh['provider'],
+           )
+  end
+
+  timestamps!
+
+end
+
 class User
   include MongoMapper::Document
-  many :authorizations
+  many :authorizations, :dependant => :destroy
 
   key :name, String
   key :username, String
@@ -33,7 +95,7 @@ class User
     following.include? user
   end
 
-  many :updates
+  many :updates, :dependent => :destroy
 
   def self.create_from_hash!(hsh)
     create!(
@@ -46,36 +108,18 @@ class User
   end
 
   timestamps!
-end
 
-class Update
-  include MongoMapper::Document
-
-  belongs_to :user
-  key :text, String
-  timestamps!
-end
-
-class Authorization
-  include MongoMapper::Document
-  
-  belongs_to :user
-
-  key :uid, Integer, :required => true
-  key :provider, String, :required => true
-
-  validates_uniqueness_of :uid, :scope => :provider
-
-  def self.find_from_hash(hsh)
-    first :provider => hsh['provider'], :uid => hsh['uid'].to_i
+  def timeline
+    following.map(&:updates).flatten
   end
 
-  def self.create_from_hash(hsh, user = nil)
-    user ||= User.create_from_hash!(hsh)
-    create!(:user => user, :uid => hsh['uid'], :provider => hsh['provider'])
+  after_create :follow_yo_self
+
+  private
+
+  def follow_yo_self
+    following << self
+    followers << self
+    save
   end
-
-  timestamps!
-
 end
-

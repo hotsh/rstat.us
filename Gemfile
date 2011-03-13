@@ -7,6 +7,9 @@ gem "bson_ext"
 gem "i18n"
 gem "haml"
 gem "rack-flash"
+gem "time-ago-in-words"
+gem "sinatra-content-for"
+gem "twitter"
 
 group :development, :test do
   gem 'rack-test'

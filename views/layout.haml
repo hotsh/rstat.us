@@ -17,8 +17,30 @@
         ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
         (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(ga);
       })();
+    != yield_content :javascript
   %body
     #flash
       %p= flash[:notice]
-    = yield
+    #main
+      #left
+        %h2#title
+          rstat.us
+      #right
+        != yield_content :header
+
+        #content
+          != yield 
+
+        #user
+          .user-pic
+            %img{:alt => "avatar", :src => current_user.twitter_image}/
+          .user-name
+            %span.name= current_user.username
+          .user-stats
+            .following
+              following: <a href="/users/#{current_user.username}/following">#{current_user.following.count}</a>
+            .followers
+              followers: <a href="/users/#{current_user.username}/followers">#{current_user.followers.count}</a>
+            .updates
+              updates: #{current_user.updates.count}
 
