@@ -3,35 +3,34 @@
     %h2#title
       rstat.us
   #right  
-    %form#update-form
+    %form#update-form{ :action => "/updates", :method => "POST", :name => "update_form"}
       #update-content
-        %textarea
+        %textarea#update{:name => "text"}
       #update-info
-        %a#update_button.button{:href => "#"} Update
+        %a#update_button.button{:href => "javascript:document.update_form.submit()"} Update
         #update_count
           0/140
 
     #updates
-      .update
-        .avatar
-          %img{:alt => "avatar", :src => current_user.twitter_image}/
-        .feed_text
-          %span.name= current_user.username
-          %br/
-          Testing testing this stuff. Testing some more. Then some more testing and some test. Some text in this text. More. More. More. Text. More...
-          .feed_date posted 3 minutes ago
-        %div
+      - current_user.updates.each do |update|
+        .update
+          .avatar
+            %img{:alt => "avatar", :src => update.user.twitter_image}/
+          .update-text-wrap
+            %span.name= update.user.username
+            .update-text
+              = update.text
+            .update-date= update.created_at
 
     #user
       .user-pic
         %img{:alt => "avatar", :src => current_user.twitter_image}/
-
       .user-name
         %span.name= current_user.username
       .user-stats
         .following
-          following: #{current_user.following.count}
+          following: <a href="/users/#{current_user.username}/following">#{current_user.following.count}</a>
         .followers
-          followers: #{current_user.followers.count}
+          followers: <a href="/users/#{current_user.username}/followers">#{current_user.followers.count}</a>
         .updates
           updates: #{current_user.updates.count}

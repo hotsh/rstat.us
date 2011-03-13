@@ -1,4 +1,5 @@
 require 'sinatra/base'
+require 'sinatra/reloader'
 
 require 'omniauth'
 require 'mongo_mapper'
@@ -54,6 +55,10 @@ class Rstatus < Sinatra::Base
   require 'rack-flash'
   use Rack::Flash
 
+  configure :development do
+    register Sinatra::Reloader
+  end
+
   configure do
     enable :sessions
 
@@ -87,7 +92,7 @@ class Rstatus < Sinatra::Base
     unless @auth = Authorization.find_from_hash(auth)
       @auth = Authorization.create_from_hash(auth, current_user)
     end
-    self.current_user = @auth.user
+    session[:user_id] = @auth.user.id
 
     flash[:notice] = "You're now logged in."
     redirect '/'
@@ -154,8 +159,16 @@ class Rstatus < Sinatra::Base
   # This lets us see who is following.
   get '/users/:name/following' do
     @user = User.first(:username => params[:name])
-
     haml :"users/following"
+  end
+
+  post '/updates' do
+    update = Update.new(:text => params[:text])
+    update.user = current_user
+    update.save
+
+    flash[:notice] = "Update created."
+    redirect "/"
   end
 
 end
