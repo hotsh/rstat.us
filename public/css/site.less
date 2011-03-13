@@ -1,37 +1,59 @@
 @import "blueless/blueless/screen";
 
-body {
-	background-color: #efefef;
-	font-family: helvetica, Arial, sans-serif;
-	margin: 1em;
+/* Helper functions 
+ *******************************************/
+.image-replaced(@image, @width: auto, @height: auto) {
+  background: url(@image) no-repeat;
+  text-indent: -9999px;
+  width: @width;
+  height: @height;
 }
 
-/* begin user status page css */
+/* Typography
+*******************************************/
+.title-face {
+  font-family: "Arial Black", Arial, sans-serif;
+}
+
+h1,h2,h3,h4,h5 {
+  .title-face;
+}
+
+/* Layout
+*******************************************/
+body {
+	background-color: while;
+	font-family: Arial, sans-serif;
+  font-size: 12px;
+
+	margin-top: -1.4em;
+	padding: 0;
+}
 
 #main {
-	-moz-border-radius: 1em;
-	-webkit-border-radius: 1em;
+  background: #f3f3f3;
   .container();
-	margin: auto;
-	background-color: #fff;
-	padding: 1em;
-	overflow: auto;
+  padding-top: 2em;
+  margin-top: 0;
 
   #left {
-    padding-top: 1em;
+    .column(8);   
     
-    .column(4); 
+    #logo, #user {
+      .prepend(2);
+      .column(6);
+      .last;
+    }  
     
-    h2 {
-      text-align: right;
-      padding: 0.5em;
+    #logo {
+      h2 {
+        .image-replaced("../images/logo-sm.png", 159px, 45px)        
+      }
     }
   }
   
   #right {
-    padding-top: 2em;
-    
-    .column(20);
+    .column(16);
     .last;
   }
 }
@@ -40,31 +62,17 @@ body {
   .column(14);
 }
 
-/* stats box at the top of the page with the currently 
-	logged in user's information */
 #user {
-  .prepend(1);
-  .column(5);
-  .last;
-	font-size: 0.8em;
-	overflow: auto;
-
   .name {
   	font-weight: bold;
-  	font-size: 2em;
+  	font-size: 1.4em;
   }
-
-  img {
-  	float: left;
-  	padding-right: 1em;
-  }
-
 }
 
 /* the textarea where the user types an update */
 form#update-form {
   .clearfix;
-  padding-bottom: 1.5em;
+  padding: 1.5em 0;
   border-bottom: 1px solid #ddd;
   margin-bottom: 1.5em;
   #update-content {
@@ -78,12 +86,6 @@ form#update-form {
 
   }
 
-  /* div below this textarea with the update button and counter */
-  #update-info {
-    .prepend(1);
-    .column(5);
-    .last; 
-  }
 }
 
 #update-form:focus {

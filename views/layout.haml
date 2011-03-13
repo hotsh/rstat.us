@@ -20,17 +20,13 @@
         })();
     != yield_content :javascript
   %body
-    #flash
-      %p= flash[:notice]
     #main
+      #flash
+        %p= flash[:notice]
       #left
-        %h2#title
-          rstat.us
-      #right
-        != yield_content :header
-
-        #content
-          != yield 
+        #logo
+          %h2
+            rstat.us
 
         #user
           .user-pic
@@ -45,3 +41,6 @@
             .updates
               updates: #{current_user.updates.count}
 
+      #right
+        #content
+          != yield 
