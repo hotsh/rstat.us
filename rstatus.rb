@@ -90,6 +90,7 @@ class Rstatus < Sinatra::Base
 
   use OmniAuth::Builder do
     provider :twitter, Rstatus.settings.config["CONSUMER_KEY"], Rstatus.settings.config["CONSUMER_SECRET"]
+    provider :facebook, Rstatus.settings.config["APP_ID"], Rstatus.settings.config["APP_SECRET"]
   end
 
   get '/' do
@@ -100,7 +101,7 @@ class Rstatus < Sinatra::Base
     end
   end
 
-  get '/auth/twitter/callback' do
+  get '/auth/:provider/callback' do
     auth = request.env['omniauth.auth']
     unless @auth = Authorization.find_from_hash(auth)
       @auth = Authorization.create_from_hash(auth, current_user)
