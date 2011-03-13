@@ -23,5 +23,5 @@
         %span.name= update.user.username
         %br/
         = update.text
-        .feed_date= update.created_at
+        .feed_date= update.created_at.ago_in_words
       %div

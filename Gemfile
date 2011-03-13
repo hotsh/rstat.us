@@ -7,6 +7,7 @@ gem "bson_ext"
 gem "i18n"
 gem "haml"
 gem "rack-flash"
+gem "time-ago-in-words"
 
 group :development, :test do
   gem 'rack-test'

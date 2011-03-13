@@ -4,6 +4,7 @@ require 'sinatra/reloader'
 require 'omniauth'
 require 'mongo_mapper'
 require 'haml'
+require 'time-ago-in-words'
 
 require_relative 'models'
 
