@@ -717,7 +717,7 @@ form#update-form #update-info #update-count {
   -moz-box-shadow: 5px 3px 5px #efefef;
 }
 #navigation ul {
-  margin: 0 0 0 0;
+  margin: 0;
   padding: 0;
   display: block;
 }
