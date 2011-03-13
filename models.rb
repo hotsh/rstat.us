@@ -46,6 +46,16 @@ class User
   end
 
   timestamps!
+
+  after_create :follow_yo_self
+
+  private
+
+  def follow_yo_self
+    following << self
+    followers << self
+    save
+  end
 end
 
 class Update
