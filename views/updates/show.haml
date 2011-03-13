@@ -1,0 +1,8 @@
+.update
+  .avatar
+    %img{:alt => "avatar", :src => @update.user.twitter_image}/
+  .update-text-wrap
+    %span.name= @update.user.username
+    .update-text
+      != @update.to_html
+    .update-date= @update.created_at.ago_in_words
