@@ -6,6 +6,7 @@ require 'mongo_mapper'
 require 'haml'
 require 'time-ago-in-words'
 require 'sinatra/content_for'
+require 'twitter'
 
 require_relative 'models'
 
@@ -54,7 +55,7 @@ class Rstatus < Sinatra::Base
   use Rack::Session::Cookie, :secret => ENV['COOKIE_SECRET']
   set :root, File.dirname(__FILE__)
   set :haml, :escape_html => true
-  
+  set :config, YAML.load_file("config.yml")[ENV['RACK_ENV']]
 
   require 'rack-flash'
   use Rack::Flash
@@ -80,8 +81,7 @@ class Rstatus < Sinatra::Base
   helpers Sinatra::ContentFor
 
   use OmniAuth::Builder do
-    cfg = YAML.load_file("config.yml")[ENV['RACK_ENV']]
-    provider :twitter, cfg["CONSUMER_KEY"], cfg["CONSUMER_SECRET"]
+    provider :twitter, Rstatus.settings.config["CONSUMER_KEY"], Rstatus.settings.config["CONSUMER_SECRET"]
   end
 
   get '/' do
