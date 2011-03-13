@@ -8,3 +8,6 @@
         != update.to_html
       .date
         %a{:href => "/updates/#{update.id}"}= update.created_at.ago_in_words
+- if updates.empty?
+  .empty
+    There's no updates here yet

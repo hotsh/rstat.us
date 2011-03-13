@@ -50,7 +50,7 @@ body {
         padding-left: 1em;
         .name {
         	font-weight: bold;
-        	font-size: 1.4em;
+        	font-size: 1.25em;
         }
       }
     }
@@ -119,7 +119,7 @@ form#update-form {
       list-style-type: none;
       float: left;
       .title-face;
-      font-size: 1.4em;
+      font-size: 1.25em;
       a {
         color: #8f8f8f;
       }
@@ -138,7 +138,6 @@ form#update-form {
   font-size: 1.2em;
   color: white;
   background: #aaa;
-  margin-top: 1em;
   margin-bottom: 1em;
 }
 
@@ -174,6 +173,13 @@ form#update-form {
       	color: #aaa;
       }
     }
+  }
+  
+  .empty {
+    background: white;
+    font-size: 1.2em;
+    padding: 1em;
+    color: #bbb;
   }
 }
 
@@ -218,6 +224,28 @@ form#update-form {
   }
 }
 
+/* Profile */
+#profile {
+  position: relative;
+  h3 {
+    margin-bottom: 0.25em;
+  }
+  .username {
+    padding-bottom: 1em;
+  }
+  
+  #follow {
+    position: absolute;
+    top: 0;
+    right: 0;
+    text-align: right;
+    .follow-status {
+      font-size: 0.8em;
+      color: #999;
+    }
+  }
+}
+
 /* Negative is red */
 .negative {
   a.button:hover { color: #FFFFFF; background-position: 0 -121px; background-color: #D84743; border-color: #911D1B; }
@@ -226,6 +254,13 @@ form#update-form {
 
 /* Footer */
 #footer {
-  padding: 1em 0;
+  #footer-wrap {
+    padding: 1em;
+  }
   .container();
+  border-top: 1px solid #ccc;
+  
+  #logo {
+    .image-replaced("../images/logo-xs.png", 71px, 20px)
+  }
 }

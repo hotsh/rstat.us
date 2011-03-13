@@ -144,7 +144,7 @@ class Rstatus < Sinatra::Base
     #make sure we're not following them already
     if current_user.following? @user
       flash[:notice] = "You're already following #{params[:name]}."
-      redirect "/users/#{current_user.username}"
+      redirect "/users/#{@user.username}"
       return
     end
 
@@ -152,7 +152,7 @@ class Rstatus < Sinatra::Base
     current_user.follow! @user
 
     flash[:notice] = "Now following #{params[:name]}."
-    redirect "/users/#{current_user.username}"
+    redirect "/users/#{@user.username}"
   end
 
   #this lets you unfollow a user
@@ -163,8 +163,8 @@ class Rstatus < Sinatra::Base
 
     #make sure we're following them already
     unless current_user.following? @user
-      flash[:notice] = "You're already not following #{params[:name]}."
-      redirect "/users/#{current_user.username}"
+      flash[:notice] = "You're not following #{params[:name]}."
+      redirect "/users/#{@user.username}"
       return
     end
 
@@ -172,7 +172,7 @@ class Rstatus < Sinatra::Base
     current_user.unfollow! @user
 
     flash[:notice] = "No longer following #{params[:name]}."
-    redirect "/users/#{current_user.username}"
+    redirect "/users/#{@user.username}"
   end
 
   # this lets us see followers.

@@ -679,7 +679,7 @@ body {
 }
 #main #left #profile .userinfo .name {
   font-weight: bold;
-  font-size: 1.4em;
+  font-size: 1.25em;
 }
 #main #right {
   width: 630px;
@@ -764,7 +764,7 @@ form#update-form #update-info.negative #update-count {
   list-style-type: none;
   float: left;
   font-family: "Arial Black", Arial, sans-serif;
-  font-size: 1.4em;
+  font-size: 1.25em;
 }
 #navigation ul li a {
   color: #8f8f8f;
@@ -780,7 +780,6 @@ form#update-form #update-info.negative #update-count {
   font-size: 1.2em;
   color: white;
   background: #aaa;
-  margin-top: 1em;
   margin-bottom: 1em;
 }
 /* update from a user followed by the current logged in user */
@@ -819,6 +818,12 @@ form#update-form #update-info.negative #update-count {
 .updates .update .content .date {
   font-size: 0.9em;
   color: #aaa;
+}
+.updates .empty {
+  background: white;
+  font-size: 1.2em;
+  padding: 1em;
+  color: #bbb;
 }
 #timeline .mention {
   background: #e4feff;
@@ -859,6 +864,26 @@ form#update-form #update-info.negative #update-count {
 #update #footer {
   border-top: 1px solid #ccc;
 }
+/* Profile */
+#profile {
+  position: relative;
+}
+#profile h3 {
+  margin-bottom: 0.25em;
+}
+#profile .username {
+  padding-bottom: 1em;
+}
+#profile #follow {
+  position: absolute;
+  top: 0;
+  right: 0;
+  text-align: right;
+}
+#profile #follow .follow-status {
+  font-size: 0.8em;
+  color: #999;
+}
 /* Negative is red */
 .negative {
   color: red;
@@ -871,10 +896,13 @@ form#update-form #update-info.negative #update-count {
 }
 /* Footer */
 #footer {
-  padding: 1em 0;
   width: 950px;
   margin: 0 auto;
   display: block;
+  border-top: 1px solid #ccc;
+}
+#footer #footer-wrap {
+  padding: 1em;
 }
 #footer:after {
   content: "\0020";
@@ -883,4 +911,10 @@ form#update-form #update-info.negative #update-count {
   clear: both;
   visibility: hidden;
   overflow: hidden;
+}
+#footer #logo {
+  background: url("../images/logo-xs.png") no-repeat;
+  text-indent: -9999px;
+  width: 71px;
+  height: 20px;
 }
