@@ -6,6 +6,8 @@
     .update-date
       = @update.created_at.ago_in_words  
       by
-    .avatar
-      %img{:alt => "avatar", :src => @update.user.twitter_image}/
-    .name= @update.user.username
+    %a{:href => "/users/#{@update.user.username}"}
+      .avatar
+        %img{:alt => "avatar", :src => @update.user.twitter_image}/
+      .name
+        = @update.user.username
