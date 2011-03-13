@@ -5,6 +5,7 @@ require 'omniauth'
 require 'mongo_mapper'
 require 'haml'
 require 'time-ago-in-words'
+require 'sinatra/content_for'
 
 require_relative 'models'
 
@@ -74,6 +75,7 @@ class Rstatus < Sinatra::Base
   end
 
   helpers Sinatra::UserHelper
+  helpers Sinatra::ContentFor
 
   use OmniAuth::Builder do
     cfg = YAML.load_file("config.yml")[ENV['RACK_ENV']]

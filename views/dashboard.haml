@@ -34,3 +34,12 @@
           followers: <a href="/users/#{current_user.username}/followers">#{current_user.followers.count}</a>
         .updates
           updates: #{current_user.updates.count}
+
+- content_for :javascript do
+  :javascript
+    $(document).ready(function(){
+      var update = $("#update")
+      update.keyup(function(){
+        $("#update_count").text((140 - update.val().length) + "/140");
+      });
+    });

@@ -91,6 +91,8 @@ GEM
       monkey-lib (~> 0.5.0)
       sinatra (~> 1.0)
       sinatra-sugar (~> 0.5.0)
+    sinatra-content-for (0.2)
+      sinatra
     sinatra-reloader (0.5.0)
       sinatra (~> 1.0)
       sinatra-advanced-routes (~> 0.5.0)
@@ -113,5 +115,6 @@ DEPENDENCIES
   rack-flash
   rack-test
   sinatra
+  sinatra-content-for
   sinatra-reloader
   time-ago-in-words
