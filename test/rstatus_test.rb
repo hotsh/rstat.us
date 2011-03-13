@@ -14,7 +14,6 @@ class RstatusTest < MiniTest::Unit::TestCase
       :image => "/images/something.png"
     }
   })
-  
 
   def app() Rstatus end
 
@@ -46,9 +45,7 @@ class RstatusTest < MiniTest::Unit::TestCase
 
   def test_dashboard_page
     login
-    assert_match /Post Update/, last_response.body
-    assert_match /@/, last_response.body
-    assert_match /private/, last_response.body
+    assert_match /Update/, last_response.body
     assert_match /#{current_user.username}/, last_response.body
   end
 
