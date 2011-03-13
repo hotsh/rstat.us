@@ -19,7 +19,8 @@ module TestHelper
       :urls => { :Website => "http://rstat.us" },
       :description => "A description",
       :image => "/images/something.png"
-    }
+    },
+    :credentials => {:token => "1234", :secret => "4567"}
   })
 
   def app() Rstatus end
@@ -35,9 +36,9 @@ module TestHelper
   end
 
   def login
-    get '/auth/twitter'
-    follow_redirect!
-    follow_redirect!
+    session.get '/auth/twitter'
+    session.follow_redirect!
+    session.follow_redirect!
   end
 end
 

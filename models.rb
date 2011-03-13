@@ -24,8 +24,8 @@ class Update
     Twitter.configure do |config|
       config.consumer_key = Rstatus.settings.config["CONSUMER_KEY"]
       config.consumer_secret = Rstatus.settings.config["CONSUMER_SECRET"]
-      config.oauth_token = user.twitter_token
-      config.oauth_token_secret = user.twitter_secret
+      config.oauth_token = Rstatus.session['oauth_token']
+      config.oauth_token_secret = Rstatus.session['oauth_secret']
     end
 
     Twitter.update(text)
@@ -42,9 +42,6 @@ class Authorization
   key :uid, Integer, :required => true
   key :provider, String, :required => true
 
-  key :token, String, :required => true
-  key :secret, String, :required => true
-
   validates_uniqueness_of :uid, :scope => :provider
 
   def self.find_from_hash(hsh)
@@ -56,8 +53,6 @@ class Authorization
     create!(:user => user, 
             :uid => hsh['uid'], 
             :provider => hsh['provider'],
-            :token => hsh['credentials']['token'],
-            :secret => hsh['credentials']['secret']
            )
   end
 
@@ -118,21 +113,9 @@ class User
     following.map(&:updates).flatten
   end
 
-  def twitter_token
-    twitter_auth.token
-  end
-
-  def twitter_secret
-    twitter_auth.secret
-  end
-
   after_create :follow_yo_self
 
   private
-
-  def twitter_auth
-    Authorization.first :user_id => _id
-  end
 
   def follow_yo_self
     following << self

@@ -97,6 +97,9 @@ class Rstatus < Sinatra::Base
     unless @auth = Authorization.find_from_hash(auth)
       @auth = Authorization.create_from_hash(auth, current_user)
     end
+
+    session[:oauth_token] = auth['credentials']['token']
+    session[:oauth_secret] = auth['credentials']['secret']
     session[:user_id] = @auth.user.id
 
     flash[:notice] = "You're now logged in."
