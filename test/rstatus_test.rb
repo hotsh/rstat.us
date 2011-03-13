@@ -49,7 +49,7 @@ class RstatusTest < MiniTest::Unit::TestCase
     assert_match /Post Update/, last_response.body
     assert_match /@/, last_response.body
     assert_match /private/, last_response.body
-    assert_match /#{app.current_user.username}/, last_response.body
+    assert_match /#{current_user.username}/, last_response.body
   end
 
 end

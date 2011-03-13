@@ -29,7 +29,6 @@ end
 class Rstatus < Sinatra::Base
   use Rack::Session::Cookie, :secret => ENV['COOKIE_SECRET']
   set :root, File.dirname(__FILE__)
-  
 
   require 'rack-flash'
   use Rack::Flash
@@ -48,7 +47,6 @@ class Rstatus < Sinatra::Base
   end
 
   helpers Sinatra::UserHelper
-  
 
   use OmniAuth::Builder do
     cfg = YAML.load_file("config.yml")[ENV['RACK_ENV']]
@@ -81,5 +79,5 @@ class Rstatus < Sinatra::Base
     redirect '/'
   end
 
-end 
+end
 
