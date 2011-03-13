@@ -14,7 +14,7 @@
       .update-text-wrap
         %span.name= update.user.username
         .update-text
-          = update.text
+          != update.to_html
         .update-date= update.created_at.ago_in_words
 
 - content_for :javascript do
