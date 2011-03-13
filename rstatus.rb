@@ -206,5 +206,9 @@ class Rstatus < Sinatra::Base
     haml :"updates/show", :layout => :'updates/layout'
   end
 
+  not_found do
+    haml :'404', :layout => false
+  end
+
 end
 
