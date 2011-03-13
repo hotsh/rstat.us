@@ -714,4 +714,13 @@ form#update-form #update-info {
   font-style: italic;
   font-size: 0.9em;
 }
-/* end user status page css */
+/* Negative is red */
+.negative {
+  color: red;
+}
+.negative a.button:hover {
+  color: #FFFFFF;
+  background-position: 0 -121px;
+  background-color: #D84743;
+  border-color: #911D1B;
+}

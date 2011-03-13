@@ -7,7 +7,7 @@
       #update-content
         %textarea#update{:name => "text"}
       #update-info
-        %a#update_button.button{:href => "javascript:document.update_form.submit()"} Update
+        %a#update_button.button{:href => "#"} Update
         #update_count
           0/140
 
@@ -36,17 +36,5 @@
           updates: #{current_user.updates.count}
 
 - content_for :javascript do
-  :javascript
-    $(document).ready(function(){
-      var update = $("#update")
-      update.keyup(function(){
-        $("#update_count").text((140 - update.val().length) + "/140");
-        if(update.val().length > 140) {
-          $("#update_button").addClass("negative");
-          $("#update_button").attr("href", "#");
-        } else {
-          $("#update_button").removeClass("negative");
-          $("#update_button").attr("href", "javascript:document.update_form.submit()");
-        }
-      });
-    });
+  %script{:src => "/js/update.js"}
+
