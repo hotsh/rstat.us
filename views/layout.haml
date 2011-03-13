@@ -32,10 +32,12 @@
           #profile
             %h3 Profile
             .avatar
-              %img{:alt => "avatar", :src => current_user.twitter_image}/
+              %a{:href=>"/users/#{current_user.username}"}
+                %img{:alt => "avatar", :src => current_user.twitter_image}/
             .userinfo
               .name
-                %span.name= current_user.username
+                %a{:href=>"/users/#{current_user.username}"}
+                  = current_user.username
               .stats
                 .following
                   Following: <a href="/users/#{current_user.username}/following">#{current_user.following.count}</a>

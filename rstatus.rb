@@ -140,6 +140,7 @@ class Rstatus < Sinatra::Base
     require_login! :return => "/users/#{params[:name]}/follow"
 
     @user = User.first(:username => params[:name])
+    redirect "/users/#{@user.username}" and return if @user == current_user
 
     #make sure we're not following them already
     if current_user.following? @user
@@ -160,6 +161,7 @@ class Rstatus < Sinatra::Base
     require_login! :return => "/users/#{params[:name]}/unfollow"
 
     @user = User.first(:username => params[:name])
+    redirect "/users/#{@user.username}" and return if @user == current_user
 
     #make sure we're following them already
     unless current_user.following? @user

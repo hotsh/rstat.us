@@ -5,15 +5,16 @@
 
   %p Bio and such goes here.
   
-  #follow
-    - if current_user.following? @user
-      %a.button{:href => "/users/#{@user.username}/unfollow"}
-        Unfollow
-      .follow-status You are currently following #{@user.username}
-    - else
-      %a.button{:href => "/users/#{@user.username}/follow"}
-        Follow
-      .follow-status You are not following #{@user.username}
+  - unless @user == current_user
+    #follow
+      - if current_user.following? @user
+        %a.button{:href => "/users/#{@user.username}/unfollow"}
+          Unfollow
+        .follow-status You are currently following #{@user.username}
+      - else
+        %a.button{:href => "/users/#{@user.username}/follow"}
+          Follow
+        .follow-status You are not following #{@user.username}
 
   #updates.updates
     != haml :_updates, :locals => {:updates => @user.updates.to_a.sort{|a, b| b.created_at <=> a.created_at }}
