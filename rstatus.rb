@@ -86,7 +86,7 @@ class Rstatus < Sinatra::Base
     if logged_in?
       haml :dashboard
     else
-      haml :index
+      haml :index, :layout => false
     end
   end
 
