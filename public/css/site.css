@@ -628,6 +628,11 @@ body {
   padding-right: 0;
   margin-right: 0;
 }
+#content {
+  width: 550px;
+  float: left;
+  margin-right: 10px;
+}
 /* stats box at the top of the page with the currently 
 	logged in user's information */
 #user {
