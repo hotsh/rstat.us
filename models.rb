@@ -31,7 +31,7 @@ class Update
   end
 
   def self.hot_updates
-    all(:limit => 3, :order => 'created_at desc')
+    all(:limit => 6, :order => 'created_at desc')
   end
 
   protected

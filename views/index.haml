@@ -8,13 +8,31 @@
       Sign Up
     .content
       with Twitter or Facebook, or create a new account
-  .col
+  #col-2.col
     %h2.title
       Connect
     .content
-      to your friends and family
+      to your friends and family around the world
   #col-3.col.last-col
     %h2.title
       Share
     .content
       your thoughts in 140 characters or less
+      
+#home-bottom
+  #manifesto
+    .wrap
+      %h2 rstat.us?
+      %p Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed ut vehicula nibh. Proin facilisis odio vel lorem rutrum viverra. Aliquam erat volutpat. Quisque sed orci mi. Proin sed mi quam. Vivamus consequat faucibus elit, eu eleifend velit aliquam ac. Nunc sagittis porttitor nisl, quis gravida libero volutpat et. 
+      %p Etiam mauris nisi, placerat eu sodales ac, vulputate et ipsum. Phasellus commodo blandit ultrices. Donec metus enim, laoreet eu iaculis nec, dignissim at augue. Nam blandit molestie nulla, quis ornare diam sollicitudin et. Morbi nisi sapien, faucibus quis vehicula nec, elementum ut purus. Nulla vitae justo odio. Suspendisse elementum massa sed leo euismod sit amet euismod felis rutrum. Pellentesque at velit vel purus fermentum feugiat. Sed convallis blandit sem. Pellentesque lacus ipsum, rutrum at tincidunt sed, ultricies non purus.
+      %p Nulla eget nisl molestie lorem tincidunt rutrum. Cras accumsan, lorem eget vehicula tincidunt, sem ligula iaculis justo, nec vulputate felis justo nec enim. Phasellus posuere eros nulla, sit amet elementum neque. Praesent ultrices fermentum erat eu posuere. Sed vitae mi quis lacus lobortis ultrices vitae id lectus.
+      %p - The <b>rstat.us</b> team
+    
+  #recent
+    .updates
+      %h3 Recent updates
+      != haml :_updates, :locals => {:updates => Update.hot_updates}
+      
+      %h4 
+        %a{:href => "/signup"}
+          Join the conversation

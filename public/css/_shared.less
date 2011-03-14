@@ -51,3 +51,45 @@ body {
   margin-top: 0;
   padding-bottom: 2em;
 }
+
+/* update from a user followed by the current logged in user */
+.updates {
+  .update {
+    .clearfix;
+    background: white;
+    padding: 1em;
+  	border-bottom: solid 1px #efefef;
+
+  	clear: both;
+  	overflow: auto;
+
+    .avatar {
+    	float: left;
+      width: 48px;
+    	padding-right: 1em;
+    }
+    
+    .content {
+      float: left;
+      width: 450px;
+      .name {
+      	font-weight: bold;
+      }
+      .text {
+        word-wrap: break-word;
+        font-size: 1.1em;
+      }
+      .date {
+      	font-size: 0.9em;
+      	color: #aaa;
+      }
+    }
+  }
+  
+  .empty {
+    background: white;
+    font-size: 1.2em;
+    padding: 1em;
+    color: #bbb;
+  }
+}

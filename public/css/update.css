@@ -632,6 +632,49 @@ body {
   visibility: hidden;
   overflow: hidden;
 }
+/* update from a user followed by the current logged in user */
+.updates .update {
+  display: block;
+  background: white;
+  padding: 1em;
+  border-bottom: solid 1px #efefef;
+  clear: both;
+  overflow: auto;
+}
+.updates .update:after {
+  content: "\0020";
+  display: block;
+  height: 0;
+  clear: both;
+  visibility: hidden;
+  overflow: hidden;
+}
+.updates .update .avatar {
+  float: left;
+  width: 48px;
+  padding-right: 1em;
+}
+.updates .update .content {
+  float: left;
+  width: 450px;
+}
+.updates .update .content .name {
+  font-weight: bold;
+}
+.updates .update .content .text {
+  word-wrap: break-word;
+  font-size: 1.1em;
+}
+.updates .update .content .date {
+  font-size: 0.9em;
+  color: #aaa;
+}
+.updates .empty {
+  background: white;
+  font-size: 1.2em;
+  padding: 1em;
+  color: #bbb;
+}
 #update {
   background: #f3f3f3;
   padding-top: 3em;

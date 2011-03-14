@@ -632,6 +632,49 @@ body {
   visibility: hidden;
   overflow: hidden;
 }
+/* update from a user followed by the current logged in user */
+.updates .update {
+  display: block;
+  background: white;
+  padding: 1em;
+  border-bottom: solid 1px #efefef;
+  clear: both;
+  overflow: auto;
+}
+.updates .update:after {
+  content: "\0020";
+  display: block;
+  height: 0;
+  clear: both;
+  visibility: hidden;
+  overflow: hidden;
+}
+.updates .update .avatar {
+  float: left;
+  width: 48px;
+  padding-right: 1em;
+}
+.updates .update .content {
+  float: left;
+  width: 450px;
+}
+.updates .update .content .name {
+  font-weight: bold;
+}
+.updates .update .content .text {
+  word-wrap: break-word;
+  font-size: 1.1em;
+}
+.updates .update .content .date {
+  font-size: 0.9em;
+  color: #aaa;
+}
+.updates .empty {
+  background: white;
+  font-size: 1.2em;
+  padding: 1em;
+  color: #bbb;
+}
 /* Layout
 *******************************************/
 #main #left {
@@ -784,49 +827,6 @@ form#update-form #update-info.negative #update-count {
   background: #aaa;
   margin-bottom: 1em;
 }
-/* update from a user followed by the current logged in user */
-.updates .update {
-  display: block;
-  background: white;
-  padding: 1em;
-  border-bottom: solid 1px #efefef;
-  clear: both;
-  overflow: auto;
-}
-.updates .update:after {
-  content: "\0020";
-  display: block;
-  height: 0;
-  clear: both;
-  visibility: hidden;
-  overflow: hidden;
-}
-.updates .update .avatar {
-  float: left;
-  width: 48px;
-  padding-right: 1em;
-}
-.updates .update .content {
-  float: left;
-  width: 450px;
-}
-.updates .update .content .name {
-  font-weight: bold;
-}
-.updates .update .content .text {
-  word-wrap: break-word;
-  font-size: 1.1em;
-}
-.updates .update .content .date {
-  font-size: 0.9em;
-  color: #aaa;
-}
-.updates .empty {
-  background: white;
-  font-size: 1.2em;
-  padding: 1em;
-  color: #bbb;
-}
 #timeline .mention {
   background: #e4feff;
 }
@@ -890,7 +890,7 @@ form#update-form #update-info.negative #update-count {
 .negative {
   color: red;
 }
-.negative a.button:hover {
+.negative .button:hover, .negative a.button:hover {
   color: #FFFFFF;
   background-position: 0 -121px;
   background-color: #D84743;
