@@ -675,6 +675,30 @@ body {
   padding: 1em;
   color: #bbb;
 }
+/* Footer */
+#footer {
+  width: 950px;
+  margin: 0 auto;
+  display: block;
+  border-top: 1px solid #ccc;
+}
+#footer #footer-wrap {
+  padding: 1em;
+}
+#footer:after {
+  content: "\0020";
+  display: block;
+  height: 0;
+  clear: both;
+  visibility: hidden;
+  overflow: hidden;
+}
+#footer #logo {
+  background: url("../images/logo-xs.png") no-repeat;
+  text-indent: -9999px;
+  width: 71px;
+  height: 20px;
+}
 #update {
   background: #f3f3f3;
   padding-top: 3em;
