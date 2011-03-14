@@ -19,4 +19,9 @@ class UpdateTest < MiniTest::Unit::TestCase
     assert_match /<a href='http:\/\/rstat.us\/'>http:\/\/rstat.us\/<\/a>/, u.to_html
   end
 
+  def test_hashtags
+    u = Update.new(:text => "This is a message with a #hashtag.")
+    assert_match /<a href='\/hashtags\/hashtag'>#hashtag<\/a>/, u.to_html
+  end
+
 end
