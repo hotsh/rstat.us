@@ -10,6 +10,8 @@ gem "rack-flash"
 gem "time-ago-in-words"
 gem "sinatra-content-for"
 gem "twitter"
+gem "pony"
+gem "bcrypt-ruby"
 
 group :development, :test do
   gem 'rack-test'
