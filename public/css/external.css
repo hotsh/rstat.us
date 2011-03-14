@@ -632,6 +632,73 @@ body {
   visibility: hidden;
   overflow: hidden;
 }
+/* update from a user followed by the current logged in user */
+.updates .update {
+  display: block;
+  background: white;
+  padding: 1em;
+  border-bottom: solid 1px #efefef;
+  clear: both;
+  overflow: auto;
+}
+.updates .update:after {
+  content: "\0020";
+  display: block;
+  height: 0;
+  clear: both;
+  visibility: hidden;
+  overflow: hidden;
+}
+.updates .update .avatar {
+  float: left;
+  width: 48px;
+  padding-right: 1em;
+}
+.updates .update .content {
+  float: left;
+  width: 450px;
+}
+.updates .update .content .name {
+  font-weight: bold;
+}
+.updates .update .content .text {
+  word-wrap: break-word;
+  font-size: 1.1em;
+}
+.updates .update .content .date {
+  font-size: 0.9em;
+  color: #aaa;
+}
+.updates .empty {
+  background: white;
+  font-size: 1.2em;
+  padding: 1em;
+  color: #bbb;
+}
+/* Footer */
+#footer {
+  width: 950px;
+  margin: 0 auto;
+  display: block;
+  border-top: 1px solid #ccc;
+}
+#footer #footer-wrap {
+  padding: 1em;
+}
+#footer:after {
+  content: "\0020";
+  display: block;
+  height: 0;
+  clear: both;
+  visibility: hidden;
+  overflow: hidden;
+}
+#footer #logo {
+  background: url("../images/logo-xs.png") no-repeat;
+  text-indent: -9999px;
+  width: 71px;
+  height: 20px;
+}
 #header {
   display: block;
 }
@@ -717,6 +784,9 @@ body {
 #pitch #col-1 {
   background: url('../images/slide1.png') center bottom no-repeat;
 }
+#pitch #col-2 {
+  background: url('../images/slide2.png') center bottom no-repeat;
+}
 #pitch #col-3 {
   background: url('../images/slide3.png') center bottom no-repeat;
 }
@@ -725,4 +795,27 @@ body {
   padding-right: 0;
   margin-right: 0;
   border: none;
+}
+#home-bottom #manifesto {
+  width: 350px;
+  float: left;
+  margin-right: 10px;
+}
+#home-bottom #manifesto .wrap {
+  padding: 1em 2em 0;
+}
+#home-bottom #recent {
+  width: 550px;
+  float: left;
+  margin-right: 10px;
+  margin-right: 0;
+  padding-right: 0;
+  margin-right: 0;
+}
+#home-bottom #recent .updates {
+  padding-top: 2em;
+  padding-left: 1em;
+}
+#home-bottom #recent .updates h4 {
+  padding-top: 1em;
 }

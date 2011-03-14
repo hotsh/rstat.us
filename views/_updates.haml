@@ -1,5 +1,6 @@
 - updates.each do |update|
-  .update{:class => update.mentioned?(current_user.username) ? "mention" : ""}
+  - mentioned = current_user.nil? ? false : update.mentioned?(current_user.username)
+  .update{:class => mentioned ? "mention" : ""}
     .avatar
       %a{:href => "/users/#{update.user.username}"}
         %img{:alt => "avatar", :src => update.user.twitter_image}/

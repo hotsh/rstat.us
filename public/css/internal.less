@@ -127,48 +127,6 @@ form#update-form {
   margin-bottom: 1em;
 }
 
-/* update from a user followed by the current logged in user */
-.updates {
-  .update {
-    .clearfix;
-    background: white;
-    padding: 1em;
-  	border-bottom: solid 1px #efefef;
-
-  	clear: both;
-  	overflow: auto;
-
-    .avatar {
-    	float: left;
-      width: 48px;
-    	padding-right: 1em;
-    }
-    
-    .content {
-      float: left;
-      width: 450px;
-      .name {
-      	font-weight: bold;
-      }
-      .text {
-        word-wrap: break-word;
-        font-size: 1.1em;
-      }
-      .date {
-      	font-size: 0.9em;
-      	color: #aaa;
-      }
-    }
-  }
-  
-  .empty {
-    background: white;
-    font-size: 1.2em;
-    padding: 1em;
-    color: #bbb;
-  }
-}
-
 #timeline .mention {
   background: @mention;
 }
@@ -234,19 +192,6 @@ form#update-form {
 
 /* Negative is red */
 .negative {
-  a.button:hover { color: #FFFFFF; background-position: 0 -121px; background-color: #D84743; border-color: #911D1B; }
+  .button:hover, a.button:hover { color: #FFFFFF; background-position: 0 -121px; background-color: #D84743; border-color: #911D1B; }
   color: red;
-}
-
-/* Footer */
-#footer {
-  #footer-wrap {
-    padding: 1em;
-  }
-  .container();
-  border-top: 1px solid #ccc;
-  
-  #logo {
-    .image-replaced("../images/logo-xs.png", 71px, 20px)
-  }
 }
