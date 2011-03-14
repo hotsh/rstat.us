@@ -36,9 +36,9 @@ module TestHelper
   end
 
   def login
-    session.get '/auth/twitter'
-    session.follow_redirect!
-    session.follow_redirect!
+    get '/auth/twitter', 'rack.session' => {} 
+    follow_redirect!
+    follow_redirect!
   end
 
 end

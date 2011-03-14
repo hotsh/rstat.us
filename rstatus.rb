@@ -96,7 +96,10 @@ class Rstatus < Sinatra::Base
   end
 
   configure do
-    enable :sessions
+    unless test?
+      enable :sessions
+    end
+    
 
     if ENV['MONGOHQ_URL']
       MongoMapper.config = {ENV['RACK_ENV'] => {'uri' => ENV['MONGOHQ_URL']}}
@@ -146,7 +149,6 @@ class Rstatus < Sinatra::Base
   end
 
   get '/auth/:provider/callback' do
-    puts "foo"
     auth = request.env['omniauth.auth']
     unless @auth = Authorization.find_from_hash(auth)
       @auth = Authorization.create_from_hash(auth, current_user)
