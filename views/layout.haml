@@ -25,6 +25,9 @@
                   Followers: <a href="/users/#{current_user.username}/followers">#{current_user.followers.length}</a>
                 .updates
                   Updates: #{current_user.updates.count}
+              .logout
+                %a{:href => "/logout"}
+                  Logout
 
       #right
         #content

@@ -4,6 +4,6 @@
 #navigation
   %ul
     - nav.each do |item|
-      %li{:class => request.path_info.include?(item[:url]) ? "active" : ""}
+      %li{:class => request.path_info == item[:url] ? "active" : ""}
         %a{:href => item[:url]}
           = item[:name]

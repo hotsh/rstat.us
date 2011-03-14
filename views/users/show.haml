@@ -5,12 +5,13 @@
 
   %p= @user.bio
   
-  - unless @user == current_user
+  - if current_user and @user != current_user
     #follow
       - if current_user.following? @user
-        %a.button{:href => "/users/#{@user.username}/unfollow"}
-          Unfollow
-        .follow-status You are currently following #{@user.username}
+        .negative
+          %a.button{:href => "/users/#{@user.username}/unfollow"}
+            Unfollow
+          .follow-status You are currently following #{@user.username}
       - else
         %a.button{:href => "/users/#{@user.username}/follow"}
           Follow

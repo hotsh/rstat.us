@@ -59,11 +59,35 @@
   #col-1 {
     background: url('../images/slide1.png') center bottom no-repeat;
   }
+  #col-2 {
+    background: url('../images/slide2.png') center bottom no-repeat;
+  }
   #col-3 {
     background: url('../images/slide3.png') center bottom no-repeat;
   }
   .last-col {
     .last;
     border: none;
+  }
+}
+
+#home-bottom {
+  #manifesto {
+    .column(9);
+    .wrap {
+      padding: 1em 2em 0;
+    }
+  }
+  #recent {
+    .column(14);
+    .last;
+    .updates {
+      padding-top: 2em;
+      padding-left: 1em;
+      
+      h4 {
+        padding-top: 1em;
+      }
+    }
   }
 }

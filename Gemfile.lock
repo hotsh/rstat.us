@@ -90,6 +90,7 @@ GEM
       ruby-openid (>= 2.1.8)
     rack-test (0.5.7)
       rack (>= 1.0)
+    rdiscount (1.6.8)
     rest-client (1.6.1)
       mime-types (>= 1.16)
     ruby-openid (2.1.8)
@@ -138,6 +139,7 @@ DEPENDENCIES
   pony
   rack-flash
   rack-test
+  rdiscount
   sinatra
   sinatra-content-for
   sinatra-reloader
