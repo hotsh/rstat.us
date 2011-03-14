@@ -1,20 +1,35 @@
 !!! 5
 %html.no-js
-  != haml :_head
-  %body
-    #header
-      %logo
-      %signup
-        %a{:href=>'/auth/twitter'}
-          Sign in with Twitter
-        %a{:href=>'/auth/facebook'}
-          Sign in with Facebook
-        %form{:action => "/signup", :method => "POST"}
-          email
-          %input{:name => "email"}
-            %input{:type => "Submit", :value => "Sign up"}
-        %a{:href=>'/login'}
-          Log in with username/password
-    #pitch
-    #content
-      =yield
+  != haml :_head, :locals => {:css => ['external']}
+  %body.external
+    #main
+      #header
+        %h2#logo
+          %a{:href => "/"}
+            rstat.us
+        #login
+          Sign in with
+          .options
+            .twitter
+              %a.button{:href=>'/auth/twitter'}
+                %span.icon.twitter
+                Twitter
+            .facebook
+              %a.button{:href=>'/auth/facebook'}
+                %span.icon.facebook
+                Facebook
+            .email
+              %a.button{:href=>'/login'}
+                %span.icon.mail
+                Email
+            / %form{:action => "/signup", :method => "POST"}
+            /   Email
+            / %input{:name => "email"}
+            /   %input{:type => "Submit", :value => "Sign up"}
+
+      #content
+        - if flash[:notice] || flash[:error]
+          #flash
+            = flash[:notice]
+
+        !=yield
