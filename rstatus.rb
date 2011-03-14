@@ -315,5 +315,9 @@ class Rstatus < Sinatra::Base
     haml :dashboard
   end
 
+  get "/open_source" do
+    haml :opensource
+  end
+
 end
 

@@ -12,6 +12,7 @@ gem "sinatra-content-for"
 gem "twitter"
 gem "pony"
 gem "bcrypt-ruby"
+gem "rdiscount"
 
 group :development, :test do
   gem 'rack-test'

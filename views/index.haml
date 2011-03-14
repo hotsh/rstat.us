@@ -18,21 +18,25 @@
       Share
     .content
       your thoughts in 140 characters or less
-      
 #home-bottom
   #manifesto
     .wrap
-      %h2 rstat.us?
-      %p Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed ut vehicula nibh. Proin facilisis odio vel lorem rutrum viverra. Aliquam erat volutpat. Quisque sed orci mi. Proin sed mi quam. Vivamus consequat faucibus elit, eu eleifend velit aliquam ac. Nunc sagittis porttitor nisl, quis gravida libero volutpat et. 
-      %p Etiam mauris nisi, placerat eu sodales ac, vulputate et ipsum. Phasellus commodo blandit ultrices. Donec metus enim, laoreet eu iaculis nec, dignissim at augue. Nam blandit molestie nulla, quis ornare diam sollicitudin et. Morbi nisi sapien, faucibus quis vehicula nec, elementum ut purus. Nulla vitae justo odio. Suspendisse elementum massa sed leo euismod sit amet euismod felis rutrum. Pellentesque at velit vel purus fermentum feugiat. Sed convallis blandit sem. Pellentesque lacus ipsum, rutrum at tincidunt sed, ultricies non purus.
-      %p Nulla eget nisl molestie lorem tincidunt rutrum. Cras accumsan, lorem eget vehicula tincidunt, sem ligula iaculis justo, nec vulputate felis justo nec enim. Phasellus posuere eros nulla, sit amet elementum neque. Praesent ultrices fermentum erat eu posuere. Sed vitae mi quis lacus lobortis ultrices vitae id lectus.
-      %p - The <b>rstat.us</b> team
-    
+      :markdown
+        ## rstat.us?
+
+        Microblogging has taken the world by storm. Millions of people around the world now share their thoughts with friends, family, and random strangers every day. Links are shared, stories are told, and events are discussed. rstatus is the newest place to participate in the collective conscious of the planet.
+
+        ### What's different about it?
+
+        There are two things that make rstat.us special: _simplicity_ and _openness_.
+
+        **Simplicity** is a core 'feature' of rstat.us. We pride ourselves on saying 'no' to lots of features. Our interface is clean, and easy to understand. We give you just enough features to be interesting, but not enough to be complicated and confusing. 
+
+        If you're a software developer, you'll probably want to check out our [Open Source page](/open_source). If that's greek to you, here's the deal on **Openness**: the programming code that makes up rstat.us is available for anyone to download, free of charge. Programmers can use that code to run their own websites just like rstat.us, and you can subscribe to your friends on any site that supports the [OStatus protocol](http://ostatus.org/about), like [identi.ca](http://identi.ca/). This also means that you can own your data, we'll never stop you from having full access to everything you've put into rstat.us.
   #recent
     .updates
       %h3 Recent updates
       != haml :_updates, :locals => {:updates => Update.hot_updates}
-      
       %h4 
         %a{:href => "/signup"}
           Join the conversation
