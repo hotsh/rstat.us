@@ -25,6 +25,10 @@ class Update
 
   timestamps!
 
+  def self.hashtag_search(tag)
+    all(:text => /##{tag}/)
+  end
+
   protected
 
   def tweet
