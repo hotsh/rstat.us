@@ -128,7 +128,7 @@ class Rstatus < Sinatra::Base
       @updates = current_user.timeline
       haml :dashboard
     else
-      haml :index, :layout => false
+      haml :index, :layout => :'external-layout'
     end
   end
 
@@ -136,7 +136,7 @@ class Rstatus < Sinatra::Base
     if logged_in?
       haml :replies
     else
-      haml :index, :layout => false
+      haml :index, :layout => :'external-layout'
     end
   end
 
@@ -297,6 +297,7 @@ class Rstatus < Sinatra::Base
       redirect "/"
     else
       flash[:notice] = "I'm afraid I can't let you do that, " + current_user.name + "."
+      redirect back
     end
   end
 

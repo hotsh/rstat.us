@@ -632,6 +632,204 @@ body {
   visibility: hidden;
   overflow: hidden;
 }
+/* Layout
+*******************************************/
+#main #left {
+  width: 310px;
+  float: left;
+  margin-right: 10px;
+}
+#main #left #logo, #main #left #profile {
+  padding-left: 80px;
+  width: 230px;
+  float: left;
+  margin-right: 10px;
+  margin-right: 0;
+  padding-right: 0;
+  margin-right: 0;
+}
+#main #left #logo h2 {
+  background: url("../images/logo-sm.png") no-repeat;
+  text-indent: -9999px;
+  width: 159px;
+  height: 45px;
+}
+#main #left #profile {
+  display: block;
+  padding-top: 2em;
+  width: 200px;
+}
+#main #left #profile:after {
+  content: "\0020";
+  display: block;
+  height: 0;
+  clear: both;
+  visibility: hidden;
+  overflow: hidden;
+}
+#main #left #profile h3 {
+  color: #888;
+  padding-bottom: 0.5em;
+  border-bottom: 1px solid #ddd;
+}
+#main #left #profile .avatar, #main #left #profile .userinfo {
+  float: left;
+}
+#main #left #profile .userinfo {
+  padding-top: 0.25em;
+  padding-left: 1em;
+}
+#main #left #profile .userinfo .name {
+  font-weight: bold;
+  font-size: 1.25em;
+}
+#main #right {
+  width: 630px;
+  float: left;
+  margin-right: 10px;
+  margin-right: 0;
+  padding-right: 0;
+  margin-right: 0;
+}
+#content {
+  width: 550px;
+  float: left;
+  margin-right: 10px;
+  padding-top: 1.5em;
+}
+/* the textarea where the user types an update */
+form#update-form {
+  display: block;
+  padding: 0 0 1em 0;
+  border-bottom: 1px solid #ddd;
+  margin-bottom: 1em;
+}
+form#update-form:after {
+  content: "\0020";
+  display: block;
+  height: 0;
+  clear: both;
+  visibility: hidden;
+  overflow: hidden;
+}
+form#update-form #update-content textarea {
+  width: 540px;
+  padding: 5px;
+  height: 2.5em;
+  margin: 0;
+}
+form#update-form #update-info {
+  display: block;
+}
+form#update-form #update-info:after {
+  content: "\0020";
+  display: block;
+  height: 0;
+  clear: both;
+  visibility: hidden;
+  overflow: hidden;
+}
+form#update-form #update-info #update-button, form#update-form #update-info #update-count {
+  float: left;
+}
+form#update-form #update-info #update-count {
+  color: #999;
+  padding-left: 0.75em;
+  padding-top: 0.6em;
+}
+form#update-form #update-info.negative #update-count {
+  color: red;
+}
+.no-js #update-count {
+  display: none;
+}
+#update-form:focus {
+  -moz-box-shadow: 5px 3px 5px #efefef;
+}
+#navigation ul {
+  margin: 0;
+  padding: 0;
+  display: block;
+}
+#navigation ul:after {
+  content: "\0020";
+  display: block;
+  height: 0;
+  clear: both;
+  visibility: hidden;
+  overflow: hidden;
+}
+#navigation ul li {
+  background: #dadada;
+  padding: 0.5em 1em;
+  margin: 0 2px 2px 0;
+  list-style-type: none;
+  float: left;
+  font-family: "Arial Black", Arial, sans-serif;
+  font-size: 1.25em;
+}
+#navigation ul li a {
+  color: #8f8f8f;
+}
+#navigation ul li.active {
+  background: #65bfc2;
+}
+#navigation ul li.active a {
+  color: white;
+}
+#flash {
+  padding: 0.75em;
+  font-size: 1.2em;
+  color: white;
+  background: #aaa;
+  margin-bottom: 1em;
+}
+/* update from a user followed by the current logged in user */
+.updates .update {
+  display: block;
+  background: white;
+  padding: 1em;
+  border-bottom: solid 1px #efefef;
+  clear: both;
+  overflow: auto;
+}
+.updates .update:after {
+  content: "\0020";
+  display: block;
+  height: 0;
+  clear: both;
+  visibility: hidden;
+  overflow: hidden;
+}
+.updates .update .avatar {
+  float: left;
+  width: 48px;
+  padding-right: 1em;
+}
+.updates .update .content {
+  float: left;
+  width: 450px;
+}
+.updates .update .content .name {
+  font-weight: bold;
+}
+.updates .update .content .text {
+  word-wrap: break-word;
+  font-size: 1.1em;
+}
+.updates .update .content .date {
+  font-size: 0.9em;
+  color: #aaa;
+}
+.updates .empty {
+  background: white;
+  font-size: 1.2em;
+  padding: 1em;
+  color: #bbb;
+}
+#timeline .mention {
+  background: #e4feff;
+}
 #update {
   background: #f3f3f3;
   padding-top: 3em;
@@ -644,7 +842,6 @@ body {
   padding: 1em;
 }
 #update .update .update-text-wrap .update-text {
-  word-wrap: break-word;
   font-size: 2.5em;
 }
 #update .update .byline {
@@ -667,10 +864,57 @@ body {
   height: 18px;
 }
 #update #footer {
-  padding: 1em;
   border-top: 1px solid #ccc;
 }
-#update #footer #logo {
+/* Profile */
+#profile {
+  position: relative;
+}
+#profile h3 {
+  margin-bottom: 0.25em;
+}
+#profile .username {
+  padding-bottom: 1em;
+}
+#profile #follow {
+  position: absolute;
+  top: 0;
+  right: 0;
+  text-align: right;
+}
+#profile #follow .follow-status {
+  font-size: 0.8em;
+  color: #999;
+}
+/* Negative is red */
+.negative {
+  color: red;
+}
+.negative a.button:hover {
+  color: #FFFFFF;
+  background-position: 0 -121px;
+  background-color: #D84743;
+  border-color: #911D1B;
+}
+/* Footer */
+#footer {
+  width: 950px;
+  margin: 0 auto;
+  display: block;
+  border-top: 1px solid #ccc;
+}
+#footer #footer-wrap {
+  padding: 1em;
+}
+#footer:after {
+  content: "\0020";
+  display: block;
+  height: 0;
+  clear: both;
+  visibility: hidden;
+  overflow: hidden;
+}
+#footer #logo {
   background: url("../images/logo-xs.png") no-repeat;
   text-indent: -9999px;
   width: 71px;

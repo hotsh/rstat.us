@@ -1,9 +1,20 @@
-<a href='/auth/twitter'>Sign in with Twitter</a><br />
-<a href='/auth/facebook'>Sign in with Facebook</a><br />
-%form{:action => "/signup", :method => "POST"}
-  email
-  %input{:name => "email"}
-    %input{:type => "Submit", :value => "Sign up"}
-<br />
-<a href='/login'>Log in with username/password</a>
+- content_for :javascript do
+  %script{:src => "/js/jquery.equalHeights.js"}
+  %script{:src => "/js/home.js"}
 
+#pitch
+  #col-1.col
+    %h2.title
+      Sign Up
+    .content
+      with Twitter or Facebook, or create a new account
+  .col
+    %h2.title
+      Connect
+    .content
+      to your friends and family
+  #col-3.col.last-col
+    %h2.title
+      Share
+    .content
+      your thoughts in 140 characters or less
