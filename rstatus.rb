@@ -299,5 +299,9 @@ class Rstatus < Sinatra::Base
     end
   end
 
+  not_found do
+    haml :'404', :layout => false
+  end
+
 end
 
