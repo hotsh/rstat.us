@@ -181,10 +181,13 @@ class Rstatus < Sinatra::Base
     end
 
     # then follow them!
-    current_user.follow! @user
-
-    flash[:notice] = "Now following #{params[:name]}."
-    redirect "/users/#{@user.username}"
+    unless  current_user.follow! @user
+      flash[:notice] = "The was a problem following #{params[:name]}."
+      redirect "/users/#{@user.username}"
+    else
+      flash[:notice] = "Now following #{params[:name]}."
+      redirect "/users/#{@user.username}"
+    end
   end
 
   #this lets you unfollow a user
