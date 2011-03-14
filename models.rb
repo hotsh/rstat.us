@@ -93,7 +93,7 @@ class User
 
   key :name, String
   key :username, String
-  key :email, String, :required => true
+  key :email, String
   key :website, String
   key :bio, String
   key :twitter_image, String

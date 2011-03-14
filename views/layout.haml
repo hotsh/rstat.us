@@ -20,9 +20,9 @@
                   = current_user.username
               .stats
                 .following
-                  Following: <a href="/users/#{current_user.username}/following">#{current_user.following.count}</a>
+                  Following: <a href="/users/#{current_user.username}/following">#{current_user.following.length}</a>
                 .followers
-                  Followers: <a href="/users/#{current_user.username}/followers">#{current_user.followers.count}</a>
+                  Followers: <a href="/users/#{current_user.username}/followers">#{current_user.followers.length}</a>
                 .updates
                   Updates: #{current_user.updates.count}
 
