@@ -68,10 +68,19 @@ class Authorization
 
   def self.create_from_hash(hsh, user = nil)
     user ||= User.create_from_hash!(hsh)
-    create!(:user => user, 
-            :uid => hsh['uid'], 
+
+    
+    a = new(:user => user, 
+              :uid => hsh['uid'], 
             :provider => hsh['provider'],
            )
+
+    if a.save
+      flash[:notice] = "Authorization failed!"
+      redirect "/"
+    end
+
+    a
   end
 
   timestamps!
