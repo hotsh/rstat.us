@@ -56,6 +56,7 @@ class Rstatus < Sinatra::Base
   set :root, File.dirname(__FILE__)
   set :haml, :escape_html => true
   set :config, YAML.load_file("config.yml")[ENV['RACK_ENV']]
+  set :method_override, true
 
   require 'rack-flash'
   use Rack::Flash
@@ -204,6 +205,19 @@ class Rstatus < Sinatra::Base
   get '/updates/:id' do
     @update = Update.first :id => params[:id]
     haml :"updates/show", :layout => :'updates/layout'
+  end
+
+  delete '/updates/:id' do |id|
+    update = Update.first :id => params[:id]
+
+    if update.user == current_user
+      update.destroy
+      
+      flash[:notice] = "Update Baleeted!"
+      redirect "/"
+    else
+      flash[:notice] = "I'm afraid I can't let you do that, " + current_user.name + "."
+    end
   end
 
 end

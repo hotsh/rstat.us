@@ -11,3 +11,9 @@
         %img{:alt => "avatar", :src => @update.user.twitter_image}/
       .name
         = @update.user.username
+    - if @update.user.username == current_user.username
+      %form{:method => "post", :action => "/updates/#{@update.id}"}
+        %input{:type => "hidden", :name => "_method", :value => "delete"}
+        %input{:type => "hidden", :name => "id", :value => "#{@update.id}"}
+        %input{:type => "submit", :value => "I Regret This", :class => "button"}
+
