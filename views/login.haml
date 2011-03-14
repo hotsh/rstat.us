@@ -14,4 +14,8 @@
       %td
       %td
         %input{:value => "Log in", :type => "submit", :class => "button"}
-
+%br/
+%form{:action => "/signup", :method => "POST"}
+  email
+  %input{:name => "email"}
+    %input{:type => "Submit", :value => "Sign up"}
