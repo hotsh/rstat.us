@@ -33,10 +33,12 @@
         **Simplicity** is a core 'feature' of rstat.us. We pride ourselves on saying 'no' to lots of features. Our interface is clean, and easy to understand. We give you just enough features to be interesting, but not enough to be complicated and confusing. 
 
         If you're a software developer, you'll probably want to check out our [Open Source page](/open_source). If that's greek to you, here's the deal on **Openness**: the programming code that makes up rstat.us is available for anyone to download, free of charge. Programmers can use that code to run their own websites just like rstat.us, and you can subscribe to your friends on any site that supports the [OStatus protocol](http://ostatus.org/about), like [identi.ca](http://identi.ca/). This also means that you can own your data, we'll never stop you from having full access to everything you've put into rstat.us.
+            
+        \- The **rstat.us** team
   #recent
     .updates
       %h3 Recent updates
       != haml :_updates, :locals => {:updates => Update.hot_updates}
       %h4 
-        %a{:href => "/signup"}
+        %a{:href => "/login"}
           Join the conversation

@@ -684,6 +684,15 @@ body {
 }
 #footer #footer-wrap {
   padding: 1em;
+  display: block;
+}
+#footer #footer-wrap:after {
+  content: "\0020";
+  display: block;
+  height: 0;
+  clear: both;
+  visibility: hidden;
+  overflow: hidden;
 }
 #footer:after {
   content: "\0020";
@@ -694,10 +703,35 @@ body {
   overflow: hidden;
 }
 #footer #logo {
+  float: left;
+}
+#footer #logo a {
+  display: block;
   background: url("../images/logo-xs.png") no-repeat;
   text-indent: -9999px;
   width: 71px;
   height: 20px;
+}
+#footer ul {
+  float: left;
+  display: block;
+  padding-left: 1em;
+  padding-top: 0.25em;
+}
+#footer ul:after {
+  content: "\0020";
+  display: block;
+  height: 0;
+  clear: both;
+  visibility: hidden;
+  overflow: hidden;
+}
+#footer ul li {
+  list-style-type: none;
+  float: left;
+  padding-left: 1em;
+  border-left: 1px solid #ddd;
+  padding-right: 1em;
 }
 /* Layout
 *******************************************/
@@ -716,6 +750,7 @@ body {
   margin-right: 0;
 }
 #main #left #logo h2 {
+  display: block;
   background: url("../images/logo-sm.png") no-repeat;
   text-indent: -9999px;
   width: 159px;
@@ -909,6 +944,56 @@ form#update-form #update-info.negative #update-count {
 #profile #follow .follow-status {
   font-size: 0.8em;
   color: #999;
+}
+/* Login */
+#login-forms {
+  display: block;
+}
+#login-forms:after {
+  content: "\0020";
+  display: block;
+  height: 0;
+  clear: both;
+  visibility: hidden;
+  overflow: hidden;
+}
+#login, #signup {
+  float: left;
+  width: 220px;
+  display: block;
+}
+#login:after, #signup:after {
+  content: "\0020";
+  display: block;
+  height: 0;
+  clear: both;
+  visibility: hidden;
+  overflow: hidden;
+}
+#login label,
+#signup label,
+#login input,
+#signup input {
+  display: block;
+}
+#login label, #signup label {
+  width: 100px;
+}
+#login input, #signup input {
+  margin-bottom: 0.75em;
+}
+#login {
+  border-right: 1px solid #ddd;
+  margin-right: 40px;
+}
+#login-other {
+  margin-top: 2em;
+  border-top: 1px solid #ddd;
+  padding-top: 2em;
+}
+#login-other .options div {
+  float: left;
+  padding-right: 0.25em;
 }
 /* Negative is red */
 .negative {

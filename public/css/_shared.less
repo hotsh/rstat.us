@@ -1,6 +1,7 @@
 /* Helper functions 
  *******************************************/
 .image-replaced(@image, @width: auto, @height: auto) {
+  display: block;
   background: url(@image) no-repeat;
   text-indent: -9999px;
   width: @width;
@@ -98,11 +99,28 @@ body {
 #footer {
   #footer-wrap {
     padding: 1em;
+    .clearfix;
   }
   .container();
   border-top: 1px solid #ccc;
   
   #logo {
-    .image-replaced("../images/logo-xs.png", 71px, 20px)
+    float: left;
+    a {
+      .image-replaced("../images/logo-xs.png", 71px, 20px)      
+    }
+  }
+  ul {
+    float: left;
+    .clearfix;
+    padding-left: 1em;
+    padding-top: 0.25em;
+    li {
+      list-style-type: none;
+      float: left;
+      padding-left: 1em;
+      border-left: 1px solid #ddd;
+      padding-right: 1em;
+    }
   }
 }

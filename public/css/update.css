@@ -684,6 +684,15 @@ body {
 }
 #footer #footer-wrap {
   padding: 1em;
+  display: block;
+}
+#footer #footer-wrap:after {
+  content: "\0020";
+  display: block;
+  height: 0;
+  clear: both;
+  visibility: hidden;
+  overflow: hidden;
 }
 #footer:after {
   content: "\0020";
@@ -694,31 +703,22 @@ body {
   overflow: hidden;
 }
 #footer #logo {
+  float: left;
+}
+#footer #logo a {
+  display: block;
   background: url("../images/logo-xs.png") no-repeat;
   text-indent: -9999px;
   width: 71px;
   height: 20px;
 }
-#update {
-  background: #f3f3f3;
-  padding-top: 3em;
-  width: 520px;
-  margin: auto;
-}
-#update .update .update-text-wrap {
-  border-radius: 5px;
-  background: white;
-  padding: 1em;
-}
-#update .update .update-text-wrap .update-text {
-  word-wrap: break-word;
-  font-size: 2.5em;
-}
-#update .update .byline {
+#footer ul {
+  float: left;
   display: block;
-  padding: 1em;
+  padding-left: 1em;
+  padding-top: 0.25em;
 }
-#update .update .byline:after {
+#footer ul:after {
   content: "\0020";
   display: block;
   height: 0;
@@ -726,18 +726,59 @@ body {
   visibility: hidden;
   overflow: hidden;
 }
-#update .update .byline .update-date, #update .update .byline .avatar, #update .update .byline .name {
+#footer ul li {
+  list-style-type: none;
+  float: left;
+  padding-left: 1em;
+  border-left: 1px solid #ddd;
+  padding-right: 1em;
+}
+#fourohfour, #update {
+  background: #f3f3f3;
+  padding-top: 3em;
+  width: 520px;
+  margin: auto;
+}
+#fourohfour .update .update-text-wrap, #update .update .update-text-wrap {
+  border-radius: 5px;
+  background: white;
+  padding: 1em;
+}
+#fourohfour .update .update-text-wrap .update-text, #update .update .update-text-wrap .update-text {
+  word-wrap: break-word;
+  font-size: 2.5em;
+}
+#fourohfour .update .byline, #update .update .byline {
+  display: block;
+  padding: 1em;
+}
+#fourohfour .update .byline:after, #update .update .byline:after {
+  content: "\0020";
+  display: block;
+  height: 0;
+  clear: both;
+  visibility: hidden;
+  overflow: hidden;
+}
+#fourohfour .update .byline .update-date,
+#update .update .byline .update-date,
+#fourohfour .update .byline .avatar,
+#update .update .byline .avatar,
+#fourohfour .update .byline .name,
+#update .update .byline .name {
   float: left;
   padding-right: 5px;
 }
-#update .update .byline .avatar img {
+#fourohfour .update .byline .avatar img, #update .update .byline .avatar img {
   height: 18px;
 }
-#update #footer {
+#fourohfour #footer, #update #footer {
   padding: 1em;
   border-top: 1px solid #ccc;
+  width: 498px;
 }
-#update #footer #logo {
+#fourohfour #footer #logo, #update #footer #logo {
+  display: block;
   background: url("../images/logo-xs.png") no-repeat;
   text-indent: -9999px;
   width: 71px;

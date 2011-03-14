@@ -5,7 +5,7 @@
 
   %p= @user.bio
   
-  - unless @user == current_user
+  - if current_user and @user != current_user
     #follow
       - if current_user.following? @user
         .negative
