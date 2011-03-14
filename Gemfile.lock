@@ -7,6 +7,7 @@ GEM
     bcrypt-ruby (2.1.4)
     bson (1.2.4)
     bson_ext (1.2.4)
+    builder (2.1.2)
     database_cleaner (0.6.5)
     faraday (0.5.7)
       addressable (~> 2.2.4)
@@ -76,11 +77,16 @@ GEM
       oa-more (= 0.2.0)
       oa-oauth (= 0.2.0)
       oa-openid (= 0.2.0)
+    ostatus (0.0.1)
+      nokogiri
+      oauth
+      tinyatom
     plucky (0.3.7)
       mongo (~> 1.1)
     polyglot (0.3.1)
     pony (1.1)
       mail (> 2.0)
+    public_suffix_service (0.8.2)
     pyu-ruby-sasl (0.0.3.2)
     rack (1.2.2)
     rack-flash (0.1.1)
@@ -115,6 +121,9 @@ GEM
       sinatra (~> 1.0)
     tilt (1.2.2)
     time-ago-in-words (0.0.8)
+    tinyatom (0.3.4)
+      builder (~> 2.0)
+      public_suffix_service (~> 0.0)
     treetop (1.4.9)
       polyglot (>= 0.3.1)
     twitter (1.1.2)
@@ -136,6 +145,7 @@ DEPENDENCIES
   i18n
   mongo_mapper
   omniauth
+  ostatus
   pony
   rack-flash
   rack-test
