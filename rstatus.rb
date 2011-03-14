@@ -176,19 +176,26 @@ class Rstatus < Sinatra::Base
     @user = User.first :username => params[:slug]
 
     # I apogize for putting this here...
+    
+    # Create the OStatus::PortableContacts object
+    poco = OStatus::PortableContacts.new(:id => @user.id,
+                                         :display_name => @user.name,
+                                         :preferred_username => @user.username)
 
     # Create the OStatus::Author object
-    author = OStatus::Author.new(:name => @user.name,
-                                 :username => @user.username,
+    author = OStatus::Author.new(:name => @user.username,
                                  :email => @user.email,
-                                 :uri => @user.website)
+                                 :uri => @user.website,
+                                 :portable_contacts => poco)
 
     # Gather entries as OStatus::Entry objects
     entries = @user.updates.map do |update|
       OStatus::Entry.new(:title => update.text,
                          :content => update.text,
                          :updated => update.updated_at,
-                         :published => update.created_at)
+                         :published => update.created_at,
+                         :id => update.id,
+                         :link => { :href => (request.url[0..-request.path.length-1]) + '/updates/' + update.id.to_s })
     end
 
     # Create a Feed representation which we can generate
