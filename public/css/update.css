@@ -772,6 +772,16 @@ body {
 #fourohfour .update .byline .avatar img, #update .update .byline .avatar img {
   height: 18px;
 }
+#fourohfour .update .remove-update, #update .update .remove-update {
+  cursor: pointer;
+  float: right;
+  border: none;
+  display: block;
+  background: url('../images/trash.png') no-repeat;
+  text-indent: -9999px;
+  width: 13px;
+  height: 16px;
+}
 #fourohfour #footer, #update #footer {
   padding: 1em;
   border-top: 1px solid #ccc;
