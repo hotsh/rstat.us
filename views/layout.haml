@@ -1,25 +1,6 @@
 !!! 5
 %html.no-js
-  %head
-    %meta{:charset => "utf-8"}
-    %title rstat.us
-    %script{:src => "/js/jquery-1.5.1.min.js"}
-    %script{:src => "/js/app.js"}
-    %link{:href => "/css/reset.css", :media => "screen", :rel => "stylesheet"}
-    %link{:href => "/css/css3buttons.css", :media => "screen", :rel => "stylesheet"}
-    %link{:href => "/css/site.css", :media => "screen", :rel => "stylesheet"}
-    - if production?
-      :javascript
-        var _gaq = _gaq || [];
-        _gaq.push(['_setAccount', 'UA-22030550-1']);
-        _gaq.push(['_trackPageview']);
-
-        (function() {
-          var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
-          ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
-          (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(ga);
-        })();
-    != yield_content :javascript
+  != haml :_head
   %body
     #main
       #left

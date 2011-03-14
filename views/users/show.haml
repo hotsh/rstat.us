@@ -1,4 +1,3 @@
-<<<<<<< Updated upstream
 #profile
   %h3= @user.name
   .username
@@ -19,7 +18,3 @@
 
   #updates.updates
     != haml :_updates, :locals => {:updates => @user.updates.to_a.sort{|a, b| b.created_at <=> a.created_at }}
-=======
-#updates
-  != haml :_updates, :locals => {:updates => @user.updates.to_a.sort{|a, b| b.created_at <=> a.created_at }}
->>>>>>> Stashed changes

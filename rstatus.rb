@@ -291,6 +291,7 @@ class Rstatus < Sinatra::Base
 
     if update.user == current_user
       update.destroy
+
       flash[:notice] = "Update Baleeted!"
       redirect "/"
     else

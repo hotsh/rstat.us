@@ -1,1 +1,20 @@
-=yield
+!!! 5
+%html.no-js
+  != haml :_head
+  %body
+    #header
+      %logo
+      %signup
+        %a{:href=>'/auth/twitter'}
+          Sign in with Twitter
+        %a{:href=>'/auth/facebook'}
+          Sign in with Facebook
+        %form{:action => "/signup", :method => "POST"}
+          email
+          %input{:name => "email"}
+            %input{:type => "Submit", :value => "Sign up"}
+        %a{:href=>'/login'}
+          Log in with username/password
+    #pitch
+    #content
+      =yield
