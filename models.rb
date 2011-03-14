@@ -30,6 +30,10 @@ class Update
     all(:text => /##{tag}/)
   end
 
+  def self.hot_updates
+    all(:limit => 3, :order => 'created_at desc')
+  end
+
   protected
 
   def tweet
@@ -124,7 +128,7 @@ class User
   alias :my_updates :updates
 
   def updates
-    my_updates.reject{|u| u.text =~ /^d /}
+    my_updates #.reject{|u| u.text =~ /^d /}
   end
 
   def self.create_from_hash!(hsh)
