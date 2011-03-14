@@ -1,6 +1,6 @@
 require_relative "test_helper"
 
-class UpdateTest < MiniTest::Unit::TestCase
+class UserTest < MiniTest::Unit::TestCase
 
   include TestHelper
 
@@ -20,15 +20,6 @@ class UpdateTest < MiniTest::Unit::TestCase
 
     assert_equal 1, u.dm_replies.length
     assert_equal update.id, u.dm_replies.first.id
-  end
-
-  def test_dm_not_in_timeline
-    u = User.create(:username => "steve")
-    Update.create(:text => "d someone oh hai!", :user_id => u.id)
-    update = Update.create(:text => "just some other update", :user_id => u.id)
-
-    assert_equal 1, u.updates.length
-    assert_equal update.id, u.updates.first.id 
   end
 
   def test_hashtag_filter

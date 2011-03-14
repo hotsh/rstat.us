@@ -11,8 +11,15 @@
         %img{:alt => "avatar", :src => @update.user.twitter_image}/
       .name
         = @update.user.username
-    - if @update.user.username == current_user.username
+    - if current_user and @update.user.username == current_user.username
       %form{:method => "post", :action => "/updates/#{@update.id}"}
         %input{:type => "hidden", :name => "_method", :value => "delete"}
-        %input{:type => "submit", :value => "I Regret This", :class => "button"}
+        %input.remove-update{:type => "submit", :value => "I Regret This"}
 
+  :javascript
+    $(document).ready(function(){
+      $(".remove-update").click(function(){
+         var r = confirm("Are you sure you want to delete this update?"); 
+         return r;
+      })    
+    })

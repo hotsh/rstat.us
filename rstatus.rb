@@ -132,6 +132,10 @@ class Rstatus < Sinatra::Base
     end
   end
 
+  get '/home' do
+    haml :index, :layout => :'external-layout'
+  end
+
   get '/replies' do
     if logged_in?
       haml :replies
@@ -312,6 +316,10 @@ class Rstatus < Sinatra::Base
     @hashtag = params[:tag]
     @updates = Update.hashtag_search(@hashtag)
     haml :dashboard
+  end
+
+  get "/open_source" do
+    haml :opensource
   end
 
 end
