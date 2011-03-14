@@ -125,6 +125,7 @@ class Rstatus < Sinatra::Base
 
   get '/' do
     if logged_in?
+      @updates = current_user.timeline
       haml :dashboard
     else
       haml :index, :layout => :'external-layout'
@@ -302,6 +303,12 @@ class Rstatus < Sinatra::Base
 
   not_found do
     haml :'404', :layout => false
+  end
+
+  get "/hashtags/:tag" do
+    @hashtag = params[:tag]
+    @updates = Update.hashtag_search(@hashtag)
+    haml :dashboard
   end
 
 end

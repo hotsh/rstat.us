@@ -13,6 +13,7 @@ class Update
     out = CGI.escapeHTML(text)
     out.gsub!(/@(\w+)/, "<a href='/users/\\1'>@\\1</a>")
     out.gsub!(/(http:\/\/\S+[a-zA-Z\/])/, "<a href='\\1'>\\1</a>")
+    out.gsub!(/#(\w+)/, "<a href='/hashtags/\\1'>#\\1</a>")
     out
   end
 
@@ -24,6 +25,14 @@ class Update
   after_create :tweet
 
   timestamps!
+
+  def self.hashtag_search(tag)
+    all(:text => /##{tag}/)
+  end
+
+  def self.hot_updates
+    all(:limit => 3, :order => 'created_at desc')
+  end
 
   protected
 
@@ -119,7 +128,7 @@ class User
   alias :my_updates :updates
 
   def updates
-    my_updates.reject{|u| u.text =~ /^d /}
+    my_updates #.reject{|u| u.text =~ /^d /}
   end
 
   def self.create_from_hash!(hsh)

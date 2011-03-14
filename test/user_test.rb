@@ -31,4 +31,13 @@ class UpdateTest < MiniTest::Unit::TestCase
     assert_equal update.id, u.updates.first.id 
   end
 
+  def test_hashtag_filter
+    User.create(:username => "steve")
+    update = Update.create(:text => "mother-effing #hashtags")
+    Update.create(:text => "just some other update")
+
+    assert_equal 1, Update.hashtag_search("hashtags").length
+    assert_equal update.id, Update.hashtag_search("hashtags").first.id 
+  end
+
 end
