@@ -3,7 +3,7 @@
   .update{:class => mentioned ? "mention" : ""}
     .avatar
       %a{:href => "/users/#{update.user.username}"}
-        %img{:alt => "avatar", :src => update.user.twitter_image}/
+        %img{:alt => "avatar", :src => update.user.avatar_image_url}/
     .content
       .name= "#{update.user.name} (#{update.user.username})"
       .text
