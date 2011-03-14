@@ -13,6 +13,7 @@ gem "twitter"
 gem "pony"
 gem "bcrypt-ruby"
 gem "rdiscount"
+gem "ostatus"
 
 group :development, :test do
   gem 'rack-test'

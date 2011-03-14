@@ -75,8 +75,7 @@ class Authorization
             :provider => hsh['provider'],
            )
 
-    if a.save
-      flash[:notice] = "Authorization failed!"
+    unless a.save
       redirect "/"
     end
 

@@ -9,6 +9,7 @@ require 'sinatra/content_for'
 require 'twitter'
 require 'pony'
 require 'bcrypt'
+require 'ostatus'
 
 require_relative 'models'
 
@@ -168,6 +169,47 @@ class Rstatus < Sinatra::Base
   get "/users/:slug" do
     @user = User.first :username => params[:slug]
     haml :"users/show"
+  end
+
+  get "/feeds/:slug" do
+    # Get the user
+    @user = User.first :username => params[:slug]
+
+    # I apogize for putting this here...
+    
+    # Create the OStatus::PortableContacts object
+    poco = OStatus::PortableContacts.new(:id => @user.id,
+                                         :display_name => @user.name,
+                                         :preferred_username => @user.username)
+
+    # Create the OStatus::Author object
+    author = OStatus::Author.new(:name => @user.username,
+                                 :email => @user.email,
+                                 :uri => @user.website,
+                                 :portable_contacts => poco)
+
+    # Gather entries as OStatus::Entry objects
+    entries = @user.updates.reverse.map do |update|
+      OStatus::Entry.new(:title => update.text,
+                         :content => update.text,
+                         :updated => update.updated_at,
+                         :published => update.created_at,
+                         :id => update.id,
+                         :link => { :href => (request.url[0..-request.path.length-1]) + '/updates/' + update.id.to_s })
+    end
+
+    # Create a Feed representation which we can generate
+    # the Atom feed and send out.
+    feed = OStatus::Feed.from_data(request.url,
+                            params[:slug] + "'s Updates",
+                            request.url,
+                            author,
+                            entries,
+                            :hub => [{:href => ''}] )
+
+    # Respond with the feed and success
+    body feed.atom
+    status 200
   end
 
   # users can follow each other, and this route takes care of it!
