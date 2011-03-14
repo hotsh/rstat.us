@@ -87,6 +87,8 @@ class Authorization
 end
 
 class User
+  require 'digest/md5'
+
   include MongoMapper::Document
   many :authorizations, :dependant => :destroy
 
@@ -102,7 +104,6 @@ class User
   after_create :reset_perishible_token 
   
   def reset_perishible_token
-    require 'digest/md5'
     self.perishable_token = Digest::MD5.hexdigest(Time.now.to_s)
     save
   end
@@ -150,6 +151,20 @@ class User
   end
 
   timestamps!
+
+  def avatar_image_url
+    if twitter_image.nil?
+      unless email.nil?
+        # Using gravatar
+        "http://gravatar.com/avatar/" + Digest::MD5.hexdigest(email) + "?s=48"
+      else
+        # TODO: Use 'r' logo or something
+      end
+    else
+      # Use the twitter image
+      twitter_image
+    end
+  end
 
   def timeline
     following.map(&:updates).flatten
