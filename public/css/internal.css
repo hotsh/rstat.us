@@ -632,6 +632,13 @@ body {
   visibility: hidden;
   overflow: hidden;
 }
+#flash {
+  padding: 0.75em;
+  font-size: 1.2em;
+  color: white;
+  background: #aaa;
+  margin-bottom: 1em;
+}
 /* update from a user followed by the current logged in user */
 .updates .update {
   display: block;
@@ -785,6 +792,11 @@ body {
   font-weight: bold;
   font-size: 1.25em;
 }
+#main #left #profile .userinfo .logout {
+  margin-top: 1em;
+  border-top: 1px solid #ddd;
+  padding-top: 1em;
+}
 #main #right {
   width: 630px;
   float: left;
@@ -878,13 +890,6 @@ form#update-form #update-info.negative #update-count {
 }
 #navigation ul li.active a {
   color: white;
-}
-#flash {
-  padding: 0.75em;
-  font-size: 1.2em;
-  color: white;
-  background: #aaa;
-  margin-bottom: 1em;
 }
 #timeline .mention {
   background: #e4feff;
