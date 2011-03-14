@@ -1,0 +1,10 @@
+%form{:action => "/confirm", :method => "POST"}
+  Username: 
+  %input{:type => "text", :name => "username", :value => "#{@valid_username ? @username : ''}"}
+  %br/
+  Password
+  %input{:type => "password", :name => "password"}
+  %br/
+  %input{:type => "hidden", :name => "perishable_token", :value => @user.perishable_token}
+  %br/
+  %input{:type => "submit", :value => "submit"}

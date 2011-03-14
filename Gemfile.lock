@@ -4,6 +4,7 @@ GEM
     activesupport (3.0.5)
     addressable (2.2.4)
     backports (2.0.2)
+    bcrypt-ruby (2.1.4)
     bson (1.2.4)
     bson_ext (1.2.4)
     database_cleaner (0.6.5)
@@ -18,6 +19,11 @@ GEM
     i18n (0.5.0)
     jnunemaker-validatable (1.8.4)
       activesupport (>= 2.3.4)
+    mail (2.2.15)
+      activesupport (>= 2.3.6)
+      i18n (>= 0.4.0)
+      mime-types (~> 1.16)
+      treetop (~> 1.4.8)
     mime-types (1.16)
     mongo (1.2.4)
       bson (>= 1.2.4)
@@ -72,6 +78,9 @@ GEM
       oa-openid (= 0.2.0)
     plucky (0.3.7)
       mongo (~> 1.1)
+    polyglot (0.3.1)
+    pony (1.1)
+      mail (> 2.0)
     pyu-ruby-sasl (0.0.3.2)
     rack (1.2.2)
     rack-flash (0.1.1)
@@ -105,6 +114,8 @@ GEM
       sinatra (~> 1.0)
     tilt (1.2.2)
     time-ago-in-words (0.0.8)
+    treetop (1.4.9)
+      polyglot (>= 0.3.1)
     twitter (1.1.2)
       faraday (~> 0.5.4)
       faraday_middleware (~> 0.3.1)
@@ -117,12 +128,14 @@ PLATFORMS
   ruby
 
 DEPENDENCIES
+  bcrypt-ruby
   bson_ext
   database_cleaner
   haml
   i18n
   mongo_mapper
   omniauth
+  pony
   rack-flash
   rack-test
   sinatra
