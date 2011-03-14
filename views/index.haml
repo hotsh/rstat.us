@@ -1,2 +1,9 @@
-<a href='/auth/twitter'>Sign in with Twitter</a>
-<a href='/auth/facebook'>Sign in with Facebook</a>
+<a href='/auth/twitter'>Sign in with Twitter</a><br />
+<a href='/auth/facebook'>Sign in with Facebook</a><br />
+%form{:action => "/signup", :method => "POST"}
+  email
+  %input{:name => "email"}
+    %input{:type => "Submit", :value => "Sign up"}
+<br />
+<a href='/login'>Log in with username/password</a>
+

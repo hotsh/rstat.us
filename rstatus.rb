@@ -7,6 +7,8 @@ require 'haml'
 require 'time-ago-in-words'
 require 'sinatra/content_for'
 require 'twitter'
+require 'pony'
+require 'bcrypt'
 
 require_relative 'models'
 
@@ -52,6 +54,33 @@ end
 
 
 class Rstatus < Sinatra::Base
+
+  # The `PONY_VIA_OPTIONS` hash is used to configure `pony`. Basically, we only
+  # want to actually send mail if we're in the production environment. So we set
+  # the hash to just be `{}`, except when we want to send mail.
+  configure :test do
+    PONY_VIA_OPTIONS = {}
+  end
+
+  configure :development do
+    PONY_VIA_OPTIONS = {}
+  end
+
+  # We're using [SendGrid](http://sendgrid.com/) to send our emails. It's really
+  # easy; the Heroku addon sets us up with environment variables with all of the
+  # configuration options that we need.
+  configure :production do
+    PONY_VIA_OPTIONS =  {
+      :address        => "smtp.sendgrid.net",
+      :port           => "25",
+      :authentication => :plain,
+      :user_name      => ENV['SENDGRID_USERNAME'],
+      :password       => ENV['SENDGRID_PASSWORD'],
+      :domain         => ENV['SENDGRID_DOMAIN']
+    }
+
+  end
+
   use Rack::Session::Cookie, :secret => ENV['COOKIE_SECRET']
   set :root, File.dirname(__FILE__)
   set :haml, :escape_html => true
@@ -204,6 +233,56 @@ class Rstatus < Sinatra::Base
   get '/updates/:id' do
     @update = Update.first :id => params[:id]
     haml :"updates/show", :layout => :'updates/layout'
+  end
+
+  post '/signup' do
+    u = User.create(:email => params[:email], :status => "unconfirmed")
+    if development?
+      puts "http://localhost:9292/confirm/#{u.perishable_token}"
+    else
+      Notifier.send_signup_notification(params[:email], u.perishable_token)
+    end
+
+    haml :"signup/thanks", :layout => :'external-layout'
+  end
+
+  get "/confirm/:token" do
+    @user = User.first :perishable_token => params[:token]
+    @username = @user.email.match(/^([^@]+?)@/)[1]
+
+    @valid_username = false
+    unless User.first :username => @username
+      @valid_username = true
+    end
+
+    haml :"signup/confirm"
+  end
+
+  post "/confirm" do
+    user = User.first :perishable_token => params[:perishable_token]
+    user.username = params[:username]
+    user.password = params[:password]
+    user.status = "confirmed"
+    user.save
+    session[:user_id] = user.id.to_s
+
+    flash[:notice] = "Thanks for signing up!"
+    redirect '/'
+  end
+
+  get "/login" do
+    haml :"login"
+  end
+
+  post "/login" do
+    if user = User.authenticate(params[:username], params[:password])
+      session[:user_id] = user.id
+      flash[:notice] = "Login successful."
+      redirect "/"
+    else
+      flash[:notice] = "The username or password you entered was incorrect"
+      redirect "/login"
+    end
   end
 
   not_found do

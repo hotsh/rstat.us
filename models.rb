@@ -75,10 +75,20 @@ class User
 
   key :name, String
   key :username, String
-  key :email, String
+  key :email, String, :required => true
   key :website, String
   key :bio, String
   key :twitter_image, String
+
+  key :perishable_token, String
+
+  after_create :reset_perishible_token 
+  
+  def reset_perishible_token
+    require 'digest/md5'
+    self.perishable_token = Digest::MD5.hexdigest(Time.now.to_s)
+    save
+  end
 
   key :following_ids, Array
   many :following, :in => :following_ids, :class_name => 'User'
@@ -136,7 +146,24 @@ class User
     Update.all(:text => /^d #{username} /)
   end
 
+  key :status
+
   after_create :follow_yo_self
+
+  attr_accessor :password
+  key :hashed_password, String
+
+  def password=(pass)
+    @password = pass
+    self.hashed_password = BCrypt::Password.create(@password, :cost => 10)
+  end
+
+  def self.authenticate(username, pass)
+    user = User.first(:username => username)
+    return nil if user.nil?
+    return user if BCrypt::Password.new(user.hashed_password) == pass
+    nil
+  end
 
   private
 
@@ -146,3 +173,26 @@ class User
     save
   end
 end
+
+# This class handles sending emails. Everything related to it should go in
+# here, that way it's just as easy as
+# `Notifier.send_message_notification(me, you)` to send a message.
+class Notifier 
+  def self.send_signup_notification(recipient, token)
+    Pony.mail(:to => recipient, 
+              :subject => "Thanks for signing up for rstat.us!",
+              :from => "steve+rstatus@steveklabnik.com",
+              :body => render_haml_template("signup", {:token => token}),
+              :via => :smtp, :via_options => Rstatus::PONY_VIA_OPTIONS)
+  end
+
+  private
+
+  # This was kinda crazy to figure out. We have to make our own instantiation
+  # of the Engine, and then set local variables. Crazy.
+  def self.render_haml_template(template, opts)
+    engine = Haml::Engine.new(File.open("views/notifier/#{template}.haml", "rb").read)
+    engine.render(Object.new, opts)
+  end
+end
+
