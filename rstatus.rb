@@ -189,7 +189,7 @@ class Rstatus < Sinatra::Base
                                  :portable_contacts => poco)
 
     # Gather entries as OStatus::Entry objects
-    entries = @user.updates.map do |update|
+    entries = @user.updates.reverse.map do |update|
       OStatus::Entry.new(:title => update.text,
                          :content => update.text,
                          :updated => update.updated_at,
