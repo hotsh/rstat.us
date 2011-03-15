@@ -1,0 +1,17 @@
+#profile
+  %h3= "Profile for #{@user.author.username}"
+
+  %form#profile-update{:action => "/users/#{current_user.author.username}/update", :method => "POST", :name => "profile_update_form"}
+
+    - [:name, :email, :website].each do |attr|
+      != haml :"users/_profile_field", :locals => {:attr => attr}
+
+    .bio
+      %div
+        %label{:for => "bio"}
+          Bio:
+      %div
+        %textarea#bio{:name  => "bio"}
+          #{@user.author.bio}
+
+      %input#update-button.button{:type => "submit", :value => "Save"}

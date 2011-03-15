@@ -3,8 +3,24 @@
   .username
     @#{@user.author.username}
 
+  - unless @user.author.email.blank?
+    .email
+      Email:
+      %a{:href => "mailto:#{@user.author.email}"}
+        #{@user.author.email}
+
+  - unless @user.author.website.blank?
+    .website
+      Website:
+      %a{:href => @user.author.website}
+        #{@user.author.website}
+
   %p= @user.author.bio
-  
+
+  - if current_user and @user == current_user
+    %a{:href=>"/users/#{current_user.username}/edit"}
+      Edit your profile
+
   - if current_user and @user != current_user
     #follow
       - if current_user.following? @user.feed.url

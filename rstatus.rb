@@ -165,9 +165,36 @@ class Rstatus < Sinatra::Base
   end
 
   # show user profile
-  get "/users/:slug" do
-    @user = User.first :username => params[:slug]
+  get "/users/:username" do
+    @user = User.first :username => params[:username]
     haml :"users/show"
+  end
+
+  # user edits own profile
+  get "/users/:username/edit" do
+    @user = User.first :username => params[:username]
+    if @user == current_user
+      haml :"users/edit"
+    else
+      redirect "/users/#{params[:username]}"
+    end
+  end
+
+  # user updates own profile
+  post "/users/:username/update" do
+    @user = User.first :username => params[:username]
+    if @user == current_user
+      @user.author.name    = params[:name]
+      @user.author.email   = params[:email]
+      @user.author.website = params[:website]
+      @user.author.bio     = params[:bio]
+      @user.author.save
+      flash[:notice] = "Profile saved!"
+      redirect "/users/#{params[:username]}"
+      return
+    else
+      redirect "/users/#{params[:username]}"
+    end
   end
 
   # subscriber receives updates

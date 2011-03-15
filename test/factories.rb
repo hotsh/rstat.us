@@ -19,6 +19,7 @@ end
 
 Factory.define :user do |u|
   u.username Factory.next(:usernames)
+  u.author {|a| Factory(:author, :username => a.username) }
 end
 
 Factory.sequence :integer do |i|
@@ -29,4 +30,12 @@ Factory.define :authorization do |a|
   a.uid Factory.next(:integer)
   a.provider "twitter"
   a.association :user
+end
+
+Factory.define :author do |a|
+  a.username "user"
+  a.email Factory.next(:emails)
+  a.website "http://example.com"
+  a.name "Something"
+  a.bio "Hi, I do stuff."
 end
