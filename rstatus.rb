@@ -368,7 +368,8 @@ class Rstatus < Sinatra::Base
     user.username = params[:username]
     user.password = params[:password]
     user.status = "confirmed"
-    user.author = Author.create(:username => user.username)
+    user.author = Author.create(:username => user.username,
+                                :email => user.email)
     user.finalize(uri("/"))
     user.save
     session[:user_id] = user.id.to_s

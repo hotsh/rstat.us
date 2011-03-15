@@ -21,7 +21,7 @@ class Author
   def avatar_url
     if image_url.nil?
       if email.nil?
-        # TODO: Use 'r' logo or something
+        # Using a default avatar
         "/images/avatar.png"
       else
         # Using gravatar
@@ -45,6 +45,7 @@ class Update
   belongs_to :author
 
   key :text, String
+  key :update_id, String
 
   validates_length_of :text, :minimum => 1, :maximum => 140
 
@@ -311,13 +312,38 @@ class Feed
 
   def populate
     f = OStatus::Feed.from_url(url)
+
+    avatar_url = f.icon
+    if avatar_url == nil
+      avatar_url = f.logo
+    end
+
     a = f.author
 
     self.author = Author.create(:name => a.name,
-                           :username => a.name,
-                           :email => a.email)
+                                :username => a.name,
+                                :email => a.email,
+                                :image_url => avatar_url)
+
+    populate_entries(f.entries)
 
     save
+  end
+
+  def populate_entries(os_entries)
+    os_entries.each do |entry|
+      u = Update.first(:update_id => entry.id)
+      if u.nil?
+        u = Update.create(:update_id => entry.id,
+                          :author => self.author,
+                          :created_at => entry.published,
+                          :updated_at => entry.updated)
+        self.updates << u
+        save
+      end
+      u.text = entry.content
+      u.save
+    end
   end
 
   def ping_hubs
@@ -333,8 +359,7 @@ class Feed
       # Update author if necessary
 
       # Update entries
-      os_feed.entries.each do |entry|
-      end
+      populate_entries(os_feed.entries)
     end
   end
 
@@ -375,11 +400,13 @@ class Feed
     # Create a Feed representation which we can generate
     # the Atom feed and send out.
     feed = OStatus::Feed.from_data("#{base_uri}feeds/#{id}.atom",
-                                   "#{author.username}'s Updates",
-                                   "#{base_uri}feeds/#{id}.atom",
-                                   os_auth,
-                                   entries,
-                                   :hub => [{:href => hubs.first}] )
+                                   :title => "#{author.username}'s Updates",
+                                   :id => "#{base_uri}feeds/#{id}.atom",
+                                   :author => os_auth,
+                                   :entries => entries,
+                                   :links => {
+                                     :hub => [{:href => hubs.first}]
+                                   })
     feed.atom
   end
 end
