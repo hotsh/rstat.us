@@ -197,8 +197,13 @@ class User
     end
   end
 
-  def following? user 
-    following.include? user.feed
+  def following? feed_url
+    f = Feed.first(:url => feed_url)
+    if f == nil
+      false
+    else
+      following.include? f
+    end
   end
 
   timestamps!

@@ -7,7 +7,7 @@
   
   - if current_user and @user != current_user
     #follow
-      - if current_user.following? @user
+      - if current_user.following? @user.feed.url
         .negative
           %a.button{:href => "/users/#{@user.username}/unfollow"}
             Unfollow
