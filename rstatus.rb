@@ -125,6 +125,7 @@ class Rstatus < Sinatra::Base
   get '/' do
     if logged_in?
       @updates = current_user.timeline
+      puts @updates.map {|u| u.created_at}
       haml :dashboard
     else
       haml :index, :layout => :'external-layout'
@@ -238,9 +239,12 @@ class Rstatus < Sinatra::Base
   end
 
   post '/updates' do
-    u = Update.new(:text => params[:text])
+    u = Update.new(:text => params[:text], 
+                   :author => current_user.author)
+
     current_user.feed.updates << u
     current_user.feed.save
+    current_user.save
 
     flash[:notice] = "Update created."
     redirect "/"

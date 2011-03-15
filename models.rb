@@ -147,6 +147,7 @@ class User
 
   after_create :reset_perishible_token 
   after_create :create_feed
+  after_create :follow_yo_self
 
   belongs_to :author
   belongs_to :feed
@@ -157,10 +158,10 @@ class User
   end
 
   key :following_ids, Array
-  many :following, :in => :following_ids, :class_name => 'User'
+  many :following, :in => :following_ids, :class_name => 'Feed'
 
   key :followers_ids, Array
-  many :followers, :in => :followers_ids, :class_name => 'User'
+  many :followers, :in => :followers_ids, :class_name => 'Feed'
 
   def follow! followee
     following << followee
@@ -170,6 +171,8 @@ class User
   end
 
   def unfollow! followee
+  alias :my_updates :updates
+
     following_ids.delete(followee.id)
     save
     followee.followers_ids.delete(id)
@@ -178,14 +181,6 @@ class User
 
   def following? user 
     following.include? user
-  end
-
-  many :updates, :dependent => :destroy
-
-  alias :my_updates :updates
-
-  def updates
-    my_updates #.reject{|u| u.text =~ /^d /}
   end
 
   timestamps!
@@ -203,8 +198,6 @@ class User
   end
 
   key :status
-
-  after_create :follow_yo_self
 
   attr_accessor :password
   key :hashed_password, String
@@ -225,14 +218,14 @@ class User
 
   def create_feed
     self.feed = Feed.create(
-      #:author => author
+      :author => author
     )
     save
   end
 
   def follow_yo_self
-    following << self
-    followers << self
+    following << feed
+    followers << feed
     save
   end
 end

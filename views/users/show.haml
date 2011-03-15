@@ -18,4 +18,4 @@
         .follow-status You are not following #{@user.username}
 
   #updates.updates
-    != haml :_updates, :locals => {:updates => @user.updates.to_a.sort{|a, b| b.created_at <=> a.created_at }}
+    != haml :_updates, :locals => {:updates => @user.feed.updates.to_a.sort{|a, b| b.created_at <=> a.created_at }}
