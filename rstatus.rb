@@ -171,9 +171,16 @@ class Rstatus < Sinatra::Base
   end
 
   # subscriber receives updates
+  # should be 'put', PuSH sucks at REST
   post "/feeds/:id.atom" do
     feed = Feed.first :id => params[:id]
     feed.update_entries(request.body.read, request.url, request.env['HTTP_X_HUB_SIGNATURE'])
+  end
+
+  post "/feeds" do
+    f = Feed.create(:url => params[:url], :local => false)
+    flash[:notice] = "You are now following that user."
+    redirect "/"
   end
 
   # publisher will feed the atom to a hub
@@ -371,6 +378,10 @@ class Rstatus < Sinatra::Base
 
   get "/open_source" do
     haml :opensource
+  end
+
+  get "/external_subscription" do
+    haml :external_subscription
   end
 
 end

@@ -56,5 +56,20 @@ class RstatusTest < MiniTest::Unit::TestCase
     assert_match page.body, /#{update_text}/
   end
 
+  def test_subscribe_to_users_on_other_sites
+    u = Factory(:user)
+    a = Factory(:authorization, :user => u)
+    u.finalize("http://example.com/")
+    log_in(u, a.uid)
+    visit "/"
+    click_link "Would you like to follow someone not on rstat.us?"
+    assert_match "You can follow someone not on rstat.us, as long as they use 'ostatus.'", page.body
+    fill_in 'url', :with => "http://example.com/sombody.atom"
+    click_button "Follow"
+    assert_match "You are now following", page.body
+    assert "/", current_path
+
+  end
+
 end
 
