@@ -148,7 +148,7 @@ GEM
       monkey-lib (~> 0.5.0)
       sinatra (~> 1.0)
     tilt (1.2.2)
-    time-ago-in-words (0.1.1)
+    time-ago-in-words (0.1.2)
     tinyatom (0.3.4)
       builder (~> 2.0)
       public_suffix_service (~> 0.0)

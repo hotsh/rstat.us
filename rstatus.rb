@@ -79,7 +79,6 @@ class Rstatus < Sinatra::Base
       :password       => ENV['SENDGRID_PASSWORD'],
       :domain         => ENV['SENDGRID_DOMAIN']
     }
-
   end
 
   use Rack::Session::Cookie, :secret => ENV['COOKIE_SECRET']
@@ -256,9 +255,12 @@ class Rstatus < Sinatra::Base
   end
 
   post '/signup' do
-    u = User.create(:email => params[:email], :status => "unconfirmed")
+    u = User.create(:email => params[:email], 
+                    :status => "unconfirmed")
+    u.set_perishable_token
+
     if development?
-      puts "http://localhost:9292/confirm/#{u.perishable_token}"
+      puts uri("/") + "confirm/#{u.perishable_token}"
     else
       Notifier.send_signup_notification(params[:email], u.perishable_token)
     end
@@ -268,6 +270,7 @@ class Rstatus < Sinatra::Base
 
   get "/confirm/:token" do
     @user = User.first :perishable_token => params[:token]
+    # XXX: Handle user being nil (invalid confirmation)
     @username = @user.email.match(/^([^@]+?)@/)[1]
 
     @valid_username = false
@@ -283,6 +286,9 @@ class Rstatus < Sinatra::Base
     user.username = params[:username]
     user.password = params[:password]
     user.status = "confirmed"
+    user.author = Author.create(:username => user.username)
+    user.feed = Feed.create(:author => user.author)
+    user.finalize
     user.save
     session[:user_id] = user.id.to_s
 

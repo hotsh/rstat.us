@@ -1,9 +1,9 @@
 #profile
-  %h3= @user.name
+  %h3= @user.author.name
   .username
-    @#{@user.username}
+    @#{@user.author.username}
 
-  %p= @user.bio
+  %p= @user.author.bio
   
   - if current_user and @user != current_user
     #follow

@@ -106,12 +106,12 @@ class Authorization
   end
 
   def self.create_from_hash(hsh, user = nil)
-    # Could create an Author and THEN a User... maybe
     if user.nil?
       author = Author.create_from_hash!(hsh)
       user = User.create(:author => author,
                          :username => author.username
                         )
+      user.finalize
     end
 
     a = new(:user => user, 
@@ -136,20 +136,28 @@ class User
   include MongoMapper::Document
   many :authorizations, :dependant => :destroy
 
-  key :username, String, :required => true
+  # Make the username required
+  # However, this will break it when email authorization is used
+  key :username, String
 
   key :perishable_token, String
-
-  after_create :reset_perishible_token 
-  after_create :create_feed
-  after_create :follow_yo_self
 
   belongs_to :author
   belongs_to :feed
 
-  def reset_perishible_token
-    self.perishable_token = Digest::MD5.hexdigest(Time.now.to_s)
+  def finalize
+    create_feed
+    follow_yo_self
+    reset_perishable_token
+  end
+
+  def set_perishable_token
+    self.perishable_token = Digest::MD5.hexdigest( rand.to_s )
     save
+  end
+
+  def reset_perishable_token
+    self.perishable_token = nil
   end
 
   key :following_ids, Array
@@ -166,8 +174,6 @@ class User
   end
 
   def unfollow! followee
-  alias :my_updates :updates
-
     following_ids.delete(followee.id)
     save
     followee.followers_ids.delete(id)
