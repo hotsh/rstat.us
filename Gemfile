@@ -16,6 +16,7 @@ gem "rdiscount"
 gem "ostatus"
 gem "osub"
 gem "opub"
+gem "nokogiri", "= 1.4.4.1"
 
 group :development, :test do
   gem 'rack-test'
