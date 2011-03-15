@@ -285,7 +285,7 @@ class Feed
   many :updates
 
   def generate_url(base_uri)
-    url = base_uri + "feeds/#{id}"
+    self.url = base_uri + "feeds/#{id}"
     save
   end
 
