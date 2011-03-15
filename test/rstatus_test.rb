@@ -34,6 +34,7 @@ class RstatusTest < MiniTest::Unit::TestCase
 
   def test_user_feed_render
     u = Factory(:user)
+    u.finalize("http://example.com")
     visit "/users/#{u.username}/feed"
     assert_equal 200, page.status_code
   end
@@ -41,6 +42,7 @@ class RstatusTest < MiniTest::Unit::TestCase
   def test_user_makes_updates
     u = Factory(:user)
     a = Factory(:authorization, :user => u)
+    u.finalize("http://example.com/")
     update_text = "Testing, testing"
     params = {
       :text => update_text

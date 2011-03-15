@@ -303,8 +303,6 @@ class Feed
   after_create :default_hubs
 
   def ping_hubs
-    puts hubs
-    puts url
     OPub::Publisher.new(url, hubs).ping_hubs
   end
 
