@@ -276,6 +276,8 @@ class Notifier
 end
 
 class Feed
+  require 'osub'
+  require 'opub'
   include MongoMapper::Document
 
   # Feed url (and an indicator that it is local)
@@ -286,8 +288,38 @@ class Feed
   key :verify_token, String
   key :secret, String
 
+  # For both pubs and subs, it needs to know
+  # what hubs are communicating with it
+  key :hubs, Array
+
   belongs_to :author
   many :updates
+
+  after_create :default_hubs
+
+  def ping_hubs
+    OPub::Publisher.new(feed.url, hubs).ping_hubs
+  end
+
+  def update_entries(atom_xml, callback_url, signature)
+    sub = OSub::Subscripion.new(callback_url, feed.url, self.secret)
+
+    if sub.verify_content(xml, signature)
+      os_feed = OStatus::Feed.from_string(atom_xml)
+      # TODO:
+      # Update author if necessary
+
+      # Update entries
+      os_feed.entries.each do |entry|
+      end
+    end
+  end
+
+  # Set default hubs
+  def default_hubs
+    self.hubs << "http://pubsubhubbub.appspot.com/publish"
+    save
+  end
 
   # Generates and stores the absolute local url
   def generate_url(base_uri)
@@ -324,7 +356,7 @@ class Feed
                                    "#{base_uri}/feeds/#{id}",
                                    os_auth,
                                    entries,
-                                   :hub => [{:href => ''}] )
+                                   :hub => [{:href => hubs.first}] )
     feed.atom
   end
 end

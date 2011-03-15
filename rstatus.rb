@@ -55,6 +55,8 @@ end
 
 class Rstatus < Sinatra::Base
 
+  set :port, 8088
+
 
   # The `PONY_VIA_OPTIONS` hash is used to configure `pony`. Basically, we only
   # want to actually send mail if we're in the production environment. So we set
@@ -162,19 +164,50 @@ class Rstatus < Sinatra::Base
     redirect '/'
   end
 
+  # show user profile
   get "/users/:slug" do
     @user = User.first :username => params[:slug]
     haml :"users/show"
   end
 
-  get "/feeds/:id.atom" do
+  # subscriber receives updates
+  post "/feeds/:id.atom" do
     feed = Feed.first :id => params[:id]
-    body feed.atom(uri("/"))
+    feed.update_entries(request.body.read, request.url, request.env['HTTP_X_HUB_SIGNATURE'])
   end
 
+  # publisher will feed the atom to a hub
+  # subscribers will verify a subscription
+  get "/feeds/:id.atom" do
+    feed = Feed.first :id => params[:id]
+    if params['hub.challenge']
+      sub = OSub::Subscription.new(request.url, feed.url)
+
+      # perform the hub's challenge
+      respond = sub.perform_challenge(params['hub.challenge'])
+
+      # verify that the random token is the same as when we
+      # subscribed with the hub initially and that the topic
+      # url matches what we expect
+      verified = params['hub.topic'] == feed.url
+      if verified and sub.verify_subscription(params['hub.verify_token'])
+        body respond[:body]
+        status respond[:status]
+      else
+        # if the verification fails, the specification forces us to
+        # return a 404 status
+        status 404
+      end
+    else
+      # TODO: Abide by headers that supply cache information
+      body feed.atom(uri("/"))
+    end
+  end
+
+  # an alias for the above route
   get "/users/:name/feed" do
     feed = User.first(:username => params[:name]).feed
-    body feed.atom(uri("/"))
+    redirect uri("/feeds/#{feed.id}.atom")
   end
 
   # users can follow each other, and this route takes care of it!
