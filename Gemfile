@@ -14,6 +14,8 @@ gem "pony"
 gem "bcrypt-ruby"
 gem "rdiscount"
 gem "ostatus"
+gem "osub"
+gem "opub"
 
 group :development, :test do
   gem 'rack-test'

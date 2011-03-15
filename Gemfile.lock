@@ -77,10 +77,13 @@ GEM
       oa-more (= 0.2.0)
       oa-oauth (= 0.2.0)
       oa-openid (= 0.2.0)
+    opub (0.0.1)
     ostatus (0.0.3)
       nokogiri
       oauth
       tinyatom
+    osub (0.0.3)
+      ruby-hmac
     plucky (0.3.7)
       mongo (~> 1.1)
     polyglot (0.3.1)
@@ -99,6 +102,7 @@ GEM
     rdiscount (1.6.8)
     rest-client (1.6.1)
       mime-types (>= 1.16)
+    ruby-hmac (0.4.0)
     ruby-openid (2.1.8)
     ruby-openid-apps-discovery (1.2.0)
       ruby-openid (>= 2.1.7)
@@ -120,7 +124,7 @@ GEM
       monkey-lib (~> 0.5.0)
       sinatra (~> 1.0)
     tilt (1.2.2)
-    time-ago-in-words (0.0.8)
+    time-ago-in-words (0.1.1)
     tinyatom (0.3.4)
       builder (~> 2.0)
       public_suffix_service (~> 0.0)
@@ -145,7 +149,9 @@ DEPENDENCIES
   i18n
   mongo_mapper
   omniauth
+  opub
   ostatus
+  osub
   pony
   rack-flash
   rack-test

@@ -173,7 +173,7 @@ class Rstatus < Sinatra::Base
     haml :"users/show"
   end
 
-  get "/feeds/:slug" do
+  get "/users/:slug/feed" do
     # Get the user
     @user = User.first :username => params[:slug]
 
