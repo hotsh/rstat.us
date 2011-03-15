@@ -11,8 +11,25 @@ class RstatusTest < MiniTest::Unit::TestCase
 
   def test_get_feeds
     feed = Factory(:feed)
-    get "/feeds/#{feed.id}"
+    get "/feeds/#{feed.id}.atom"
     assert last_response.ok?, "Response not okay."
+  end
+
+  def test_feed_render
+    feed = Factory(:feed)
+    updates = []
+    5.times do
+      updates << Factory(:update)
+    end
+    feed.updates = updates
+    feed.save
+
+    get "/feeds/#{feed.id}.atom"
+
+    updates.each do |update|
+      assert_match last_response.body, /#{update.text}/
+    end
+
   end
 
 end
