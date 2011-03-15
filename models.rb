@@ -230,4 +230,49 @@ end
 
 class Feed
   include MongoMapper::Document
+
+  key :user_id, String
+  key :user_name, String
+  key :user_username, String
+  key :user_email, String
+  key :user_website, String
+
+  def atom(base_uri)
+    # Get the user
+
+    # I apogize for putting this here...
+    
+    # Create the OStatus::PortableContacts object
+    poco = OStatus::PortableContacts.new(:id => user_id,
+                                         :display_name => user_name,
+                                         :preferred_username => user_username)
+
+    # Create the OStatus::Author object
+    author = OStatus::Author.new(:name => user_username,
+                                 :email => user_email,
+                                 :uri => user_website,
+                                 :portable_contacts => poco)
+
+    # Gather entries as OStatus::Entry objects
+    entries = updates.sort{|a, b| b.created_at <=> a.created_at}.map do |update|
+      OStatus::Entry.new(:title => update.text,
+                         :content => update.text,
+                         :updated => update.updated_at,
+                         :published => update.created_at,
+                         :id => update.id,
+                         :link => { :href => ("#{base_uri}/updates/#{update.id.to_s}")})
+    end
+
+    # Create a Feed representation which we can generate
+    # the Atom feed and send out.
+    feed = OStatus::Feed.from_data("#{base_uri}/feeds/#{id}",
+                                   "#{user_username}'s Updates",
+                                   "#{base_uri}/feeds/#{id}",
+                                   author,
+                                   entries,
+                                   :hub => [{:href => ''}] )
+    feed.atom
+  end
+
+  many :updates
 end
