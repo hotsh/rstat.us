@@ -22,7 +22,7 @@ class Author
     if image_url.nil?
       if email.nil?
         # TODO: Use 'r' logo or something
-        "http://gravatar.com/avatar/" + Digest::MD5.hexdigest("wilkie05@gmail.com") + "?s=48"
+        "/images/avatar.png"
       else
         # Using gravatar
         "http://gravatar.com/avatar/" + Digest::MD5.hexdigest(email) + "?s=48"
