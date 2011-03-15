@@ -207,7 +207,7 @@ class Rstatus < Sinatra::Base
   # an alias for the above route
   get "/users/:name/feed" do
     feed = User.first(:username => params[:name]).feed
-    redirect uri("/feeds/#{feed.id}.atom")
+    redirect "/feeds/#{feed.id}.atom"
   end
 
   # users can follow each other, and this route takes care of it!

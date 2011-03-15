@@ -1,9 +1,8 @@
 Factory.define :feed do |f|
-  f.user_id "1234"
-  f.user_name "John Public"
-  f.user_username "user_name"
-  f.user_email "john@example.com"
-  f.user_website "http://example.com"
+  #f.user_name "John Public"
+  #f.user_username "user_name"
+  #f.user_email "john@example.com"
+  #f.user_website "http://example.com"
 end
 
 Factory.sequence :update_text do |i|
@@ -24,9 +23,9 @@ end
 
 Factory.define :user do |u|
   u.username Factory.next(:usernames)
-  u.email Factory.next(:emails)
-  u.website "http://example.com"
-  u.name "Something"
+  #u.email Factory.next(:emails)
+  #u.website "http://example.com"
+  #u.name "Something"
 end
 
 Factory.sequence :integer do |i|
