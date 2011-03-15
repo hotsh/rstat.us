@@ -99,7 +99,8 @@ GEM
       nokogiri
       oauth
       tinyatom
-    osub (0.0.3)
+    osub (0.0.4)
+      ostatus
       ruby-hmac
     plucky (0.3.7)
       mongo (~> 1.1)
