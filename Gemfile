@@ -19,4 +19,5 @@ group :development, :test do
   gem 'rack-test'
   gem "database_cleaner"
   gem "sinatra-reloader"
+  gem "factory_girl"
 end
