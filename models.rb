@@ -4,7 +4,7 @@ class Update
 
   attr_accessor :oauth_secret, :oauth_token
 
-  belongs_to :user
+  belongs_to :feed
   key :text, String
 
   validates_length_of :text, :minimum => 1, :maximum => 140
@@ -102,8 +102,9 @@ class User
   key :perishable_token, String
 
   after_create :reset_perishible_token 
+  after_create :create_feed
 
-  has_one :feed
+  one :feed
   
   def reset_perishible_token
     self.perishable_token = Digest::MD5.hexdigest(Time.now.to_s)
@@ -201,6 +202,17 @@ class User
 
   private
 
+  def create_feed
+    self.feed = Feed.create(
+      :user_id => id.to_s,
+      :user_name => name,
+      :user_username => username,
+      :user_email => email,
+      :user_website => website
+    )
+    save
+  end
+
   def follow_yo_self
     following << self
     followers << self
@@ -238,6 +250,8 @@ class Feed
   key :user_username, String, :required => true
   key :user_email, String, :required => true
   key :user_website, String, :required => true
+
+  key :user_id, ObjectId
 
   def atom(base_uri)
     # Get the user
