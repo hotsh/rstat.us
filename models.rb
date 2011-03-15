@@ -4,7 +4,7 @@ class Update
 
   attr_accessor :oauth_secret, :oauth_token
 
-  belongs_to :user
+  belongs_to :feed
   key :text, String
 
   validates_length_of :text, :minimum => 1, :maximum => 140
@@ -93,7 +93,7 @@ class User
   many :authorizations, :dependant => :destroy
 
   key :name, String
-  key :username, String
+  key :username, String, :required => true
   key :email, String
   key :website, String
   key :bio, String
@@ -102,6 +102,9 @@ class User
   key :perishable_token, String
 
   after_create :reset_perishible_token 
+  after_create :create_feed
+
+  one :feed
   
   def reset_perishible_token
     self.perishable_token = Digest::MD5.hexdigest(Time.now.to_s)
@@ -199,6 +202,17 @@ class User
 
   private
 
+  def create_feed
+    self.feed = Feed.create(
+      :user_id => id.to_s,
+      :user_name => name,
+      :user_username => username,
+      :user_email => email,
+      :user_website => website
+    )
+    save
+  end
+
   def follow_yo_self
     following << self
     followers << self
@@ -228,3 +242,53 @@ class Notifier
   end
 end
 
+class Feed
+  include MongoMapper::Document
+
+  key :user_id, String, :required => true
+  key :user_name, String, :required => true
+  key :user_username, String, :required => true
+  key :user_email, String, :required => true
+  key :user_website, String, :required => true
+
+  key :user_id, ObjectId
+
+  def atom(base_uri)
+    # Get the user
+
+    # I apogize for putting this here...
+    
+    # Create the OStatus::PortableContacts object
+    poco = OStatus::PortableContacts.new(:id => user_id,
+                                         :display_name => user_name,
+                                         :preferred_username => user_username)
+
+    # Create the OStatus::Author object
+    author = OStatus::Author.new(:name => user_username,
+                                 :email => user_email,
+                                 :uri => user_website,
+                                 :portable_contacts => poco)
+
+    # Gather entries as OStatus::Entry objects
+    entries = updates.sort{|a, b| b.created_at <=> a.created_at}.map do |update|
+      OStatus::Entry.new(:title => update.text,
+                         :content => update.text,
+                         :updated => update.updated_at,
+                         :published => update.created_at,
+                         :id => update.id,
+                         :link => { :href => ("#{base_uri}/updates/#{update.id.to_s}")})
+    end
+
+    # Create a Feed representation which we can generate
+    # the Atom feed and send out.
+    feed = OStatus::Feed.from_data("#{base_uri}/feeds/#{id}",
+                                   "#{user_username}'s Updates",
+                                   "#{base_uri}/feeds/#{id}",
+                                   author,
+                                   entries,
+                                   :hub => [{:href => ''}] )
+    feed.atom
+  end
+
+  many :updates
+end

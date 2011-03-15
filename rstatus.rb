@@ -53,8 +53,8 @@ module Sinatra
   helpers UserHelper
 end
 
-
 class Rstatus < Sinatra::Base
+
 
   # The `PONY_VIA_OPTIONS` hash is used to configure `pony`. Basically, we only
   # want to actually send mail if we're in the production environment. So we set
@@ -96,11 +96,6 @@ class Rstatus < Sinatra::Base
   end
 
   configure do
-    unless test?
-      enable :sessions
-    end
-    
-
     if ENV['MONGOHQ_URL']
       MongoMapper.config = {ENV['RACK_ENV'] => {'uri' => ENV['MONGOHQ_URL']}}
       MongoMapper.database = ENV['MONGOHQ_DATABASE']
@@ -173,45 +168,14 @@ class Rstatus < Sinatra::Base
     haml :"users/show"
   end
 
-  get "/users/:slug/feed" do
-    # Get the user
-    @user = User.first :username => params[:slug]
+  get "/feeds/:id.atom" do
+    feed = Feed.first :id => params[:id]
+    body feed.atom(uri("/"))
+  end
 
-    # I apogize for putting this here...
-    
-    # Create the OStatus::PortableContacts object
-    poco = OStatus::PortableContacts.new(:id => @user.id,
-                                         :display_name => @user.name,
-                                         :preferred_username => @user.username)
-
-    # Create the OStatus::Author object
-    author = OStatus::Author.new(:name => @user.username,
-                                 :email => @user.email,
-                                 :uri => @user.website,
-                                 :portable_contacts => poco)
-
-    # Gather entries as OStatus::Entry objects
-    entries = @user.updates.reverse.map do |update|
-      OStatus::Entry.new(:title => update.text,
-                         :content => update.text,
-                         :updated => update.updated_at,
-                         :published => update.created_at,
-                         :id => update.id,
-                         :link => { :href => (request.url[0..-request.path.length-1]) + '/updates/' + update.id.to_s })
-    end
-
-    # Create a Feed representation which we can generate
-    # the Atom feed and send out.
-    feed = OStatus::Feed.from_data(request.url,
-                            params[:slug] + "'s Updates",
-                            request.url,
-                            author,
-                            entries,
-                            :hub => [{:href => ''}] )
-
-    # Respond with the feed and success
-    body feed.atom
-    status 200
+  get "/users/:name/feed" do
+    feed = User.first(:username => params[:name]).feed
+    body feed.atom(uri("/"))
   end
 
   # users can follow each other, and this route takes care of it!
@@ -273,11 +237,9 @@ class Rstatus < Sinatra::Base
   end
 
   post '/updates' do
-    update = Update.new(:text => params[:text], 
-                        :oauth_secret => session[:oauth_secret],
-                        :oauth_token => session[:oauth_token])
-    update.user = current_user
-    update.save
+    u = Update.new(:text => params[:text])
+    current_user.feed.updates << u
+    current_user.feed.save
 
     flash[:notice] = "Update created."
     redirect "/"
