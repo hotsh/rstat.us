@@ -1,10 +1,49 @@
+class Author
+  include MongoMapper::Document
+  
+  key :username, String
+  key :name, String
+  key :email, String
+  key :website, String
+  key :bio, String
+  key :image_url, String
+
+  def self.create_from_hash!(hsh)
+    create!(
+      :name => hsh['user_info']['name'],
+      :username => hsh['user_info']['nickname'],
+      :website => hsh['user_info']['urls']['Website'],
+      :bio => hsh['user_info']['description'],
+      :image_url => hsh['user_info']['image']
+    )
+  end
+
+  def avatar_url
+    if image_url.nil?
+      if email.nil?
+        # TODO: Use 'r' logo or something
+        "/images/avatar.png"
+      else
+        # Using gravatar
+        "http://gravatar.com/avatar/" + Digest::MD5.hexdigest(email) + "?s=48"
+      end
+    else
+      # Use the twitter image
+      image_url
+    end
+  end
+
+end
+
 class Update
   require 'cgi'
   include MongoMapper::Document
 
   attr_accessor :oauth_secret, :oauth_token
 
-  belongs_to :user
+  belongs_to :feed
+  belongs_to :author
+
   key :text, String
 
   validates_length_of :text, :minimum => 1, :maximum => 140
@@ -66,13 +105,18 @@ class Authorization
     first :provider => hsh['provider'], :uid => hsh['uid'].to_i
   end
 
-  def self.create_from_hash(hsh, user = nil)
-    user ||= User.create_from_hash!(hsh)
+  def self.create_from_hash(hsh, base_uri, user = nil)
+    if user.nil?
+      author = Author.create_from_hash!(hsh)
+      user = User.create(:author => author,
+                         :username => author.username
+                        )
+      user.finalize(base_uri)
+    end
 
-    
     a = new(:user => user, 
-              :uid => hsh['uid'], 
-            :provider => hsh['provider'],
+            :uid => hsh['uid'], 
+            :provider => hsh['provider']
            )
 
     unless a.save
@@ -92,79 +136,77 @@ class User
   include MongoMapper::Document
   many :authorizations, :dependant => :destroy
 
-  key :name, String
+  # Make the username required
+  # However, this will break it when email authorization is used
   key :username, String
-  key :email, String
-  key :website, String
-  key :bio, String
-  key :twitter_image, String
 
   key :perishable_token, String
 
-  after_create :reset_perishible_token 
-  
-  def reset_perishible_token
-    self.perishable_token = Digest::MD5.hexdigest(Time.now.to_s)
+  belongs_to :author
+  belongs_to :feed
+
+  def finalize(base_uri)
+    create_feed(base_uri)
+    follow_yo_self
+    reset_perishable_token
+  end
+
+  def set_perishable_token
+    self.perishable_token = Digest::MD5.hexdigest( rand.to_s )
     save
+  end
+
+  def reset_perishable_token
+    self.perishable_token = nil
   end
 
   key :following_ids, Array
-  many :following, :in => :following_ids, :class_name => 'User'
+  many :following, :in => :following_ids, :class_name => 'Feed'
 
   key :followers_ids, Array
-  many :followers, :in => :followers_ids, :class_name => 'User'
+  many :followers, :in => :followers_ids, :class_name => 'Feed'
 
-  def follow! followee
-    following << followee
+  # follow takes a url
+  def follow! feed_url
+    f = Feed.first(:url => feed_url)
+    if f.nil?
+      f = Feed.create(:url => feed_url,
+                      :local => false)
+    end
+
+    following << f
     save
-    followee.followers << self
-    followee.save
+
+    if f.local
+      followee = User.first(:author_id => f.author.id)
+      followee.followers << self.feed
+      followee.save
+    end
+
+    f
   end
 
-  def unfollow! followee
-    following_ids.delete(followee.id)
+  # unfollow takes a feed (since it is guaranteed to exist)
+  def unfollow! followed_feed
+    following_ids.delete(followed_feed.id)
     save
-    followee.followers_ids.delete(id)
-    followee.save
+    if followed_feed.local
+      followee = User.first(:author_id => followed_feed.author.id)
+      followee.followers_ids.delete(self.feed.id)
+      followee.save
+    end
   end
 
-  def following? user 
-    following.include? user
-  end
-
-  many :updates, :dependent => :destroy
-
-  alias :my_updates :updates
-
-  def updates
-    my_updates #.reject{|u| u.text =~ /^d /}
-  end
-
-  def self.create_from_hash!(hsh)
-    create!(
-      :name => hsh['user_info']['name'],
-      :username => hsh['user_info']['nickname'],
-      :website => hsh['user_info']['urls']['Website'],
-      :bio => hsh['user_info']['description'],
-      :twitter_image => hsh['user_info']['image']
-    )
+  def following? feed_url
+    f = Feed.first(:url => feed_url)
+    if f == nil
+      false
+    else
+      following.include? f
+    end
   end
 
   timestamps!
-
-  def avatar_image_url
-    if twitter_image.nil?
-      unless email.nil?
-        # Using gravatar
-        "http://gravatar.com/avatar/" + Digest::MD5.hexdigest(email) + "?s=48"
-      else
-        # TODO: Use 'r' logo or something
-      end
-    else
-      # Use the twitter image
-      twitter_image
-    end
-  end
 
   def timeline
     following.map(&:updates).flatten
@@ -179,8 +221,6 @@ class User
   end
 
   key :status
-
-  after_create :follow_yo_self
 
   attr_accessor :password
   key :hashed_password, String
@@ -199,9 +239,21 @@ class User
 
   private
 
+  def create_feed(base_uri)
+    f = Feed.create(
+      :author => author,
+      :local => true
+    )
+    f.generate_url(base_uri)
+    f.save
+
+    self.feed = f
+    save
+  end
+
   def follow_yo_self
-    following << self
-    followers << self
+    following << feed
+    followers << feed
     save
   end
 end
@@ -228,3 +280,88 @@ class Notifier
   end
 end
 
+class Feed
+  require 'osub'
+  require 'opub'
+  include MongoMapper::Document
+
+  # Feed url (and an indicator that it is local)
+  key :url, String
+  key :local, Boolean
+
+  # OStatus subscriber information
+  key :verify_token, String
+  key :secret, String
+
+  # For both pubs and subs, it needs to know
+  # what hubs are communicating with it
+  key :hubs, Array
+
+  belongs_to :author
+  many :updates
+
+  after_create :default_hubs
+
+  def ping_hubs
+    OPub::Publisher.new(url, hubs).ping_hubs
+  end
+
+  def update_entries(atom_xml, callback_url, signature)
+    sub = OSub::Subscripion.new(callback_url, feed.url, self.secret)
+
+    if sub.verify_content(xml, signature)
+      os_feed = OStatus::Feed.from_string(atom_xml)
+      # TODO:
+      # Update author if necessary
+
+      # Update entries
+      os_feed.entries.each do |entry|
+      end
+    end
+  end
+
+  # Set default hubs
+  def default_hubs
+    self.hubs << "http://pubsubhubbub.appspot.com/publish"
+    save
+  end
+
+  # Generates and stores the absolute local url
+  def generate_url(base_uri)
+    self.url = base_uri + "feeds/#{id}.atom"
+    save
+  end
+
+  def atom(base_uri)
+    # Create the OStatus::PortableContacts object
+    poco = OStatus::PortableContacts.new(:id => author.id,
+                                         :display_name => author.name,
+                                         :preferred_username => author.username)
+
+    # Create the OStatus::Author object
+    os_auth = OStatus::Author.new(:name => author.username,
+                                 :email => author.email,
+                                 :uri => author.website,
+                                 :portable_contacts => poco)
+
+    # Gather entries as OStatus::Entry objects
+    entries = updates.sort{|a, b| b.created_at <=> a.created_at}.map do |update|
+      OStatus::Entry.new(:title => update.text,
+                         :content => update.text,
+                         :updated => update.updated_at,
+                         :published => update.created_at,
+                         :id => update.id,
+                         :link => { :href => ("#{base_uri}updates/#{update.id.to_s}")})
+    end
+
+    # Create a Feed representation which we can generate
+    # the Atom feed and send out.
+    feed = OStatus::Feed.from_data("#{base_uri}feeds/#{id}.atom",
+                                   "#{author.username}'s Updates",
+                                   "#{base_uri}feeds/#{id}.atom",
+                                   os_auth,
+                                   entries,
+                                   :hub => [{:href => hubs.first}] )
+    feed.atom
+  end
+end

@@ -3,25 +3,19 @@ require 'minitest/autorun'
 require 'rack/test'
 require 'yaml'
 require 'database_cleaner'
+require 'factory_girl'
+
+require_relative 'factories'
 
 require_relative '../rstatus'
 
 module TestHelper
+  require 'capybara/dsl'
+  include Capybara
   include Rack::Test::Methods
   include Sinatra::UserHelper
 
   OmniAuth.config.test_mode = true
-  OmniAuth.config.add_mock(:twitter, {
-    :uid => '12345',
-    :user_info => {
-      :name => "Joe Public",
-      :nickname => "joepublic",
-      :urls => { :Website => "http://rstat.us" },
-      :description => "A description",
-      :image => "/images/something.png"
-    },
-    :credentials => {:token => "1234", :secret => "4567"}
-  })
 
   def app() Rstatus end
 
@@ -35,10 +29,22 @@ module TestHelper
     DatabaseCleaner.clean
   end
 
-  def login
-    session.get '/auth/twitter'
-    session.follow_redirect!
-    session.follow_redirect!
+  def log_in(u, uid)
+    OmniAuth.config.add_mock(:twitter, {
+      :uid => uid,
+      :user_info => {
+        :name => "Joe Public",
+        :nickname => u.username,
+        :urls => { :Website => "http://rstat.us" },
+        :description => "A description",
+        :image => "/images/something.png"
+      },
+      :credentials => {:token => "1234", :secret => "4567"}
+    })
+
+    visit '/auth/twitter'
   end
+
+  Capybara.app = Rstatus
 
 end

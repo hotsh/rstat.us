@@ -6,12 +6,12 @@
     .update-date
       = @update.created_at.ago_in_words  
       by
-    %a{:href => "/users/#{@update.user.username}"}
+    %a{:href => "/users/#{@update.author.username}"}
       .avatar
-        %img{:alt => "avatar", :src => @update.user.avatar_image_url}/
+        %img{:alt => "avatar", :src => @update.author.avatar_url}/
       .name
-        = @update.user.username
-    - if current_user and @update.user.username == current_user.username
+        = @update.author.username
+    - if current_user and @update.author.id == current_user.author.id
       %form{:method => "post", :action => "/updates/#{@update.id}"}
         %input{:type => "hidden", :name => "_method", :value => "delete"}
         %input.remove-update{:type => "submit", :value => "I Regret This"}

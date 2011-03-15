@@ -53,8 +53,10 @@ module Sinatra
   helpers UserHelper
 end
 
-
 class Rstatus < Sinatra::Base
+
+  set :port, 8088
+
 
   # The `PONY_VIA_OPTIONS` hash is used to configure `pony`. Basically, we only
   # want to actually send mail if we're in the production environment. So we set
@@ -79,7 +81,6 @@ class Rstatus < Sinatra::Base
       :password       => ENV['SENDGRID_PASSWORD'],
       :domain         => ENV['SENDGRID_DOMAIN']
     }
-
   end
 
   use Rack::Session::Cookie, :secret => ENV['COOKIE_SECRET']
@@ -96,8 +97,6 @@ class Rstatus < Sinatra::Base
   end
 
   configure do
-    enable :sessions
-
     if ENV['MONGOHQ_URL']
       MongoMapper.config = {ENV['RACK_ENV'] => {'uri' => ENV['MONGOHQ_URL']}}
       MongoMapper.database = ENV['MONGOHQ_DATABASE']
@@ -146,10 +145,9 @@ class Rstatus < Sinatra::Base
   end
 
   get '/auth/:provider/callback' do
-    puts "foo"
     auth = request.env['omniauth.auth']
     unless @auth = Authorization.find_from_hash(auth)
-      @auth = Authorization.create_from_hash(auth, current_user)
+      @auth = Authorization.create_from_hash(auth, uri("/"), current_user)
     end
 
     session[:oauth_token] = auth['credentials']['token']
@@ -166,50 +164,57 @@ class Rstatus < Sinatra::Base
     redirect '/'
   end
 
+  # show user profile
   get "/users/:slug" do
     @user = User.first :username => params[:slug]
     haml :"users/show"
   end
 
-  get "/feeds/:slug" do
-    # Get the user
-    @user = User.first :username => params[:slug]
+  # subscriber receives updates
+  # should be 'put', PuSH sucks at REST
+  post "/feeds/:id.atom" do
+    feed = Feed.first :id => params[:id]
+    feed.update_entries(request.body.read, request.url, request.env['HTTP_X_HUB_SIGNATURE'])
+  end
 
-    # I apogize for putting this here...
-    
-    # Create the OStatus::PortableContacts object
-    poco = OStatus::PortableContacts.new(:id => @user.id,
-                                         :display_name => @user.name,
-                                         :preferred_username => @user.username)
+  post "/feeds" do
+    f = Feed.create(:url => params[:url], :local => false)
+    flash[:notice] = "You are now following that user."
+    redirect "/"
+  end
 
-    # Create the OStatus::Author object
-    author = OStatus::Author.new(:name => @user.username,
-                                 :email => @user.email,
-                                 :uri => @user.website,
-                                 :portable_contacts => poco)
+  # publisher will feed the atom to a hub
+  # subscribers will verify a subscription
+  get "/feeds/:id.atom" do
+    feed = Feed.first :id => params[:id]
+    if params['hub.challenge']
+      sub = OSub::Subscription.new(request.url, feed.url)
 
-    # Gather entries as OStatus::Entry objects
-    entries = @user.updates.reverse.map do |update|
-      OStatus::Entry.new(:title => update.text,
-                         :content => update.text,
-                         :updated => update.updated_at,
-                         :published => update.created_at,
-                         :id => update.id,
-                         :link => { :href => (request.url[0..-request.path.length-1]) + '/updates/' + update.id.to_s })
+      # perform the hub's challenge
+      respond = sub.perform_challenge(params['hub.challenge'])
+
+      # verify that the random token is the same as when we
+      # subscribed with the hub initially and that the topic
+      # url matches what we expect
+      verified = params['hub.topic'] == feed.url
+      if verified and sub.verify_subscription(params['hub.verify_token'])
+        body respond[:body]
+        status respond[:status]
+      else
+        # if the verification fails, the specification forces us to
+        # return a 404 status
+        status 404
+      end
+    else
+      # TODO: Abide by headers that supply cache information
+      body feed.atom(uri("/"))
     end
+  end
 
-    # Create a Feed representation which we can generate
-    # the Atom feed and send out.
-    feed = OStatus::Feed.from_data(request.url,
-                            params[:slug] + "'s Updates",
-                            request.url,
-                            author,
-                            entries,
-                            :hub => [{:href => ''}] )
-
-    # Respond with the feed and success
-    body feed.atom
-    status 200
+  # an alias for the above route
+  get "/users/:name/feed" do
+    feed = User.first(:username => params[:name]).feed
+    redirect "/feeds/#{feed.id}.atom"
   end
 
   # users can follow each other, and this route takes care of it!
@@ -220,14 +225,14 @@ class Rstatus < Sinatra::Base
     redirect "/users/#{@user.username}" and return if @user == current_user
 
     #make sure we're not following them already
-    if current_user.following? @user
+    if current_user.following? @user.feed.url
       flash[:notice] = "You're already following #{params[:name]}."
       redirect "/users/#{@user.username}"
       return
     end
 
     # then follow them!
-    unless  current_user.follow! @user
+    unless current_user.follow! @user.feed.url
       flash[:notice] = "The was a problem following #{params[:name]}."
       redirect "/users/#{@user.username}"
     else
@@ -244,14 +249,14 @@ class Rstatus < Sinatra::Base
     redirect "/users/#{@user.username}" and return if @user == current_user
 
     #make sure we're following them already
-    unless current_user.following? @user
+    unless current_user.following? @user.feed.url
       flash[:notice] = "You're not following #{params[:name]}."
       redirect "/users/#{@user.username}"
       return
     end
 
     #unfollow them!
-    current_user.unfollow! @user
+    current_user.unfollow! @user.feed
 
     flash[:notice] = "No longer following #{params[:name]}."
     redirect "/users/#{@user.username}"
@@ -271,11 +276,16 @@ class Rstatus < Sinatra::Base
   end
 
   post '/updates' do
-    update = Update.new(:text => params[:text], 
-                        :oauth_secret => session[:oauth_secret],
-                        :oauth_token => session[:oauth_token])
-    update.user = current_user
-    update.save
+    u = Update.new(:text => params[:text], 
+                   :author => current_user.author)
+
+    # and entry to user's feed
+    current_user.feed.updates << u
+    current_user.feed.save
+    current_user.save
+
+    # tell hubs there is a new entry
+    current_user.feed.ping_hubs
 
     flash[:notice] = "Update created."
     redirect "/"
@@ -287,9 +297,12 @@ class Rstatus < Sinatra::Base
   end
 
   post '/signup' do
-    u = User.create(:email => params[:email], :status => "unconfirmed")
+    u = User.create(:email => params[:email], 
+                    :status => "unconfirmed")
+    u.set_perishable_token
+
     if development?
-      puts "http://localhost:9292/confirm/#{u.perishable_token}"
+      puts uri("/") + "confirm/#{u.perishable_token}"
     else
       Notifier.send_signup_notification(params[:email], u.perishable_token)
     end
@@ -299,6 +312,7 @@ class Rstatus < Sinatra::Base
 
   get "/confirm/:token" do
     @user = User.first :perishable_token => params[:token]
+    # XXX: Handle user being nil (invalid confirmation)
     @username = @user.email.match(/^([^@]+?)@/)[1]
 
     @valid_username = false
@@ -314,6 +328,8 @@ class Rstatus < Sinatra::Base
     user.username = params[:username]
     user.password = params[:password]
     user.status = "confirmed"
+    user.author = Author.create(:username => user.username)
+    user.finalize(uri("/"))
     user.save
     session[:user_id] = user.id.to_s
 
@@ -362,6 +378,10 @@ class Rstatus < Sinatra::Base
 
   get "/open_source" do
     haml :opensource
+  end
+
+  get "/external_subscription" do
+    haml :external_subscription
   end
 
 end

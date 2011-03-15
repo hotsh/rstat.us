@@ -14,9 +14,13 @@ gem "pony"
 gem "bcrypt-ruby"
 gem "rdiscount"
 gem "ostatus"
+gem "osub"
+gem "opub"
 
 group :development, :test do
   gem 'rack-test'
   gem "database_cleaner"
   gem "sinatra-reloader"
+  gem "factory_girl"
+  gem "capybara"
 end

@@ -1,13 +1,13 @@
 #profile
-  %h3= @user.name
+  %h3= @user.author.name
   .username
-    @#{@user.username}
+    @#{@user.author.username}
 
-  %p= @user.bio
+  %p= @user.author.bio
   
   - if current_user and @user != current_user
     #follow
-      - if current_user.following? @user
+      - if current_user.following? @user.feed.url
         .negative
           %a.button{:href => "/users/#{@user.username}/unfollow"}
             Unfollow
@@ -18,4 +18,4 @@
         .follow-status You are not following #{@user.username}
 
   #updates.updates
-    != haml :_updates, :locals => {:updates => @user.updates.to_a.sort{|a, b| b.created_at <=> a.created_at }}
+    != haml :_updates, :locals => {:updates => @user.feed.updates.to_a.sort{|a, b| b.created_at <=> a.created_at }}
