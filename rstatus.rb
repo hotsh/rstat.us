@@ -233,11 +233,6 @@ class Rstatus < Sinatra::Base
     end
   end
 
-  get "/users/:username" do
-    @user = User.first :username => params[:username]
-    haml :"users/show"
-  end
-
   # user edits own profile
   get "/users/:username/edit" do
     @user = User.first :username => params[:username]
@@ -318,15 +313,14 @@ class Rstatus < Sinatra::Base
 
   # this lets us see followers.
   get '/users/:name/followers' do
-    @user = User.first(:username => params[:name])
-
-    haml :"users/followers"
+    @users = User.first(:username => params[:name]).followers
+    haml :"users/list", :locals => {:title => "Followers"}
   end
 
   # This lets us see who is following.
   get '/users/:name/following' do
-    @user = User.first(:username => params[:name])
-    haml :"users/following"
+    @users = User.first(:username => params[:name]).following
+    haml :"users/list", :locals => {:title => "Following"}
   end
 
   post '/updates' do

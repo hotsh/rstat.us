@@ -8,8 +8,8 @@ class Author
   key :bio, String
   key :image_url, String
 
-  has_one :feed
-  has_one :user
+  one :feed
+  one :user
 
   def self.create_from_hash!(hsh)
     create!(

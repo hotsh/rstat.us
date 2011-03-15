@@ -1,6 +1,6 @@
-%h1 Following
+%h1 #{title}
 %ul.user-list
-  - @user.following.each_with_index do |feed, i|
+  - @users.each_with_index do |feed, i|
     %li.user{:class => i%2 == 0 ? "even" : "odd"}
       .avatar
         %a{:href => "/users/#{feed.author.username}"}
@@ -11,7 +11,8 @@
             = feed.author.name
           %br
           (#{feed.author.username})
-          
-      .follow.negative
-        %a.button{:href => "/users/#{feed.author.username}/unfollow"}
-          Unfollow
+
+      - if current_user.following? feed.url
+        .follow.negative
+          %a.button{:href => "/users/#{feed.author.username}/unfollow"}
+            Unfollow
