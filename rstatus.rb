@@ -194,7 +194,7 @@ class Rstatus < Sinatra::Base
     end
 
     # then follow them!
-    unless  current_user.follow! @user.feed.url
+    unless current_user.follow! @user.feed.url
       flash[:notice] = "The was a problem following #{params[:name]}."
       redirect "/users/#{@user.username}"
     else
@@ -218,7 +218,7 @@ class Rstatus < Sinatra::Base
     end
 
     #unfollow them!
-    current_user.unfollow! @user
+    current_user.unfollow! @user.feed
 
     flash[:notice] = "No longer following #{params[:name]}."
     redirect "/users/#{@user.username}"
@@ -287,7 +287,6 @@ class Rstatus < Sinatra::Base
     user.password = params[:password]
     user.status = "confirmed"
     user.author = Author.create(:username => user.username)
-    user.feed = Feed.create(:author => user.author)
     user.finalize(uri("/"))
     user.save
     session[:user_id] = user.id.to_s

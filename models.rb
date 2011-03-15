@@ -166,6 +166,7 @@ class User
   key :followers_ids, Array
   many :followers, :in => :followers_ids, :class_name => 'Feed'
 
+  # follow takes a url
   def follow! feed_url
     f = Feed.first(:url => feed_url)
     if f.nil?
@@ -177,22 +178,27 @@ class User
     save
 
     if f.local
-      followee.followers << self
+      followee = User.first(:author_id => f.author.id)
+      followee.followers << self.feed
       followee.save
     end
 
     f
   end
 
-  def unfollow! feed_url
-    following_ids.delete(followee.id)
+  # unfollow takes a feed (since it is guaranteed to exist)
+  def unfollow! followed_feed
+    following_ids.delete(followed_feed.id)
     save
-    followee.followers_ids.delete(id)
-    followee.save
+    if followed_feed.local
+      followee = User.first(:author_id => followed_feed.author.id)
+      followee.followers_ids.delete(self.feed.id)
+      followee.save
+    end
   end
 
   def following? user 
-    following.include? user
+    following.include? user.feed
   end
 
   timestamps!
@@ -229,11 +235,14 @@ class User
   private
 
   def create_feed(base_uri)
-    self.feed = Feed.create(
-      :author => author
+    f = Feed.create(
+      :author => author,
+      :local => true
     )
-    self.feed.generate_url(base_uri)
-    self.feed.save
+    f.generate_url(base_uri)
+    f.save
+
+    self.feed = f
     save
   end
 
