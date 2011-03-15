@@ -124,7 +124,6 @@ class Rstatus < Sinatra::Base
   get '/' do
     if logged_in?
       @updates = current_user.timeline
-      puts @updates.map {|u| u.created_at}
       haml :dashboard
     else
       haml :index, :layout => :'external-layout'
@@ -144,7 +143,6 @@ class Rstatus < Sinatra::Base
   end
 
   get '/auth/:provider/callback' do
-    puts 'hi'
     auth = request.env['omniauth.auth']
     unless @auth = Authorization.find_from_hash(auth)
       @auth = Authorization.create_from_hash(auth, uri("/"), current_user)
