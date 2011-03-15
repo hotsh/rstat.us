@@ -272,9 +272,13 @@ class Rstatus < Sinatra::Base
     u = Update.new(:text => params[:text], 
                    :author => current_user.author)
 
+    # and entry to user's feed
     current_user.feed.updates << u
     current_user.feed.save
     current_user.save
+
+    # tell hubs there is a new entry
+    current_user.feed.ping_hubs
 
     flash[:notice] = "Update created."
     redirect "/"
