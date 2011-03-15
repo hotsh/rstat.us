@@ -1,3 +1,43 @@
+class Author
+  include MongoMapper::Document
+  
+  key :username, String
+  key :name, String
+  key :email, String
+  key :website, String
+  key :bio, String
+  key :image_url, String
+
+  def self.create_from_hash!(hsh)
+    puts hsh
+    a = create!(
+      :name => hsh['user_info']['name'],
+      :username => hsh['user_info']['nickname'],
+      :website => hsh['user_info']['urls']['Website'],
+      :bio => hsh['user_info']['description'],
+      :image_url => hsh['user_info']['image']
+    )
+    puts a.image_url
+    a
+  end
+
+  def avatar_url
+    if image_url.nil?
+      if email.nil?
+        # TODO: Use 'r' logo or something
+        "http://gravatar.com/avatar/" + Digest::MD5.hexdigest("wilkie05@gmail.com") + "?s=48"
+      else
+        # Using gravatar
+        "http://gravatar.com/avatar/" + Digest::MD5.hexdigest(email) + "?s=48"
+      end
+    else
+      # Use the twitter image
+      image_url
+    end
+  end
+
+end
+
 class Update
   require 'cgi'
   include MongoMapper::Document
@@ -5,6 +45,8 @@ class Update
   attr_accessor :oauth_secret, :oauth_token
 
   belongs_to :feed
+  belongs_to :author
+
   key :text, String
 
   validates_length_of :text, :minimum => 1, :maximum => 140
@@ -67,12 +109,19 @@ class Authorization
   end
 
   def self.create_from_hash(hsh, user = nil)
-    user ||= User.create_from_hash!(hsh)
+    # Could create an Author and THEN a User... maybe
+    if user.nil?
+      author = Author.create_from_hash!(hsh)
+      user = User.create(:author => author,
+                         :username => author.username
+                        )
+      puts user.author
+      puts user.author.image_url
+    end
 
-    
     a = new(:user => user, 
-              :uid => hsh['uid'], 
-            :provider => hsh['provider'],
+            :uid => hsh['uid'], 
+            :provider => hsh['provider']
            )
 
     unless a.save
@@ -92,20 +141,16 @@ class User
   include MongoMapper::Document
   many :authorizations, :dependant => :destroy
 
-  key :name, String
   key :username, String, :required => true
-  key :email, String
-  key :website, String
-  key :bio, String
-  key :twitter_image, String
 
   key :perishable_token, String
 
   after_create :reset_perishible_token 
   after_create :create_feed
 
-  one :feed
-  
+  belongs_to :author
+  belongs_to :feed
+
   def reset_perishible_token
     self.perishable_token = Digest::MD5.hexdigest(Time.now.to_s)
     save
@@ -143,31 +188,7 @@ class User
     my_updates #.reject{|u| u.text =~ /^d /}
   end
 
-  def self.create_from_hash!(hsh)
-    create!(
-      :name => hsh['user_info']['name'],
-      :username => hsh['user_info']['nickname'],
-      :website => hsh['user_info']['urls']['Website'],
-      :bio => hsh['user_info']['description'],
-      :twitter_image => hsh['user_info']['image']
-    )
-  end
-
   timestamps!
-
-  def avatar_image_url
-    if twitter_image.nil?
-      unless email.nil?
-        # Using gravatar
-        "http://gravatar.com/avatar/" + Digest::MD5.hexdigest(email) + "?s=48"
-      else
-        # TODO: Use 'r' logo or something
-      end
-    else
-      # Use the twitter image
-      twitter_image
-    end
-  end
 
   def timeline
     following.map(&:updates).flatten
@@ -204,11 +225,7 @@ class User
 
   def create_feed
     self.feed = Feed.create(
-      :user_id => id.to_s,
-      :user_name => name,
-      :user_username => username,
-      :user_email => email,
-      :user_website => website
+      #:author => author
     )
     save
   end
@@ -245,28 +262,19 @@ end
 class Feed
   include MongoMapper::Document
 
-  key :user_id, String, :required => true
-  key :user_name, String, :required => true
-  key :user_username, String, :required => true
-  key :user_email, String, :required => true
-  key :user_website, String, :required => true
-
-  key :user_id, ObjectId
+  belongs_to :author
+  many :updates
 
   def atom(base_uri)
-    # Get the user
-
-    # I apogize for putting this here...
-    
     # Create the OStatus::PortableContacts object
-    poco = OStatus::PortableContacts.new(:id => user_id,
-                                         :display_name => user_name,
-                                         :preferred_username => user_username)
+    poco = OStatus::PortableContacts.new(:id => author.id,
+                                         :display_name => author.name,
+                                         :preferred_username => author.username)
 
     # Create the OStatus::Author object
-    author = OStatus::Author.new(:name => user_username,
-                                 :email => user_email,
-                                 :uri => user_website,
+    author = OStatus::Author.new(:name => author.username,
+                                 :email => author.email,
+                                 :uri => author.website,
                                  :portable_contacts => poco)
 
     # Gather entries as OStatus::Entry objects
@@ -282,13 +290,11 @@ class Feed
     # Create a Feed representation which we can generate
     # the Atom feed and send out.
     feed = OStatus::Feed.from_data("#{base_uri}/feeds/#{id}",
-                                   "#{user_username}'s Updates",
+                                   "#{author.username}'s Updates",
                                    "#{base_uri}/feeds/#{id}",
                                    author,
                                    entries,
                                    :hub => [{:href => ''}] )
     feed.atom
   end
-
-  many :updates
 end

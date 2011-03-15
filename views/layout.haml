@@ -13,7 +13,7 @@
             %h3 Profile
             .avatar
               %a{:href=>"/users/#{current_user.username}"}
-                %img{:alt => "avatar", :src => current_user.avatar_image_url}/
+                %img{:alt => "avatar", :src => (current_user.author.avatar_url ||= "asdfasdf")}/
             .userinfo
               .name
                 %a{:href=>"/users/#{current_user.username}"}
