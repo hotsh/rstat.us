@@ -656,11 +656,6 @@ body {
   visibility: hidden;
   overflow: hidden;
 }
-.updates .update .avatar {
-  float: left;
-  width: 48px;
-  padding-right: 1em;
-}
 .updates .update .content {
   float: left;
   width: 450px;
@@ -681,6 +676,15 @@ body {
   font-size: 1.2em;
   padding: 1em;
   color: #bbb;
+}
+.avatar {
+  float: left;
+  width: 35px;
+  height: 35px;
+  padding-right: 1em;
+}
+.avatar img {
+  width: 35px;
 }
 /* Footer */
 #footer {
@@ -811,6 +815,28 @@ body {
   margin-right: 10px;
   padding-top: 1.5em;
 }
+/* Following
+*/
+.user-list {
+  padding: 0;
+  margin: 0;
+}
+.user-list .user {
+  padding: 0.5em;
+  list-style-type: none;
+  display: block;
+}
+.user-list .user:after {
+  content: "\0020";
+  display: block;
+  height: 0;
+  clear: both;
+  visibility: hidden;
+  overflow: hidden;
+}
+.user-list .even {
+  background: #e5e5e5;
+}
 /* the textarea where the user types an update */
 form#update-form {
   display: block;
@@ -893,42 +919,6 @@ form#update-form #update-info.negative #update-count {
 }
 #timeline .mention {
   background: #e4feff;
-}
-#update {
-  background: #f3f3f3;
-  padding-top: 3em;
-  width: 520px;
-  margin: auto;
-}
-#update .update .update-text-wrap {
-  border-radius: 5px;
-  background: white;
-  padding: 1em;
-}
-#update .update .update-text-wrap .update-text {
-  font-size: 2.5em;
-}
-#update .update .byline {
-  display: block;
-  padding: 1em;
-}
-#update .update .byline:after {
-  content: "\0020";
-  display: block;
-  height: 0;
-  clear: both;
-  visibility: hidden;
-  overflow: hidden;
-}
-#update .update .byline .update-date, #update .update .byline .avatar, #update .update .byline .name {
-  float: left;
-  padding-right: 5px;
-}
-#update .update .byline .avatar img {
-  height: 18px;
-}
-#update #footer {
-  border-top: 1px solid #ccc;
 }
 /* Profile */
 #profile {

@@ -59,6 +59,22 @@
   padding-top: 1.5em;
 }
 
+/* Following
+*/
+
+.user-list {
+  padding: 0;
+  margin: 0;
+  .user {
+    padding: 0.5em;
+    list-style-type: none;
+    .clearfix;
+  }
+  .even {
+    background: #e5e5e5;
+  }
+}
+
 /* the textarea where the user types an update */
 form#update-form {
   .clearfix;
@@ -127,43 +143,6 @@ form#update-form {
 
 #timeline .mention {
   background: @mention;
-}
-
-#update {
-  background: #f3f3f3;
-  padding-top: 3em;
-  width: 520px;
-  margin: auto;
-
-  .update {
-    .update-text-wrap {
-      .rounded(5px);
-      background: white;
-      padding: 1em;
-    
-      .update-text {
-        font-size: 2.5em;
-      }
-    }
-  
-    .byline {
-      .clearfix;
-      padding: 1em;
-      .update-date, .avatar, .name {
-        float: left;
-        padding-right: 5px;
-      }
-      .avatar {
-        img { 
-          height: 18px;
-        }
-      }
-    }
-  }
-  
-  #footer {
-    border-top: 1px solid #ccc;
-  }
 }
 
 /* Profile */

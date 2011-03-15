@@ -166,7 +166,7 @@ class Rstatus < Sinatra::Base
 
   # show user profile
   get "/users/:slug" do
-    @user = User.first :username => params[:slug]
+    @author = Author.first :username => params[:slug]
     haml :"users/show"
   end
 

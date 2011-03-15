@@ -1,4 +1,12 @@
 %h1 Following
-%ul
-  - @user.following.each do |feed|
-    %li= feed.author.username
+%ul.user-list
+  - @user.following.each_with_index do |feed, i|
+    %li.user{:class => i%2 == 0 ? "even" : "odd"}
+      .avatar
+        %a{:href => "/users/#{feed.author.username}"}
+          %img{:alt => "avatar", :src => feed.author.avatar_url}/
+      .name
+        %a{:href => "/users/#{feed.author.username}"}
+          %b
+            = feed.author.name
+          (#{feed.author.username})
