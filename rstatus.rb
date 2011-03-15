@@ -147,7 +147,7 @@ class Rstatus < Sinatra::Base
     puts 'hi'
     auth = request.env['omniauth.auth']
     unless @auth = Authorization.find_from_hash(auth)
-      @auth = Authorization.create_from_hash(auth, current_user)
+      @auth = Authorization.create_from_hash(auth, uri("/"), current_user)
     end
 
     session[:oauth_token] = auth['credentials']['token']
@@ -194,7 +194,7 @@ class Rstatus < Sinatra::Base
     end
 
     # then follow them!
-    unless  current_user.follow! @user
+    unless  current_user.follow! @user.feed.url
       flash[:notice] = "The was a problem following #{params[:name]}."
       redirect "/users/#{@user.username}"
     else
@@ -288,7 +288,7 @@ class Rstatus < Sinatra::Base
     user.status = "confirmed"
     user.author = Author.create(:username => user.username)
     user.feed = Feed.create(:author => user.author)
-    user.finalize
+    user.finalize(uri("/"))
     user.save
     session[:user_id] = user.id.to_s
 

@@ -105,13 +105,13 @@ class Authorization
     first :provider => hsh['provider'], :uid => hsh['uid'].to_i
   end
 
-  def self.create_from_hash(hsh, user = nil)
+  def self.create_from_hash(hsh, base_uri, user = nil)
     if user.nil?
       author = Author.create_from_hash!(hsh)
       user = User.create(:author => author,
                          :username => author.username
                         )
-      user.finalize
+      user.finalize(base_uri)
     end
 
     a = new(:user => user, 
@@ -145,8 +145,8 @@ class User
   belongs_to :author
   belongs_to :feed
 
-  def finalize
-    create_feed
+  def finalize(base_uri)
+    create_feed(base_uri)
     follow_yo_self
     reset_perishable_token
   end
@@ -166,14 +166,25 @@ class User
   key :followers_ids, Array
   many :followers, :in => :followers_ids, :class_name => 'Feed'
 
-  def follow! followee
-    following << followee
+  def follow! feed_url
+    f = Feed.first(:url => feed_url)
+    if f.nil?
+      f = Feed.create(:url => feed_url,
+                      :local => false)
+    end
+
+    following << f
     save
-    followee.followers << self
-    followee.save
+
+    if f.local
+      followee.followers << self
+      followee.save
+    end
+
+    f
   end
 
-  def unfollow! followee
+  def unfollow! feed_url
     following_ids.delete(followee.id)
     save
     followee.followers_ids.delete(id)
@@ -217,10 +228,12 @@ class User
 
   private
 
-  def create_feed
+  def create_feed(base_uri)
     self.feed = Feed.create(
       :author => author
     )
+    self.feed.generate_url(base_uri)
+    self.feed.save
     save
   end
 
@@ -256,8 +269,16 @@ end
 class Feed
   include MongoMapper::Document
 
+  key :url, String
+  key :local, Boolean
+
   belongs_to :author
   many :updates
+
+  def generate_url(base_uri)
+    url = base_uri + "feeds/#{id}"
+    save
+  end
 
   def atom(base_uri)
     # Create the OStatus::PortableContacts object
