@@ -1,4 +1,4 @@
-%p Following
+%h1 Following
 %ul
-  - @user.following.each do |u|
-    %li= u.username
+  - @user.following.each do |feed|
+    %li= feed.author.username
