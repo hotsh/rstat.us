@@ -228,3 +228,6 @@ class Notifier
   end
 end
 
+class Feed
+  include MongoMapper::Document
+end

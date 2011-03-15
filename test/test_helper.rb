@@ -3,6 +3,9 @@ require 'minitest/autorun'
 require 'rack/test'
 require 'yaml'
 require 'database_cleaner'
+require 'factory_girl'
+
+require_relative 'factories'
 
 require_relative '../rstatus'
 
