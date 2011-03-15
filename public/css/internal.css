@@ -813,7 +813,9 @@ body {
   width: 550px;
   float: left;
   margin-right: 10px;
-  padding-top: 1.5em;
+}
+#content h3 {
+  padding-top: 0.9em;
 }
 /* Following
 */
