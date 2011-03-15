@@ -298,7 +298,9 @@ class Feed
   after_create :default_hubs
 
   def ping_hubs
-    OPub::Publisher.new(feed.url, hubs).ping_hubs
+    puts hubs
+    puts url
+    OPub::Publisher.new(url, hubs).ping_hubs
   end
 
   def update_entries(atom_xml, callback_url, signature)
@@ -323,7 +325,7 @@ class Feed
 
   # Generates and stores the absolute local url
   def generate_url(base_uri)
-    self.url = base_uri + "feeds/#{id}"
+    self.url = base_uri + "feeds/#{id}.atom"
     save
   end
 
@@ -346,14 +348,14 @@ class Feed
                          :updated => update.updated_at,
                          :published => update.created_at,
                          :id => update.id,
-                         :link => { :href => ("#{base_uri}/updates/#{update.id.to_s}")})
+                         :link => { :href => ("#{base_uri}updates/#{update.id.to_s}")})
     end
 
     # Create a Feed representation which we can generate
     # the Atom feed and send out.
-    feed = OStatus::Feed.from_data("#{base_uri}/feeds/#{id}",
+    feed = OStatus::Feed.from_data("#{base_uri}feeds/#{id}.atom",
                                    "#{author.username}'s Updates",
-                                   "#{base_uri}/feeds/#{id}",
+                                   "#{base_uri}feeds/#{id}.atom",
                                    os_auth,
                                    entries,
                                    :hub => [{:href => hubs.first}] )
