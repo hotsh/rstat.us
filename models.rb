@@ -50,7 +50,13 @@ class Update
 
   def to_html
     out = CGI.escapeHTML(text)
-    out.gsub!(/@(\w+)/, "<a href='/users/\\1'>@\\1</a>")
+    out.gsub!(/@(\w+)/) do |match|
+      if u = User.first(:username => /#{match[1..-1]}/i)
+        "<a href='/users/#{u.username}'>#{match}</a>"
+      else
+        match
+      end
+    end
     out.gsub!(/(http:\/\/\S+[a-zA-Z\/])/, "<a href='\\1'>\\1</a>")
     out.gsub!(/#(\w+)/, "<a href='/hashtags/\\1'>#\\1</a>")
     out
@@ -138,7 +144,7 @@ class User
 
   # Make the username required
   # However, this will break it when email authorization is used
-  key :username, String
+  key :username, String, :unique => true
 
   key :perishable_token, String
 
@@ -172,6 +178,7 @@ class User
     if f.nil?
       f = Feed.create(:url => feed_url,
                       :local => false)
+      f.populate
     end
 
     following << f
@@ -302,6 +309,17 @@ class Feed
 
   after_create :default_hubs
 
+  def populate
+    f = OStatus::Feed.from_url(url)
+    a = f.author
+
+    self.author = Author.create(:name => a.name,
+                           :username => a.name,
+                           :email => a.email)
+
+    save
+  end
+
   def ping_hubs
     OPub::Publisher.new(url, hubs).ping_hubs
   end
@@ -328,7 +346,7 @@ class Feed
 
   # Generates and stores the absolute local url
   def generate_url(base_uri)
-    self.url = base_uri + "feeds/#{id}.atom"
+    self.url = base_uri + "/feeds/#{id}.atom"
     save
   end
 

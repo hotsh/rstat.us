@@ -177,6 +177,7 @@ DEPENDENCIES
   haml
   i18n
   mongo_mapper
+  nokogiri (= 1.4.4)
   omniauth
   opub
   ostatus
