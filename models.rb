@@ -312,8 +312,8 @@ class Feed
 
   def populate
     # TODO: More entropy would be nice
-    self.verify_token = rand
-    self.secret = rand
+    self.verify_token = Digest::MD5.hexdigest(rand.to_s)
+    self.secret = Digest::MD5.hexdigest(rand.to_s)
 
     f = OStatus::Feed.from_url(url)
 
@@ -357,9 +357,9 @@ class Feed
   end
 
   def update_entries(atom_xml, callback_url, signature)
-    sub = OSub::Subscripion.new(callback_url, feed.url, self.secret)
+    sub = OSub::Subscription.new(callback_url, self.url, self.secret)
 
-    if sub.verify_content(xml, signature)
+    if sub.verify_content(atom_xml, signature)
       os_feed = OStatus::Feed.from_string(atom_xml)
       # TODO:
       # Update author if necessary
