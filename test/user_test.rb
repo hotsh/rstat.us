@@ -31,4 +31,10 @@ class UserTest < MiniTest::Unit::TestCase
     assert_equal update.id, Update.hashtag_search("hashtags").first.id 
   end
 
+  def test_username_is_unique
+    Factory(:user, :username => "steve")
+    u = Factory.build(:user, :username => "steve")
+    refute u.save
+  end
+
 end

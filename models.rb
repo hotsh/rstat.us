@@ -144,7 +144,7 @@ class User
 
   # Make the username required
   # However, this will break it when email authorization is used
-  key :username, String
+  key :username, String, :unique => true
 
   key :perishable_token, String
 
