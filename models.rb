@@ -172,6 +172,7 @@ class User
     if f.nil?
       f = Feed.create(:url => feed_url,
                       :local => false)
+      f.populate
     end
 
     following << f
@@ -301,6 +302,17 @@ class Feed
   many :updates
 
   after_create :default_hubs
+
+  def populate
+    f = OStatus::Feed.from_url(url)
+    a = f.author
+
+    self.author = Author.create(:name => a.name,
+                           :username => a.name,
+                           :email => a.email)
+
+    save
+  end
 
   def ping_hubs
     puts hubs
