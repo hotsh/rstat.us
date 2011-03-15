@@ -15,10 +15,9 @@ class RstatusTest < MiniTest::Unit::TestCase
   end
 
   def test_dashboard_page
-    skip
     login
     assert_match /Update/, last_response.body
-    assert_match /#{current_user.username}/, last_response.body
+    assert_match /joepublic/, last_response.body
   end
 
 end
