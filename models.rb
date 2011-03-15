@@ -9,16 +9,13 @@ class Author
   key :image_url, String
 
   def self.create_from_hash!(hsh)
-    puts hsh
-    a = create!(
+    create!(
       :name => hsh['user_info']['name'],
       :username => hsh['user_info']['nickname'],
       :website => hsh['user_info']['urls']['Website'],
       :bio => hsh['user_info']['description'],
       :image_url => hsh['user_info']['image']
     )
-    puts a.image_url
-    a
   end
 
   def avatar_url
@@ -115,8 +112,6 @@ class Authorization
       user = User.create(:author => author,
                          :username => author.username
                         )
-      puts user.author
-      puts user.author.image_url
     end
 
     a = new(:user => user, 
