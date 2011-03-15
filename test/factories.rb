@@ -1,5 +1,9 @@
 Factory.define :feed do |f|
-
+  f.user_id "1234"
+  f.user_name "John Public"
+  f.user_username "user_name"
+  f.user_email "john@example.com"
+  f.user_website "http://example.com"
 end
 
 Factory.sequence :update_text do |i|

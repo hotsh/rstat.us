@@ -231,11 +231,11 @@ end
 class Feed
   include MongoMapper::Document
 
-  key :user_id, String
-  key :user_name, String
-  key :user_username, String
-  key :user_email, String
-  key :user_website, String
+  key :user_id, String, :required => true
+  key :user_name, String, :required => true
+  key :user_username, String, :required => true
+  key :user_email, String, :required => true
+  key :user_website, String, :required => true
 
   def atom(base_uri)
     # Get the user
