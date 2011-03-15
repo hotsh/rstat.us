@@ -218,7 +218,7 @@ class Rstatus < Sinatra::Base
     redirect "/users/#{@user.username}" and return if @user == current_user
 
     #make sure we're not following them already
-    if current_user.following? @user
+    if current_user.following? @user.feed.url
       flash[:notice] = "You're already following #{params[:name]}."
       redirect "/users/#{@user.username}"
       return
@@ -242,7 +242,7 @@ class Rstatus < Sinatra::Base
     redirect "/users/#{@user.username}" and return if @user == current_user
 
     #make sure we're following them already
-    unless current_user.following? @user
+    unless current_user.following? @user.feed.url
       flash[:notice] = "You're not following #{params[:name]}."
       redirect "/users/#{@user.username}"
       return
