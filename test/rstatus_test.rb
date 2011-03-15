@@ -64,9 +64,11 @@ class RstatusTest < MiniTest::Unit::TestCase
     visit "/"
     click_link "Would you like to follow someone not on rstat.us?"
     assert_match "You can follow someone not on rstat.us, as long as they use 'ostatus.'", page.body
-    fill_in 'url', :with => "http://example.com/sombody.atom"
+
+    #this should really be mocked
+    fill_in 'url', :with => "http://identi.ca/api/statuses/user_timeline/396889.atom"
     click_button "Follow"
-    assert_match "You are now following", page.body
+    assert_match "Now following steveklabnik.", page.body
     assert "/", current_path
 
   end

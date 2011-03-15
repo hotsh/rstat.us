@@ -178,9 +178,17 @@ class Rstatus < Sinatra::Base
   end
 
   post "/feeds" do
-    f = Feed.create(:url => params[:url], :local => false)
-    flash[:notice] = "You are now following that user."
-    redirect "/"
+    feed_url = params[:url]
+
+    f = current_user.follow! feed_url
+    unless f
+      flash[:notice] = "The was a problem following #{params[:url]}."
+      redirect "/users/#{@user.username}"
+    else
+      name = f.author.username
+      flash[:notice] = "Now following #{name}."
+      redirect "/"
+    end
   end
 
   # publisher will feed the atom to a hub
