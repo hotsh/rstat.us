@@ -185,6 +185,9 @@ class Rstatus < Sinatra::Base
       flash[:notice] = "The was a problem following #{params[:url]}."
       redirect "/users/#{@user.username}"
     else
+      sub = OSub::Subscripion.new(url("/feeds/#{f.id}.atom"), f.url, f.secret)
+      sub.subscribe(f.verify_token)
+
       name = f.author.username
       flash[:notice] = "Now following #{name}."
       redirect "/"

@@ -311,6 +311,10 @@ class Feed
   after_create :default_hubs
 
   def populate
+    # TODO: More entropy would be nice
+    self.verify_token = rand
+    self.secret = rand
+
     f = OStatus::Feed.from_url(url)
 
     avatar_url = f.icon
@@ -324,6 +328,8 @@ class Feed
                                 :username => a.name,
                                 :email => a.email,
                                 :image_url => avatar_url)
+
+    self.hubs = f.hubs
 
     populate_entries(f.entries)
 
