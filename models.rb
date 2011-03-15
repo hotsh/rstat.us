@@ -296,7 +296,7 @@ class Feed
                                          :preferred_username => author.username)
 
     # Create the OStatus::Author object
-    author = OStatus::Author.new(:name => author.username,
+    os_auth = OStatus::Author.new(:name => author.username,
                                  :email => author.email,
                                  :uri => author.website,
                                  :portable_contacts => poco)
@@ -316,7 +316,7 @@ class Feed
     feed = OStatus::Feed.from_data("#{base_uri}/feeds/#{id}",
                                    "#{author.username}'s Updates",
                                    "#{base_uri}/feeds/#{id}",
-                                   author,
+                                   os_auth,
                                    entries,
                                    :hub => [{:href => ''}] )
     feed.atom
