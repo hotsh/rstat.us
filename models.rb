@@ -50,7 +50,13 @@ class Update
 
   def to_html
     out = CGI.escapeHTML(text)
-    out.gsub!(/@(\w+)/, "<a href='/users/\\1'>@\\1</a>")
+    out.gsub!(/@(\w+)/) do |match|
+      if u = User.first(:username => /#{match[1..-1]}/i)
+        "<a href='/users/#{u.username}'>#{match}</a>"
+      else
+        match
+      end
+    end
     out.gsub!(/(http:\/\/\S+[a-zA-Z\/])/, "<a href='\\1'>\\1</a>")
     out.gsub!(/#(\w+)/, "<a href='/hashtags/\\1'>#\\1</a>")
     out
@@ -340,7 +346,7 @@ class Feed
 
   # Generates and stores the absolute local url
   def generate_url(base_uri)
-    self.url = base_uri + "feeds/#{id}.atom"
+    self.url = base_uri + "/feeds/#{id}.atom"
     save
   end
 

@@ -14,6 +14,12 @@ class UpdateTest < MiniTest::Unit::TestCase
     assert_match /<a href='\/users\/steveklabnik'>@steveklabnik<\/a>/, u.to_html
   end
 
+  def test_at_replies
+    Factory(:user, :username => "steveklabnik")
+    u = Update.new(:text => "This is a message mentioning @SteveKlabnik.")
+    assert_match /<a href='\/users\/steveklabnik'>@SteveKlabnik<\/a>/, u.to_html
+  end
+
   def test_links
     u = Update.new(:text => "This is a message mentioning http://rstat.us/.")
     assert_match /<a href='http:\/\/rstat.us\/'>http:\/\/rstat.us\/<\/a>/, u.to_html
