@@ -1,8 +1,4 @@
 Factory.define :feed do |f|
-  #f.user_name "John Public"
-  #f.user_username "user_name"
-  #f.user_email "john@example.com"
-  #f.user_website "http://example.com"
 end
 
 Factory.sequence :update_text do |i|
@@ -23,9 +19,7 @@ end
 
 Factory.define :user do |u|
   u.username Factory.next(:usernames)
-  #u.email Factory.next(:emails)
-  #u.website "http://example.com"
-  #u.name "Something"
+  u.author {|a| Factory(:author, :username => a.username) }
 end
 
 Factory.sequence :integer do |i|
@@ -36,4 +30,12 @@ Factory.define :authorization do |a|
   a.uid Factory.next(:integer)
   a.provider "twitter"
   a.association :user
+end
+
+Factory.define :author do |a|
+  a.username "user"
+  a.email Factory.next(:emails)
+  a.website "http://example.com"
+  a.name "Something"
+  a.bio "Hi, I do stuff."
 end

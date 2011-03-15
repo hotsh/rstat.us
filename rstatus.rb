@@ -219,6 +219,38 @@ class Rstatus < Sinatra::Base
     end
   end
 
+  get "/users/:username" do
+    @user = User.first :username => params[:username]
+    haml :"users/show"
+  end
+
+  # user edits own profile
+  get "/users/:username/edit" do
+    @user = User.first :username => params[:username]
+    if @user == current_user
+      haml :"users/edit"
+    else
+      redirect "/users/#{params[:username]}"
+    end
+  end
+
+  # user updates own profile
+  put "/users/:username" do
+    @user = User.first :username => params[:username]
+    if @user == current_user
+      @user.author.name    = params[:name]
+      @user.author.email   = params[:email]
+      @user.author.website = params[:website]
+      @user.author.bio     = params[:bio]
+      @user.author.save
+      flash[:notice] = "Profile saved!"
+      redirect "/users/#{params[:username]}"
+      return
+    else
+      redirect "/users/#{params[:username]}"
+    end
+  end
+
   # an alias for the above route
   get "/users/:name/feed" do
     feed = User.first(:username => params[:name]).feed

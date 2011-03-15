@@ -70,7 +70,40 @@ class RstatusTest < MiniTest::Unit::TestCase
     click_button "Follow"
     assert_match "Now following steveklabnik.", page.body
     assert "/", current_path
+  end
 
+  def test_user_edit_own_profile_link
+    u = Factory(:user)
+    a = Factory(:authorization, :user => u)
+    u.finalize("http://example.com/")
+    log_in(u, a.uid)
+    visit "/users/#{u.username}"
+
+    assert has_link? "Edit your profile"
+  end
+
+  def test_user_edit_profile
+    u = Factory(:user)
+    a = Factory(:authorization, :user => u)
+    u.finalize("http://example.com/")
+    log_in(u, a.uid)
+    visit "/users/#{u.username}"
+    click_link "Edit your profile"
+
+    assert_equal 200, page.status_code
+  end
+
+  def test_user_update_profile
+    u = Factory(:user)
+    a = Factory(:authorization, :user => u)
+    u.finalize("http://example.com/")
+    log_in(u, a.uid)
+    visit "/users/#{u.username}/edit"
+    bio_text = "To be or not to be"
+    fill_in "bio", :with => bio_text
+    click_button "Save"
+
+    assert_match page.body, /#{bio_text}/
   end
 
 end
