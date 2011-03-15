@@ -22,4 +22,5 @@ group :development, :test do
   gem "database_cleaner"
   gem "sinatra-reloader"
   gem "factory_girl"
+  gem "capybara"
 end

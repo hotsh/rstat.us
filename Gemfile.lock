@@ -8,6 +8,19 @@ GEM
     bson (1.2.4)
     bson_ext (1.2.4)
     builder (2.1.2)
+    capybara (0.4.1.2)
+      celerity (>= 0.7.9)
+      culerity (>= 0.2.4)
+      mime-types (>= 1.16)
+      nokogiri (>= 1.3.3)
+      rack (>= 1.0.0)
+      rack-test (>= 0.5.4)
+      selenium-webdriver (>= 0.0.27)
+      xpath (~> 0.1.3)
+    celerity (0.8.8)
+    childprocess (0.1.7)
+      ffi (~> 0.6.3)
+    culerity (0.2.15)
     database_cleaner (0.6.5)
     factory_girl (1.3.3)
     faraday (0.5.7)
@@ -16,11 +29,14 @@ GEM
       rack (>= 1.1.0, < 2)
     faraday_middleware (0.3.2)
       faraday (~> 0.5.4)
+    ffi (0.6.3)
+      rake (>= 0.8.7)
     haml (3.0.25)
     hashie (1.0.0)
     i18n (0.5.0)
     jnunemaker-validatable (1.8.4)
       activesupport (>= 2.3.4)
+    json_pure (1.5.1)
     mail (2.2.15)
       activesupport (>= 2.3.6)
       i18n (>= 0.4.0)
@@ -100,6 +116,7 @@ GEM
       ruby-openid (>= 2.1.8)
     rack-test (0.5.7)
       rack (>= 1.0)
+    rake (0.8.7)
     rdiscount (1.6.8)
     rest-client (1.6.1)
       mime-types (>= 1.16)
@@ -108,6 +125,12 @@ GEM
     ruby-openid-apps-discovery (1.2.0)
       ruby-openid (>= 2.1.7)
     rubyntlm (0.1.1)
+    rubyzip (0.9.4)
+    selenium-webdriver (0.1.3)
+      childprocess (~> 0.1.5)
+      ffi (~> 0.6.3)
+      json_pure
+      rubyzip
     simple_oauth (0.1.4)
     sinatra (1.2.0)
       rack (~> 1.1)
@@ -138,6 +161,8 @@ GEM
       multi_json (~> 0.0.5)
       multi_xml (~> 0.2.0)
       simple_oauth (~> 0.1.3)
+    xpath (0.1.3)
+      nokogiri (~> 1.3)
 
 PLATFORMS
   ruby
@@ -145,6 +170,7 @@ PLATFORMS
 DEPENDENCIES
   bcrypt-ruby
   bson_ext
+  capybara
   database_cleaner
   factory_girl
   haml
