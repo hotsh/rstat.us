@@ -278,12 +278,18 @@ end
 class Feed
   include MongoMapper::Document
 
+  # Feed url (and an indicator that it is local)
   key :url, String
   key :local, Boolean
+
+  # OStatus subscriber information
+  key :verify_token, String
+  key :secret, String
 
   belongs_to :author
   many :updates
 
+  # Generates and stores the absolute local url
   def generate_url(base_uri)
     self.url = base_uri + "feeds/#{id}"
     save
