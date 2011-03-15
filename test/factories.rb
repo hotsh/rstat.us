@@ -13,3 +13,11 @@ end
 Factory.define :update do |u|
   u.text Factory.next(:update_text)
 end
+
+Factory.sequence :usernames do |i|
+  "user_#{i}"
+end
+
+Factory.define :user do |u|
+  u.username Factory.next(:usernames)
+end
