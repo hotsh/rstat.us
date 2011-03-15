@@ -5,14 +5,14 @@ class RstatusTest < MiniTest::Unit::TestCase
   include TestHelper
 
   def test_hello_world
-    get '/'
-    assert last_response.ok?
+    visit '/'
+    assert_equal 200, page.status_code
   end
 
-  def test_get_feeds
+  def test_visit_feeds
     feed = Factory(:feed)
-    get "/feeds/#{feed.id}.atom"
-    assert last_response.ok?, "Response not okay."
+    visit "/feeds/#{feed.id}.atom"
+    assert_equal 200, page.status_code
   end
 
   def test_feed_render
@@ -24,19 +24,34 @@ class RstatusTest < MiniTest::Unit::TestCase
     feed.updates = updates
     feed.save
 
-    get "/feeds/#{feed.id}.atom"
+    visit "/feeds/#{feed.id}.atom"
 
     updates.each do |update|
-      assert_match last_response.body, /#{update.text}/
+      assert_match page.body, /#{update.text}/
     end
 
   end
 
   def test_user_feed_render
     u = Factory(:user)
-    get "/users/#{u.username}/feed"
-    assert last_response.ok?
+    visit "/users/#{u.username}/feed"
+    assert_equal 200, page.status_code
+  end
 
+  def test_user_makes_updates
+    u = Factory(:user)
+    a = Factory(:authorization, :user => u)
+    update_text = "Testing, testing"
+    params = {
+      :text => update_text
+    }
+    log_in(u, a.uid)
+    visit "/"
+    fill_in 'update-textarea', :with => update_text
+    click_button :'update-button'
+    visit "/users/#{u.username}/feed"
+
+    assert_match page.body, /#{update_text}/
   end
 
 end

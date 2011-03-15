@@ -53,8 +53,8 @@ module Sinatra
   helpers UserHelper
 end
 
-
 class Rstatus < Sinatra::Base
+
 
   # The `PONY_VIA_OPTIONS` hash is used to configure `pony`. Basically, we only
   # want to actually send mail if we're in the production environment. So we set
@@ -96,11 +96,6 @@ class Rstatus < Sinatra::Base
   end
 
   configure do
-    unless test?
-      enable :sessions
-    end
-    
-
     if ENV['MONGOHQ_URL']
       MongoMapper.config = {ENV['RACK_ENV'] => {'uri' => ENV['MONGOHQ_URL']}}
       MongoMapper.database = ENV['MONGOHQ_DATABASE']
@@ -242,11 +237,9 @@ class Rstatus < Sinatra::Base
   end
 
   post '/updates' do
-    update = Update.new(:text => params[:text], 
-                        :oauth_secret => session[:oauth_secret],
-                        :oauth_token => session[:oauth_token])
-    update.user = current_user
-    update.save
+    u = Update.new(:text => params[:text])
+    current_user.feed.updates << u
+    current_user.feed.save
 
     flash[:notice] = "Update created."
     redirect "/"
