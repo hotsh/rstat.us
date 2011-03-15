@@ -32,5 +32,12 @@ class RstatusTest < MiniTest::Unit::TestCase
 
   end
 
+  def test_user_feed_render
+    u = Factory(:user)
+    get "/users/#{u.username}/feed"
+    assert last_response.ok?
+
+  end
+
 end
 

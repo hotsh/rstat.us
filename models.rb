@@ -93,7 +93,7 @@ class User
   many :authorizations, :dependant => :destroy
 
   key :name, String
-  key :username, String
+  key :username, String, :required => true
   key :email, String
   key :website, String
   key :bio, String
@@ -102,6 +102,8 @@ class User
   key :perishable_token, String
 
   after_create :reset_perishible_token 
+
+  has_one :feed
   
   def reset_perishible_token
     self.perishable_token = Digest::MD5.hexdigest(Time.now.to_s)

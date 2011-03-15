@@ -174,10 +174,12 @@ class Rstatus < Sinatra::Base
   end
 
   get "/feeds/:id.atom" do
-
     feed = Feed.first :id => params[:id]
+    body feed.atom(uri("/"))
+  end
 
-    # Respond with the feed and success
+  get "/users/:name/feed" do
+    feed = User.first(:username => params[:name]).feed
     body feed.atom(uri("/"))
   end
 
