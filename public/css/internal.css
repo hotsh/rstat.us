@@ -822,6 +822,7 @@ body {
   margin: 0;
 }
 .user-list .user {
+  position: relative;
   padding: 0.5em;
   list-style-type: none;
   display: block;
@@ -833,6 +834,11 @@ body {
   clear: both;
   visibility: hidden;
   overflow: hidden;
+}
+.user-list .user .follow {
+  position: absolute;
+  top: 0.75em;
+  right: 0.5em;
 }
 .user-list .even {
   background: #e5e5e5;

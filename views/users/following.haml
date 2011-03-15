@@ -9,4 +9,9 @@
         %a{:href => "/users/#{feed.author.username}"}
           %b
             = feed.author.name
+          %br
           (#{feed.author.username})
+          
+      .follow.negative
+        %a.button{:href => "/users/#{feed.author.username}/unfollow"}
+          Unfollow
