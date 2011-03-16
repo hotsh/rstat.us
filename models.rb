@@ -293,6 +293,8 @@ end
 class Feed
   require 'osub'
   require 'opub'
+  require 'nokogiri'
+
   include MongoMapper::Document
 
   # Feed url (and an indicator that it is local)
@@ -350,7 +352,9 @@ class Feed
         self.updates << u
         save
       end
-      u.text = entry.content
+
+      # Strip HTML
+      u.text = Nokogiri::HTML::Document.parse(entry.content).text
       u.save
     end
   end
