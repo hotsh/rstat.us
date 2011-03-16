@@ -128,19 +128,19 @@ class Rstatus < Sinatra::Base
       @updates = current_user.timeline
       haml :dashboard
     else
-      haml :index, :layout => :'external-layout'
+      haml :index, :layout => false
     end
   end
 
   get '/home' do
-    haml :index, :layout => :'external-layout'
+    haml :index, :layout => false
   end
 
   get '/replies' do
     if logged_in?
       haml :replies
     else
-      haml :index, :layout => :'external-layout'
+      haml :index, :layout => false
     end
   end
 
@@ -166,7 +166,7 @@ class Rstatus < Sinatra::Base
 
   # show user profile
   get "/users/:slug" do
-    @user = User.first :username => params[:slug]
+    @author = Author.first :username => params[:slug]
     haml :"users/show"
   end
 
@@ -185,6 +185,11 @@ class Rstatus < Sinatra::Base
       flash[:notice] = "The was a problem following #{params[:url]}."
       redirect "/users/#{@user.username}"
     else
+      hub_url = f.hubs.first
+
+      sub = OSub::Subscription.new(url("/feeds/#{f.id}.atom"), f.url, f.secret)
+      sub.subscribe(hub_url, f.verify_token)
+
       name = f.author.username
       flash[:notice] = "Now following #{name}."
       redirect "/"
@@ -196,7 +201,7 @@ class Rstatus < Sinatra::Base
   get "/feeds/:id.atom" do
     feed = Feed.first :id => params[:id]
     if params['hub.challenge']
-      sub = OSub::Subscription.new(request.url, feed.url)
+      sub = OSub::Subscription.new(request.url, feed.url, nil, feed.verify_token)
 
       # perform the hub's challenge
       respond = sub.perform_challenge(params['hub.challenge'])
@@ -206,9 +211,15 @@ class Rstatus < Sinatra::Base
       # url matches what we expect
       verified = params['hub.topic'] == feed.url
       if verified and sub.verify_subscription(params['hub.verify_token'])
+        if development?
+          puts "Verified"
+        end
         body respond[:body]
         status respond[:status]
       else
+        if development?
+          puts "Verification Failed"
+        end
         # if the verification fails, the specification forces us to
         # return a 404 status
         status 404
@@ -217,11 +228,6 @@ class Rstatus < Sinatra::Base
       # TODO: Abide by headers that supply cache information
       body feed.atom(uri("/"))
     end
-  end
-
-  get "/users/:username" do
-    @user = User.first :username => params[:username]
-    haml :"users/show"
   end
 
   # user edits own profile
@@ -261,23 +267,23 @@ class Rstatus < Sinatra::Base
   get '/users/:name/follow' do
     require_login! :return => "/users/#{params[:name]}/follow"
 
-    @user = User.first(:username => params[:name])
-    redirect "/users/#{@user.username}" and return if @user == current_user
+    @author = Author.first(:username => params[:name])
+    redirect "/users/#{@author.username}" and return if @author.user == current_user
 
     #make sure we're not following them already
-    if current_user.following? @user.feed.url
+    if current_user.following? @author.feed.url
       flash[:notice] = "You're already following #{params[:name]}."
-      redirect "/users/#{@user.username}"
+      redirect "/users/#{@author.username}"
       return
     end
 
     # then follow them!
-    unless current_user.follow! @user.feed.url
+    unless current_user.follow! @author.feed.url
       flash[:notice] = "The was a problem following #{params[:name]}."
-      redirect "/users/#{@user.username}"
+      redirect "/users/#{@author.username}"
     else
       flash[:notice] = "Now following #{params[:name]}."
-      redirect "/users/#{@user.username}"
+      redirect "/users/#{@author.username}"
     end
   end
 
@@ -285,34 +291,33 @@ class Rstatus < Sinatra::Base
   get '/users/:name/unfollow' do
     require_login! :return => "/users/#{params[:name]}/unfollow"
 
-    @user = User.first(:username => params[:name])
-    redirect "/users/#{@user.username}" and return if @user == current_user
+    @author = Author.first(:username => params[:name])
+    redirect "/users/#{@author.username}" and return if @author.user == current_user
 
     #make sure we're following them already
-    unless current_user.following? @user.feed.url
+    unless current_user.following? @author.feed.url
       flash[:notice] = "You're not following #{params[:name]}."
-      redirect "/users/#{@user.username}"
+      redirect "/users/#{@author.username}"
       return
     end
 
     #unfollow them!
-    current_user.unfollow! @user.feed
+    current_user.unfollow! @author.feed
 
     flash[:notice] = "No longer following #{params[:name]}."
-    redirect "/users/#{@user.username}"
+    redirect "/users/#{@author.username}"
   end
 
   # this lets us see followers.
   get '/users/:name/followers' do
-    @user = User.first(:username => params[:name])
-
-    haml :"users/followers"
+    @users = User.first(:username => params[:name]).followers
+    haml :"users/list", :locals => {:title => "Followers"}
   end
 
   # This lets us see who is following.
   get '/users/:name/following' do
-    @user = User.first(:username => params[:name])
-    haml :"users/following"
+    @users = User.first(:username => params[:name]).following
+    haml :"users/list", :locals => {:title => "Following"}
   end
 
   post '/updates' do
@@ -347,7 +352,7 @@ class Rstatus < Sinatra::Base
       Notifier.send_signup_notification(params[:email], u.perishable_token)
     end
 
-    haml :"signup/thanks", :layout => :'external-layout'
+    haml :"signup/thanks"
   end
 
   get "/confirm/:token" do
@@ -368,7 +373,8 @@ class Rstatus < Sinatra::Base
     user.username = params[:username]
     user.password = params[:password]
     user.status = "confirmed"
-    user.author = Author.create(:username => user.username)
+    user.author = Author.create(:username => user.username,
+                                :email => user.email)
     user.finalize(uri("/"))
     user.save
     session[:user_id] = user.id.to_s
@@ -420,7 +426,7 @@ class Rstatus < Sinatra::Base
     haml :opensource
   end
 
-  get "/external_subscription" do
+  get "/follow" do
     haml :external_subscription
   end
 

@@ -8,6 +8,9 @@ class Author
   key :bio, String
   key :image_url, String
 
+  one :feed
+  one :user
+
   def self.create_from_hash!(hsh)
     create!(
       :name => hsh['user_info']['name'],
@@ -21,7 +24,7 @@ class Author
   def avatar_url
     if image_url.nil?
       if email.nil?
-        # TODO: Use 'r' logo or something
+        # Using a default avatar
         "/images/avatar.png"
       else
         # Using gravatar
@@ -45,6 +48,7 @@ class Update
   belongs_to :author
 
   key :text, String
+  key :update_id, String
 
   validates_length_of :text, :minimum => 1, :maximum => 140
 
@@ -145,7 +149,6 @@ class User
   # Make the username required
   # However, this will break it when email authorization is used
   key :username, String, :unique => true
-
   key :perishable_token, String
 
   belongs_to :author
@@ -290,6 +293,8 @@ end
 class Feed
   require 'osub'
   require 'opub'
+  require 'nokogiri'
+
   include MongoMapper::Document
 
   # Feed url (and an indicator that it is local)
@@ -306,18 +311,52 @@ class Feed
 
   belongs_to :author
   many :updates
+  one :user
 
   after_create :default_hubs
 
   def populate
+    # TODO: More entropy would be nice
+    self.verify_token = Digest::MD5.hexdigest(rand.to_s)
+    self.secret = Digest::MD5.hexdigest(rand.to_s)
+
     f = OStatus::Feed.from_url(url)
+
+    avatar_url = f.icon
+    if avatar_url == nil
+      avatar_url = f.logo
+    end
+
     a = f.author
 
     self.author = Author.create(:name => a.name,
-                           :username => a.name,
-                           :email => a.email)
+                                :username => a.name,
+                                :email => a.email,
+                                :image_url => avatar_url)
+
+    self.hubs = f.hubs
+
+    populate_entries(f.entries)
 
     save
+  end
+
+  def populate_entries(os_entries)
+    os_entries.each do |entry|
+      u = Update.first(:update_id => entry.id)
+      if u.nil?
+        u = Update.create(:update_id => entry.id,
+                          :author => self.author,
+                          :created_at => entry.published,
+                          :updated_at => entry.updated)
+        self.updates << u
+        save
+      end
+
+      # Strip HTML
+      u.text = Nokogiri::HTML::Document.parse(entry.content).text
+      u.save
+    end
   end
 
   def ping_hubs
@@ -325,16 +364,15 @@ class Feed
   end
 
   def update_entries(atom_xml, callback_url, signature)
-    sub = OSub::Subscripion.new(callback_url, feed.url, self.secret)
+    sub = OSub::Subscription.new(callback_url, self.url, self.secret)
 
-    if sub.verify_content(xml, signature)
+    if sub.verify_content(atom_xml, signature)
       os_feed = OStatus::Feed.from_string(atom_xml)
       # TODO:
       # Update author if necessary
 
       # Update entries
-      os_feed.entries.each do |entry|
-      end
+      populate_entries(os_feed.entries)
     end
   end
 
@@ -375,11 +413,13 @@ class Feed
     # Create a Feed representation which we can generate
     # the Atom feed and send out.
     feed = OStatus::Feed.from_data("#{base_uri}feeds/#{id}.atom",
-                                   "#{author.username}'s Updates",
-                                   "#{base_uri}feeds/#{id}.atom",
-                                   os_auth,
-                                   entries,
-                                   :hub => [{:href => hubs.first}] )
+                                   :title => "#{author.username}'s Updates",
+                                   :id => "#{base_uri}feeds/#{id}.atom",
+                                   :author => os_auth,
+                                   :entries => entries,
+                                   :links => {
+                                     :hub => [{:href => hubs.first}]
+                                   })
     feed.atom
   end
 end
