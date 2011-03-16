@@ -11,25 +11,28 @@
         - if current_user
           #profile
             %h3 Profile
-            .avatar
-              %a{:href=>"/users/#{current_user.username}"}
-                %img{:alt => "avatar", :src => (current_user.author.avatar_url ||= "asdfasdf")}/
-            .userinfo
-              .name
+            .profile-wrap
+              .avatar
                 %a{:href=>"/users/#{current_user.username}"}
-                  = current_user.username
-              .stats
-                .following
-                  Following: <a href="/users/#{current_user.username}/following">#{current_user.following.length}</a>
-                .followers
-                  Followers: <a href="/users/#{current_user.username}/followers">#{current_user.followers.length}</a>
-                .updates
-                  Updates: #{current_user.feed.updates.count}
-              .logout
-                %a{:href => "/logout"}
-                  Logout
-              %hr/
-              %a{:href => "/external_subscription"} Would you like to follow someone not on rstat.us?
+                  %img{:alt => "avatar", :src => (current_user.author.avatar_url ||= "asdfasdf")}/
+              .userinfo
+                .name
+                  %a{:href=>"/users/#{current_user.username}"}
+                    = current_user.username
+                .stats
+                  .following
+                    Following: <a href="/users/#{current_user.username}/following">#{current_user.following.length}</a>
+                  .followers
+                    Followers: <a href="/users/#{current_user.username}/followers">#{current_user.followers.length}</a>
+                  .updates
+                    Updates: #{current_user.feed.updates.count}
+
+          .links
+            %a{:href => "/external_subscription"} Would you like to follow someone not on rstat.us?
+        
+          .logout
+            %a{:href => "/logout"}
+              Logout
 
       #right
         #content

@@ -747,18 +747,10 @@ body {
 /* Layout
 *******************************************/
 #main #left {
-  width: 310px;
-  float: left;
-  margin-right: 10px;
-}
-#main #left #logo, #main #left #profile {
   padding-left: 80px;
   width: 230px;
   float: left;
   margin-right: 10px;
-  margin-right: 0;
-  padding-right: 0;
-  margin-right: 0;
 }
 #main #left #logo h2 {
   display: block;
@@ -785,12 +777,26 @@ body {
   padding-bottom: 0.5em;
   border-bottom: 1px solid #ddd;
 }
+#main #left #profile .profile-wrap {
+  display: block;
+  padding-top: 0.25em;
+}
+#main #left #profile .profile-wrap:after {
+  content: "\0020";
+  display: block;
+  height: 0;
+  clear: both;
+  visibility: hidden;
+  overflow: hidden;
+}
 #main #left #profile .avatar, #main #left #profile .userinfo {
   float: left;
 }
-#main #left #profile .userinfo {
-  padding-top: 0.25em;
-  padding-left: 1em;
+#main #left #profile .avatar {
+  width: 48px;
+}
+#main #left #profile .avatar img {
+  width: 48px;
 }
 #main #left #profile .userinfo .name {
   font-weight: bold;
@@ -800,6 +806,12 @@ body {
   margin-top: 1em;
   border-top: 1px solid #ddd;
   padding-top: 1em;
+}
+#main #left .links, #main #left .logout {
+  width: 200px;
+  padding-top: 1em;
+  border-top: 1px solid #ddd;
+  margin-top: 1em;
 }
 #main #right {
   width: 630px;
