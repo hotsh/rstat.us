@@ -270,23 +270,23 @@ class Rstatus < Sinatra::Base
   get '/users/:name/follow' do
     require_login! :return => "/users/#{params[:name]}/follow"
 
-    @user = User.first(:username => params[:name])
-    redirect "/users/#{@user.username}" and return if @user == current_user
+    @author = Author.first(:username => params[:name])
+    redirect "/users/#{@author.username}" and return if @author.user == current_user
 
     #make sure we're not following them already
-    if current_user.following? @user.feed.url
+    if current_user.following? @author.feed.url
       flash[:notice] = "You're already following #{params[:name]}."
-      redirect "/users/#{@user.username}"
+      redirect "/users/#{@author.username}"
       return
     end
 
     # then follow them!
-    unless current_user.follow! @user.feed.url
+    unless current_user.follow! @author.feed.url
       flash[:notice] = "The was a problem following #{params[:name]}."
-      redirect "/users/#{@user.username}"
+      redirect "/users/#{@author.username}"
     else
       flash[:notice] = "Now following #{params[:name]}."
-      redirect "/users/#{@user.username}"
+      redirect "/users/#{@author.username}"
     end
   end
 
@@ -294,21 +294,21 @@ class Rstatus < Sinatra::Base
   get '/users/:name/unfollow' do
     require_login! :return => "/users/#{params[:name]}/unfollow"
 
-    @user = User.first(:username => params[:name])
-    redirect "/users/#{@user.username}" and return if @user == current_user
+    @author = Author.first(:username => params[:name])
+    redirect "/users/#{@author.username}" and return if @author.user == current_user
 
     #make sure we're following them already
-    unless current_user.following? @user.feed.url
+    unless current_user.following? @author.feed.url
       flash[:notice] = "You're not following #{params[:name]}."
-      redirect "/users/#{@user.username}"
+      redirect "/users/#{@author.username}"
       return
     end
 
     #unfollow them!
-    current_user.unfollow! @user.feed
+    current_user.unfollow! @author.feed
 
     flash[:notice] = "No longer following #{params[:name]}."
-    redirect "/users/#{@user.username}"
+    redirect "/users/#{@author.username}"
   end
 
   # this lets us see followers.
