@@ -39,6 +39,13 @@ class RstatusTest < MiniTest::Unit::TestCase
     assert_equal 200, page.status_code
   end
 
+  def test_user_profile
+    u = Factory(:user)
+    u.finalize("http://example.com")
+    visit "/users/#{u.username}"
+    assert_equal 200, page.status_code
+  end
+
   def test_user_makes_updates
     u = Factory(:user)
     a = Factory(:authorization, :user => u)
@@ -63,7 +70,7 @@ class RstatusTest < MiniTest::Unit::TestCase
     log_in(u, a.uid)
     visit "/"
     click_link "Would you like to follow someone not on rstat.us?"
-    assert_match "You can follow someone not on rstat.us, as long as they use 'ostatus.'", page.body
+    assert_match "ostatus Sites", page.body
 
     #this should really be mocked
     fill_in 'url', :with => "http://identi.ca/api/statuses/user_timeline/396889.atom"

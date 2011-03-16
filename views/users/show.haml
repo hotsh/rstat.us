@@ -22,12 +22,12 @@
       Edit your profile
   - else
     #follow
-      - if current_user.following? @author.feed.url
+      - if current_user and current_user.following? @author.feed.url
         .negative
           %a.button{:href => "/users/#{@author.username}/unfollow"}
             Unfollow
           .follow-status You are currently following #{@author.username}
-      - else
+      - elsif current_user
         %a.button{:href => "/users/#{@author.username}/follow"}
           Follow
         .follow-status You are not following #{@author.username}
