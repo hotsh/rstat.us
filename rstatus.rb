@@ -355,7 +355,7 @@ class Rstatus < Sinatra::Base
       Notifier.send_signup_notification(params[:email], u.perishable_token)
     end
 
-    haml :"signup/thanks", :layout => :'external-layout'
+    haml :"signup/thanks"
   end
 
   get "/confirm/:token" do
