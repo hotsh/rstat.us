@@ -831,7 +831,7 @@ body {
   margin-top: -0.35em;
 }
 /* Following
-*/
+**********************/
 .user-list {
   padding: 0;
   margin: 0;
@@ -857,6 +857,19 @@ body {
 }
 .user-list .even {
   background: #e5e5e5;
+}
+#sites {
+  width: 350px;
+  float: left;
+  margin-right: 10px;
+}
+#follow-form {
+  width: 190px;
+  float: left;
+  margin-right: 10px;
+  margin-right: 0;
+  padding-right: 0;
+  margin-right: 0;
 }
 /* the textarea where the user types an update */
 form#update-form {

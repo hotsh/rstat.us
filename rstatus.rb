@@ -128,19 +128,19 @@ class Rstatus < Sinatra::Base
       @updates = current_user.timeline
       haml :dashboard
     else
-      haml :index, :layout => :'external-layout'
+      haml :index, :layout => false
     end
   end
 
   get '/home' do
-    haml :index, :layout => :'external-layout'
+    haml :index, :layout => false
   end
 
   get '/replies' do
     if logged_in?
       haml :replies
     else
-      haml :index, :layout => :'external-layout'
+      haml :index, :layout => false
     end
   end
 
@@ -429,7 +429,7 @@ class Rstatus < Sinatra::Base
     haml :opensource
   end
 
-  get "/external_subscription" do
+  get "/follow" do
     haml :external_subscription
   end
 
