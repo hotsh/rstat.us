@@ -149,7 +149,6 @@ class User
   # Make the username required
   # However, this will break it when email authorization is used
   key :username, String, :unique => true
-
   key :perishable_token, String
 
   belongs_to :author
@@ -310,6 +309,7 @@ class Feed
 
   belongs_to :author
   many :updates
+  one :user
 
   after_create :default_hubs
 
