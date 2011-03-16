@@ -186,11 +186,8 @@ class Rstatus < Sinatra::Base
       redirect "/users/#{@user.username}"
     else
       hub_url = f.hubs.first
-      puts hub_url
 
       sub = OSub::Subscription.new(url("/feeds/#{f.id}.atom"), f.url, f.secret)
-      puts "Verify Token"
-      puts f.verify_token
       sub.subscribe(hub_url, f.verify_token)
 
       name = f.author.username
@@ -204,8 +201,6 @@ class Rstatus < Sinatra::Base
   get "/feeds/:id.atom" do
     feed = Feed.first :id => params[:id]
     if params['hub.challenge']
-      puts "Verification"
-      puts params
       sub = OSub::Subscription.new(request.url, feed.url, nil, feed.verify_token)
 
       # perform the hub's challenge
@@ -214,15 +209,17 @@ class Rstatus < Sinatra::Base
       # verify that the random token is the same as when we
       # subscribed with the hub initially and that the topic
       # url matches what we expect
-      puts feed.url
       verified = params['hub.topic'] == feed.url
-      puts verified
       if verified and sub.verify_subscription(params['hub.verify_token'])
-        puts "Verified"
+        if development?
+          puts "Verified"
+        end
         body respond[:body]
         status respond[:status]
       else
-        puts "Not Verified"
+        if development?
+          puts "Verification Failed"
+        end
         # if the verification fails, the specification forces us to
         # return a 404 status
         status 404
