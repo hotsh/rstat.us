@@ -5,13 +5,8 @@
 *******************************************/
 #main {
   #left {
-    .column(8);   
-    
-    #logo, #profile {
-      .prepend(2);
-      .column(6);
-      .last;
-    }  
+    .prepend(2);
+    .column(6);     
     
     #logo {
       h2 {
@@ -28,12 +23,20 @@
         padding-bottom: 0.5em;
         border-bottom: 1px solid #ddd;
       }
+      .profile-wrap {
+        .clearfix;
+        padding-top: 0.25em;
+      }
       .avatar, .userinfo {
         float: left;
       }
+      .avatar {
+        width: 48px;
+        img {
+          width: 48px;
+        }
+      }
       .userinfo {
-        padding-top: 0.25em;
-        padding-left: 1em;
         .name {
         	font-weight: bold;
         	font-size: 1.25em;
@@ -46,6 +49,20 @@
         }
       }
     }
+    
+    .links, .logout {
+      width: 200px;
+      padding-top: 1em;
+      border-top: 1px solid #ddd;
+      margin-top: 1em;
+    }
+    .links {
+      
+    }
+    
+    .logout {
+      
+    }
   }
   
   #right {
@@ -57,6 +74,42 @@
 #content {
   .column(14);
   padding-top: 1.5em;
+
+  h1 {
+    margin-top: -0.35em;
+  }
+}
+
+/* Following
+**********************/
+
+.user-list {
+  padding: 0;
+  margin: 0;
+  .user {
+    position: relative;
+    padding: 0.5em;
+    list-style-type: none;
+    .clearfix;
+    
+    .follow {
+      position: absolute;
+      top: 0.75em;
+      right: 0.5em;
+    }
+  }
+  .even {
+    background: #e5e5e5;
+  }
+}
+
+#sites {
+  .column(9);
+}
+
+#follow-form {
+  .column(5);
+  .last;
 }
 
 /* the textarea where the user types an update */
@@ -127,43 +180,6 @@ form#update-form {
 
 #timeline .mention {
   background: @mention;
-}
-
-#update {
-  background: #f3f3f3;
-  padding-top: 3em;
-  width: 520px;
-  margin: auto;
-
-  .update {
-    .update-text-wrap {
-      .rounded(5px);
-      background: white;
-      padding: 1em;
-    
-      .update-text {
-        font-size: 2.5em;
-      }
-    }
-  
-    .byline {
-      .clearfix;
-      padding: 1em;
-      .update-date, .avatar, .name {
-        float: left;
-        padding-right: 5px;
-      }
-      .avatar {
-        img { 
-          height: 18px;
-        }
-      }
-    }
-  }
-  
-  #footer {
-    border-top: 1px solid #ccc;
-  }
 }
 
 /* Profile */

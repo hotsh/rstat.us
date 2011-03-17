@@ -1,5 +1,15 @@
-%p You can follow someone not on rstat.us, as long as they use 'ostatus.' 
+%h1 Follow a User
+%p You can follow your friends from other sites that use the ostatus protocol. Check below for the list of ostatus sites we support, and let us know if you'd like us to add another.
 
-%form{:action => "/feeds", :method => "POST"}
-  %input{:type => "text", :name => "url"}
-  %input{:type => "submit", :value => "Follow"}
+%h3 ostatus Sites
+
+#sites
+  .osite
+    %h4 Identi.ca
+    %p Copy the link to the Atom feed from a user's profile in Identi.ca and paste it into the field to your right.
+    %img{:src=>"images/identica.png"}
+
+#follow-form
+  %form{:action => "/feeds", :method => "POST"}
+    %input{:type => "text", :name => "url"}
+    %input{:type => "submit", :value => "Follow"}

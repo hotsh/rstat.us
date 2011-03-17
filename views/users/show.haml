@@ -1,37 +1,36 @@
 #profile
-  %h3= @user.author.name
+  %h3= @author.name
   .username
-    @#{@user.author.username}
+    @#{@author.username}
 
-  - unless @user.author.email.blank?
+  - unless @author.email.blank?
     .email
       Email:
-      %a{:href => "mailto:#{@user.author.email}"}
-        #{@user.author.email}
+      %a{:href => "mailto:#{@author.email}"}
+        #{@author.email}
 
-  - unless @user.author.website.blank?
+  - unless @author.website.blank?
     .website
       Website:
-      %a{:href => @user.author.website}
-        #{@user.author.website}
+      %a{:href => @author.website}
+        #{@author.website}
 
-  %p= @user.author.bio
+  %p= @author.bio
 
-  - if current_user and @user == current_user
+  - if current_user and @author.user == current_user
     %a{:href=>"/users/#{current_user.username}/edit"}
       Edit your profile
-
-  - if current_user and @user != current_user
+  - else
     #follow
-      - if current_user.following? @user.feed.url
+      - if current_user and current_user.following? @author.feed.url
         .negative
-          %a.button{:href => "/users/#{@user.username}/unfollow"}
+          %a.button{:href => "/users/#{@author.username}/unfollow"}
             Unfollow
-          .follow-status You are currently following #{@user.username}
-      - else
-        %a.button{:href => "/users/#{@user.username}/follow"}
+          .follow-status You are currently following #{@author.username}
+      - elsif current_user
+        %a.button{:href => "/users/#{@author.username}/follow"}
           Follow
-        .follow-status You are not following #{@user.username}
+        .follow-status You are not following #{@author.username}
 
   #updates.updates
-    != haml :_updates, :locals => {:updates => @user.feed.updates.to_a.sort{|a, b| b.created_at <=> a.created_at }}
+    != haml :_updates, :locals => {:updates => @author.feed.updates.to_a.sort{|a, b| b.created_at <=> a.created_at }}
