@@ -47,8 +47,9 @@ class Update
   belongs_to :feed
   belongs_to :author
 
+  # :url can also be used as a global identifier (and typically is)
+  key :url, String
   key :text, String
-  key :update_id, String
 
   validates_length_of :text, :minimum => 1, :maximum => 140
 
@@ -343,11 +344,11 @@ class Feed
 
   def populate_entries(os_entries)
     os_entries.each do |entry|
-      u = Update.first(:update_id => entry.id)
+      u = Update.first(:url => entry.url)
       if u.nil?
-        u = Update.create(:update_id => entry.id,
-                          :author => self.author,
+        u = Update.create(:author => self.author,
                           :created_at => entry.published,
+                          :url => entry.url,
                           :updated_at => entry.updated)
         self.updates << u
         save
