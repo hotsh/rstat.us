@@ -130,10 +130,8 @@ class Authorization
             :provider => hsh['provider']
            )
 
-    unless a.save
-      redirect "/"
-    end
-
+    a.save
+    a.errors.each{|e| puts e.inspect }
     a
   end
 
