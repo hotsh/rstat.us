@@ -1015,6 +1015,9 @@ form#update-form #update-info.negative #update-count {
   border-right: 1px solid #ddd;
   margin-right: 40px;
 }
+#login #username, #login #password, #signup input[type="text"] {
+  width: 200px;
+}
 #login-other {
   margin-top: 2em;
   border-top: 1px solid #ddd;
