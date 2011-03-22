@@ -679,12 +679,12 @@ body {
 }
 .avatar {
   float: left;
-  width: 35px;
-  height: 35px;
+  width: 18px;
+  height: 18px;
   padding-right: 1em;
 }
 .avatar img {
-  width: 35px;
+  width: 18px;
 }
 /* Footer */
 #footer {

@@ -95,7 +95,7 @@ GEM
       oa-oauth (= 0.2.0)
       oa-openid (= 0.2.0)
     opub (0.0.1)
-    ostatus (0.0.5)
+    ostatus (0.0.6)
       nokogiri
       oauth
       tinyatom

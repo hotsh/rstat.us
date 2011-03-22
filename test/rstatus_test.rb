@@ -131,5 +131,20 @@ class RstatusTest < MiniTest::Unit::TestCase
     assert_match page.body, /#{bio_text}/
   end
 
+  def test_username_clash
+    existing_user = Factory(:user, :username => "taken")
+    new_user = Factory.build(:user, :username => 'taken')
+
+    old_count = User.count
+    log_in(new_user)
+    assert_match /users\/new/, page.current_url, "not on the new user page."
+    fill_in "username", :with => "nottaken"
+    click_button "Finish Signup"
+
+    assert_match /Thanks! You're all signed up with nottaken for your username./, page.body
+    assert_match /\//, page.current_url
+
+  end
+
 end
 

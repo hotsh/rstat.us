@@ -1,0 +1,9 @@
+%h2 Pick a new username
+
+%p Hey, we're sorry about this, but someone already has your username. Mind picking a new one?
+
+%form{:action => "/users", :method => "POST"}
+  Username: 
+  %input{:type => "text", :name => "username"}
+  %br/
+  %input{:type => "submit", :value => "Finish Signup"}

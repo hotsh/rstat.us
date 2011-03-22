@@ -147,7 +147,27 @@ class Rstatus < Sinatra::Base
   get '/auth/:provider/callback' do
     auth = request.env['omniauth.auth']
     unless @auth = Authorization.find_from_hash(auth)
-      @auth = Authorization.create_from_hash(auth, uri("/"), current_user)
+      if User.first :username => auth['user_info']['nickname']
+        #we have a username conflict!
+
+        #let's store their oauth stuff so they don't have to re-login after
+        session[:oauth_token] = auth['credentials']['token']
+        session[:oauth_secret] = auth['credentials']['secret']
+
+        session[:uid] = auth['uid']
+        session[:provider] = auth['provider']
+        session[:name] = auth['user_info']['name']
+        session[:nickname] = auth['user_info']['nickname']
+        session[:website] = auth['user_info']['urls']['Website']
+        session[:description] = auth['user_info']['description']
+        session[:image] = auth['user_info']['image']
+
+        flash[:notice] = "Sorry, someone has that name."
+        redirect '/users/new'
+        return
+      else
+        @auth = Authorization.create_from_hash(auth, uri("/"), current_user)
+      end
     end
 
     session[:oauth_token] = auth['credentials']['token']
@@ -156,6 +176,38 @@ class Rstatus < Sinatra::Base
 
     flash[:notice] = "You're now logged in."
     redirect '/'
+  end
+
+  get '/users/new' do
+    haml :"users/new"
+  end
+
+  post '/users' do
+    user = User.new params
+    if user.save
+      user.finalize("http://rstat.us") #uuuuuuuuugh
+
+      #this is really stupid.
+      auth = {}
+      auth['uid'] = session[:uid]
+      auth['provider'] = session[:provider]
+      auth['user_info'] = {}
+      auth['user_info']['name'] = session[:name]
+      auth['user_info']['nickname'] = session[:nickname]
+      auth['user_info']['urls'] = {}
+      auth['user_info']['urls']['Website'] = session[:website]
+      auth['user_info']['description'] = session[:description]
+      auth['user_info']['image'] = session[:image]
+
+      Authorization.create_from_hash(auth, uri("/"), user)
+
+      flash[:notice] = "Thanks! You're all signed up with #{user.username} for your username."
+      session[:user_id] = user.id
+      redirect '/'
+    else
+      flash[:notice] = "Oops! That username was taken. Pick another?"
+      redirect '/users/new'
+    end
   end
 
   get "/logout" do
@@ -178,9 +230,9 @@ class Rstatus < Sinatra::Base
     feed.update_entries(request.body.read, request.url, request.env['HTTP_X_HUB_SIGNATURE'])
   end
 
-  # Terrible
+  # unsubscribe from a feed
   delete '/subscriptions/:id' do
-    require_login! :return => "/feeds/#{params[:id]}/unsubscribe"
+    require_login! :return => "/subscriptions/#{params[:id]}"
 
     feed = Feed.first :id => params[:id]
 
@@ -201,7 +253,7 @@ class Rstatus < Sinatra::Base
     redirect "/"
   end
 
-  post "/feeds" do
+  post "/subscriptions" do
     feed_url = params[:url]
 
     f = current_user.follow! feed_url
