@@ -178,6 +178,29 @@ class Rstatus < Sinatra::Base
     feed.update_entries(request.body.read, request.url, request.env['HTTP_X_HUB_SIGNATURE'])
   end
 
+  # Terrible
+  delete '/subscriptions/:id' do
+    require_login! :return => "/feeds/#{params[:id]}/unsubscribe"
+
+    feed = Feed.first :id => params[:id]
+
+    @author = feed.author
+    redirect "/" and return if @author.user == current_user
+
+    #make sure we're following them already
+    unless current_user.following? feed.url
+      flash[:notice] = "You're not following #{@author.username}."
+      redirect "/"
+      return
+    end
+
+    #unfollow them!
+    current_user.unfollow! feed
+
+    flash[:notice] = "No longer following #{@author.username}."
+    redirect "/"
+  end
+
   post "/feeds" do
     feed_url = params[:url]
 
@@ -258,7 +281,7 @@ class Rstatus < Sinatra::Base
     end
   end
 
-  # an alias for the above route
+  # an alias for the route of the feed
   get "/users/:name/feed" do
     feed = User.first(:username => params[:name]).feed
     redirect "/feeds/#{feed.id}.atom"
@@ -292,7 +315,8 @@ class Rstatus < Sinatra::Base
   get '/users/:name/unfollow' do
     require_login! :return => "/users/#{params[:name]}/unfollow"
 
-    @author = Author.first(:username => params[:name])
+    user = User.first(:username => params[:name])
+    @author = user.author
     redirect "/users/#{@author.username}" and return if @author.user == current_user
 
     #make sure we're following them already
