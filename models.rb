@@ -8,6 +8,9 @@ class Author
   key :bio, String
   key :image_url, String
 
+  # The url of their profile page
+  key :url, String
+
   one :feed
   one :user
 
@@ -17,7 +20,8 @@ class Author
       :username => hsh['user_info']['nickname'],
       :website => hsh['user_info']['urls']['Website'],
       :bio => hsh['user_info']['description'],
-      :image_url => hsh['user_info']['image']
+      :image_url => hsh['user_info']['image'],
+      :url => hsh['user_info']['url']
     )
   end
 
@@ -330,9 +334,10 @@ class Feed
 
     a = f.author
 
-    self.author = Author.create(:name => a.name,
+    self.author = Author.create(:name => a.portable_contacts.display_name,
                                 :username => a.name,
                                 :email => a.email,
+                                :url => a.uri,
                                 :image_url => avatar_url)
 
     self.hubs = f.hubs
