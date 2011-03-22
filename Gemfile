@@ -24,4 +24,5 @@ group :development, :test do
   gem "sinatra-reloader"
   gem "factory_girl"
   gem "capybara"
+  gem "minitest", :platforms => :ruby_18
 end

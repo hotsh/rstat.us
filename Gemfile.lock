@@ -43,6 +43,7 @@ GEM
       mime-types (~> 1.16)
       treetop (~> 1.4.8)
     mime-types (1.16)
+    minitest (2.0.2)
     mongo (1.2.4)
       bson (>= 1.2.4)
     mongo_mapper (0.8.6)
@@ -176,6 +177,7 @@ DEPENDENCIES
   factory_girl
   haml
   i18n
+  minitest
   mongo_mapper
   nokogiri (= 1.4.4)
   omniauth
