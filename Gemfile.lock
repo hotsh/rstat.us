@@ -50,6 +50,7 @@ GEM
       treetop (~> 1.4.8)
     mime-types (1.16)
     mocha (0.9.12)
+    minitest (2.0.2)
     mongo (1.2.4)
       bson (>= 1.2.4)
     mongo_mapper (0.8.6)
@@ -185,6 +186,7 @@ DEPENDENCIES
   haml
   i18n
   mocha
+  minitest
   mongo_mapper
   newrelic_rpm
   nokogiri (= 1.4.4)
