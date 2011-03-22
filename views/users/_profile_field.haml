@@ -1,4 +1,4 @@
 .profile_field{:class => attr}
   %label{:for => attr}
-    #{attr.capitalize}:
+    #{attr.to_s.capitalize}:
   %input{:id => attr, :name => attr, :value => @user.author.send(attr)}
