@@ -357,7 +357,9 @@ class Rstatus < Sinatra::Base
 
   post '/updates' do
     u = Update.new(:text => params[:text], 
-                   :author => current_user.author)
+                   :author => current_user.author,
+                   :oauth_token => session[:oauth_token],
+                   :oauth_secret => session[:oauth_secret])
 
     # and entry to user's feed
     current_user.feed.updates << u
