@@ -9,6 +9,8 @@ class User
   key :username, String, :unique => true
   key :perishable_token, String
 
+  key :email, String, :unique => true
+
   belongs_to :author
   belongs_to :feed
 
