@@ -49,15 +49,17 @@ class Update
   def tweet
     return if ENV['RACK_ENV'] != "production"
 
-    Twitter.configure do |config|
-      config.consumer_key = Rstatus.settings.config["CONSUMER_KEY"]
-      config.consumer_secret = Rstatus.settings.config["CONSUMER_SECRET"]
-      config.oauth_token = oauth_token
-      config.oauth_token_secret = oauth_secret
+    begin
+      Twitter.configure do |config|
+        config.consumer_key = Rstatus.settings.config["CONSUMER_KEY"]
+        config.consumer_secret = Rstatus.settings.config["CONSUMER_SECRET"]
+        config.oauth_token = oauth_token
+        config.oauth_token_secret = oauth_secret
+      end
+
+      Twitter.update(text)
+    rescue
     end
-
-    Twitter.update(text)
-
   end
 
 end
