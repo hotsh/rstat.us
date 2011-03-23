@@ -11,6 +11,9 @@ class Author
   one :feed
   one :user
 
+ # The url of their profile page
+  key :url, String
+
   def self.create_from_hash!(hsh)
     create!(
       :name => hsh['user_info']['name'],

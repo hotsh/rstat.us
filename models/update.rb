@@ -7,11 +7,19 @@ class Update
   belongs_to :feed
   belongs_to :author
 
-  # :url can also be used as a global identifier (and typically is)
-  key :url, String
   key :text, String
 
   validates_length_of :text, :minimum => 1, :maximum => 140
+
+  key :remote_url
+
+  def url
+    feed.local ? "/updates/#{id}" : url
+  end
+
+  def url=(url)
+    self.remote_url = url
+  end
 
   def to_html
     out = CGI.escapeHTML(text)

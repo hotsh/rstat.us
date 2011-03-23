@@ -27,6 +27,10 @@ class User
     self.perishable_token = nil
   end
 
+  def url
+    feed.local ? "/users/#{feed.author.username}" : feed.author.url
+  end
+
   key :following_ids, Array
   many :following, :in => :following_ids, :class_name => 'Feed'
 
