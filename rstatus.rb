@@ -363,34 +363,6 @@ class Rstatus < Sinatra::Base
     end
   end
 
-  #this lets you unfollow a user
-  get '/users/:name/unfollow' do
-    require_login! :return => "/users/#{params[:name]}/unfollow"
-
-    user = User.first(:username => params[:name])
-    @author = user.author
-    redirect "/users/#{@author.username}" and return if @author.user == current_user
-
-    #make sure we're following them already
-    unless current_user.following? @author.feed.url
-      flash[:notice] = "You're not following #{params[:name]}."
-      redirect "/users/#{@author.username}"
-      return
-    end
-
-    #unfollow them!
-    current_user.unfollow! @author.feed
-
-    flash[:notice] = "No longer following #{params[:name]}."
-    redirect "/users/#{@author.username}"
-  end
-
-  # this lets us see followers.
-  get '/users/:name/followers' do
-    @users = User.first(:username => params[:name]).followers
-    haml :"users/list", :locals => {:title => "Followers"}
-  end
-
   # This lets us see who is following.
   get '/users/:name/following' do
     @users = User.first(:username => params[:name]).following

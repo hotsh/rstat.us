@@ -17,5 +17,14 @@
 
       - if current_user.following? feed.url
         .follow.negative
-          %a.button{:href => unfollow_url}
-            Unfollow
+          %form{:method => "post", :action => "/subscriptions/#{feed.id}"}
+            %input{:type => "hidden", :name => "_method", :value => "delete"}
+            %input.button.unfollow{:type => "submit", :value => "Unfollow", :id => "unfollow-#{feed.id}"}
+
+  :javascript
+    $(document).ready(function(){
+      $(".unfollow").click(function(){
+         var r = confirm("Are you sure you want to unsubscribe from this user?"); 
+         return r;
+      })    
+    })

@@ -92,7 +92,8 @@ class RstatusTest < MiniTest::Unit::TestCase
     log_in(u, a.uid)
     u.follow! u2.feed.url
 
-    visit "/users/#{u2.username}/unfollow"
+    visit "/users/#{u2.username}/following"
+    click_button "unfollow-#{u2.feed.id}"
 
     assert_match "No longer following #{u2.username}", page.body
   end
