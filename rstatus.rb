@@ -1,15 +1,5 @@
-require 'sinatra/base'
-require 'sinatra/reloader'
-
-require 'omniauth'
-require 'mongo_mapper'
-require 'haml'
-require 'time-ago-in-words'
-require 'sinatra/content_for'
-require 'twitter'
-require 'pony'
-require 'bcrypt'
-require 'ostatus'
+require 'bundler'
+Bundler.require
 
 require_relative 'models'
 
@@ -91,10 +81,6 @@ class Rstatus < Sinatra::Base
   require 'rack-flash'
   use Rack::Flash
 
-  configure :development do
-    register Sinatra::Reloader
-  end
-
   configure do
     if ENV['MONGOHQ_URL']
       MongoMapper.config = {ENV['RACK_ENV'] => {'uri' => ENV['MONGOHQ_URL']}}
@@ -126,7 +112,7 @@ class Rstatus < Sinatra::Base
 
   configure :development do
     OmniAuth.config.add_mock(:twitter, {
-      :uid => uid,
+      :uid => "1234567890",
       :user_info => {
         :name => "Joe Public",
         :nickname => 'someone',
