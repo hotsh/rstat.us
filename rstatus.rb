@@ -460,7 +460,7 @@ class Rstatus < Sinatra::Base
   delete '/updates/:id' do |id|
     update = Update.first :id => params[:id]
 
-    if update.user == current_user
+    if update.author == current_user.author
       update.destroy
 
       flash[:notice] = "Update Baleeted!"
