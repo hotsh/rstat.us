@@ -9,7 +9,7 @@
       .text
         != update.to_html
       .date
-        %a{:href => update.url}= update.created_at.ago_in_words
+        %a{:href => update_url}= update.created_at.ago_in_words
 - if updates.empty?
   .empty
     There's no updates here yet

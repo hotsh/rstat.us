@@ -17,10 +17,12 @@ class RstatusTest < MiniTest::Unit::TestCase
 
   def test_feed_render
     feed = Factory(:feed)
+
     updates = []
     5.times do
       updates << Factory(:update)
     end
+
     feed.updates = updates
     feed.save
 
@@ -29,7 +31,6 @@ class RstatusTest < MiniTest::Unit::TestCase
     updates.each do |update|
       assert_match page.body, /#{update.text}/
     end
-
   end
 
   def test_user_feed_render
@@ -77,6 +78,40 @@ class RstatusTest < MiniTest::Unit::TestCase
     click_button "Follow"
     assert_match "Now following steveklabnik.", page.body
     assert "/", current_path
+  end
+
+  def test_user_follow_another_user
+    u = Factory(:user)
+    a = Factory(:authorization, :user => u)
+    u.finalize("http://example.com/")
+
+    u2 = Factory(:user)
+    u2.finalize("http://example.com")
+
+    log_in(u, a.uid)
+
+    visit "/users/#{u2.username}"
+
+    click_button "follow-#{u2.feed.id}"
+    assert_match "Now following #{u2.username}", page.body
+  end
+
+  def test_user_unfollow_another_user
+    u = Factory(:user)
+    a = Factory(:authorization, :user => u)
+    u.finalize("http://example.com/")
+
+    u2 = Factory(:user)
+    a2 = Factory(:authorization, :user => u2)
+    u2.finalize("http://example.com/")
+
+    log_in(u, a.uid)
+    u.follow! u2.feed.url
+
+    visit "/users/#{u2.username}/following"
+    click_button "unfollow-#{u2.feed.id}"
+
+    assert_match "No longer following #{u2.username}", page.body
   end
 
   def test_user_edit_own_profile_link

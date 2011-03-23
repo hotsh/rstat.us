@@ -203,7 +203,8 @@ class Rstatus < Sinatra::Base
 
   # show user profile
   get "/users/:slug" do
-    @author = Author.first :username => params[:slug]
+    user = User.first :username => params[:slug]
+    @author = user.author
     haml :"users/show"
   end
 
@@ -214,18 +215,58 @@ class Rstatus < Sinatra::Base
     feed.update_entries(request.body.read, request.url, request.env['HTTP_X_HUB_SIGNATURE'])
   end
 
-  post "/feeds" do
-    feed_url = params[:url]
+  # unsubscribe from a feed
+  delete '/subscriptions/:id' do
+    require_login! :return => "/subscriptions/#{params[:id]}"
 
+    feed = Feed.first :id => params[:id]
+
+    @author = feed.author
+    redirect "/" and return if @author.user == current_user
+
+    #make sure we're following them already
+    unless current_user.following? feed.url
+      flash[:notice] = "You're not following #{@author.username}."
+      redirect "/"
+      return
+    end
+
+    #unfollow them!
+    current_user.unfollow! feed
+
+    flash[:notice] = "No longer following #{@author.username}."
+    redirect "/"
+  end
+
+  post "/subscriptions" do
+    require_login! :return => "/subscriptions"
+
+    feed_url = params[:url]
     if feed_url[0..3] = "feed"
       feed_url = "http" + feed_url[4..-1]
     end
 
+    #make sure we're not following them already
+    if current_user.following? feed_url
+      # which means it exists
+      feed = Feed.first(:url => feed_url)
+
+      flash[:notice] = "You're already following #{feed.author.username}."
+      redirect "/users/#{feed.author.username}"
+      return
+    end
+
+    # follow them!
+
     f = current_user.follow! feed_url
     unless f
       flash[:notice] = "The was a problem following #{params[:url]}."
-      redirect "/users/#{@user.username}"
-    else
+      redirect "/follow"
+      return
+    end
+
+    if not f.local
+      # remote feeds require some talking to a hub
       hub_url = f.hubs.first
 
       sub = OSub::Subscription.new(url("/feeds/#{f.id}.atom"), f.url, f.secret)
@@ -234,6 +275,10 @@ class Rstatus < Sinatra::Base
       name = f.author.username
       flash[:notice] = "Now following #{name}."
       redirect "/"
+    else
+      # local feed... redirect to that user's profile
+      flash[:notice] = "Now following #{f.author.username}."
+      redirect "/users/#{f.author.username}"
     end
   end
 
@@ -298,61 +343,10 @@ class Rstatus < Sinatra::Base
     end
   end
 
-  # an alias for the above route
+  # an alias for the route of the feed
   get "/users/:name/feed" do
     feed = User.first(:username => params[:name]).feed
     redirect "/feeds/#{feed.id}.atom"
-  end
-
-  # users can follow each other, and this route takes care of it!
-  get '/users/:name/follow' do
-    require_login! :return => "/users/#{params[:name]}/follow"
-
-    @author = Author.first(:username => params[:name])
-    redirect "/users/#{@author.username}" and return if @author.user == current_user
-
-    #make sure we're not following them already
-    if current_user.following? @author.feed.url
-      flash[:notice] = "You're already following #{params[:name]}."
-      redirect "/users/#{@author.username}"
-      return
-    end
-
-    # then follow them!
-    unless current_user.follow! @author.feed.url
-      flash[:notice] = "The was a problem following #{params[:name]}."
-      redirect "/users/#{@author.username}"
-    else
-      flash[:notice] = "Now following #{params[:name]}."
-      redirect "/users/#{@author.username}"
-    end
-  end
-
-  #this lets you unfollow a user
-  get '/users/:name/unfollow' do
-    require_login! :return => "/users/#{params[:name]}/unfollow"
-
-    @author = Author.first(:username => params[:name])
-    redirect "/users/#{@author.username}" and return if @author.user == current_user
-
-    #make sure we're following them already
-    unless current_user.following? @author.feed.url
-      flash[:notice] = "You're not following #{params[:name]}."
-      redirect "/users/#{@author.username}"
-      return
-    end
-
-    #unfollow them!
-    current_user.unfollow! @author.feed
-
-    flash[:notice] = "No longer following #{params[:name]}."
-    redirect "/users/#{@author.username}"
-  end
-
-  # this lets us see followers.
-  get '/users/:name/followers' do
-    @users = User.first(:username => params[:name]).followers
-    haml :"users/list", :locals => {:title => "Followers"}
   end
 
   # This lets us see who is following.
