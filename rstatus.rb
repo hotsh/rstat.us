@@ -103,31 +103,9 @@ class Rstatus < Sinatra::Base
     end
   end
 
-  configure :production do
-    use OmniAuth::Builder do
-      provider :twitter, ENV["CONSUMER_KEY"], ENV["CONSUMER_SECRET"]
-      provider :facebook, ENV["APP_ID"], ENV["APP_SECRET"]
-    end
-  end
-
-  configure :test do
-    use OmniAuth::Builder do
-      provider :twitter, "lollerblades", "lollerskates"
-    end
-  end
-
-  configure :development do
-    OmniAuth.config.add_mock(:twitter, {
-      :uid => "1234567890",
-      :user_info => {
-        :name => "Joe Public",
-        :nickname => 'someone',
-        :urls => { :Website => "http://rstat.us" },
-        :description => "A description",
-        :image => "/images/something.png"
-      },
-      :credentials => {:token => "1234", :secret => "4567"}
-    })
+  use OmniAuth::Builder do
+    provider :twitter, ENV["CONSUMER_KEY"], ENV["CONSUMER_SECRET"]
+    provider :facebook, ENV["APP_ID"], ENV["APP_SECRET"]
   end
 
   get '/' do
