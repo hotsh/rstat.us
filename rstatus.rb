@@ -355,6 +355,11 @@ class Rstatus < Sinatra::Base
     haml :"users/list", :locals => {:title => "Following"}
   end
 
+  get '/users/:name/followers' do
+    @users = User.first(:username => params[:name]).followers
+    haml :"users/list", :locals => {:title => "Followers"}
+  end
+
   post '/updates' do
     u = Update.new(:text => params[:text], 
                    :author => current_user.author,
