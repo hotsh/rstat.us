@@ -22,7 +22,6 @@ gem "nokogiri", "= 1.4.4"
 gem "json"
 gem "coffee-script-source"
 gem "coffee-script"
-gem "therubyracer"
 
 group :development, :test do
   gem 'rack-test'
@@ -31,4 +30,9 @@ group :development, :test do
   gem "capybara"
   gem "rocco"
   gem "pygmentize"
+  gem "therubyracer"
+end
+
+group :production do
+  gem 'therubyracer-heroku', '0.8.1.pre3'
 end
