@@ -18,6 +18,12 @@ gem "osub"
 gem "opub"
 gem "nokogiri", "= 1.4.4"
 
+# coffee-script deps
+gem "json"
+gem "coffee-script-source"
+gem "coffee-script"
+gem "therubyracer"
+
 group :development, :test do
   gem 'rack-test'
   gem "database_cleaner"

@@ -19,13 +19,18 @@ GEM
     celerity (0.8.8)
     childprocess (0.1.8)
       ffi (~> 1.0.6)
+    coffee-script (2.2.0)
+      coffee-script-source
+      execjs
+    coffee-script-source (1.0.1)
     culerity (0.2.15)
     database_cleaner (0.6.6)
+    execjs (0.1.0)
     factory_girl (1.3.3)
     faraday (0.5.7)
       addressable (~> 2.2.4)
       multipart-post (~> 1.1.0)
-      rack (>= 1.1.0, < 2)
+      rack (< 2, >= 1.1.0)
     faraday_middleware (0.3.2)
       faraday (~> 0.5.4)
     ffi (1.0.7)
@@ -35,6 +40,7 @@ GEM
     i18n (0.5.0)
     jnunemaker-validatable (1.8.4)
       activesupport (>= 2.3.4)
+    json (1.5.1)
     json_pure (1.5.1)
     mail (2.2.15)
       activesupport (>= 2.3.6)
@@ -137,9 +143,10 @@ GEM
     simple_oauth (0.1.4)
     sinatra (1.2.1)
       rack (~> 1.1)
-      tilt (>= 1.2.2, < 2.0)
+      tilt (< 2.0, >= 1.2.2)
     sinatra-content-for (0.2)
       sinatra
+    therubyracer (0.8.1)
     tilt (1.2.2)
     time-ago-in-words (0.1.2)
     tinyatom (0.3.4)
@@ -164,10 +171,13 @@ DEPENDENCIES
   bcrypt-ruby
   bson_ext
   capybara
+  coffee-script
+  coffee-script-source
   database_cleaner
   factory_girl
   haml
   i18n
+  json
   mongo_mapper
   nokogiri (= 1.4.4)
   omniauth
@@ -182,5 +192,6 @@ DEPENDENCIES
   rocco
   sinatra
   sinatra-content-for
+  therubyracer
   time-ago-in-words
   twitter

@@ -242,6 +242,9 @@ class Rstatus < Sinatra::Base
     require_login! :return => "/subscriptions"
 
     feed_url = params[:url]
+    if feed_url[0..3] = "feed"
+      feed_url = "http" + feed_url[4..-1]
+    end
 
     #make sure we're not following them already
     if current_user.following? feed_url
@@ -261,7 +264,7 @@ class Rstatus < Sinatra::Base
       redirect "/follow"
       return
     end
-   
+
     if not f.local
       # remote feeds require some talking to a hub
       hub_url = f.hubs.first
@@ -460,6 +463,22 @@ class Rstatus < Sinatra::Base
 
   get "/follow" do
     haml :external_subscription
+  end
+
+  get "/js/app.js" do
+    coffee :"coffee/app"
+  end
+
+  get "/js/home.js" do
+    coffee :"coffee/home"
+  end
+
+  get "/js/update.js" do
+    coffee :"coffee/update"
+  end
+
+  get "/js/updates.show.js" do
+    coffee :"coffee/updates.show"
   end
 
 end
