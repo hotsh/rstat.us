@@ -11,7 +11,7 @@ require 'pony'
 require 'bcrypt'
 require 'ostatus'
 
-require_relative 'models'
+require_relative 'models/all'
 
 module Sinatra
   module UserHelper
