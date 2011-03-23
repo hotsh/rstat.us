@@ -14,11 +14,11 @@ class Update
   key :remote_url
 
   def url
-    feed.local ? "/updates/#{id}" : url
+    feed.local ? "/updates/#{id}" : remote_url
   end
 
-  def url=(url)
-    self.remote_url = url
+  def url=(the_url)
+    self.remote_url = the_url
   end
 
   def to_html
