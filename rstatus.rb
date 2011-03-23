@@ -86,7 +86,6 @@ class Rstatus < Sinatra::Base
   use Rack::Session::Cookie, :secret => ENV['COOKIE_SECRET']
   set :root, File.dirname(__FILE__)
   set :haml, :escape_html => true
-  set :config, YAML.load_file("config.yml")[ENV['RACK_ENV']]
   set :method_override, true
 
   require 'rack-flash'
@@ -118,9 +117,25 @@ class Rstatus < Sinatra::Base
     end
   end
 
-  use OmniAuth::Builder do
-    provider :twitter, Rstatus.settings.config["CONSUMER_KEY"], Rstatus.settings.config["CONSUMER_SECRET"]
-    provider :facebook, Rstatus.settings.config["APP_ID"], Rstatus.settings.config["APP_SECRET"]
+  configure :production do
+    use OmniAuth::Builder do
+      provider :twitter, ENV["CONSUMER_KEY"], ENV["CONSUMER_SECRET"]
+      provider :facebook, ENV["APP_ID"], ENV["APP_SECRET"]
+    end
+  end
+
+  configure :development do
+    OmniAuth.config.add_mock(:twitter, {
+      :uid => uid,
+      :user_info => {
+        :name => "Joe Public",
+        :nickname => 'someone',
+        :urls => { :Website => "http://rstat.us" },
+        :description => "A description",
+        :image => "/images/something.png"
+      },
+      :credentials => {:token => "1234", :secret => "4567"}
+    })
   end
 
   get '/' do
