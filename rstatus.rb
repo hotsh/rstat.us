@@ -471,5 +471,21 @@ class Rstatus < Sinatra::Base
     haml :external_subscription
   end
 
+  get "/js/app.js" do
+    coffee :"coffee/app"
+  end
+
+  get "/js/home.js" do
+    coffee :"coffee/home"
+  end
+
+  get "/js/update.js" do
+    coffee :"coffee/update"
+  end
+
+  get "/js/updates.show.js" do
+    coffee :"coffee/updates.show"
+  end
+
 end
 
