@@ -16,10 +16,5 @@
         %input{:type => "hidden", :name => "_method", :value => "delete"}
         %input.remove-update{:type => "submit", :value => "I Regret This"}
 
-  :javascript
-    $(document).ready(function(){
-      $(".remove-update").click(function(){
-         var r = confirm("Are you sure you want to delete this update?"); 
-         return r;
-      })    
-    })
+  - content_for :javascript do
+    %script{:src=>"/js/updates.show.js"}
