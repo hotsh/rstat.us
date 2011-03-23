@@ -254,13 +254,31 @@ class Rstatus < Sinatra::Base
   end
 
   post "/subscriptions" do
+    require_login! :return => "/subscriptions"
+
     feed_url = params[:url]
+
+    #make sure we're not following them already
+    if current_user.following? feed_url
+      # which means it exists
+      feed = Feed.first(:url => feed_url)
+
+      flash[:notice] = "You're already following #{feed.author.username}."
+      redirect "/users/#{feed.author.username}"
+      return
+    end
+
+    # follow them!
 
     f = current_user.follow! feed_url
     unless f
       flash[:notice] = "The was a problem following #{params[:url]}."
-      redirect "/users/#{@user.username}"
-    else
+      redirect "/follow"
+      return
+    end
+   
+    if not f.local
+      # remote feeds require some talking to a hub
       hub_url = f.hubs.first
 
       sub = OSub::Subscription.new(url("/feeds/#{f.id}.atom"), f.url, f.secret)
@@ -269,6 +287,10 @@ class Rstatus < Sinatra::Base
       name = f.author.username
       flash[:notice] = "Now following #{name}."
       redirect "/"
+    else
+      # local feed... redirect to that user's profile
+      flash[:notice] = "Now following #{f.author.username}."
+      redirect "/users/#{f.author.username}"
     end
   end
 
@@ -337,30 +359,6 @@ class Rstatus < Sinatra::Base
   get "/users/:name/feed" do
     feed = User.first(:username => params[:name]).feed
     redirect "/feeds/#{feed.id}.atom"
-  end
-
-  # users can follow each other, and this route takes care of it!
-  get '/users/:name/follow' do
-    require_login! :return => "/users/#{params[:name]}/follow"
-
-    @author = Author.first(:username => params[:name])
-    redirect "/users/#{@author.username}" and return if @author.user == current_user
-
-    #make sure we're not following them already
-    if current_user.following? @author.feed.url
-      flash[:notice] = "You're already following #{params[:name]}."
-      redirect "/users/#{@author.username}"
-      return
-    end
-
-    # then follow them!
-    unless current_user.follow! @author.feed.url
-      flash[:notice] = "The was a problem following #{params[:name]}."
-      redirect "/users/#{@author.username}"
-    else
-      flash[:notice] = "Now following #{params[:name]}."
-      redirect "/users/#{@author.username}"
-    end
   end
 
   # This lets us see who is following.

@@ -24,13 +24,23 @@
     #follow
       - if current_user and current_user.following? @author.feed.url
         .negative
-          %a.button{:href => "/users/#{@author.username}/unfollow"}
-            Unfollow
+          %form{:method => "post", :action => "/subscriptions/#{@author.feed.id}"}
+            %input{:type => "hidden", :name => "_method", :value => "delete"}
+              %input.button.unfollow{:type => "submit", :value => "Unfollow", :id => "unfollow-#{@author.feed.id}"}
           .follow-status You are currently following #{@author.username}
       - elsif current_user
-        %a.button{:href => "/users/#{@author.username}/follow"}
-          Follow
+        %form{:method => "post", :action => "/subscriptions"}
+          %input{:type => "hidden", :name => "url", :value => "/feeds/#{@author.feed.id}"}
+            %input.button.follow{:type => "submit", :value => "Follow", :id => "follow-#{@author.feed.id}"}
         .follow-status You are not following #{@author.username}
 
   #updates.updates
     != haml :_updates, :locals => {:updates => @author.feed.updates.to_a.sort{|a, b| b.created_at <=> a.created_at }}
+
+  :javascript
+    $(document).ready(function(){
+      $(".unfollow").click(function(){
+         var r = confirm("Are you sure you want to unfollow this user?"); 
+         return r;
+      })    
+    })

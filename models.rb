@@ -181,6 +181,13 @@ class User
   # follow takes a url
   def follow! feed_url
     f = Feed.first(:url => feed_url)
+
+    # local feed?
+    if f.nil? and feed_url.start_with?("/")
+      feed_id = feed_url[/^\/feeds\/(.+)$/,1]
+      f = Feed.first(:id => feed_id)
+    end
+
     if f.nil?
       f = Feed.create(:url => feed_url,
                       :local => false)
@@ -212,6 +219,13 @@ class User
 
   def following? feed_url
     f = Feed.first(:url => feed_url)
+
+    # local feed?
+    if f.nil? and feed_url[0] == "/"
+      feed_id = feed_url[/^\/feeds\/(.+)$/,1]
+      f = Feed.first(:id => feed_id)
+    end
+
     if f == nil
       false
     else

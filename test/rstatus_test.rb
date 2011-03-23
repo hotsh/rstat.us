@@ -80,6 +80,22 @@ class RstatusTest < MiniTest::Unit::TestCase
     assert "/", current_path
   end
 
+  def test_user_follow_another_user
+    u = Factory(:user)
+    a = Factory(:authorization, :user => u)
+    u.finalize("http://example.com/")
+
+    u2 = Factory(:user)
+    u2.finalize("http://example.com")
+
+    log_in(u, a.uid)
+
+    visit "/users/#{u2.username}"
+
+    click_button "follow-#{u2.feed.id}"
+    assert_match "Now following #{u2.username}", page.body
+  end
+
   def test_user_unfollow_another_user
     u = Factory(:user)
     a = Factory(:authorization, :user => u)
