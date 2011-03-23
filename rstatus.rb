@@ -1,17 +1,7 @@
-require 'sinatra/base'
-require 'sinatra/reloader'
+require 'bundler'
+Bundler.require
 
-require 'omniauth'
-require 'mongo_mapper'
-require 'haml'
-require 'time-ago-in-words'
-require 'sinatra/content_for'
-require 'twitter'
-require 'pony'
-require 'bcrypt'
-require 'ostatus'
-
-require_relative 'models'
+require_relative 'models/all'
 
 module Sinatra
   module UserHelper
@@ -86,15 +76,10 @@ class Rstatus < Sinatra::Base
   use Rack::Session::Cookie, :secret => ENV['COOKIE_SECRET']
   set :root, File.dirname(__FILE__)
   set :haml, :escape_html => true
-  set :config, YAML.load_file("config.yml")[ENV['RACK_ENV']]
   set :method_override, true
 
   require 'rack-flash'
   use Rack::Flash
-
-  configure :development do
-    register Sinatra::Reloader
-  end
 
   configure do
     if ENV['MONGOHQ_URL']
@@ -119,8 +104,8 @@ class Rstatus < Sinatra::Base
   end
 
   use OmniAuth::Builder do
-    provider :twitter, Rstatus.settings.config["CONSUMER_KEY"], Rstatus.settings.config["CONSUMER_SECRET"]
-    provider :facebook, Rstatus.settings.config["APP_ID"], Rstatus.settings.config["APP_SECRET"]
+    provider :twitter, ENV["CONSUMER_KEY"], ENV["CONSUMER_SECRET"]
+    provider :facebook, ENV["APP_ID"], ENV["APP_SECRET"]
   end
 
   get '/' do
@@ -448,7 +433,7 @@ class Rstatus < Sinatra::Base
   delete '/updates/:id' do |id|
     update = Update.first :id => params[:id]
 
-    if update.user == current_user
+    if update.author == current_user.author
       update.destroy
 
       flash[:notice] = "Update Baleeted!"

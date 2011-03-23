@@ -155,6 +155,7 @@ class RstatusTest < MiniTest::Unit::TestCase
     old_count = User.count
     log_in(new_user)
     assert_match /users\/new/, page.current_url, "not on the new user page."
+
     fill_in "username", :with => "nottaken"
     click_button "Finish Signup"
 

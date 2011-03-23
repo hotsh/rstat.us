@@ -4,7 +4,7 @@
     -user_url = update.feed.local ? "/users/#{update.feed.author.username}" : update.feed.author.url
     -update_url = update.feed.local ? "/updates/#{update.id}" : update.url
     .avatar
-      %a{:href => user_url}
+      %a{:href => update.author.url}
         %img{:alt => "avatar", :src => update.author.avatar_url}/
     .content
       .name= "#{update.author.name} (#{update.author.username})"

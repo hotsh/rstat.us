@@ -3,7 +3,6 @@ GEM
   specs:
     activesupport (3.0.5)
     addressable (2.2.4)
-    backports (2.0.2)
     bcrypt-ruby (2.1.4)
     bson (1.2.4)
     bson_ext (1.2.4)
@@ -49,11 +48,10 @@ GEM
       activesupport (>= 2.3.4)
       jnunemaker-validatable (~> 1.8.4)
       plucky (~> 0.3.6)
-    monkey-lib (0.5.4)
-      backports
     multi_json (0.0.5)
     multi_xml (0.2.2)
     multipart-post (1.1.0)
+    mustache (0.99.3)
     net-ldap (0.1.1)
     nokogiri (1.4.4)
     oa-basic (0.2.0)
@@ -108,6 +106,7 @@ GEM
     pony (1.1)
       mail (> 2.0)
     public_suffix_service (0.8.2)
+    pygmentize (0.0.2)
     pyu-ruby-sasl (0.0.3.2)
     rack (1.2.2)
     rack-flash (0.1.1)
@@ -121,6 +120,9 @@ GEM
     rdiscount (1.6.8)
     rest-client (1.6.1)
       mime-types (>= 1.16)
+    rocco (0.6)
+      mustache
+      rdiscount
     ruby-hmac (0.4.0)
     ruby-openid (2.1.8)
     ruby-openid-apps-discovery (1.2.0)
@@ -136,18 +138,8 @@ GEM
     sinatra (1.2.1)
       rack (~> 1.1)
       tilt (>= 1.2.2, < 2.0)
-    sinatra-advanced-routes (0.5.1)
-      monkey-lib (~> 0.5.0)
-      sinatra (~> 1.0)
-      sinatra-sugar (~> 0.5.0)
     sinatra-content-for (0.2)
       sinatra
-    sinatra-reloader (0.5.0)
-      sinatra (~> 1.0)
-      sinatra-advanced-routes (~> 0.5.0)
-    sinatra-sugar (0.5.0)
-      monkey-lib (~> 0.5.0)
-      sinatra (~> 1.0)
     tilt (1.2.2)
     time-ago-in-words (0.1.2)
     tinyatom (0.3.4)
@@ -183,11 +175,12 @@ DEPENDENCIES
   ostatus
   osub
   pony
+  pygmentize
   rack-flash
   rack-test
   rdiscount
+  rocco
   sinatra
   sinatra-content-for
-  sinatra-reloader
   time-ago-in-words
   twitter
