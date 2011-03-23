@@ -4,9 +4,12 @@ Bundler.setup
 
 require File.dirname(__FILE__) + '/rstatus'
 
-ENV["CONSUMER_KEY"] = "thisisfake"
-ENV["CONSUMER_SECRET"] = "soisthis"
-ENV["APP_ID"] = "andthis"
-ENV["APP_SECRET"] = "ohjoy"
+unless ENV['RACK_ENV'] == "production"
+  config = YAML.load_file(File.open("config.yml"))[ENV['RACK_ENV']]
+
+  config.each do |key, value|
+    ENV[key] = value
+  end
+end
 
 run Rstatus
