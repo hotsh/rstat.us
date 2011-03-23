@@ -18,11 +18,6 @@ gem "osub"
 gem "opub"
 gem "nokogiri", "= 1.4.4"
 
-# coffee-script deps
-gem "json"
-gem "coffee-script-source"
-gem "coffee-script"
-
 group :development, :test do
   gem 'rack-test'
   gem "database_cleaner"
@@ -30,9 +25,4 @@ group :development, :test do
   gem "capybara"
   gem "rocco"
   gem "pygmentize"
-  gem "therubyracer"
-end
-
-group :production do
-  gem 'therubyracer-heroku', '0.8.1.pre3'
 end

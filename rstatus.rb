@@ -472,14 +472,5 @@ class Rstatus < Sinatra::Base
     haml :external_subscription
   end
 
-  # dynamically generate our coffee-script routes
-  Dir.glob("#{File.expand_path(File.dirname(__FILE__))}/views/coffee/*.coffee").each do |cs|
-    cs =~ /([^\/]*)\.coffee/ 
-    cs_name = $1
-    get "/js/#{cs_name}.js" do
-      coffee :"coffee/#{cs_name}"
-    end
-  end
-
 end
 
