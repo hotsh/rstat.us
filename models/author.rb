@@ -20,7 +20,8 @@ class Author
       :username => hsh['user_info']['nickname'],
       :website => hsh['user_info']['urls']['Website'],
       :bio => hsh['user_info']['description'],
-      :image_url => hsh['user_info']['image']
+      :image_url => hsh['user_info']['image'],
+      :url => hsh['user_info']['url']
     )
   end
 
