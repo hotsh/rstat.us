@@ -1,5 +1,8 @@
 source "http://rubygems.org"
 
+# this gem has to come before any that use require_relative
+gem "require_relative", :git => 'git://github.com/bct/require_relative.git', :platforms => :ruby_18
+
 gem "omniauth"
 gem "sinatra", :require => "sinatra/base"
 gem "mongo_mapper"

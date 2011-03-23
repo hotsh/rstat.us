@@ -1,3 +1,9 @@
+GIT
+  remote: git://github.com/bct/require_relative.git
+  revision: 5cc633c2d2ae691273264be33c3275fa2dc2d570
+  specs:
+    require_relative (0.0.2)
+
 GEM
   remote: http://rubygems.org/
   specs:
@@ -181,6 +187,7 @@ DEPENDENCIES
   rack-flash
   rack-test
   rdiscount
+  require_relative!
   rocco
   sinatra
   sinatra-content-for
