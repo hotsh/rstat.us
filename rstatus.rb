@@ -110,6 +110,12 @@ class Rstatus < Sinatra::Base
     end
   end
 
+  configure :test do
+    use OmniAuth::Builder do
+      provider :twitter, "lollerblades", "lollerskates"
+    end
+  end
+
   configure :development do
     OmniAuth.config.add_mock(:twitter, {
       :uid => "1234567890",
