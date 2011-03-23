@@ -217,6 +217,10 @@ class Rstatus < Sinatra::Base
   post "/feeds" do
     feed_url = params[:url]
 
+    if feed_url[0..3] = "feed"
+      feed_url = "http" + feed_url[4..-1]
+    end
+
     f = current_user.follow! feed_url
     unless f
       flash[:notice] = "The was a problem following #{params[:url]}."
