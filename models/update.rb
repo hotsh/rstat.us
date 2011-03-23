@@ -2,12 +2,12 @@ class Update
   require 'cgi'
   include MongoMapper::Document
 
-  attr_accessor :oauth_secret, :oauth_token
-
   belongs_to :feed
   belongs_to :author
 
   key :text, String
+
+  attr_accessor :oauth_token, :oauth_secret
 
   validates_length_of :text, :minimum => 1, :maximum => 140
 
@@ -55,18 +55,19 @@ class Update
   protected
 
   def tweet
-    return if ENV['RACK_ENV'] != "production"
+    return unless ENV['RACK_ENV'] == 'production'
 
     begin
       Twitter.configure do |config|
-        config.consumer_key = Rstatus.settings.config["CONSUMER_KEY"]
-        config.consumer_secret = Rstatus.settings.config["CONSUMER_SECRET"]
+        config.consumer_key = ENV["CONSUMER_KEY"]
+        config.consumer_secret = ENV["CONSUMER_SECRET"]
         config.oauth_token = oauth_token
         config.oauth_token_secret = oauth_secret
       end
 
       Twitter.update(text)
-    rescue
+    rescue Exception => e
+      #I should be shot for doing this.
     end
   end
 

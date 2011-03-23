@@ -147,6 +147,7 @@ GEM
     sinatra-content-for (0.2)
       sinatra
     therubyracer (0.8.1)
+    therubyracer-heroku (0.8.1.pre3)
     tilt (1.2.2)
     time-ago-in-words (0.1.2)
     tinyatom (0.3.4)
@@ -193,5 +194,6 @@ DEPENDENCIES
   sinatra
   sinatra-content-for
   therubyracer
+  therubyracer-heroku (= 0.8.1.pre3)
   time-ago-in-words
   twitter
