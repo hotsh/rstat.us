@@ -1,3 +1,4 @@
+require 'require_relative' if RUBY_VERSION[0,3] == '1.8'
 require_relative 'test_helper'
 
 class RstatusTest < MiniTest::Unit::TestCase
