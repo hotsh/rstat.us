@@ -474,5 +474,9 @@ class Rstatus < Sinatra::Base
     haml :external_subscription
   end
 
+  get "/contact" do
+    haml :contact
+  end
+
 end
 

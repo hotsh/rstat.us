@@ -29,7 +29,7 @@
 
           .links
             %a{:href => "/follow"} Would you like to follow someone not on rstat.us?
-        
+
           .logout
             %a{:href => "/logout"}
               Logout
@@ -37,11 +37,11 @@
       #right
         #content
           != yield_content :top
-          
+
           - if flash[:notice] || flash[:error]
             #flash
               = flash[:notice]
-          
+
           != yield 
-          
+
     != haml :footer
