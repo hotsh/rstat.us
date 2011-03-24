@@ -306,10 +306,14 @@ class Rstatus < Sinatra::Base
     #make sure we're not following them already
     if current_user.following? feed_url
       # which means it exists
-      feed = Feed.first(:url => feed_url)
+      feed = Feed.first(:remote_url => feed_url)
 
       flash[:notice] = "You're already following #{feed.author.username}."
-      redirect "/users/#{feed.author.username}"
+      if feed.local
+        redirect "/users/#{feed.author.username}"
+      else
+        redirect "/"
+      end
       return
     end
 
