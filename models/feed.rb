@@ -68,6 +68,8 @@ class Feed
     end
   end
 
+  # Pings hub
+  # needs absolute url for feed to give to hub for callback
   def ping_hubs(feed_url)
     OPub::Publisher.new(feed_url, hubs).ping_hubs
   end
@@ -99,6 +101,8 @@ class Feed
     save
   end
 
+  # create atom feed
+  # need base_uri since urls outgoing should be absolute
   def atom(base_uri)
     # Create the OStatus::PortableContacts object
     poco = OStatus::PortableContacts.new(:id => author.id,
