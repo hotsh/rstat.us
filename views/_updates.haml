@@ -6,10 +6,15 @@
         %img{:alt => "avatar", :src => update.author.avatar_url}/
     .content
       .name= "#{update.author.name} (#{update.author.username})"
-      .text
+      .text{:id => "update-#{update.id}"}
         != update.to_html
       .date
         %a{:href => update.url}= update.created_at.ago_in_words
+      .reply
+        %a{:onclick => "share('#{update.author.username}', '#{update.id}')"}="share"
+        |
+        %a{:onclick => "reply('#{update.author.username}')"}
+          reply
 - if updates.empty?
   .empty
     There's no updates here yet

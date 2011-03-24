@@ -15,3 +15,17 @@
     });
   });
 }).call(this);
+
+// TODO: MOVE TO COFFEE-SCRIPT FOO
+function reply(username) {
+  update = $("#update-textarea");
+  update.text("@" + username + " ");
+  update.focus();
+}
+
+function share(username, update_id) {
+  update = $("#update-textarea");
+  update_text = $("#update-" + update_id).text().trim();
+  update.text("RT @" + username + ": " + update_text);
+  update.focus();
+}
