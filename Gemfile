@@ -19,6 +19,7 @@ gem "opub"
 gem "nokogiri", "= 1.4.4"
 
 group :development, :test do
+  gem 'coffee-script'
   gem 'rack-test'
   gem "database_cleaner"
   gem "factory_girl"
