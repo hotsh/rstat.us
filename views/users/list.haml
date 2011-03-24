@@ -34,11 +34,5 @@
   %a.button{:href => @next_page, :id => "next_button"}
     Next &raquo;
 
-
-  :javascript
-    $(document).ready(function(){
-      $(".unfollow").click(function(){
-         var r = confirm("Are you sure you want to unsubscribe from this user?"); 
-         return r;
-      })    
-    })
+- content_for :javascript do
+  %script{:src=>"/js/users.js"}
