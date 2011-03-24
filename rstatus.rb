@@ -110,7 +110,20 @@ class Rstatus < Sinatra::Base
 
   get '/' do
     if logged_in?
+
+      params[:page] ||= 1
+      params[:per_page] ||= 25
+      params[:page] = params[:page].to_i
+      params[:per_page] = params[:per_page].to_i
+
+      @next_page = "?#{Rack::Utils.build_query :page => params[:page] + 1}"
+
+      if params[:page] > 1
+        @prev_page = "?#{Rack::Utils.build_query :page => params[:page] - 1}"
+      end
+
       @updates = current_user.timeline(params)
+
       haml :dashboard
     else
       haml :index, :layout => false
@@ -123,6 +136,17 @@ class Rstatus < Sinatra::Base
 
   get '/replies' do
     if logged_in?
+      params[:page] ||= 1
+      params[:per_page] ||= 25
+      params[:page] = params[:page].to_i
+      params[:per_page] = params[:per_page].to_i
+
+      @next_page = "?#{Rack::Utils.build_query :page => params[:page] + 1}"
+
+      if params[:page] > 1
+        @prev_page = "?#{Rack::Utils.build_query :page => params[:page] - 1}"
+      end
+
       @replies = current_user.at_replies(params)
       haml :replies
     else
@@ -351,22 +375,22 @@ class Rstatus < Sinatra::Base
   # This lets us see who is following.
   get '/users/:name/following' do
     params[:page] ||= 1
-	params[:per_page] ||= 20
+    params[:per_page] ||= 20
     params[:page] = params[:page].to_i
     params[:per_page] = params[:per_page].to_i
     feeds = User.first(:username => params[:name]).following
-	
-	@users = feeds.paginate(:page => params[:page], :per_page => params[:per_page])
-	
-	@next_page = nil
+
+    @users = feeds.paginate(:page => params[:page], :per_page => params[:per_page])
+
+    @next_page = nil
     @prev_page = nil
 
     if params[:page]*params[:per_page] < feeds.count
-	  @next_page = "?#{Rack::Utils.build_query :page => params[:page] + 1}"
+      @next_page = "?#{Rack::Utils.build_query :page => params[:page] + 1}"
     end
-    
+
     if params[:page] > 1
-	  @prev_page = "?#{Rack::Utils.build_query :page => params[:page] - 1}"
+      @prev_page = "?#{Rack::Utils.build_query :page => params[:page] - 1}"
     end
 
     haml :"users/list", :locals => {:title => "Following"}
@@ -500,7 +524,17 @@ class Rstatus < Sinatra::Base
 
   get "/hashtags/:tag" do
     @hashtag = params[:tag]
-    @updates = Update.hashtag_search(@hashtag)
+    params[:page] ||= 1
+    params[:per_page] ||= 25
+    params[:page] = params[:page].to_i
+    params[:per_page] = params[:per_page].to_i
+
+    @next_page = "?#{Rack::Utils.build_query :page => params[:page] + 1}"
+
+    if params[:page] > 1
+      @prev_page = "?#{Rack::Utils.build_query :page => params[:page] - 1}"
+    end
+    @updates = Update.hashtag_search(@hashtag, params)
     haml :dashboard
   end
 

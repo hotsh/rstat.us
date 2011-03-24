@@ -7,3 +7,10 @@
 != haml :_navigation
 #timeline.updates
   != haml :_updates, :locals => {:updates => @updates.to_a.sort{|a, b| b.created_at <=> a.created_at }}
+  - unless @prev_page.nil?
+    %a.button{:href => @prev_page, :id => "prev_button"}
+      &laquo; Previous
+
+  - unless @next_page.nil?
+    %a.button{:href => @next_page, :id => "next_button"}
+      Next &raquo;

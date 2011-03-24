@@ -44,8 +44,12 @@ class Update
 
   timestamps!
 
-  def self.hashtag_search(tag)
-    all(:text => /##{tag}/)
+  def self.hashtag_search(tag, opts)
+    popts = {
+      :page => opts[:page],
+      :per_page => opts[:per_page]
+    }
+    where(:text => /##{tag}/).paginate(popts)
   end
 
   def self.hot_updates
