@@ -39,7 +39,7 @@ class Feed
     self.author = Author.create(:name => a.portable_contacts.display_name,
                                 :username => a.name,
                                 :email => a.email,
-                                :url => a.uri,
+                                :remote_url => a.uri,
                                 :image_url => avatar_url)
 
     self.hubs = f.hubs
