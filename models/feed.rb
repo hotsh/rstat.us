@@ -119,7 +119,7 @@ class Feed
                                  :portable_contacts => poco)
 
     # Gather entries as OStatus::Entry objects
-    entries = updates.sort{|a, b| b.created_at <=> a.created_at}.map do |update|
+    entries = updates.to_a.sort{|a, b| b.created_at <=> a.created_at}.map do |update|
       OStatus::Entry.new(:title => update.text,
                          :content => update.text,
                          :updated => update.updated_at,
