@@ -17,6 +17,11 @@
           |
           %a{:href => "javascript:reply('#{update.author.username}')"}
             reply
+        -else
+          %a{:href => "/?share=#{update.id}"}="share"
+          |
+          %a{:href => "/?reply=#{update.author.username}"}
+            reply
 - if updates.empty?
   .empty
     There's no updates here yet

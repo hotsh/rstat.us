@@ -24,10 +24,14 @@ function reply(username) {
   update.focus();
 }
 
+function share_text(username, update_id) {
+  var update_text = $("#update-" + update_id).text().trim();
+  return "RT @" + username + ": " + update_text;
+}
+
 function share(username, update_id) {
   var update = $("#update-textarea");
-  var update_text = $("#update-" + update_id).text().trim();
-  update.text("RT @" + username + ": " + update_text);
+  update.text(share_text(username, update_id));
   update.keypress();
   update.focus();
 }

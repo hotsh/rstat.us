@@ -126,6 +126,18 @@ class Rstatus < Sinatra::Base
 
       @timeline = true
 
+      @update_text = ""
+      if params[:reply]
+        @update_text = "@#{params[:reply]} "
+      elsif params[:share]
+        u = Update.first(:id => params[:share])
+        @update_text = "RT @#{u.author.username}: #{u.text}"
+      end
+
+      if params[:status]
+        @update_text = @update_text + params[:status]
+      end
+
       haml :dashboard
     else
       haml :index, :layout => false
@@ -538,6 +550,7 @@ class Rstatus < Sinatra::Base
     end
     @updates = Update.hashtag_search(@hashtag, params)
     @timeline = true
+    @update_text = params[:status]
     haml :dashboard
   end
 
