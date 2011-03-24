@@ -26,6 +26,15 @@
             %input{:type => "hidden", :name => "url", :value => "/feeds/#{feed.id}"}
             %input.button.follow{:type => "submit", :value => "Follow", :id => "follow-#{feed.id}"}
 
+- unless @prev_page.nil?
+  %a.button{:href => @prev_page, :id => "prev_button"}
+    &laquo; Previous
+
+- unless @next_page.nil?
+  %a.button{:href => @next_page, :id => "next_button"}
+    Next &raquo;
+
+
   :javascript
     $(document).ready(function(){
       $(".unfollow").click(function(){

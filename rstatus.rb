@@ -350,12 +350,49 @@ class Rstatus < Sinatra::Base
 
   # This lets us see who is following.
   get '/users/:name/following' do
-    @users = User.first(:username => params[:name]).following
+    params[:page] ||= 1
+	params[:per_page] ||= 20
+    params[:page] = params[:page].to_i
+    params[:per_page] = params[:per_page].to_i
+    feeds = User.first(:username => params[:name]).following
+	
+	@users = feeds.paginate(:page => params[:page], :per_page => params[:per_page])
+	
+	@next_page = nil
+    @prev_page = nil
+
+    if params[:page]*params[:per_page] < feeds.count
+	  @next_page = "?#{Rack::Utils.build_query :page => params[:page] + 1}"
+    end
+    
+    if params[:page] > 1
+	  @prev_page = "?#{Rack::Utils.build_query :page => params[:page] - 1}"
+    end
+
     haml :"users/list", :locals => {:title => "Following"}
   end
 
   get '/users/:name/followers' do
-    @users = User.first(:username => params[:name]).followers
+    params[:page] ||= 1
+	params[:per_page] ||= 20
+    params[:page] = params[:page].to_i
+    params[:per_page] = params[:per_page].to_i
+    feeds = User.first(:username => params[:name]).following
+    
+    @users = feeds.paginate(:page => params[:page], :per_page => params[:per_page])
+	
+    @next_page = nil
+    @prev_page = nil
+
+    if params[:page]*params[:per_page] < feeds.count
+	  @next_page = "?#{Rack::Utils.build_query :page => params[:page] + 1}"
+    end
+    
+    if params[:page] > 1
+	  @prev_page = "?#{Rack::Utils.build_query :page => params[:page] - 1}"
+    end
+
+
     haml :"users/list", :locals => {:title => "Followers"}
   end
 
