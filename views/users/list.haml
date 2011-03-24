@@ -15,7 +15,7 @@
           %br
           (#{feed.author.username})
 
-      - unless current_user.feed == feed
+      - unless !current_user || current_user.feed == feed
         - if current_user.following?(feed.url)
           .follow.negative
             %form{:method => "post", :action => "/subscriptions/#{feed.id}"}
