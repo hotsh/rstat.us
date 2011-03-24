@@ -11,10 +11,12 @@
       .date
         %a{:href => update.url}= update.created_at.ago_in_words
       .reply
-        %a{:href => "javascript:share('#{update.author.username}', '#{update.id}')"}="share"
-        |
-        %a{:href => "javascript:reply('#{update.author.username}')"}
-          reply
+        -# when @timeline is true, this is a list on the user's page
+        -unless @timeline.nil?
+          %a{:href => "javascript:share('#{update.author.username}', '#{update.id}')"}="share"
+          |
+          %a{:href => "javascript:reply('#{update.author.username}')"}
+            reply
 - if updates.empty?
   .empty
     There's no updates here yet

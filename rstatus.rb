@@ -124,6 +124,8 @@ class Rstatus < Sinatra::Base
 
       @updates = current_user.timeline(params)
 
+      @timeline = true
+
       haml :dashboard
     else
       haml :index, :layout => false
@@ -535,6 +537,7 @@ class Rstatus < Sinatra::Base
       @prev_page = "?#{Rack::Utils.build_query :page => params[:page] - 1}"
     end
     @updates = Update.hashtag_search(@hashtag, params)
+    @timeline = true
     haml :dashboard
   end
 
