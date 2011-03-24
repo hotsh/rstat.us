@@ -84,7 +84,7 @@ class User
   end
 
   def following? feed_url
-    f = Feed.first(:url => feed_url)
+    f = Feed.first(:remote_url => feed_url)
 
     # local feed?
     if f.nil? and feed_url[0] == "/"
