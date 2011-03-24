@@ -56,8 +56,7 @@ class User
     end
 
     if f.nil?
-      f = Feed.create(:remote_url => feed_url,
-                      :local => false)
+      f = Feed.create(:remote_url => feed_url)
       f.populate
     end
 
@@ -85,7 +84,7 @@ class User
   end
 
   def following? feed_url
-    f = Feed.first(:url => feed_url)
+    f = Feed.first(:remote_url => feed_url)
 
     # local feed?
     if f.nil? and feed_url[0] == "/"
@@ -135,8 +134,7 @@ class User
 
   def create_feed()
     f = Feed.create(
-      :author => author,
-      :local => true
+      :author => author
     )
 
     self.feed = f

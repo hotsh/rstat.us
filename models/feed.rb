@@ -7,7 +7,6 @@ class Feed
 
   # Feed url (and an indicator that it is local)
   key :remote_url, String
-  key :local, Boolean
 
   # OStatus subscriber information
   key :verify_token, String
@@ -72,6 +71,10 @@ class Feed
   # needs absolute url for feed to give to hub for callback
   def ping_hubs(feed_url)
     OPub::Publisher.new(feed_url, hubs).ping_hubs
+  end
+
+  def local
+    url.start_with?("/")
   end
 
   def url
