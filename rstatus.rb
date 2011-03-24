@@ -110,7 +110,7 @@ class Rstatus < Sinatra::Base
 
   get '/' do
     if logged_in?
-      @updates = current_user.timeline
+      @updates = current_user.timeline(params)
       haml :dashboard
     else
       haml :index, :layout => false
@@ -123,6 +123,7 @@ class Rstatus < Sinatra::Base
 
   get '/replies' do
     if logged_in?
+      @replies = current_user.at_replies(params)
       haml :replies
     else
       haml :index, :layout => false

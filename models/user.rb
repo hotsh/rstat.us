@@ -101,16 +101,20 @@ class User
 
   timestamps!
 
-  def timeline
-    following.map(&:updates).flatten
+  def timeline(opts)
+    popts = {
+      :page => opts[:page],
+      :per_page => opts[:per_page]
+    }
+    Update.where(:author_id => following.map(&:author_id)).paginate(popts)
   end
 
-  def at_replies
-    Update.all(:text => /^@#{username} /)
-  end
-
-  def dm_replies
-    Update.all(:text => /^d #{username} /)
+  def at_replies(opts)
+    popts = {
+      :page => opts[:page],
+      :per_page => opts[:per_page]
+    }
+    Update.where(:author_id => following.map(&:author_id)).where(:text => /^@#{username} /).paginate(popts)
   end
 
   key :status
