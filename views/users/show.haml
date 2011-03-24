@@ -2,7 +2,14 @@
   %h3= @author.name
   .username
     @#{@author.username}
-
+  .following
+    Following: 
+    %a{:href => "/users/#{@author.username}/following"} 
+      #{@author.user.following.length}
+  .followers
+    Followers:
+    %a{:href => "/users/#{@author.username}/followers"}
+      #{@author.user.followers.length}
   - unless @author.website.blank?
     .website
       Website:
