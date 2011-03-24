@@ -37,10 +37,5 @@
   #updates.updates
     != haml :_updates, :locals => {:updates => @author.feed.updates.to_a.sort{|a, b| b.created_at <=> a.created_at }}
 
-  :javascript
-    $(document).ready(function(){
-      $(".unfollow").click(function(){
-         var r = confirm("Are you sure you want to unfollow this user?"); 
-         return r;
-      })    
-    })
+- content_for :javascript do
+  %script{:src=>"/js/users.js"}
