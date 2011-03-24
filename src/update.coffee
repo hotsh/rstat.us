@@ -9,7 +9,4 @@ $(document).ready ->
   update.keypress(updateCounter).keyup(updateCounter)
 
   $("#update-form").submit ->
-    if update.val().length <= 0 || update.val().length > 140
-      false
-    else
-      true
+    false if update.val().length <= 0 || update.val().length > 140
