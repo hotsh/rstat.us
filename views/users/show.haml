@@ -3,12 +3,6 @@
   .username
     @#{@author.username}
 
-  - unless @author.email.blank?
-    .email
-      Email:
-      %a{:href => "mailto:#{@author.email}"}
-        #{@author.email}
-
   - unless @author.website.blank?
     .website
       Website:
