@@ -3,5 +3,6 @@
   #update-content
     %textarea#update-textarea{:name => "text"}=@update_text
   #update-info
+    %input#update-referral{:type => 'hidden', :name => 'referral_id', :value => ''}
     %input#update-button.button{:type => "submit", :value => "Share"}
     #update-count

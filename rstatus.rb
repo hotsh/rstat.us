@@ -455,7 +455,8 @@ class Rstatus < Sinatra::Base
   end
 
   post '/updates' do
-    u = Update.new(:text => params[:text], 
+    u = Update.new(:text => params[:text],
+                   :referral_id => params[:referral_id], 
                    :author => current_user.author,
                    :oauth_token => session[:oauth_token],
                    :oauth_secret => session[:oauth_secret])
@@ -474,6 +475,7 @@ class Rstatus < Sinatra::Base
 
   get '/updates/:id' do
     @update = Update.first :id => params[:id]
+    @referral = @update.referral
     haml :"updates/show", :layout => :'updates/layout'
   end
 

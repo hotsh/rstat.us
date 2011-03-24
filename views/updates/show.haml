@@ -11,6 +11,13 @@
         %img{:alt => "avatar", :src => @update.author.avatar_url}/
       .name
         = @update.author.username
+    -unless @referral.nil?
+      %a{:href => "/updates/#{@referral.id}"}
+        in reply to
+        .avatar
+          %img{:alt => "avatar", :src => @referral.author.avatar_url}/
+        .name
+          = @referral.author.username
     - if current_user and @update.author.id == current_user.author.id
       %form{:method => "post", :action => "/updates/#{@update.id}"}
         %input{:type => "hidden", :name => "_method", :value => "delete"}
