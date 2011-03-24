@@ -1,3 +1,5 @@
-$(document).ready(function() {
-  $("#flash").delay(2000).slideUp('slow')
-})
+(function() {
+  $(document).ready(function() {
+    return $("#flash").delay(2000).slideUp('slow');
+  });
+}).call(this);

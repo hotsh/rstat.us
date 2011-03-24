@@ -29,7 +29,7 @@ module TestHelper
     DatabaseCleaner.clean
   end
 
-  def log_in(u, uid)
+  def log_in(u, uid = 12345)
     OmniAuth.config.add_mock(:twitter, {
       :uid => uid,
       :user_info => {

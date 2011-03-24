@@ -1,17 +1,7 @@
-require 'sinatra/base'
-require 'sinatra/reloader'
+require 'bundler'
+Bundler.require
 
-require 'omniauth'
-require 'mongo_mapper'
-require 'haml'
-require 'time-ago-in-words'
-require 'sinatra/content_for'
-require 'twitter'
-require 'pony'
-require 'bcrypt'
-require 'ostatus'
-
-require_relative 'models'
+require_relative 'models/all'
 
 module Sinatra
   module UserHelper
@@ -86,15 +76,10 @@ class Rstatus < Sinatra::Base
   use Rack::Session::Cookie, :secret => ENV['COOKIE_SECRET']
   set :root, File.dirname(__FILE__)
   set :haml, :escape_html => true
-  set :config, YAML.load_file("config.yml")[ENV['RACK_ENV']]
   set :method_override, true
 
   require 'rack-flash'
   use Rack::Flash
-
-  configure :development do
-    register Sinatra::Reloader
-  end
 
   configure do
     if ENV['MONGOHQ_URL']
@@ -119,8 +104,8 @@ class Rstatus < Sinatra::Base
   end
 
   use OmniAuth::Builder do
-    provider :twitter, Rstatus.settings.config["CONSUMER_KEY"], Rstatus.settings.config["CONSUMER_SECRET"]
-    provider :facebook, Rstatus.settings.config["APP_ID"], Rstatus.settings.config["APP_SECRET"]
+    provider :twitter, ENV["CONSUMER_KEY"], ENV["CONSUMER_SECRET"]
+    provider :facebook, ENV["APP_ID"], ENV["APP_SECRET"]
   end
 
   get '/' do
@@ -147,7 +132,27 @@ class Rstatus < Sinatra::Base
   get '/auth/:provider/callback' do
     auth = request.env['omniauth.auth']
     unless @auth = Authorization.find_from_hash(auth)
-      @auth = Authorization.create_from_hash(auth, uri("/"), current_user)
+      if User.first :username => auth['user_info']['nickname']
+        #we have a username conflict!
+
+        #let's store their oauth stuff so they don't have to re-login after
+        session[:oauth_token] = auth['credentials']['token']
+        session[:oauth_secret] = auth['credentials']['secret']
+
+        session[:uid] = auth['uid']
+        session[:provider] = auth['provider']
+        session[:name] = auth['user_info']['name']
+        session[:nickname] = auth['user_info']['nickname']
+        session[:website] = auth['user_info']['urls']['Website']
+        session[:description] = auth['user_info']['description']
+        session[:image] = auth['user_info']['image']
+
+        flash[:notice] = "Sorry, someone has that name."
+        redirect '/users/new'
+        return
+      else
+        @auth = Authorization.create_from_hash(auth, uri("/"), current_user)
+      end
     end
 
     session[:oauth_token] = auth['credentials']['token']
@@ -158,6 +163,36 @@ class Rstatus < Sinatra::Base
     redirect '/'
   end
 
+  get '/users/new' do
+    haml :"users/new"
+  end
+
+  post '/users' do
+    user = User.new params
+    if user.save
+      #this is really stupid.
+      auth = {}
+      auth['uid'] = session[:uid]
+      auth['provider'] = session[:provider]
+      auth['user_info'] = {}
+      auth['user_info']['name'] = session[:name]
+      auth['user_info']['nickname'] = session[:nickname]
+      auth['user_info']['urls'] = {}
+      auth['user_info']['urls']['Website'] = session[:website]
+      auth['user_info']['description'] = session[:description]
+      auth['user_info']['image'] = session[:image]
+
+      Authorization.create_from_hash(auth, uri("/"), user)
+
+      flash[:notice] = "Thanks! You're all signed up with #{user.username} for your username."
+      session[:user_id] = user.id
+      redirect '/'
+    else
+      flash[:notice] = "Oops! That username was taken. Pick another?"
+      redirect '/users/new'
+    end
+  end
+
   get "/logout" do
     session[:user_id] = nil
     flash[:notice] = "You've been logged out."
@@ -166,7 +201,8 @@ class Rstatus < Sinatra::Base
 
   # show user profile
   get "/users/:slug" do
-    @author = Author.first :username => params[:slug]
+    user = User.first :username => params[:slug]
+    @author = user.author
     haml :"users/show"
   end
 
@@ -174,17 +210,61 @@ class Rstatus < Sinatra::Base
   # should be 'put', PuSH sucks at REST
   post "/feeds/:id.atom" do
     feed = Feed.first :id => params[:id]
-    feed.update_entries(request.body.read, request.url, request.env['HTTP_X_HUB_SIGNATURE'])
+    feed.update_entries(request.body.read, request.url, url(feed.url), request.env['HTTP_X_HUB_SIGNATURE'])
   end
 
-  post "/feeds" do
+  # unsubscribe from a feed
+  delete '/subscriptions/:id' do
+    require_login! :return => "/subscriptions/#{params[:id]}"
+
+    feed = Feed.first :id => params[:id]
+
+    @author = feed.author
+    redirect "/" and return if @author.user == current_user
+
+    #make sure we're following them already
+    unless current_user.following? feed.url
+      flash[:notice] = "You're not following #{@author.username}."
+      redirect "/"
+      return
+    end
+
+    #unfollow them!
+    current_user.unfollow! feed
+
+    flash[:notice] = "No longer following #{@author.username}."
+    redirect "/"
+  end
+
+  post "/subscriptions" do
+    require_login! :return => "/subscriptions"
+
     feed_url = params[:url]
+    if feed_url[0..3] == "feed"
+      feed_url = "http" + feed_url[4..-1]
+    end
+
+    #make sure we're not following them already
+    if current_user.following? feed_url
+      # which means it exists
+      feed = Feed.first(:url => feed_url)
+
+      flash[:notice] = "You're already following #{feed.author.username}."
+      redirect "/users/#{feed.author.username}"
+      return
+    end
+
+    # follow them!
 
     f = current_user.follow! feed_url
     unless f
       flash[:notice] = "The was a problem following #{params[:url]}."
-      redirect "/users/#{@user.username}"
-    else
+      redirect "/follow"
+      return
+    end
+
+    if not f.local
+      # remote feeds require some talking to a hub
       hub_url = f.hubs.first
 
       sub = OSub::Subscription.new(url("/feeds/#{f.id}.atom"), f.url, f.secret)
@@ -193,6 +273,10 @@ class Rstatus < Sinatra::Base
       name = f.author.username
       flash[:notice] = "Now following #{name}."
       redirect "/"
+    else
+      # local feed... redirect to that user's profile
+      flash[:notice] = "Now following #{f.author.username}."
+      redirect "/users/#{f.author.username}"
     end
   end
 
@@ -257,61 +341,10 @@ class Rstatus < Sinatra::Base
     end
   end
 
-  # an alias for the above route
+  # an alias for the route of the feed
   get "/users/:name/feed" do
     feed = User.first(:username => params[:name]).feed
     redirect "/feeds/#{feed.id}.atom"
-  end
-
-  # users can follow each other, and this route takes care of it!
-  get '/users/:name/follow' do
-    require_login! :return => "/users/#{params[:name]}/follow"
-
-    @author = Author.first(:username => params[:name])
-    redirect "/users/#{@author.username}" and return if @author.user == current_user
-
-    #make sure we're not following them already
-    if current_user.following? @author.feed.url
-      flash[:notice] = "You're already following #{params[:name]}."
-      redirect "/users/#{@author.username}"
-      return
-    end
-
-    # then follow them!
-    unless current_user.follow! @author.feed.url
-      flash[:notice] = "The was a problem following #{params[:name]}."
-      redirect "/users/#{@author.username}"
-    else
-      flash[:notice] = "Now following #{params[:name]}."
-      redirect "/users/#{@author.username}"
-    end
-  end
-
-  #this lets you unfollow a user
-  get '/users/:name/unfollow' do
-    require_login! :return => "/users/#{params[:name]}/unfollow"
-
-    @author = Author.first(:username => params[:name])
-    redirect "/users/#{@author.username}" and return if @author.user == current_user
-
-    #make sure we're following them already
-    unless current_user.following? @author.feed.url
-      flash[:notice] = "You're not following #{params[:name]}."
-      redirect "/users/#{@author.username}"
-      return
-    end
-
-    #unfollow them!
-    current_user.unfollow! @author.feed
-
-    flash[:notice] = "No longer following #{params[:name]}."
-    redirect "/users/#{@author.username}"
-  end
-
-  # this lets us see followers.
-  get '/users/:name/followers' do
-    @users = User.first(:username => params[:name]).followers
-    haml :"users/list", :locals => {:title => "Followers"}
   end
 
   # This lets us see who is following.
@@ -320,9 +353,16 @@ class Rstatus < Sinatra::Base
     haml :"users/list", :locals => {:title => "Following"}
   end
 
+  get '/users/:name/followers' do
+    @users = User.first(:username => params[:name]).followers
+    haml :"users/list", :locals => {:title => "Followers"}
+  end
+
   post '/updates' do
     u = Update.new(:text => params[:text], 
-                   :author => current_user.author)
+                   :author => current_user.author,
+                   :oauth_token => session[:oauth_token],
+                   :oauth_secret => session[:oauth_secret])
 
     # and entry to user's feed
     current_user.feed.updates << u
@@ -330,7 +370,7 @@ class Rstatus < Sinatra::Base
     current_user.save
 
     # tell hubs there is a new entry
-    current_user.feed.ping_hubs
+    current_user.feed.ping_hubs(url(current_user.feed.url))
 
     flash[:notice] = "Update created."
     redirect "/"
@@ -375,7 +415,11 @@ class Rstatus < Sinatra::Base
     user.status = "confirmed"
     user.author = Author.create(:username => user.username,
                                 :email => user.email)
-    user.finalize(uri("/"))
+
+    # propagate the authorship to their feed as well
+    user.feed.author = user.author
+    user.feed.save
+
     user.save
     session[:user_id] = user.id.to_s
 
@@ -401,7 +445,7 @@ class Rstatus < Sinatra::Base
   delete '/updates/:id' do |id|
     update = Update.first :id => params[:id]
 
-    if update.user == current_user
+    if update.author == current_user.author
       update.destroy
 
       flash[:notice] = "Update Baleeted!"

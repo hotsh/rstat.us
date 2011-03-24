@@ -1,87 +1,19 @@
-/*-------------------------------------------------------------------- 
- * javascript method: "pxToEm"
- * by:
-   Scott Jehl (scott@filamentgroup.com) 
-   Maggie Wachs (maggie@filamentgroup.com)
-   http://www.filamentgroup.com
+/**
+ * Equal Heights Plugin
+ * Equalize the heights of elements. Great for columns or any elements
+ * that need to be the same size (floats, etc).
+ * 
+ * Version 1.1
+ * Updated 28/06/2010
  *
- * Copyright (c) 2008 Filament Group
- * Dual licensed under the MIT (filamentgroup.com/examples/mit-license.txt) and GPL (filamentgroup.com/examples/gpl-license.txt) licenses.
+ * Copyright (c) 2008 Rob Glazebrook (cssnewbie.com) 
  *
- * Description: Extends the native Number and String objects with pxToEm method. pxToEm converts a pixel value to ems depending on inherited font size.  
- * Article: http://www.filamentgroup.com/lab/retaining_scalable_interfaces_with_pixel_to_em_conversion/
- * Demo: http://www.filamentgroup.com/examples/pxToEm/	 	
- *							
- * Options:  	 								
- 		scope: string or jQuery selector for font-size scoping
- 		reverse: Boolean, true reverses the conversion to em-px
- * Dependencies: jQuery library						  
- * Usage Example: myPixelValue.pxToEm(); or myPixelValue.pxToEm({'scope':'#navigation', reverse: true});
- *
- * Version: 2.0, 08.01.2008 
- * Changelog:
- *		08.02.2007 initial Version 1.0
- *		08.01.2008 - fixed font-size calculation for IE
---------------------------------------------------------------------*/
-
-Number.prototype.pxToEm = String.prototype.pxToEm = function(settings){
-	//set defaults
-	settings = jQuery.extend({
-		scope: 'body',
-		reverse: false
-	}, settings);
-	
-	var pxVal = (this == '') ? 0 : parseFloat(this);
-	var scopeVal;
-	var getWindowWidth = function(){
-		var de = document.documentElement;
-		return self.innerWidth || (de && de.clientWidth) || document.body.clientWidth;
-	};	
-	
-	/* When a percentage-based font-size is set on the body, IE returns that percent of the window width as the font-size. 
-		For example, if the body font-size is 62.5% and the window width is 1000px, IE will return 625px as the font-size. 	
-		When this happens, we calculate the correct body font-size (%) and multiply it by 16 (the standard browser font size) 
-		to get an accurate em value. */
-				
-	if (settings.scope == 'body' && $.browser.msie && (parseFloat($('body').css('font-size')) / getWindowWidth()).toFixed(1) > 0.0) {
-		var calcFontSize = function(){		
-			return (parseFloat($('body').css('font-size'))/getWindowWidth()).toFixed(3) * 16;
-		};
-		scopeVal = calcFontSize();
-	}
-	else { scopeVal = parseFloat(jQuery(settings.scope).css("font-size")); };
-			
-	var result = (settings.reverse == true) ? (pxVal * scopeVal).toFixed(2) + 'px' : (pxVal / scopeVal).toFixed(2) + 'em';
-	return result;
-};
-
-/*-------------------------------------------------------------------- 
- * JQuery Plugin: "EqualHeights"
- * by:	Scott Jehl, Todd Parker, Maggie Costello Wachs (http://www.filamentgroup.com)
- *
- * Copyright (c) 2008 Filament Group
- * Licensed under GPL (http://www.opensource.org/licenses/gpl-license.php)
- *
- * Description: Compares the heights or widths of the top-level children of a provided element 
- 		and sets their min-height to the tallest height (or width to widest width). Sets in em units 
- 		by default if pxToEm() method is available.
- * Dependencies: jQuery library, pxToEm method	(article: 
-		http://www.filamentgroup.com/lab/retaining_scalable_interfaces_with_pixel_to_em_conversion/)							  
- * Usage Example: $(element).equalHeights();
-  		Optional: to set min-height in px, pass a true argument: $(element).equalHeights(true);
- * Version: 2.0, 08.01.2008
---------------------------------------------------------------------*/
-
-$.fn.equalHeights = function(px) {
-	$(this).each(function(){
-		var currentTallest = 0;
-		$(this).children().each(function(i){
-			if ($(this).height() > currentTallest) { currentTallest = $(this).height(); }
-		});
-		if (!px || !Number.prototype.pxToEm) currentTallest = currentTallest.pxToEm(); //use ems unless px is specified
-		// for ie6, set height since min-height isn't supported
-		if ($.browser.msie && $.browser.version == 6.0) { $(this).children().css({'height': currentTallest}); }
-		$(this).children().css({'min-height': currentTallest}); 
-	});
-	return this;
-};
+ * Usage: $(object).equalHeights([minHeight], [maxHeight]);
+ * 
+ * Example 1: $(".cols").equalHeights(); Sets all columns to the same height.
+ * Example 2: $(".cols").equalHeights(400); Sets all cols to at least 400px tall.
+ * Example 3: $(".cols").equalHeights(100,300); Cols are at least 100 but no more
+ * than 300 pixels tall. Elements with too much content will gain a scrollbar.
+ * 
+ */
+(function(a){a.fn.equalHeights=function(c,b){tallest=c?c:0;this.each(function(){if(a.browser.msie&&a.browser.version.substr(0,1)<7){if(this.offsetHeight>tallest)tallest=this.offsetHeight}else if(a(this).height()>tallest)tallest=a(this).height()});if(b&&tallest>b)tallest=b;return this.each(function(){a.browser.msie&&a.browser.version.substr(0,1)<7?a(this).height(tallest):a(this).css({"*height":tallest,"min-height":tallest});$childElements=a(this).children(".autoPadDiv");$childElements.css({"*height":tallest, "min-height":tallest})})}})(jQuery);

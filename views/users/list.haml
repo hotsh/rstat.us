@@ -2,12 +2,14 @@
 %ul.user-list
   - @users.each_with_index do |feed, i|
     %li.user{:class => i%2 == 0 ? "even" : "odd"}
+      -user_url = feed.local ? "/users/#{feed.author.username}" : feed.author.url
+      -unfollow_url = feed.local ? "/users/#{feed.author.username}/unfollow" : "/feeds/#{feed.id}/unsubscribe"
       .avatar
-        %a{:href => "/users/#{feed.author.username}"}
+        %a{:href => user_url}
           %img{:alt => "avatar", :src => feed.author.avatar_url}/
 
       .name
-        %a{:href => "/users/#{feed.author.username}"}
+        %a{:href => user_url}
           %b
             = feed.author.name
           %br
@@ -15,5 +17,14 @@
 
       - if current_user.following? feed.url
         .follow.negative
-          %a.button{:href => "/users/#{feed.author.username}/unfollow"}
-            Unfollow
+          %form{:method => "post", :action => "/subscriptions/#{feed.id}"}
+            %input{:type => "hidden", :name => "_method", :value => "delete"}
+            %input.button.unfollow{:type => "submit", :value => "Unfollow", :id => "unfollow-#{feed.id}"}
+
+  :javascript
+    $(document).ready(function(){
+      $(".unfollow").click(function(){
+         var r = confirm("Are you sure you want to unsubscribe from this user?"); 
+         return r;
+      })    
+    })

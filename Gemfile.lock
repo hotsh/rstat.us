@@ -3,7 +3,6 @@ GEM
   specs:
     activesupport (3.0.5)
     addressable (2.2.4)
-    backports (2.0.2)
     bcrypt-ruby (2.1.4)
     bson (1.2.4)
     bson_ext (1.2.4)
@@ -18,18 +17,23 @@ GEM
       selenium-webdriver (>= 0.0.27)
       xpath (~> 0.1.3)
     celerity (0.8.8)
-    childprocess (0.1.7)
-      ffi (~> 0.6.3)
+    childprocess (0.1.8)
+      ffi (~> 1.0.6)
+    coffee-script (2.2.0)
+      coffee-script-source
+      execjs
+    coffee-script-source (1.0.1)
     culerity (0.2.15)
-    database_cleaner (0.6.5)
+    database_cleaner (0.6.6)
+    execjs (0.1.0)
     factory_girl (1.3.3)
     faraday (0.5.7)
       addressable (~> 2.2.4)
       multipart-post (~> 1.1.0)
-      rack (< 2, >= 1.1.0)
+      rack (>= 1.1.0, < 2)
     faraday_middleware (0.3.2)
       faraday (~> 0.5.4)
-    ffi (0.6.3)
+    ffi (1.0.7)
       rake (>= 0.8.7)
     haml (3.0.25)
     hashie (1.0.0)
@@ -49,11 +53,10 @@ GEM
       activesupport (>= 2.3.4)
       jnunemaker-validatable (~> 1.8.4)
       plucky (~> 0.3.6)
-    monkey-lib (0.5.4)
-      backports
     multi_json (0.0.5)
-    multi_xml (0.2.1)
+    multi_xml (0.2.2)
     multipart-post (1.1.0)
+    mustache (0.99.3)
     net-ldap (0.1.1)
     nokogiri (1.4.4)
     oa-basic (0.2.0)
@@ -95,7 +98,7 @@ GEM
       oa-oauth (= 0.2.0)
       oa-openid (= 0.2.0)
     opub (0.0.1)
-    ostatus (0.0.4)
+    ostatus (0.0.6)
       nokogiri
       oauth
       tinyatom
@@ -108,6 +111,7 @@ GEM
     pony (1.1)
       mail (> 2.0)
     public_suffix_service (0.8.2)
+    pygmentize (0.0.2)
     pyu-ruby-sasl (0.0.3.2)
     rack (1.2.2)
     rack-flash (0.1.1)
@@ -121,33 +125,26 @@ GEM
     rdiscount (1.6.8)
     rest-client (1.6.1)
       mime-types (>= 1.16)
+    rocco (0.6)
+      mustache
+      rdiscount
     ruby-hmac (0.4.0)
     ruby-openid (2.1.8)
     ruby-openid-apps-discovery (1.2.0)
       ruby-openid (>= 2.1.7)
     rubyntlm (0.1.1)
     rubyzip (0.9.4)
-    selenium-webdriver (0.1.3)
-      childprocess (~> 0.1.5)
-      ffi (~> 0.6.3)
+    selenium-webdriver (0.1.4)
+      childprocess (>= 0.1.7)
+      ffi (>= 1.0.7)
       json_pure
       rubyzip
     simple_oauth (0.1.4)
-    sinatra (1.2.0)
+    sinatra (1.2.1)
       rack (~> 1.1)
-      tilt (< 2.0, >= 1.2.2)
-    sinatra-advanced-routes (0.5.1)
-      monkey-lib (~> 0.5.0)
-      sinatra (~> 1.0)
-      sinatra-sugar (~> 0.5.0)
+      tilt (>= 1.2.2, < 2.0)
     sinatra-content-for (0.2)
       sinatra
-    sinatra-reloader (0.5.0)
-      sinatra (~> 1.0)
-      sinatra-advanced-routes (~> 0.5.0)
-    sinatra-sugar (0.5.0)
-      monkey-lib (~> 0.5.0)
-      sinatra (~> 1.0)
     tilt (1.2.2)
     time-ago-in-words (0.1.2)
     tinyatom (0.3.4)
@@ -155,13 +152,13 @@ GEM
       public_suffix_service (~> 0.0)
     treetop (1.4.9)
       polyglot (>= 0.3.1)
-    twitter (1.1.2)
+    twitter (1.2.0)
       faraday (~> 0.5.4)
-      faraday_middleware (~> 0.3.1)
+      faraday_middleware (~> 0.3.2)
       hashie (~> 1.0.0)
       multi_json (~> 0.0.5)
       multi_xml (~> 0.2.0)
-      simple_oauth (~> 0.1.3)
+      simple_oauth (~> 0.1.4)
     xpath (0.1.3)
       nokogiri (~> 1.3)
 
@@ -172,6 +169,7 @@ DEPENDENCIES
   bcrypt-ruby
   bson_ext
   capybara
+  coffee-script
   database_cleaner
   factory_girl
   haml
@@ -183,11 +181,12 @@ DEPENDENCIES
   ostatus
   osub
   pony
+  pygmentize
   rack-flash
   rack-test
   rdiscount
+  rocco
   sinatra
   sinatra-content-for
-  sinatra-reloader
   time-ago-in-words
   twitter

@@ -447,6 +447,7 @@ input.title,
 textarea {
   background-color: #fff;
   border: 1px solid #bbb;
+  font-family: "Arial Black", Arial, sans-serif;
 }
 input[type=text]:focus,
 input[type=password]:focus,
@@ -1014,6 +1015,9 @@ form#update-form #update-info.negative #update-count {
 #login {
   border-right: 1px solid #ddd;
   margin-right: 40px;
+}
+#login #username, #login #password, #signup input[type="text"] {
+  width: 200px;
 }
 #login-other {
   margin-top: 2em;
