@@ -11,8 +11,6 @@
     return $("#update-form").submit(function() {
       if (update.val().length <= 0 || update.val().length > 140) {
         return false;
-      } else {
-        return true;
       }
     });
   });
