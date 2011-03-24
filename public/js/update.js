@@ -5,11 +5,7 @@
     update = $("#update-textarea");
     updateCounter = function() {
       $("#update-count").text((140 - update.val().length) + "/140");
-      if (update.val().length > 140) {
-        return $("#update-info").addClass("negative");
-      } else {
-        return $("#update-info").removeClass("negative");
-      }
+      return $("#update-info").toggleClass("negative", update.val().length > 140);
     };
     update.keypress(updateCounter).keyup(updateCounter);
     return $("#update-form").submit(function() {

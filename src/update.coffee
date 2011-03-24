@@ -4,10 +4,7 @@ $(document).ready ->
 
   updateCounter = ->
     $("#update-count").text((140 - update.val().length) + "/140")
-    if update.val().length > 140
-      $("#update-info").addClass("negative")
-    else
-      $("#update-info").removeClass("negative")
+    $("#update-info").toggleClass "negative", update.val().length > 140
 
   update.keypress(updateCounter).keyup(updateCounter)
 
