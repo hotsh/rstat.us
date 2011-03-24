@@ -28,9 +28,9 @@ class Update
 
   def to_html
     out = CGI.escapeHTML(text)
-    out.gsub!(/@(\w+)/) do |match|
-      if u = User.first(:username => /#{match[1..-1]}/i)
-        "<a href='/users/#{u.username}'>#{match}</a>"
+    out.gsub!(/(^|\s+)@(\w+)/) do |match|
+      if u = User.first(:username => /#{$2}/i)
+        "#{$1}<a href='/users/#{u.username}'>@#{$2}</a>"
       else
         match
       end
@@ -40,7 +40,7 @@ class Update
     out
   end
 
-  def mentioned? search 
+  def mentioned? search
     matches = text.match(/^@#{search}/)
     matches.nil? ? false : matches.length > 0
   end
