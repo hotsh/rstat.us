@@ -116,6 +116,44 @@ class RstatusTest < MiniTest::Unit::TestCase
     assert_match "No longer following #{u2.username}", page.body
   end
 
+  def test_user_following_paginates
+    u = Factory(:user)
+    a = Factory(:authorization, :user => u)
+    
+    log_in(u, a.uid)
+
+    51.times do
+      u2 = Factory(:user)
+      u.follow! u2.feed.url
+    end
+
+    visit "/users/#{u.username}/following"
+
+    click_link "next_button"
+
+    assert_match "Previous", page.body
+    assert_match "Next", page.body
+  end
+
+  def test_user_followers_paginates
+    u = Factory(:user)
+    a = Factory(:authorization, :user => u)
+    
+    log_in(u, a.uid)
+
+    51.times do
+      u2 = Factory(:user)
+      u2.follow! u.feed.url
+    end
+
+    visit "/users/#{u.username}/followers"
+    
+    click_link "next_button"
+
+    assert_match "Previous", page.body
+    assert_match "Next", page.body
+  end
+
   def test_user_edit_own_profile_link
     u = Factory(:user)
     a = Factory(:authorization, :user => u)
