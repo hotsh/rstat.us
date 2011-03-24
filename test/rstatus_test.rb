@@ -45,6 +45,16 @@ class RstatusTest < MiniTest::Unit::TestCase
     assert_equal 200, page.status_code
   end
 
+  def test_user_follows_themselves_upon_create
+    u = Factory(:user)
+    a = Factory(:authorization, :user => u)
+
+    log_in(u, a.uid)
+    
+    visit "/users/#{u.username}/following"
+    assert_match u.username, page.body
+  end
+
   def test_user_makes_updates
     u = Factory(:user)
     a = Factory(:authorization, :user => u)

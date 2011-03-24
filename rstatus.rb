@@ -415,6 +415,11 @@ class Rstatus < Sinatra::Base
     user.status = "confirmed"
     user.author = Author.create(:username => user.username,
                                 :email => user.email)
+
+    # propagate the authorship to their feed as well
+    user.feed.author = user.author
+    user.feed.save
+
     user.save
     session[:user_id] = user.id.to_s
 
