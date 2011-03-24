@@ -1,3 +1,7 @@
+%h1 Finish Signup
+
+%p Okay! Almost done. Pick a username and a password, please: 
+
 %form{:action => "/confirm", :method => "POST"}
   Username: 
   %input{:type => "text", :name => "username", :value => "#{@valid_username ? @username : ''}"}
