@@ -18,14 +18,16 @@
 
 // TODO: MOVE TO COFFEE-SCRIPT FOO
 function reply(username) {
-  update = $("#update-textarea");
+  var update = $("#update-textarea");
   update.text("@" + username + " ");
+  update.keypress();
   update.focus();
 }
 
 function share(username, update_id) {
-  update = $("#update-textarea");
-  update_text = $("#update-" + update_id).text().trim();
+  var update = $("#update-textarea");
+  var update_text = $("#update-" + update_id).text().trim();
   update.text("RT @" + username + ": " + update_text);
+  update.keypress();
   update.focus();
 }

@@ -11,9 +11,9 @@
       .date
         %a{:href => update.url}= update.created_at.ago_in_words
       .reply
-        %a{:onclick => "share('#{update.author.username}', '#{update.id}')"}="share"
+        %a{:href => "javascript:share('#{update.author.username}', '#{update.id}')"}="share"
         |
-        %a{:onclick => "reply('#{update.author.username}')"}
+        %a{:href => "javascript:reply('#{update.author.username}')"}
           reply
 - if updates.empty?
   .empty
