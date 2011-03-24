@@ -447,7 +447,7 @@ input.title,
 textarea {
   background-color: #fff;
   border: 1px solid #bbb;
-  font-family: "Arial Black", Arial, sans-serif;
+  font-family: Arial, sans-serif;
 }
 input[type=text]:focus,
 input[type=password]:focus,
