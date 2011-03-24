@@ -401,7 +401,7 @@ class Rstatus < Sinatra::Base
 	params[:per_page] ||= 20
     params[:page] = params[:page].to_i
     params[:per_page] = params[:per_page].to_i
-    feeds = User.first(:username => params[:name]).following
+    feeds = User.first(:username => params[:name]).followers
     
     @users = feeds.paginate(:page => params[:page], :per_page => params[:per_page])
 	
