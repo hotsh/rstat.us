@@ -12,6 +12,11 @@ class Update
   validates_length_of :text, :minimum => 1, :maximum => 140
 
   key :remote_url
+  key :referral_id
+  
+  def referral
+    Update.first(:id => referral_id)
+  end
 
   def url
     feed.local ? "/updates/#{id}" : remote_url
