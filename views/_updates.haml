@@ -12,7 +12,7 @@
         %a{:href => update.url}= update.created_at.ago_in_words
       .reply
         -# when @timeline is true, this is a list on the user's page
-        -unless current_user.nil? or (current_user.username == update.author.username)
+        -unless current_user.nil? or (current_user.author.id == update.author.id)
           -unless @timeline.nil? 
             %a{:href => "javascript:share('#{update.author.username}', '#{update.id}')"} share
             |
