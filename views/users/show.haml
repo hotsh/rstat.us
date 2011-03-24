@@ -38,13 +38,14 @@
   #updates.updates
     != haml :_updates, :locals => {:updates => @updates}
 
-- unless @prev_page.nil?
-  %a.button{:href => @prev_page, :id => "prev_button"}
-    &laquo; Previous
+%nav.pagination
+  - unless @prev_page.nil?
+    %a.button{:href => @prev_page, :id => "prev_button"}
+      &laquo; Previous
 
-- unless @next_page.nil?
-  %a.button{:href => @next_page, :id => "next_button"}
-    Next &raquo;
+  - unless @next_page.nil?
+    %a.button{:href => @next_page, :id => "next_button"}
+      Next &raquo;
 
 - content_for :javascript do
   %script{:src=>"/js/users.js"}
