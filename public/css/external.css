@@ -670,6 +670,12 @@ body {
 .updates .update .content .date {
   font-size: 0.9em;
   color: #aaa;
+  float: left;
+}
+.updates .update .content .reply {
+  font-size: 0.9em;
+  color: #aaa;
+  float: right;
 }
 .updates .empty {
   background: white;
