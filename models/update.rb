@@ -29,7 +29,7 @@ class Update
   def to_html
     out = CGI.escapeHTML(text)
     out.gsub!(/(^|\s+)@(\w+)/) do |match|
-      if u = User.first(:username => /#{$2}/i)
+      if u = User.first(:username => /^#{$2}$/i)
         "#{$1}<a href='/users/#{u.username}'>@#{$2}</a>"
       else
         match
