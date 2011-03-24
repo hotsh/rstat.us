@@ -9,12 +9,12 @@ class UpdateTest < MiniTest::Unit::TestCase
     refute u.save, "I made an update with over 140 characters"
   end
 
-  def test_at_replies
+  def test_at_replies_with_not_existing_user
     u = Update.new(:text => "This is a message mentioning @steveklabnik.")
-    assert_match /<a href='\/users\/steveklabnik'>@steveklabnik<\/a>/, u.to_html
+    assert_match "This is a message mentioning @steveklabnik.", u.to_html
   end
 
-  def test_at_replies
+  def test_at_replies_with_existing_user
     Factory(:user, :username => "steveklabnik")
     u = Update.new(:text => "This is a message mentioning @SteveKlabnik.")
     assert_match /<a href='\/users\/steveklabnik'>@SteveKlabnik<\/a>/, u.to_html
