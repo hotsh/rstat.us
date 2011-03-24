@@ -6,7 +6,7 @@ class Feed
   include MongoMapper::Document
 
   # Feed url (and an indicator that it is local)
-  key :url, String
+  key :remote_url, String
   key :local, Boolean
 
   # OStatus subscriber information
@@ -68,12 +68,20 @@ class Feed
     end
   end
 
-  def ping_hubs
-    OPub::Publisher.new(url, hubs).ping_hubs
+  def ping_hubs(feed_url)
+    OPub::Publisher.new(feed_url, hubs).ping_hubs
   end
 
-  def update_entries(atom_xml, callback_url, signature)
-    sub = OSub::Subscription.new(callback_url, self.url, self.secret)
+  def url
+    if remote_url.nil?
+      "/feeds/#{id}"
+    else
+      remote_url
+    end
+  end
+
+  def update_entries(atom_xml, callback_url, feed_url, signature)
+    sub = OSub::Subscription.new(callback_url, feed_url, self.secret)
 
     if sub.verify_content(atom_xml, signature)
       os_feed = OStatus::Feed.from_string(atom_xml)
@@ -88,12 +96,6 @@ class Feed
   # Set default hubs
   def default_hubs
     self.hubs << "http://pubsubhubbub.appspot.com/publish"
-    save
-  end
-
-  # Generates and stores the absolute local url
-  def generate_url(base_uri)
-    self.url = base_uri + "/feeds/#{id}.atom"
     save
   end
 

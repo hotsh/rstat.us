@@ -17,8 +17,10 @@ class User
   belongs_to :author
   belongs_to :feed
 
-  def finalize(base_uri)
-    create_feed(base_uri)
+  after_create :finalize
+
+  def finalize
+    create_feed
     follow_yo_self
     reset_perishable_token
   end
@@ -54,7 +56,7 @@ class User
     end
 
     if f.nil?
-      f = Feed.create(:url => feed_url,
+      f = Feed.create(:remote_url => feed_url,
                       :local => false)
       f.populate
     end
@@ -131,13 +133,11 @@ class User
 
   private
 
-  def create_feed(base_uri)
+  def create_feed()
     f = Feed.create(
       :author => author,
       :local => true
     )
-    f.generate_url(base_uri)
-    f.save
 
     self.feed = f
     save
