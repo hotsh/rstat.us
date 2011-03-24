@@ -671,6 +671,12 @@ body {
   font-size: 1.1em;
 }
 .updates .update .content .date {
+  float: left;
+}
+.updates .update .content .links {
+  float: right;
+}
+.updates .update .content .links, .updates .update .content .date {
   font-size: 0.9em;
   color: #aaa;
 }

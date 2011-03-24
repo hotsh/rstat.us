@@ -593,6 +593,9 @@ next column, or to pull it into the previous column.  */
 .title-face {
   font-family: "Arial Black", Arial, sans-serif;
 }
+.copy-face {
+  font-family: Arial, sans-serif;
+}
 h1,
 h2,
 h3,
@@ -668,14 +671,14 @@ body {
   font-size: 1.1em;
 }
 .updates .update .content .date {
-  font-size: 0.9em;
-  color: #aaa;
   float: left;
 }
-.updates .update .content .reply {
+.updates .update .content .links {
+  float: right;
+}
+.updates .update .content .links, .updates .update .content .date {
   font-size: 0.9em;
   color: #aaa;
-  float: right;
 }
 .updates .empty {
   background: white;
