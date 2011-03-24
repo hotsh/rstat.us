@@ -12,7 +12,7 @@ class Author
   one :user
 
  # The url of their profile page
-  key :url, String
+  key :remote_url, String
 
   def self.create_from_hash!(hsh)
     create!(
@@ -21,8 +21,16 @@ class Author
       :website => hsh['user_info']['urls']['Website'],
       :bio => hsh['user_info']['description'],
       :image_url => hsh['user_info']['image'],
-      :url => hsh['user_info']['url']
+      :remote_url => hsh['user_info']['url']
     )
+  end
+
+  def url
+    if remote_url.nil?
+      "/users/#{username}"
+    else
+      remote_url
+    end
   end
 
   def avatar_url
