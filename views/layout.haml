@@ -21,9 +21,13 @@
                     = current_user.username
                 .stats
                   .following
-                    Following: <a href="/users/#{current_user.username}/following">#{current_user.following.length}</a>
+                    Following:
+                    %a{ :href => "/users/#{current_user.username}/following"}
+                      #{current_user.following.length}
                   .followers
-                    Followers: <a href="/users/#{current_user.username}/followers">#{current_user.followers.length}</a>
+                    Followers: 
+                    %a{ :href => "/users/#{current_user.username}/followers"}
+                      #{current_user.followers.length}
                   .updates
                     Updates: #{current_user.feed.updates.count}
 
