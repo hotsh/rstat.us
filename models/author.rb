@@ -40,7 +40,13 @@ class Author
         "/images/avatar.png"
       else
         # Using gravatar
-        "http://gravatar.com/avatar/" + Digest::MD5.hexdigest(email) + "?s=48"
+        current_url = "http://gravatar.com/avatar/" + Digest::MD5.hexdigest(email) + "?s=48&r=r&d=404"
+        res = Net::HTTP.get_response(URI.parse(current_url))
+        if res.class == Net::HTTPNotFound
+          "/images/avatar.png"
+        else
+          current_url
+        end
       end
     else
       # Use the twitter image
