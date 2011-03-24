@@ -13,15 +13,13 @@
       .reply
         -# when @timeline is true, this is a list on the user's page
         -unless @timeline.nil?
-          %a{:href => "javascript:share('#{update.author.username}', '#{update.id}')"}="share"
+          %a{:href => "javascript:share('#{update.author.username}', '#{update.id}')"} share
           |
-          %a{:href => "javascript:reply('#{update.author.username}')"}
-            reply
+          %a{:href => "javascript:reply('#{update.author.username}')"} reply
         -else
-          %a{:href => "/?share=#{update.id}"}="share"
+          %a{:href => "/?share=#{update.id}"} share
           |
-          %a{:href => "/?reply=#{update.author.username}"}
-            reply
+          %a{:href => "/?reply=#{update.author.username}"} reply
 - if updates.empty?
   .empty
     There's no updates here yet

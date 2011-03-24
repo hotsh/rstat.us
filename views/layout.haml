@@ -34,6 +34,9 @@
           .links
             %a{:href => "/follow"} Would you like to follow someone not on rstat.us?
 
+          .links
+            %a{:href => "/feeds/#{current_user.feed.id}.atom"} Atom
+
           .logout
             %a{:href => "/logout"}
               Logout
