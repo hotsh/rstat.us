@@ -240,8 +240,28 @@ class Rstatus < Sinatra::Base
 
   # show user profile
   get "/users/:slug" do
+    params[:page] ||= 1
+    params[:per_page] ||= 20
+    params[:page] = params[:page].to_i
+    params[:per_page] = params[:per_page].to_i
+
     user = User.first :username => params[:slug]
     @author = user.author
+    #XXX: the following doesn't work for some reasond
+    # @updates = user.feed.updates.sort{|a, b| b.created_at <=> a.created_at}.paginate(:page => params[:page], :per_page => params[:per_page])
+
+    #XXX: this is not webscale
+    @updates = Update.where(:feed_id => user.feed.id).order(['created_at', 'descending']).paginate(:page => params[:page], :per_page => params[:per_page])
+
+    @next_page = nil
+    @prev_page = nil
+
+    @next_page = "?#{Rack::Utils.build_query :page => params[:page] + 1}"
+
+    if params[:page] > 1
+      @prev_page = "?#{Rack::Utils.build_query :page => params[:page] - 1}"
+    end
+
     haml :"users/show"
   end
 

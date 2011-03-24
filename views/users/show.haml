@@ -36,7 +36,15 @@
         .follow-status You are not following #{@author.username}
 
   #updates.updates
-    != haml :_updates, :locals => {:updates => @author.feed.updates.to_a.sort{|a, b| b.created_at <=> a.created_at }}
+    != haml :_updates, :locals => {:updates => @updates}
+
+- unless @prev_page.nil?
+  %a.button{:href => @prev_page, :id => "prev_button"}
+    &laquo; Previous
+
+- unless @next_page.nil?
+  %a.button{:href => @next_page, :id => "next_button"}
+    Next &raquo;
 
 - content_for :javascript do
   %script{:src=>"/js/users.js"}

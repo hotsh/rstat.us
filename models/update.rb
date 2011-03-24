@@ -49,7 +49,7 @@ class Update
       :page => opts[:page],
       :per_page => opts[:per_page]
     }
-    where(:text => /##{tag}/).paginate(popts)
+    where(:text => /##{tag}/).order(['created_at', 'descending']).paginate(popts)
   end
 
   def self.hot_updates

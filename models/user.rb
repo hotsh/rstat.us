@@ -107,7 +107,7 @@ class User
       :page => opts[:page],
       :per_page => opts[:per_page]
     }
-    Update.where(:author_id => following.map(&:author_id)).paginate(popts)
+    Update.where(:author_id => following.map(&:author_id)).order(['created_at', 'descending']).paginate(popts)
   end
 
   def at_replies(opts)
@@ -115,7 +115,7 @@ class User
       :page => opts[:page],
       :per_page => opts[:per_page]
     }
-    Update.where(:author_id => following.map(&:author_id)).where(:text => /^@#{username} /).paginate(popts)
+    Update.where(:author_id => following.map(&:author_id)).where(:text => /^@#{username} /).order(['created_at', 'descending']).paginate(popts)
   end
 
   key :status
