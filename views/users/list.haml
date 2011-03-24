@@ -15,14 +15,15 @@
           %br
           (#{feed.author.username})
 
-      - if current_user && current_user.following?(feed.url)
-        .follow.negative
-          %form{:method => "post", :action => "/subscriptions/#{feed.id}"}
-            %input{:type => "hidden", :name => "_method", :value => "delete"}
-            %input.button.unfollow{:type => "submit", :value => "Unfollow", :id => "unfollow-#{feed.id}"}
-      - elsif current_user
-        %form{:method => "post", :action => "/subscriptions"}
-          %input{:type => "hidden", :name => "url", :value => "/feeds/#{@author.feed.id}"}
+      - unless current_user.feed == feed
+        - if current_user.following?(feed.url)
+          .follow.negative
+            %form{:method => "post", :action => "/subscriptions/#{feed.id}"}
+              %input{:type => "hidden", :name => "_method", :value => "delete"}
+              %input.button.unfollow{:type => "submit", :value => "Unfollow", :id => "unfollow-#{feed.id}"}
+        - else
+          %form{:method => "post", :action => "/subscriptions"}
+            %input{:type => "hidden", :name => "url", :value => "/feeds/#{@author.feed.id}"}
             %input.button.follow{:type => "submit", :value => "Follow", :id => "follow-#{@author.feed.id}"}
 
   :javascript
