@@ -170,8 +170,6 @@ class Rstatus < Sinatra::Base
   post '/users' do
     user = User.new params
     if user.save
-      user.finalize("http://rstat.us") #uuuuuuuuugh
-
       #this is really stupid.
       auth = {}
       auth['uid'] = session[:uid]
@@ -212,7 +210,7 @@ class Rstatus < Sinatra::Base
   # should be 'put', PuSH sucks at REST
   post "/feeds/:id.atom" do
     feed = Feed.first :id => params[:id]
-    feed.update_entries(request.body.read, request.url, request.env['HTTP_X_HUB_SIGNATURE'])
+    feed.update_entries(request.body.read, request.url, url(feed.url), request.env['HTTP_X_HUB_SIGNATURE'])
   end
 
   # unsubscribe from a feed
@@ -242,7 +240,7 @@ class Rstatus < Sinatra::Base
     require_login! :return => "/subscriptions"
 
     feed_url = params[:url]
-    if feed_url[0..3] = "feed"
+    if feed_url[0..3] == "feed"
       feed_url = "http" + feed_url[4..-1]
     end
 
@@ -372,7 +370,7 @@ class Rstatus < Sinatra::Base
     current_user.save
 
     # tell hubs there is a new entry
-    current_user.feed.ping_hubs
+    current_user.feed.ping_hubs(url(current_user.feed.url))
 
     flash[:notice] = "Update created."
     redirect "/"
@@ -417,7 +415,11 @@ class Rstatus < Sinatra::Base
     user.status = "confirmed"
     user.author = Author.create(:username => user.username,
                                 :email => user.email)
-    user.finalize(uri("/"))
+
+    # propagate the authorship to their feed as well
+    user.feed.author = user.author
+    user.feed.save
+
     user.save
     session[:user_id] = user.id.to_s
 

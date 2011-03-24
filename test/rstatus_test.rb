@@ -35,22 +35,29 @@ class RstatusTest < MiniTest::Unit::TestCase
 
   def test_user_feed_render
     u = Factory(:user)
-    u.finalize("http://example.com")
     visit "/users/#{u.username}/feed"
     assert_equal 200, page.status_code
   end
 
   def test_user_profile
     u = Factory(:user)
-    u.finalize("http://example.com")
     visit "/users/#{u.username}"
     assert_equal 200, page.status_code
+  end
+
+  def test_user_follows_themselves_upon_create
+    u = Factory(:user)
+    a = Factory(:authorization, :user => u)
+
+    log_in(u, a.uid)
+    
+    visit "/users/#{u.username}/following"
+    assert_match u.username, page.body
   end
 
   def test_user_makes_updates
     u = Factory(:user)
     a = Factory(:authorization, :user => u)
-    u.finalize("http://example.com/")
     update_text = "Testing, testing"
     params = {
       :text => update_text
@@ -67,7 +74,6 @@ class RstatusTest < MiniTest::Unit::TestCase
   def test_subscribe_to_users_on_other_sites
     u = Factory(:user)
     a = Factory(:authorization, :user => u)
-    u.finalize("http://example.com/")
     log_in(u, a.uid)
     visit "/"
     click_link "Would you like to follow someone not on rstat.us?"
@@ -83,10 +89,8 @@ class RstatusTest < MiniTest::Unit::TestCase
   def test_user_follow_another_user
     u = Factory(:user)
     a = Factory(:authorization, :user => u)
-    u.finalize("http://example.com/")
 
     u2 = Factory(:user)
-    u2.finalize("http://example.com")
 
     log_in(u, a.uid)
 
@@ -99,11 +103,9 @@ class RstatusTest < MiniTest::Unit::TestCase
   def test_user_unfollow_another_user
     u = Factory(:user)
     a = Factory(:authorization, :user => u)
-    u.finalize("http://example.com/")
 
     u2 = Factory(:user)
     a2 = Factory(:authorization, :user => u2)
-    u2.finalize("http://example.com/")
 
     log_in(u, a.uid)
     u.follow! u2.feed.url
@@ -117,7 +119,6 @@ class RstatusTest < MiniTest::Unit::TestCase
   def test_user_edit_own_profile_link
     u = Factory(:user)
     a = Factory(:authorization, :user => u)
-    u.finalize("http://example.com/")
     log_in(u, a.uid)
     visit "/users/#{u.username}"
 
@@ -127,7 +128,6 @@ class RstatusTest < MiniTest::Unit::TestCase
   def test_user_edit_profile
     u = Factory(:user)
     a = Factory(:authorization, :user => u)
-    u.finalize("http://example.com/")
     log_in(u, a.uid)
     visit "/users/#{u.username}"
     click_link "Edit your profile"
@@ -138,7 +138,6 @@ class RstatusTest < MiniTest::Unit::TestCase
   def test_user_update_profile
     u = Factory(:user)
     a = Factory(:authorization, :user => u)
-    u.finalize("http://example.com/")
     log_in(u, a.uid)
     visit "/users/#{u.username}/edit"
     bio_text = "To be or not to be"
