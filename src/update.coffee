@@ -16,8 +16,12 @@ $(document).ready ->
   shareText = (update) ->
     "RT @" + $(update).data("name") + ": " + $(update).find(".text").text().trim();
     
-  focusTextArea = ->
+  focusTextArea = (update) ->
+    $(update_field).attr("value", $(update).data("id"))
+
+    length = textarea.text().length
     textarea.keypress()
+    textarea[0].setSelectionRange(length,length)
     textarea.focus()
   
   $(".update").each ->
@@ -26,11 +30,11 @@ $(document).ready ->
     $(this).find(".reply").bind "click", (ev) ->
       ev.preventDefault();
       textarea.text("@" + $(update).data("name") + " ")
-      focusTextArea()
+      focusTextArea(update)
 
     $(this).find(".share").bind "click", (ev) ->
       ev.preventDefault();
       textarea.text(shareText(update))
-      focusTextArea()
+      focusTextArea(update)
       
   

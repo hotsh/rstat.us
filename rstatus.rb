@@ -127,11 +127,15 @@ class Rstatus < Sinatra::Base
       @timeline = true
 
       @update_text = ""
+      @update_id = ""
       if params[:reply]
-        @update_text = "@#{params[:reply]} "
+        u = Update.first(:id => params[:reply])
+        @update_text = "@#{u.author.username} "
+        @update_id = u.id
       elsif params[:share]
         u = Update.first(:id => params[:share])
         @update_text = "RT @#{u.author.username}: #{u.text}"
+        @update_id = u.id
       end
 
       if params[:status]

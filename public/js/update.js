@@ -17,8 +17,12 @@
     shareText = function(update) {
       return "RT @" + $(update).data("name") + ": " + $(update).find(".text").text().trim();
     };
-    focusTextArea = function() {
+    focusTextArea = function(update) {
+      var length;
+      $(update_field).attr("value", $(update).data("id"));
+      length = textarea.text().length;
       textarea.keypress();
+      textarea[0].setSelectionRange(length, length);
       return textarea.focus();
     };
     return $(".update").each(function() {
@@ -27,12 +31,12 @@
       $(this).find(".reply").bind("click", function(ev) {
         ev.preventDefault();
         textarea.text("@" + $(update).data("name") + " ");
-        return focusTextArea();
+        return focusTextArea(update);
       });
       return $(this).find(".share").bind("click", function(ev) {
         ev.preventDefault();
         textarea.text(shareText(update));
-        return focusTextArea();
+        return focusTextArea(update);
       });
     });
   });

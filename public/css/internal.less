@@ -120,6 +120,7 @@ form#update-form {
   margin-bottom: 1em;
   #update-content {
     textarea {
+      .copy-face;
       width: 540px;
       padding: 5px;
       height: 2.5em;
@@ -180,6 +181,24 @@ form#update-form {
 
 #timeline .mention {
   background: @mention;
+}
+
+/* Pagination */
+.pagination {
+  margin-top: 0.5em;
+
+  .button {
+    margin: 0;
+  }
+
+  #next_button {
+    float: right;
+    margin-right: 0.5em;
+  }
+  #prev_button {
+    float: left;
+    margin-left: 0.5em;
+  }
 }
 
 /* Profile */

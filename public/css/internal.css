@@ -447,7 +447,6 @@ input.title,
 textarea {
   background-color: #fff;
   border: 1px solid #bbb;
-  font-family: Arial, sans-serif;
 }
 input[type=text]:focus,
 input[type=password]:focus,
@@ -594,6 +593,9 @@ next column, or to pull it into the previous column.  */
 .title-face {
   font-family: "Arial Black", Arial, sans-serif;
 }
+.copy-face {
+  font-family: Arial, sans-serif;
+}
 h1,
 h2,
 h3,
@@ -671,12 +673,6 @@ body {
 .updates .update .content .date {
   font-size: 0.9em;
   color: #aaa;
-  float: left;
-}
-.updates .update .content .reply {
-  font-size: 0.9em;
-  color: #aaa;
-  float: right;
 }
 .updates .empty {
   background: white;
@@ -865,20 +861,6 @@ body {
 .user-list .even {
   background: #e5e5e5;
 }
-.pagination {
-  margin-top: 0.5em;
-}
-#next_button {
-  float: right;
-  margin-right: 0.5em;
-}
-#prev_button {
-  float: left;
-  margin-left: 0.5em;
-}
-.pagination #next_button, .pagination #prev_button {
-  margin: 0em;
-}
 #sites {
   width: 350px;
   float: left;
@@ -908,6 +890,7 @@ form#update-form:after {
   overflow: hidden;
 }
 form#update-form #update-content textarea {
+  font-family: Arial, sans-serif;
   width: 540px;
   padding: 5px;
   height: 2.5em;
@@ -975,6 +958,21 @@ form#update-form #update-info.negative #update-count {
 #timeline .mention {
   background: #e4feff;
 }
+/* Pagination */
+.pagination {
+  margin-top: 0.5em;
+}
+.pagination .button {
+  margin: 0;
+}
+.pagination #next_button {
+  float: right;
+  margin-right: 0.5em;
+}
+.pagination #prev_button {
+  float: left;
+  margin-left: 0.5em;
+}
 /* Profile */
 #profile {
   position: relative;
@@ -1036,7 +1034,10 @@ form#update-form #update-info.negative #update-count {
   border-right: 1px solid #ddd;
   margin-right: 40px;
 }
-#login #username, #login #password, #signup input[type="text"] {
+#login #username, #login #password {
+  width: 200px;
+}
+#signup input[type="test"] {
   width: 200px;
 }
 #login-other {
