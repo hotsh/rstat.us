@@ -859,6 +859,14 @@ body {
 .user-list .even {
   background: #e5e5e5;
 }
+#next_button {
+  float: right;
+  margin-right: 0.5em;
+}
+#prev_button {
+  float: left;
+  margin-left: 0.5em;
+}
 #sites {
   width: 350px;
   float: left;
