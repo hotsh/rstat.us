@@ -9,7 +9,10 @@ class User
   key :username, String, :unique => true
   key :perishable_token, String
 
-  key :email, String, :unique => true, :allow_nil => true
+  key :email, String #, :unique => true, :allow_nil => true
+  # eff you mongo_mapper.
+  validates_uniqueness_of :name, :allow_nil => :true 
+  
 
   belongs_to :author
   belongs_to :feed
