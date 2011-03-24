@@ -24,18 +24,21 @@ you want to contribute in some way.
 Running a local copy
 --------------------
 
-You need MongoDB (www.mongodb.org).  On Mac OSX, I had to unzip the tarball and do the following:
-
-    $ cd mongodb-osx-x86_64-1.8.0
-    $ sudo mkdir /data && sudo mkdir /data/db
-    $ sudo bin/mongod
+First off: you will need MongoDB (www.mongodb.org).  They have a [quickstart guide](http://www.mongodb.org/display/DOCS/Quickstart) for getting it installed and running.
 
 Then do the same as above:
 
     $ git clone https://github.com/hotsh/rstat.us.git (or your own fork, if applicable)
     $ cd rstat.us
 
-But instead of using heroku, run it with sinatra:
+Copy the config file; if you have actual Twitter API keys, you can add yours, but this file just needs to exist for the server to work.
+
+    $ cp config.yml.sample config.yml
+
+Then update your gemset:
 
     $ gem install bundler && bundle install
+
+And instead of using heroku, start the server with sinatra:
+
     $ rackup
