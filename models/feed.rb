@@ -73,7 +73,10 @@ class Feed
     OPub::Publisher.new(feed_url, hubs).ping_hubs
   end
 
-  def local
+  # to be phased out once other instances of .local are changed to .local?
+  alias :local :local?
+
+  def local?
     url.start_with?("/")
   end
 

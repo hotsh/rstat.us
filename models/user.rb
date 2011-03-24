@@ -37,7 +37,7 @@ class User
   end
 
   def url
-    feed.local ? "/users/#{feed.author.username}" : feed.author.url
+    feed.local? ? "/users/#{feed.author.username}" : feed.author.url
   end
 
   key :following_ids, Array
@@ -64,7 +64,7 @@ class User
     following << f
     save
 
-    if f.local
+    if f.local?
       followee = User.first(:author_id => f.author.id)
       followee.followers << self.feed
       followee.save
@@ -77,7 +77,7 @@ class User
   def unfollow! followed_feed
     following_ids.delete(followed_feed.id)
     save
-    if followed_feed.local
+    if followed_feed.local?
       followee = User.first(:author_id => followed_feed.author.id)
       followee.followers_ids.delete(self.feed.id)
       followee.save

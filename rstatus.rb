@@ -317,11 +317,13 @@ class Rstatus < Sinatra::Base
       end
 
       flash[:notice] = "You're already following #{feed.author.username}."
-      if feed.local
+
+      if feed.local?
         redirect "/users/#{feed.author.username}"
       else
         redirect "/"
       end
+
       return
     end
 
@@ -334,7 +336,8 @@ class Rstatus < Sinatra::Base
       return
     end
 
-    if not f.local
+    if not f.local?
+
       # remote feeds require some talking to a hub
       hub_url = f.hubs.first
 
