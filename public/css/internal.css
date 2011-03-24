@@ -859,6 +859,9 @@ body {
 .user-list .even {
   background: #e5e5e5;
 }
+.pagination {
+  margin-top: 0.5em;
+}
 #next_button {
   float: right;
   margin-right: 0.5em;
@@ -866,6 +869,9 @@ body {
 #prev_button {
   float: left;
   margin-left: 0.5em;
+}
+.pagination #next_button, .pagination #prev_button {
+  margin: 0em;
 }
 #sites {
   width: 350px;
