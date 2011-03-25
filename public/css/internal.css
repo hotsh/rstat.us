@@ -999,6 +999,16 @@ form#update-form #update-info.negative #update-count {
   font-size: 0.8em;
   color: #999;
 }
+#profile textarea {
+  font-family: Arial, sans-serif;
+}
+#profile label {
+  display: inline-block;
+  width: 5em;
+}
+#profile .gravatar {
+  padding-top: 1em;
+}
 /* Login */
 #login-forms {
   display: block;
@@ -1043,7 +1053,7 @@ form#update-form #update-info.negative #update-count {
 #login #username, #login #password {
   width: 200px;
 }
-#signup input[type="test"] {
+#signup input[type="text"] {
   width: 200px;
 }
 #login-other {
