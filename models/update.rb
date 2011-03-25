@@ -28,7 +28,10 @@ class Update
 
   def to_html
     out = CGI.escapeHTML(text)
-    out.gsub!(/(^|\s+)@([^ \t\n\r\f&?=@%\/\#]+)/) do |match|
+
+    # we let almost anything be in a username, except those that mess with urls.  but you can't end in a . or !
+    # XXX: the _correct_ solution will be to use an email validator 
+    out.gsub!(/(^|\s+)@([^ \t\n\r\f&?=@%\/\#]*[^ \t\n\r\f&?=@%\/\#.!])/) do |match|
       if u = User.first(:username => /^#{$2}$/i)
         "#{$1}<a href='/users/#{u.username}'>@#{$2}</a>"
       else
