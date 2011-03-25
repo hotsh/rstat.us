@@ -1,8 +1,8 @@
 .button { display: inline-block; padding: 7px 9px; font-size: 12px; line-height:1; color: #3C3C3D; text-shadow: 1px 1px 0 #FFFFFF; background: #ECECEC url('/images/css3buttons_backgrounds.png') 0 0 no-repeat; white-space: nowrap; overflow: visible; cursor: pointer; text-decoration: none; border: 1px solid #CACACA; -webkit-border-radius: 2px; -moz-border-radius: 2px; -webkit-background-clip: padding-box; border-radius: 2px; outline: none; position: relative; zoom: 1; *display: inline; }
 .button.primary { font-weight: bold }
-.button:hover { color: #FFFFFF; border-color: #388AD4; text-decoration: none; text-shadow: -1px -1px 0 rgba(0,0,0,0.3); background-position: 0 -40px; background-color: #2D7DC5; }
+.button:hover { color: #FFFFFF; border-color: #458e90; text-decoration: none; text-shadow: -1px -1px 0 rgba(0,0,0,0.3); background-position: 0 -40px; background-color: #378284; }
 .button:active,
-.button.active { background-position: 0 -81px; border-color: #347BBA; background-color: #0F5EA2; color: #FFFFFF; text-shadow: none; }
+.button.active { background-position: 0 -81px; border-color: #458e90; background-color: #378284; color: #FFFFFF; text-shadow: none; }
 .button:active { top: 1px }
 .button.negative:hover { color: #FFFFFF; background-position: 0 -121px; background-color: #D84743; border-color: #911D1B; }
 .button.negative:active,
