@@ -11,7 +11,7 @@ Just do this:
 
     $ git clone https://github.com/hotsh/rstat.us.git
     $ cd rstat.us
-    $ heroku create
+    $ heroku create --stack bamboo-mri-1.9.2
     $ git push heroku master
 
 Bam!
