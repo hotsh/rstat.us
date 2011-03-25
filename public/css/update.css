@@ -800,6 +800,9 @@ body {
   width: 18px;
   margin-bottom: -4px;
 }
+#fourohfour .update .byline .links, #update .update .byline .links {
+  float: right;
+}
 #fourohfour .update .remove-update, #update .update .remove-update {
   cursor: pointer;
   float: right;

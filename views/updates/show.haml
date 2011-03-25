@@ -17,11 +17,11 @@
           %img{:alt => "avatar", :src => @referral.author.avatar_url}/
         .name
           = @referral.author.username
-
-    -unless current_user.nil? or (current_user.author.id == @update.author.id)
-      %a.share{:href => "/?share=#{@update.id}"} share
-      |                                                                                                                 
-      %a.reply{:href => "/?reply=#{@update.id}"} reply
+    .links
+      -unless current_user.nil? or (current_user.author.id == @update.author.id)
+        %a.share{:href => "/?share=#{@update.id}"} share
+        |                                                                                                                 
+        %a.reply{:href => "/?reply=#{@update.id}"} reply
 
     - if current_user and @update.author.id == current_user.author.id
       %form{:method => "post", :action => "/updates/#{@update.id}"}
