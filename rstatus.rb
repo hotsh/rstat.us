@@ -370,7 +370,10 @@ class Rstatus < Sinatra::Base
   # publisher will feed the atom to a hub
   # subscribers will verify a subscription
   get "/feeds/:id.atom" do
+    content_type "application/atom+xml"
+
     feed = Feed.first :id => params[:id]
+
     if params['hub.challenge']
       sub = OSub::Subscription.new(request.url, feed.url, nil, feed.verify_token)
 
