@@ -25,6 +25,10 @@ class Author
     )
   end
 
+  def self.gravatar_host
+    "gravatar.com"
+  end
+
   def url
     if remote_url.nil?
       "/users/#{username}"
@@ -34,26 +38,39 @@ class Author
   end
 
   def avatar_url
-    if image_url.nil?
-      if email.nil?
-        # Using a default avatar
-        "/images/avatar.png"
-      else
-        # Using gravatar
-        current_url = "http://gravatar.com/avatar/" + Digest::MD5.hexdigest(email) + "?s=48&r=r&d=404"
-        res = Net::HTTP.get_response(URI.parse(current_url))
-        if res.class == Net::HTTPNotFound
-          "/images/avatar.png"
-        else
-          current_url
-        end
-      end
+    return image_url if image_url
+
+    if email
+      valid_gravatar? ? gravatar_url : "/images/avatar.png"
     else
-      # Use the twitter image
-      image_url
+      # Using a default avatar
+      "/images/avatar.png"
     end
   end
 
+  def valid_gravatar?
+    return false unless use_gravatar?
+    uri = URI.parse(gravatar_url)
+    result = Net::HTTP.start(Author.gravatar_host, 80) do |http|
+      res = http.head(uri.path + "?" +  uri.query ) # Use HEAD instead of GET for a faster response
+
+      if res.class == Net::HTTPNotFound
+        return false
+      else
+        return true
+      end
+    end
+  end
+
+  def gravatar_url
+    path = "/avatar/" + Digest::MD5.hexdigest(email) + "?s=48&r=r&d=404"
+    ["http://", Author.gravatar_host, path].join ""
+  end
+
+  private
+  def use_gravatar?
+    @use_gravatar || false # Useful for tests
+  end
 end
 
 
