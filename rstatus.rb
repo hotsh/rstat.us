@@ -211,8 +211,12 @@ class Rstatus < Sinatra::Base
     redirect '/'
   end
 
-  get '/auth/failure?message=invalid_credentials' do
-    haml :"signup/invalid_credentials"
+  get '/auth/failure' do
+    if params[:message] == "invalid_credentials"
+      haml :"signup/invalid_credentials"
+    else
+      raise Sinatra::NotFound
+    end
   end
 
   get '/users/new' do
