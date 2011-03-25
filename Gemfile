@@ -27,4 +27,5 @@ group :development, :test do
   gem "capybara"
   gem "rocco"
   gem "pygmentize"
+  gem "mocha"
 end
