@@ -7,11 +7,15 @@ protocol](http://status.net/wiki/OStatus).
 Running your own (on Heroku)
 ----------------------------
 
+You will need a validated heroku account.
+
 Just do this:
 
     $ git clone https://github.com/hotsh/rstat.us.git
     $ cd rstat.us
     $ heroku create --stack bamboo-mri-1.9.2
+    $ heroku addons:add mongohq:free
+    $ heroku addons:add sendgrid:free
     $ git push heroku master
 
 Bam!
