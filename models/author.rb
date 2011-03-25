@@ -49,7 +49,6 @@ class Author
   end
 
   def valid_gravatar?
-    return false unless use_gravatar?
     uri = URI.parse(gravatar_url)
     result = Net::HTTP.start(Author.gravatar_host, 80) do |http|
       res = http.head(uri.path + "?" +  uri.query ) # Use HEAD instead of GET for a faster response
@@ -65,11 +64,6 @@ class Author
   def gravatar_url
     path = "/avatar/" + Digest::MD5.hexdigest(email) + "?s=48&r=r&d=404"
     ["http://", Author.gravatar_host, path].join ""
-  end
-
-  private
-  def use_gravatar?
-    @use_gravatar || false # Useful for tests
   end
 end
 

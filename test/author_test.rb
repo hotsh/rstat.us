@@ -3,9 +3,9 @@ require_relative "test_helper"
 class AuthorTest < MiniTest::Unit::TestCase
 
   include TestHelper
+
   def setup
     @author = Factory.build :author, :username => "james", :email => nil, :image_url => nil
-    @author.instance_variable_set "@use_gravatar", true
   end
 
   def test_create_from_hash
