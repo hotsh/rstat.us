@@ -1,6 +1,6 @@
-#profile
-  %h3= @author.name
-  .username
+#profile.vcard
+  %h3.fn= @author.name
+  .nickname
     @#{@author.username}
   .following
     Following: 
@@ -13,10 +13,10 @@
   - unless @author.website.blank?
     .website
       Website:
-      %a{:href => @author.website}
+      %a.url{:rel => "me", :href => @author.website}
         #{@author.website}
 
-  %p= @author.bio
+  %p.note= @author.bio
 
   - if current_user and @author.user == current_user
     %a{:href=>"/users/#{current_user.username}/edit"}
