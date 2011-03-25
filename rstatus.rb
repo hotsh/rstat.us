@@ -263,6 +263,9 @@ class Rstatus < Sinatra::Base
     params[:per_page] = params[:per_page].to_i
 
     user = User.first :username => params[:slug]
+    if user.nil?
+      raise Sinatra::NotFound
+    end
     @author = user.author
     #XXX: the following doesn't work for some reasond
     # @updates = user.feed.updates.sort{|a, b| b.created_at <=> a.created_at}.paginate(:page => params[:page], :per_page => params[:per_page])
