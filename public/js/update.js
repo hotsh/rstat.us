@@ -15,7 +15,7 @@
       }
     });
     shareText = function(update) {
-      return "RT @" + $(update).data("name") + ": " + $(update).find(".text").text().trim();
+      return "RS @" + $(update).data("name") + ": " + $(update).find(".text").text().trim();
     };
     focusTextArea = function(update) {
       var length;
