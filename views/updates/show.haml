@@ -10,7 +10,6 @@
       .avatar
         %img{:alt => "avatar", :src => @update.author.avatar_url}/
       .name= @update.author.username
-     
     -unless @referral.nil?
       %a{:href => "/updates/#{@referral.id}"}
         in reply to
@@ -18,6 +17,12 @@
           %img{:alt => "avatar", :src => @referral.author.avatar_url}/
         .name
           = @referral.author.username
+    .links
+      -unless current_user.nil? or (current_user.author.id == @update.author.id)
+        %a.share{:href => "/?share=#{@update.id}"} share
+        |                                                                                                                 
+        %a.reply{:href => "/?reply=#{@update.id}"} reply
+
     - if current_user and @update.author.id == current_user.author.id
       %form{:method => "post", :action => "/updates/#{@update.id}"}
         %input{:type => "hidden", :name => "_method", :value => "delete"}

@@ -63,7 +63,7 @@ class Author
 
   def gravatar_url
     path = "/avatar/" + Digest::MD5.hexdigest(email) + "?s=48&r=r&d=404"
-    ["http://", Author.gravatar_host, path].join ""
+    "http://#{Author.gravatar_host}#{path}"
   end
 end
 

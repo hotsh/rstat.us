@@ -9,15 +9,15 @@
             %h2
               rstat.us
         - if current_user
-          #profile
+          #profile.vcard
             %h3 Profile
             .profile-wrap
               .avatar
                 %a{:href=>"/users/#{current_user.username}"}
-                  %img{:alt => "avatar", :src => (current_user.author.avatar_url ||= "asdfasdf")}/
+                  %img.photo{:alt => "avatar", :src => (current_user.author.avatar_url ||= "asdfasdf")}/
               .userinfo
-                .name
-                  %a{:href=>"/users/#{current_user.username}"}
+                .nickname
+                  %a.url{:href=>"/users/#{current_user.username}"}
                     = current_user.username
                 .stats
                   .following

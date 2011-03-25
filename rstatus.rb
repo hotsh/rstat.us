@@ -263,6 +263,9 @@ class Rstatus < Sinatra::Base
     params[:per_page] = params[:per_page].to_i
 
     user = User.first :username => params[:slug]
+    if user.nil?
+      raise Sinatra::NotFound
+    end
     @author = user.author
     #XXX: the following doesn't work for some reasond
     # @updates = user.feed.updates.sort{|a, b| b.created_at <=> a.created_at}.paginate(:page => params[:page], :per_page => params[:per_page])
@@ -367,7 +370,10 @@ class Rstatus < Sinatra::Base
   # publisher will feed the atom to a hub
   # subscribers will verify a subscription
   get "/feeds/:id.atom" do
+    content_type "application/atom+xml"
+
     feed = Feed.first :id => params[:id]
+
     if params['hub.challenge']
       sub = OSub::Subscription.new(request.url, feed.url, nil, feed.verify_token)
 
