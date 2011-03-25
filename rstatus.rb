@@ -59,6 +59,11 @@ class Rstatus < Sinatra::Base
     PONY_VIA_OPTIONS = {}
   end
 
+  configure :production do
+    require 'newrelic_rpm'
+  end
+  
+
   # We're using [SendGrid](http://sendgrid.com/) to send our emails. It's really
   # easy; the Heroku addon sets us up with environment variables with all of the
   # configuration options that we need.
@@ -204,6 +209,14 @@ class Rstatus < Sinatra::Base
 
     flash[:notice] = "You're now logged in."
     redirect '/'
+  end
+
+  get '/auth/failure' do
+    if params[:message] == "invalid_credentials"
+      haml :"signup/invalid_credentials"
+    else
+      raise Sinatra::NotFound
+    end
   end
 
   get '/users/new' do

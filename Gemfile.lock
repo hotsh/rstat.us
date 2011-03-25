@@ -58,6 +58,7 @@ GEM
     multipart-post (1.1.0)
     mustache (0.99.3)
     net-ldap (0.1.1)
+    newrelic_rpm (2.13.4)
     nokogiri (1.4.4)
     oa-basic (0.2.0)
       multi_json (~> 0.0.2)
@@ -175,6 +176,7 @@ DEPENDENCIES
   haml
   i18n
   mongo_mapper
+  newrelic_rpm
   nokogiri (= 1.4.4)
   omniauth
   opub

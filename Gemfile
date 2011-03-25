@@ -17,6 +17,7 @@ gem "ostatus"
 gem "osub"
 gem "opub"
 gem "nokogiri", "= 1.4.4"
+gem "newrelic_rpm"
 
 group :development, :test do
   gem 'coffee-script'
