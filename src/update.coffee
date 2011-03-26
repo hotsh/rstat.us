@@ -1,3 +1,5 @@
+MAX_LENGTH = 140
+
 $(document).ready ->
   $("html").removeClass("no-js").addClass("js")
   
@@ -5,13 +7,18 @@ $(document).ready ->
   update_field = $("#update-form #update-referral")
 
   updateCounter = ->
-    $("#update-count").text((140 - textarea.val().length) + "/140")
-    $("#update-info").toggleClass "negative", textarea.val().length > 140
+    remainingLength = MAX_LENGTH - textarea.val().length
+    countSpan = $("#update-count .update-count").first()
+    if countSpan.length
+      countSpan.text(remainingLength)
+    else
+      $("#update-count").append('<span class="update-count">' + remainingLength + '</span>/' + MAX_LENGTH)
+    $("#update-info").toggleClass "negative", remainingLength < 0
 
   textarea.keypress(updateCounter).keyup(updateCounter)
 
   $("#update-form").submit ->
-    false if textarea.val().length <= 0 || textarea.val().length > 140
+    false if textarea.val().length <= 0 || textarea.val().length > MAX_LENGTH
   
   shareText = (update) ->
     "RS @" + $(update).data("name") + ": " + $(update).find(".text").text().trim();
