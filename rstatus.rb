@@ -279,8 +279,10 @@ class Rstatus < Sinatra::Base
   end
 
   get "/logout" do
-    session[:user_id] = nil
-    flash[:notice] = "You've been logged out."
+    if logged_in?
+      session[:user_id] = nil
+      flash[:notice] = "You've been logged out."
+    end
     redirect '/'
   end
 
@@ -616,7 +618,11 @@ class Rstatus < Sinatra::Base
   end
 
   get "/login" do
-    haml :"login"
+    if logged_in?
+      redirect '/'
+    else
+      haml :"login"
+    end
   end
 
   post "/login" do
