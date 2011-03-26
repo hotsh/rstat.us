@@ -230,5 +230,17 @@ class RstatusTest < MiniTest::Unit::TestCase
 
   end
 
+  def test_junk_username_gives_404
+    visit "/users/1n2i12399992sjdsa21293jj"
+    assert_equal 404, page.status_code
+  end
+
+  def test_unsupported_feed_type_gives_404
+    u = Factory(:user, :username => "dfnkt")
+    visit "/users/#{u.username}/feed.json"
+
+    assert_equal 404, page.status_code
+  end
+
 end
 
