@@ -7,7 +7,7 @@ p {
 }
 
 a {
-  color: $highlight;
+  color: $link_color;
   text-decoration: none;
   &:hover {
     text-decoration: underline;
