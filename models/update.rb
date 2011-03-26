@@ -13,7 +13,7 @@ class Update
 
   key :remote_url
   key :referral_id
-  
+
   def referral
     Update.first(:id => referral_id)
   end
@@ -31,7 +31,7 @@ class Update
 
     # we let almost anything be in a username, except those that mess with urls.  but you can't end in a .:;, or !
     #also ignore container chars [] () "" '' {}
-    # XXX: the _correct_ solution will be to use an email validator 
+    # XXX: the _correct_ solution will be to use an email validator
     out.gsub!(/(^|[ \t\n\r\f"'\(\[{]+)@([^ \t\n\r\f&?=@%\/\#]*[^ \t\n\r\f&?=@%\/\#.!:;,"'\]}\)])/) do |match|
       if u = User.first(:username => /^#{$2}$/i)
         "#{$1}<a href='/users/#{u.username}'>@#{$2}</a>"
@@ -40,7 +40,9 @@ class Update
       end
     end
     out.gsub!(/(http[s]?:\/\/\S+[a-zA-Z0-9\/])/, "<a href='\\1'>\\1</a>")
-    out.gsub!(/#(\w+)/, "<a href='/hashtags/\\1'>#\\1</a>")
+    out.gsub!(/(^|\s+)#(\w+)/) do |match|
+      "#{$1}<a href='/hashtags/#{$2}'>##{$2}</a>"
+    end
     out
   end
 
