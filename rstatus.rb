@@ -242,10 +242,10 @@ class Rstatus < Sinatra::Base
     @next_page = nil
     @prev_page = nil
 
-    @next_page = "?#{Rack::Utils.build_query :page => params[:page] + 1}"
+    @next_page = "?#{Rack::Utils.build_query :page => params[:page] + 1, :letter => params[:letter]}"
 
     if params[:page] > 1
-      @prev_page = "?#{Rack::Utils.build_query :page => params[:page] - 1}"
+      @prev_page = "?#{Rack::Utils.build_query :page => params[:page] - 1, :letter => params[:letter]}"
     end
 
     haml :"users/index"
