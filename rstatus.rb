@@ -231,8 +231,8 @@ class Rstatus < Sinatra::Base
 
     if params[:letter] == "other"
       @users = User.where(:username => /^[^a-z0-9]/i)
-    elsif params[:letter]
-      @users = User.where(:username => /^#{params[:letter][0]}/i)
+    elsif params[:letter] and not params[:letter].empty?
+      @users = User.where(:username => /^#{params[:letter][0].chr}/i)
     else
       @users = User
     end
