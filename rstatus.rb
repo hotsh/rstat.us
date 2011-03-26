@@ -494,6 +494,14 @@ class Rstatus < Sinatra::Base
     haml :"users/list", :locals => {:title => "Following"}
   end
 
+  get '/users/:name/following.json' do
+    set_params_page
+
+    users = User.first(:username => params[:name]).following
+    authors = users.map { |user| user.author }
+    authors.to_a.to_json
+  end
+
   get '/users/:name/followers' do
     set_params_page
     

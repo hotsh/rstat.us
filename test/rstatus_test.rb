@@ -183,6 +183,21 @@ class RstatusTest < MiniTest::Unit::TestCase
     assert_match "Next", page.body
   end
 
+  def test_user_following_outputs_json
+    u = Factory(:user)
+    a = Factory(:authorization, :user => u)
+
+    log_in(u, a.uid)
+
+    u2 = Factory(:user, :username => "user1")
+    u.follow! u2.feed.url
+
+    visit "/users/#{u.username}/following.json"
+
+    json = JSON.parse(page.body)
+    assert_equal "user1", json.last["username"]
+  end
+
   def test_user_followers_paginates
     u = Factory(:user)
     a = Factory(:authorization, :user => u)
