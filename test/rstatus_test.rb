@@ -330,5 +330,5 @@ class RstatusTest < MiniTest::Unit::TestCase
     assert_match "Sorry, no users that match.", page.body
 
   end
-end
 
+end
