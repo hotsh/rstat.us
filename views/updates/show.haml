@@ -1,32 +1,31 @@
-#single-update
-  .update-text-wrap
-    .update-text
-      != @update.to_html
-  .byline
-    .update-date
-      = @update.created_at.ago_in_words  
-      by
-    %a{:href => "/users/#{@update.author.username}"}
+.update-text-wrap
+  .update-text
+    != @update.to_html
+.byline
+  .update-date
+    = @update.created_at.ago_in_words  
+    by
+  %a{:href => "/users/#{@update.author.username}"}
+    .avatar
+      %img{:alt => "avatar", :src => @update.author.avatar_url}/
+    .name= @update.author.username
+  -unless @referral.nil?
+    %a{:href => "/updates/#{@referral.id}"}
+      in reply to
       .avatar
-        %img{:alt => "avatar", :src => @update.author.avatar_url}/
-      .name= @update.author.username
-    -unless @referral.nil?
-      %a{:href => "/updates/#{@referral.id}"}
-        in reply to
-        .avatar
-          %img{:alt => "avatar", :src => @referral.author.avatar_url}/
-        .name
-          = @referral.author.username
-    .links
-      -unless current_user.nil? or (current_user.author.id == @update.author.id)
-        %a.share{:href => "/?share=#{@update.id}"} share
-        |                                                                                                                 
-        %a.reply{:href => "/?reply=#{@update.id}"} reply
+        %img{:alt => "avatar", :src => @referral.author.avatar_url}/
+      .name
+        = @referral.author.username
+  .links
+    -unless current_user.nil? or (current_user.author.id == @update.author.id)
+      %a.share{:href => "/?share=#{@update.id}"} share
+      |                                                                                                                 
+      %a.reply{:href => "/?reply=#{@update.id}"} reply
 
-    - if current_user and @update.author.id == current_user.author.id
-      %form{:method => "post", :action => "/updates/#{@update.id}"}
-        %input{:type => "hidden", :name => "_method", :value => "delete"}
-        %input.remove-update{:type => "submit", :value => "I Regret This"}
+  - if current_user and @update.author.id == current_user.author.id
+    %form{:method => "post", :action => "/updates/#{@update.id}"}
+      %input{:type => "hidden", :name => "_method", :value => "delete"}
+      %input.remove-update{:type => "submit", :value => "I Regret This"}
 
-  - content_for :javascript do
-    %script{:src=>"/js/updates.show.js"}
+- content_for :javascript do
+  %script{:src=>"/js/updates.show.js"}

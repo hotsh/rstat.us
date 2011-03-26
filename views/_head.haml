@@ -3,9 +3,7 @@
   %title rstat.us
   %script{:src=>"https://ajax.googleapis.com/ajax/libs/jquery/1.5.1/jquery.min.js"}
   %script{:src => "/js/app.js"}
-  %link{:href => "/css/css3buttons.css", :media => "screen", :rel => "stylesheet"}
-  - css.each do |file|
-    %link{:href => "/css/#{file}.css", :media => "screen", :rel => "stylesheet"}
+  %link{:href => "/screen.css", :media => "screen", :rel => "stylesheet"}
 
   - if production?
     :javascript

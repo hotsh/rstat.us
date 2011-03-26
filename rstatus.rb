@@ -61,6 +61,9 @@ class Rstatus < Sinatra::Base
 
   configure :production do
     require 'newrelic_rpm'
+    Compass.configuration do |config|
+      config.output_style = :compressed
+    end
   end
   
 
@@ -94,6 +97,12 @@ class Rstatus < Sinatra::Base
     else
       MongoMapper.connection = Mongo::Connection.new('localhost')
       MongoMapper.database = "rstatus-#{settings.environment}"
+    end
+    
+    # configure compass
+    Compass.configuration do |config|
+      config.project_path = File.dirname(__FILE__)
+      # config.output_style = :compressed
     end
   end
 
@@ -155,6 +164,10 @@ class Rstatus < Sinatra::Base
 
   get '/home' do
     haml :index, :layout => false
+  end
+  
+  get '/screen.css' do
+    scss(:screen, Compass.sass_engine_options)
   end
 
   get '/replies' do
