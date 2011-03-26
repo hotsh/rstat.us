@@ -572,10 +572,12 @@ class Rstatus < Sinatra::Base
     # tell hubs there is a new entry
     current_user.feed.ping_hubs(url(current_user.feed.url))
 
-    if params[:text].length >= 1 and params[:text].length <= 140
-      flash[:notice] = "Update created."
-    else
+    if params[:text].length <= 1
+      flash[:notice] = "Your status is too short!"
+    elsif params[:text].length >= 140
       flash[:notice] = "Your status is too long!"
+    else
+      flash[:notice] = "Update created."
     end
 
     redirect "/"
