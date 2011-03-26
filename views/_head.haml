@@ -7,6 +7,8 @@
   - css.each do |file|
     %link{:href => "/css/#{file}.css", :media => "screen", :rel => "stylesheet"}
 
+  != yield_content :css
+  
   - if production?
     :javascript
       var _gaq = _gaq || [];
