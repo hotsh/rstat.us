@@ -7,11 +7,13 @@ class Update
 
   key :text, String, :default => ""
   key :tags, Array, :default => []
+  key :language, String
 
   attr_accessor :oauth_token, :oauth_secret
 
   validates_length_of :text, :minimum => 1, :maximum => 140
   before_create :get_tags
+  before_create :get_language
 
   key :remote_url
   key :referral_id
@@ -71,6 +73,10 @@ class Update
 
   def get_tags
     self[:tags] = self.text.scan(/#([\w\-\.]*)/).flatten
+  end
+
+  def get_language
+    self[:language] = self.text.language
   end
 
   protected

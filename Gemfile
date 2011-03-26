@@ -21,6 +21,7 @@ gem "nokogiri", "= 1.4.4"
 gem "newrelic_rpm"
 gem "sass"
 gem "compass"
+gem "whatlanguage"
 
 group :development, :test do
   gem 'coffee-script'
