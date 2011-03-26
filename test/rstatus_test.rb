@@ -232,6 +232,23 @@ class RstatusTest < MiniTest::Unit::TestCase
 
     assert_match page.body, /#{bio_text}/
   end
+  
+  def test_user_update_profile_twitter_button
+    u = Factory(:user)
+    log_in_no_twitter(u)
+    visit "/users/#{u.username}/edit"
+
+    assert_match page.body, /Add Twitter Account/
+  end
+  
+  def test_user_update_profile_twitter_button
+    u = Factory(:user)
+    a = Factory(:authorization, :user => u, :nickname => "Awesomeo the Great")
+    log_in(u, a.uid)
+    visit "/users/#{u.username}/edit"
+
+    assert_match page.body, /Awesomeo the Great/
+  end
 
   def test_username_clash
     existing_user = Factory(:user, :username => "taken")
@@ -247,6 +264,27 @@ class RstatusTest < MiniTest::Unit::TestCase
     assert_match /Thanks! You're all signed up with nottaken for your username./, page.body
     assert_match /\//, page.current_url
 
+  end
+  
+  def test_twitter_send_checkbox_present
+    u = Factory(:user)
+    a = Factory(:authorization, :user => u)
+    log_in(u, a.uid)
+    
+    assert_match page.body, /Tweet Me/
+  end
+  
+  def test_twitter_send
+    update_text = "Test Twitter Text"
+    Twitter.expects(:update)
+    u = Factory(:user)
+    a = Factory(:authorization, :user => u)
+    log_in(u, a.uid)
+    
+    fill_in "text", :with => update_text
+    click_button "Share"
+    
+    assert_match /Update created/, page.body
   end
 
   def test_junk_username_gives_404

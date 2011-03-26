@@ -45,7 +45,12 @@ module TestHelper
 
     visit '/auth/twitter'
   end
-
+  
+  def log_in_no_twitter(user)
+    User.any_instance.stubs(:authenticate).returns(user)
+    visit "/login"
+  end
+  
   Capybara.app = Rstatus
 
 end
