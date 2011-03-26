@@ -299,7 +299,7 @@ class RstatusTest < MiniTest::Unit::TestCase
   
   def test_twitter_send
     update_text = "Test Twitter Text"
-    Twitter.expects(:update)
+    Twitter.expects(:configure)
     u = Factory(:user)
     a = Factory(:authorization, :user => u)
     log_in(u, a.uid)
