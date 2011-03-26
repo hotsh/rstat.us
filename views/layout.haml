@@ -25,7 +25,7 @@
                     %a{ :href => "/users/#{current_user.username}/following"}
                       #{current_user.following.length}
                   .followers
-                    Followers: 
+                    Followers:
                     %a{ :href => "/users/#{current_user.username}/followers"}
                       #{current_user.followers.length}
                   .updates
@@ -33,6 +33,9 @@
 
           .links
             %a{:href => "/follow"} Would you like to follow someone not on rstat.us?
+
+          .links
+            %a{:href => "/users"} Browse rstat.us users
 
           .links
             %a{:href => "/feeds/#{current_user.feed.id}.atom"} Atom
@@ -49,6 +52,6 @@
             #flash
               = flash[:notice]
 
-          != yield 
+          != yield
 
     != haml :footer
