@@ -71,6 +71,35 @@ class RstatusTest < MiniTest::Unit::TestCase
     assert_match page.body, /#{update_text}/
   end
 
+  def test_user_can_see_replies
+    u = Factory(:user)
+    a = Factory(:authorization, :user => u)
+
+    u2 = Factory(:user)
+    u2.feed.updates << Factory(:update, :text => "@#{u.username} Hey man.")
+
+    log_in(u, a.uid)
+
+    visit "/replies"
+
+    assert_match "@#{u.username}", page.body
+  end
+
+  def test_user_can_see_world
+    u = Factory(:user)
+    a = Factory(:authorization, :user => u)
+
+    u2 = Factory(:user)
+    update = Factory(:update)
+    u2.feed.updates << update
+
+    log_in(u, a.uid)
+
+    visit "/updates"
+
+    assert_match update.text, page.body
+  end
+
   def test_subscribe_to_users_on_other_sites
     u = Factory(:user)
     a = Factory(:authorization, :user => u)
@@ -256,6 +285,18 @@ class RstatusTest < MiniTest::Unit::TestCase
     click_button "Share"
     
     assert_match /Update created/, page.body
+  end
+
+  def test_junk_username_gives_404
+    visit "/users/1n2i12399992sjdsa21293jj"
+    assert_equal 404, page.status_code
+  end
+
+  def test_unsupported_feed_type_gives_404
+    u = Factory(:user, :username => "dfnkt")
+    visit "/users/#{u.username}/feed.json"
+
+    assert_equal 404, page.status_code
   end
 
 end

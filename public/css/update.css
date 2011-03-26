@@ -835,7 +835,7 @@ body {
 #fourohfour .update .links, #update .update .links {
   float: right;
 }
-#fourohfour .update .remove-update, #update .update .remove-update {
+#fourohfour .update .remove-update, #update .update .remove-update, .update .remove-update {
   cursor: pointer;
   float: right;
   border: none;
