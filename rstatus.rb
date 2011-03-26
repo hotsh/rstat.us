@@ -667,7 +667,11 @@ class Rstatus < Sinatra::Base
   end
 
   not_found do
-    haml :'404', :layout => false
+    haml :'error', :layout => false, :locals => {:code => 404, :message => "We couldn't find the page you're looking for"}
+  end
+
+  error do
+    haml :'error', :layout => false, :locals => {:code => 500, :message => "Something went wrong"}
   end
 
   get "/hashtags/:tag" do
