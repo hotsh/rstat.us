@@ -145,6 +145,25 @@ class RstatusTest < MiniTest::Unit::TestCase
     assert_match "No longer following #{u2.username}", page.body
   end
 
+  def test_users_followers_in_order
+    aardvark = Factory(:user, :username => "aardvark", :created_at => Date.new(2010, 10, 23))
+    zebra    = Factory(:user, :username => "zebra", :created_at => Date.new(2011, 10, 23))
+    giraffe  = Factory(:user, :username => "giraffe", :created_at => Date.new(2011, 10, 23))
+    leopard  = Factory(:user, :username => "leopard", :created_at => Date.new(2011, 10, 23))
+    a = Factory(:authorization, :user => aardvark)
+
+    log_in(aardvark, a.uid)
+
+    visit "/users/#{leopard.username}"
+    click_button "follow-#{leopard.feed.id}"
+
+    visit "/users/#{zebra.username}"
+    click_button "follow-#{zebra.feed.id}"
+
+    visit "/users/#{aardvark.username}/following"
+    assert_match /zebra.*aardvark/m, page.body
+  end
+
   def test_user_following_paginates
     u = Factory(:user)
     a = Factory(:authorization, :user => u)

@@ -503,7 +503,7 @@ class Rstatus < Sinatra::Base
     params[:per_page] = params[:per_page].to_i
     feeds = User.first(:username => params[:name]).following
 
-    @users = feeds.paginate(:page => params[:page], :per_page => params[:per_page])
+    @users = feeds.paginate(:page => params[:page], :per_page => params[:per_page], :order => :id.desc)
 
     @next_page = nil
     @prev_page = nil
@@ -521,12 +521,12 @@ class Rstatus < Sinatra::Base
 
   get '/users/:name/followers' do
     params[:page] ||= 1
-	params[:per_page] ||= 20
+    params[:per_page] ||= 20
     params[:page] = params[:page].to_i
     params[:per_page] = params[:per_page].to_i
     feeds = User.first(:username => params[:name]).followers
 
-    @users = feeds.paginate(:page => params[:page], :per_page => params[:per_page])
+    @users = feeds.paginate(:page => params[:page], :per_page => params[:per_page], :order => :id.desc)
 
     @next_page = nil
     @prev_page = nil
