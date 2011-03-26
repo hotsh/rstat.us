@@ -503,7 +503,7 @@ class Rstatus < Sinatra::Base
     params[:per_page] = params[:per_page].to_i
     feeds = User.first(:username => params[:name]).following
 
-    @users = feeds.paginate(:page => params[:page], :per_page => params[:per_page])
+    @users = feeds.paginate(:page => params[:page], :per_page => params[:per_page], :order => :id.desc)
 
     @next_page = nil
     @prev_page = nil
@@ -521,12 +521,12 @@ class Rstatus < Sinatra::Base
 
   get '/users/:name/followers' do
     params[:page] ||= 1
-	params[:per_page] ||= 20
+    params[:per_page] ||= 20
     params[:page] = params[:page].to_i
     params[:per_page] = params[:per_page].to_i
     feeds = User.first(:username => params[:name]).followers
 
-    @users = feeds.paginate(:page => params[:page], :per_page => params[:per_page])
+    @users = feeds.paginate(:page => params[:page], :per_page => params[:per_page], :order => :id.desc)
 
     @next_page = nil
     @prev_page = nil
@@ -572,10 +572,12 @@ class Rstatus < Sinatra::Base
     # tell hubs there is a new entry
     current_user.feed.ping_hubs(url(current_user.feed.url))
 
-    if params[:text].length >= 1 and params[:text].length <= 140
-      flash[:notice] = "Update created."
-    else
+    if params[:text].length <= 1
+      flash[:notice] = "Your status is too short!"
+    elsif params[:text].length >= 140
       flash[:notice] = "Your status is too long!"
+    else
+      flash[:notice] = "Update created."
     end
 
     redirect "/"
