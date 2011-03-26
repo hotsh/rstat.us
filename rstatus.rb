@@ -354,13 +354,10 @@ class Rstatus < Sinatra::Base
     when /^feed:\/\//
       feed_url = "http" + params[:url][4..-1]
     when /@/
-
       # TODO: ensure caching of finger lookup.
       acct = Redfinger.finger(params[:url])
       feed_url = acct.links.find { |l| l['rel'] == 'http://schemas.google.com/g/2010#updates-from' }
-
     else
-
       feed_url = params[:url]
     end
 
@@ -381,10 +378,9 @@ class Rstatus < Sinatra::Base
     end
 
     # follow them!
-
     f = current_user.follow! feed_url
     unless f
-      flash[:notice] = "The was a problem following #{params[:url]}."
+      flash[:notice] = "There was a problem following #{params[:url]}."
       redirect request.referrer
       return
     end
@@ -515,7 +511,6 @@ class Rstatus < Sinatra::Base
     if params[:page] > 1
 	  @prev_page = "?#{Rack::Utils.build_query :page => params[:page] - 1}"
     end
-
 
     haml :"users/list", :locals => {:title => "Followers"}
   end
@@ -657,7 +652,7 @@ class Rstatus < Sinatra::Base
     @hashtag = params[:tag]
     set_params_page
 
-set_next_prev_page
+    set_next_prev_page
     @updates = Update.hashtag_search(@hashtag, params)
     @timeline = true
     @update_text = params[:status]
@@ -677,4 +672,3 @@ set_next_prev_page
   end
 
 end
-
