@@ -266,6 +266,12 @@ class RstatusTest < MiniTest::Unit::TestCase
 
   end
   
+  def no_twitter_login
+    u = Factory(:user)
+    log_in_no_twitter(u)
+    assert_match /Login successful/, page.body
+  end
+  
   def test_twitter_send_checkbox_present
     u = Factory(:user)
     a = Factory(:authorization, :user => u)
@@ -276,12 +282,25 @@ class RstatusTest < MiniTest::Unit::TestCase
   
   def test_twitter_send
     update_text = "Test Twitter Text"
-    Twitter.expects(:update)
+    Twitter.expects(:configure)
     u = Factory(:user)
     a = Factory(:authorization, :user => u)
     log_in(u, a.uid)
     
     fill_in "text", :with => update_text
+    click_button "Share"
+    
+    assert_match /Update created/, page.body
+  end
+  
+  def test_twitter_no_send
+    update_text = "Test Twitter Text"
+    Twitter.expects(:configure).never
+    u = Factory(:user)
+    log_in_no_twitter(u)
+    
+    fill_in "text", :with => update_text
+    uncheck("tweeted")
     click_button "Share"
     
     assert_match /Update created/, page.body
