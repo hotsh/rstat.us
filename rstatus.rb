@@ -552,7 +552,6 @@ class Rstatus < Sinatra::Base
 
   get '/users/:name/followers' do
     set_params_page
-    
     feeds = User.first(:username => params[:name]).followers
 
     @users = feeds.paginate(:page => params[:page], :per_page => params[:per_page], :order => :id.desc).map{|f| f.author.user}

@@ -320,6 +320,7 @@ class RstatusTest < MiniTest::Unit::TestCase
     
     fill_in "text", :with => update_text
     uncheck("tweeted")
+
     click_button "Share"
     
     assert_match /Update created/, page.body
