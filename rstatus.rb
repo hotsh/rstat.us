@@ -226,6 +226,7 @@ class Rstatus < Sinatra::Base
   get '/users' do
     params[:page] ||= 1
     params[:per_page] ||= 20
+    params[:letter] ||= ""
     params[:page] = params[:page].to_i
     params[:per_page] = params[:per_page].to_i
 
