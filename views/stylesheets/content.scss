@@ -159,16 +159,12 @@ form#update-form {
       }
     }
     li.active {
-      background: $highlight;
+      background: $link_color;
       a { 
         color: white;
       }
     }
   }
-}
-
-#timeline .mention {
-  background: $mention;
 }
 
 /* Pagination */
@@ -338,8 +334,13 @@ form#update-form {
         margin-left: 0.5em;
       }
     }
-
-
+  }
+  
+  .mention {
+    background: $mention;
+  }
+  .mine {
+    background: $highlight;
   }
   
   .empty {
