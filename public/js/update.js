@@ -1,16 +1,25 @@
 (function() {
+  var MAX_LENGTH;
+  MAX_LENGTH = 140;
   $(document).ready(function() {
     var focusTextArea, shareText, textarea, updateCounter, update_field;
     $("html").removeClass("no-js").addClass("js");
     textarea = $("#update-form textarea");
     update_field = $("#update-form #update-referral");
     updateCounter = function() {
-      $("#update-count").text((140 - textarea.val().length) + "/140");
-      return $("#update-info").toggleClass("negative", textarea.val().length > 140);
+      var countSpan, remainingLength;
+      remainingLength = MAX_LENGTH - textarea.val().length;
+      countSpan = $("#update-count .update-count").first();
+      if (countSpan.length) {
+        countSpan.text(remainingLength);
+      } else {
+        $("#update-count").append('<span class="update-count">' + remainingLength + '</span>/' + MAX_LENGTH);
+      }
+      return $("#update-info").toggleClass("negative", remainingLength < 0);
     };
     textarea.keypress(updateCounter).keyup(updateCounter);
     $("#update-form").submit(function() {
-      if (textarea.val().length <= 0 || textarea.val().length > 140) {
+      if (textarea.val().length <= 0 || textarea.val().length > MAX_LENGTH) {
         return false;
       }
     });
@@ -23,7 +32,8 @@
       length = textarea.text().length;
       textarea.keypress();
       textarea[0].setSelectionRange(length, length);
-      return textarea.focus();
+      textarea.focus();
+      return window.scrollTo(0, $(textarea).position().top);
     };
     return $(".update").each(function() {
       var update;

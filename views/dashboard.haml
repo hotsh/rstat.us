@@ -1,5 +1,6 @@
-- content_for :top do
-  != haml :_update_form
+- unless current_user.nil?
+  - content_for :top do
+    != haml :_update_form
 
 - content_for :javascript do
   %script{:src => "/js/update.js"}
