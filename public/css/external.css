@@ -890,3 +890,6 @@ body {
 #home-bottom #recent .updates h4 {
   padding-top: 1em;
 }
+#home-bottom #recent .updates .world-link {
+  text-align: right;
+}

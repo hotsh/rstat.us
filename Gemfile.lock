@@ -127,6 +127,10 @@ GEM
       rack (>= 1.0)
     rake (0.8.7)
     rdiscount (1.6.8)
+    redfinger (0.1.0)
+      hashie
+      nokogiri (>= 1.4.0)
+      rest-client (>= 1.5.0)
     rest-client (1.6.1)
       mime-types (>= 1.16)
     rocco (0.6)
@@ -193,6 +197,7 @@ DEPENDENCIES
   rack-flash
   rack-test
   rdiscount
+  redfinger
   rocco
   sass
   sinatra

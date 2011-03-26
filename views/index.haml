@@ -33,11 +33,12 @@
             = flash[:notice]
 
         #pitch
-          #col-1.col
-            %h2.title
-              Sign Up
-            .content
-              with Twitter or Facebook, or create a new account
+          %a{:href=>'/login'} 
+            #col-1.col
+              %h2.title
+                Sign Up
+              .content
+                with Twitter or Facebook, or create a new account
           #col-2.col
             %h2.title
               Connect
@@ -69,6 +70,9 @@
             .updates
               %h3 Recent updates
               != haml :_updates, :locals => {:updates => Update.hot_updates}
+              .world-link
+                %a{:href => "/updates"}
+                  more...
               %h4 
                 %a{:href => "/login"}
                   Join the conversation
