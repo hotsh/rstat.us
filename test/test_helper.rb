@@ -49,6 +49,10 @@ module TestHelper
   def log_in_no_twitter(user)
     User.any_instance.stubs(:authenticate).returns(user)
     visit "/login"
+    fill_in "username", :with => "anything"
+    fill_in "password", :with => "anything"
+
+    click_button "Log in"    
   end
   
   Capybara.app = Rstatus

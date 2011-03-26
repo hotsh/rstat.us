@@ -70,8 +70,8 @@ class Update
   protected
 
   def tweet
-    return unless ENV['RACK_ENV'] == 'production'
-    #if tweeted and author.user.twitter?
+    #return unless ENV['RACK_ENV'] == 'production'
+    if self.author.user.twitter?
       begin
         Twitter.configure do |config|
           config.consumer_key = ENV["CONSUMER_KEY"]
@@ -84,7 +84,7 @@ class Update
       rescue Exception => e
         #I should be shot for doing this.
       end
-    #end
+    end
   end
 
 end
