@@ -88,7 +88,7 @@ class User
     f = Feed.first(:remote_url => feed_url)
 
     # local feed?
-    if f.nil? and feed_url[0] == "/"
+    if f.nil? and feed_url[0].chr == "/"
       feed_id = feed_url[/^\/feeds\/(.+)$/,1]
       f = Feed.first(:id => feed_id)
     end
