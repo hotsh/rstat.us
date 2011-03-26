@@ -205,10 +205,14 @@ class Rstatus < Sinatra::Base
 
     # session[:oauth_token] = auth['credentials']['token']
     # session[:oauth_secret] = auth['credentials']['secret']
-    session[:user_id] = @auth.user.id
+    if logged_in?
+      redirect "/users/#{current_user.username}edit"
+    else
+      session[:user_id] = @auth.user.id
 
-    flash[:notice] = "You're now logged in."
-    redirect '/'
+      flash[:notice] = "You're now logged in."
+      redirect '/'      
+    end
   end
 
   get '/auth/failure' do
