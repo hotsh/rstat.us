@@ -47,7 +47,6 @@ class Rstatus < Sinatra::Base
 
   set :port, 8088
 
-
   # The `PONY_VIA_OPTIONS` hash is used to configure `pony`. Basically, we only
   # want to actually send mail if we're in the production environment. So we set
   # the hash to just be `{}`, except when we want to send mail.
@@ -61,8 +60,11 @@ class Rstatus < Sinatra::Base
 
   configure :production do
     require 'newrelic_rpm'
+    Compass.configuration do |config|
+      config.output_style = :compressed
+    end
   end
-  
+
 
   # We're using [SendGrid](http://sendgrid.com/) to send our emails. It's really
   # easy; the Heroku addon sets us up with environment variables with all of the
@@ -94,6 +96,12 @@ class Rstatus < Sinatra::Base
     else
       MongoMapper.connection = Mongo::Connection.new('localhost')
       MongoMapper.database = "rstatus-#{settings.environment}"
+    end
+    
+    # configure compass
+    Compass.configuration do |config|
+      config.project_path = File.dirname(__FILE__)
+      config.sass_options = {:cache_location => "./tmp/sass-cache"}
     end
   end
 
@@ -155,6 +163,10 @@ class Rstatus < Sinatra::Base
 
   get '/home' do
     haml :index, :layout => false
+  end
+  
+  get '/screen.css' do
+    scss(:screen, Compass.sass_engine_options)
   end
 
   get '/replies' do
@@ -223,6 +235,39 @@ class Rstatus < Sinatra::Base
     haml :"users/new"
   end
 
+  get '/users' do
+    params[:page] ||= 1
+    params[:per_page] ||= 20
+    params[:page] = params[:page].to_i
+    params[:per_page] = params[:per_page].to_i
+
+    if params[:letter] == "other"
+      @users = User.where(:username => /^[^a-z0-9]/i)
+    elsif params[:letter]
+      @users = User.where(:username => /^#{params[:letter][0]}/i)
+    else
+      @users = User
+    end
+
+    if params[:letter]
+      @users = @users.sort(:username)
+    else
+      @users = @users.sort(:created_at.desc)
+    end
+    @users = @users.paginate(:page => params[:page], :per_page => params[:per_page])
+
+    @next_page = nil
+    @prev_page = nil
+
+    @next_page = "?#{Rack::Utils.build_query :page => params[:page] + 1, :letter => params[:letter]}"
+
+    if params[:page] > 1
+      @prev_page = "?#{Rack::Utils.build_query :page => params[:page] - 1, :letter => params[:letter]}"
+    end
+
+    haml :"users/index"
+  end
+
   post '/users' do
     user = User.new params
     if user.save
@@ -250,8 +295,10 @@ class Rstatus < Sinatra::Base
   end
 
   get "/logout" do
-    session[:user_id] = nil
-    flash[:notice] = "You've been logged out."
+    if logged_in?
+      session[:user_id] = nil
+      flash[:notice] = "You've been logged out."
+    end
     redirect '/'
   end
 
@@ -478,16 +525,16 @@ class Rstatus < Sinatra::Base
     params[:page] = params[:page].to_i
     params[:per_page] = params[:per_page].to_i
     feeds = User.first(:username => params[:name]).followers
-    
+
     @users = feeds.paginate(:page => params[:page], :per_page => params[:per_page])
-	
+
     @next_page = nil
     @prev_page = nil
 
     if params[:page]*params[:per_page] < feeds.count
 	  @next_page = "?#{Rack::Utils.build_query :page => params[:page] + 1}"
     end
-    
+
     if params[:page] > 1
 	  @prev_page = "?#{Rack::Utils.build_query :page => params[:page] - 1}"
     end
@@ -512,7 +559,7 @@ class Rstatus < Sinatra::Base
 
   post '/updates' do
     u = Update.new(:text => params[:text],
-                   :referral_id => params[:referral_id], 
+                   :referral_id => params[:referral_id],
                    :author => current_user.author,
                    :oauth_token => session[:oauth_token],
                    :oauth_secret => session[:oauth_secret])
@@ -528,7 +575,7 @@ class Rstatus < Sinatra::Base
     if params[:text].length >= 1 and params[:text].length <= 140
       flash[:notice] = "Update created."
     else
-      flash[:notice] = "Unable to save update."
+      flash[:notice] = "Your status is too long!"
     end
 
     redirect "/"
@@ -541,7 +588,7 @@ class Rstatus < Sinatra::Base
   end
 
   post '/signup' do
-    u = User.create(:email => params[:email], 
+    u = User.create(:email => params[:email],
                     :status => "unconfirmed")
     u.set_perishable_token
 
@@ -587,7 +634,11 @@ class Rstatus < Sinatra::Base
   end
 
   get "/login" do
-    haml :"login"
+    if logged_in?
+      redirect '/'
+    else
+      haml :"login"
+    end
   end
 
   post "/login" do
