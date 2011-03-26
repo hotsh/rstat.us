@@ -47,7 +47,6 @@ class Rstatus < Sinatra::Base
 
   set :port, 8088
 
-
   # The `PONY_VIA_OPTIONS` hash is used to configure `pony`. Basically, we only
   # want to actually send mail if we're in the production environment. So we set
   # the hash to just be `{}`, except when we want to send mail.
@@ -63,7 +62,7 @@ class Rstatus < Sinatra::Base
     require 'newrelic_rpm'
     Compass.configuration do |config|
       config.output_style = :compressed
-      config.cache_location = "tmp/sass-cache"
+      config.sass_options = {:cache_location => "./tmp/sass-cache"}
     end
   end
 
@@ -103,7 +102,6 @@ class Rstatus < Sinatra::Base
     # configure compass
     Compass.configuration do |config|
       config.project_path = File.dirname(__FILE__)
-      # config.output_style = :compressed
     end
   end
 
