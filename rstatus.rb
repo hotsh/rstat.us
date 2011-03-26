@@ -500,6 +500,20 @@ class Rstatus < Sinatra::Base
     haml :"users/list", :locals => {:title => "Followers"}
   end
 
+  get '/world' do
+    @updates = Update.paginate( :page => params[:page], :per_page => params[:per_page] || 20, :order => :created_at.desc)
+
+    if @updates.next_page
+          @next_page = "?#{Rack::Utils.build_query :page => @updates.next_page}"
+    end
+
+    if @updates.previous_page
+          @prev_page = "?#{Rack::Utils.build_query :page => @updates.previous_page}"
+    end
+
+    haml :world
+  end
+
   post '/updates' do
     u = Update.new(:text => params[:text],
                    :referral_id => params[:referral_id], 
