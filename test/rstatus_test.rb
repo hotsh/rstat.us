@@ -320,6 +320,27 @@ class RstatusTest < MiniTest::Unit::TestCase
     
     assert_match /Update created/, page.body
   end
+  
+  def add_twitter_to_email_account
+    u = Factory(:user)
+    OmniAuth.config.add_mock(:twitter, {
+      :uid => uid,
+      :user_info => {
+        :name => "Joe Public",
+        :nickname => u.username,
+        :urls => { :Website => "http://rstat.us" },
+        :description => "A description",
+        :image => "/images/something.png"
+      },
+      :credentials => {:token => "1234", :secret => "4567"}
+    })
+    log_in_no_twitter(u)
+    visit "/users/#{u.username}/edit"
+    click_button "Add Twitter Account"
+    
+    assert_equal "1234", u.twitter.oauth_token
+    assert_equal "4567", u.twitter.oauth_secret
+  end
 
   def test_junk_username_gives_404
     visit "/users/1n2i12399992sjdsa21293jj"
