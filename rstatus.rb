@@ -528,7 +528,7 @@ class Rstatus < Sinatra::Base
     if params[:text].length >= 1 and params[:text].length <= 140
       flash[:notice] = "Update created."
     else
-      flash[:notice] = "Unable to save update."
+      flash[:notice] = "Your status is too long!"
     end
 
     redirect "/"
