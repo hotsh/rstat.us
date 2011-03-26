@@ -2,8 +2,8 @@
 %ul.user-list
   - @users.each_with_index do |feed, i|
     %li.user{:class => i%2 == 0 ? "even" : "odd"}
-      -user_url = feed.local ? "/users/#{feed.author.username}" : feed.author.url
-      -unfollow_url = feed.local ? "/users/#{feed.author.username}/unfollow" : "/feeds/#{feed.id}/unsubscribe"
+      -user_url = feed.local? ? "/users/#{feed.author.username}" : feed.author.url
+      -unfollow_url = feed.local? ? "/users/#{feed.author.username}/unfollow" : "/feeds/#{feed.id}/unsubscribe"
       .avatar
         %a{:href => user_url}
           %img{:alt => "avatar", :src => feed.author.avatar_url}/
