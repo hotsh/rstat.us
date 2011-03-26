@@ -22,3 +22,11 @@
     %a{:href => "http://gravatar.com"}
       Gravatar
     account to set and update your avatar.
+  
+  - if @user.twitter?
+    %span= @user.twitter.nickname
+  - else
+    %form#profile-update{:action => "/auth/twitter", :method => "GET", :name => "profile_update_form"}
+      %input#update-button.button{:type => "submit", :value => "Add Twitter Account"}
+  
+

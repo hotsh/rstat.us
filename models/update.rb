@@ -8,8 +8,11 @@ class Update
   key :text, String, :default => ""
   key :tags, Array, :default => []
   key :language, String
+  key :tweeted, Boolean
 
-  attr_accessor :oauth_token, :oauth_secret
+
+  # store in authorization
+  #attr_accessor :oauth_token, :oauth_secret
 
   validates_length_of :text, :minimum => 1, :maximum => 140
   before_create :get_tags
@@ -83,24 +86,20 @@ class Update
 
   def tweet
     return unless ENV['RACK_ENV'] == 'production'
-    
-    # suppress crossposting of @replies
-    if text[0] == '@'
-      return
-    end
+    #if tweeted and author.user.twitter?
+      begin
+        Twitter.configure do |config|
+          config.consumer_key = ENV["CONSUMER_KEY"]
+          config.consumer_secret = ENV["CONSUMER_SECRET"]
+          config.oauth_token = author.user.twitter.oauth_token
+          config.oauth_token_secret = author.user.twitter.oauth_secret
+        end
 
-    begin
-      Twitter.configure do |config|
-        config.consumer_key = ENV["CONSUMER_KEY"]
-        config.consumer_secret = ENV["CONSUMER_SECRET"]
-        config.oauth_token = oauth_token
-        config.oauth_token_secret = oauth_secret
+        Twitter.update(text)
+      rescue Exception => e
+        #I should be shot for doing this.
       end
-
-      Twitter.update(text)
-    rescue Exception => e
-      #I should be shot for doing this.
-    end
+    #end
   end
 
 end
