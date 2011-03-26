@@ -16,6 +16,7 @@ gem "rdiscount"
 gem "ostatus"
 gem "osub"
 gem "opub"
+gem "redfinger"
 gem "nokogiri", "= 1.4.4"
 gem "newrelic_rpm"
 
