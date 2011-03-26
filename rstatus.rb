@@ -696,6 +696,15 @@ class Rstatus < Sinatra::Base
     haml :external_subscription
   end
 
+  get "/htfollow" do
+    haml :hashtag_subscription
+  end
+
+  post "/htfollow" do
+    @hashtag = params[:tag]
+    redirect "/hashtags/#{@hashtag}"
+  end
+
   get "/contact" do
     haml :contact
   end

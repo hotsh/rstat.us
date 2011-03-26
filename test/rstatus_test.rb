@@ -241,6 +241,21 @@ class RstatusTest < MiniTest::Unit::TestCase
 
     assert_equal 404, page.status_code
   end
+  
+  def test_visit_hashtag_follow_form
+    visit "/htfollow"
+    assert_equal 200, page.status_code
+  end
+
+  def test_follow_hashtag_from_form
+    visit "/htfollow"
+    fill_in "tag", :with => "test"
+    click_button "Follow"
+
+    assert_equal 200, page.status_code
+    assert_match /\//, page.current_url
+    assert_match /#test/, page.body
+  end
 
   def test_users_browse
     zebra    = Factory(:user, :username => "zebra")
