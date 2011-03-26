@@ -238,6 +238,7 @@ class Rstatus < Sinatra::Base
   get '/users' do
     params[:page] ||= 1
     params[:per_page] ||= 20
+    params[:letter] ||= ""
     params[:page] = params[:page].to_i
     params[:per_page] = params[:per_page].to_i
 
@@ -290,8 +291,10 @@ class Rstatus < Sinatra::Base
   end
 
   get "/logout" do
-    session[:user_id] = nil
-    flash[:notice] = "You've been logged out."
+    if logged_in?
+      session[:user_id] = nil
+      flash[:notice] = "You've been logged out."
+    end
     redirect '/'
   end
 
@@ -627,7 +630,11 @@ class Rstatus < Sinatra::Base
   end
 
   get "/login" do
-    haml :"login"
+    if logged_in?
+      redirect '/'
+    else
+      haml :"login"
+    end
   end
 
   post "/login" do
