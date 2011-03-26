@@ -521,11 +521,16 @@ class Rstatus < Sinatra::Base
     current_user.feed.updates << u
     current_user.feed.save
     current_user.save
-
+    
     # tell hubs there is a new entry
     current_user.feed.ping_hubs(url(current_user.feed.url))
 
-    flash[:notice] = "Update created."
+    if params[:text].length >= 1 and params[:text].length <= 140
+      flash[:notice] = "Update created."
+    else
+      flash[:notice] = "Unable to save update."
+    end
+
     redirect "/"
   end
 
