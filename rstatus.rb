@@ -250,7 +250,12 @@ class Rstatus < Sinatra::Base
       @users = User
     end
 
-    @users = @users.sort(:username).paginate(:page => params[:page], :per_page => params[:per_page])
+    if params[:letter]
+      @users = @users.sort(:username)
+    else
+      @users = @users.sort(:created_at.desc)
+    end
+    @users = @users.paginate(:page => params[:page], :per_page => params[:per_page])
 
     @next_page = nil
     @prev_page = nil

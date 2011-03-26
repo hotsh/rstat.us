@@ -272,15 +272,15 @@ class RstatusTest < MiniTest::Unit::TestCase
     assert_match "Next", page.body
   end
 
-  def test_users_browse_sorted
-    zebra    = Factory(:user, :username => "zebra")
-    aardvark = Factory(:user, :username => "aardvark")
+  def test_users_browse_shows_latest_users
+    aardvark = Factory(:user, :username => "aardvark", :created_at => Date.new(2010, 10, 23))
+    zebra    = Factory(:user, :username => "zebra", :created_at => Date.new(2011, 10, 23))
     a = Factory(:authorization, :user => aardvark)
 
     log_in(aardvark, a.uid)
 
     visit "/users"
-    assert_match /aardvark.*zebra/m, page.body
+    assert_match /zebra.*aardvark/m, page.body
   end
 
   def test_users_browse_by_letter
