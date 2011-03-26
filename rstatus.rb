@@ -322,26 +322,17 @@ class Rstatus < Sinatra::Base
 
     # Allow for a variety of feed addresses
     case params[:url]
-    when /^https?:\/\//
-      feed_url = params[:url]
     when /^feed:\/\//
       feed_url = "http" + params[:url][4..-1]
-    when /^@/
-
-      # TODO when subscribing to twitter feeds is possible, this should
-      # be filled in.
-      feed_url = "http://twitter.com/#FIXME"
-
     when /@/
 
-      # ... but really, people should be using email-like addresses with
-      # webfinger profiles behind them, because it's easier and more
-      # user-friendly.
-      #
       # TODO: ensure caching of finger lookup.
       acct = Redfinger.finger(params[:url])
       feed_url = acct.links.find { |l| l['rel'] == 'http://schemas.google.com/g/2010#updates-from' }
 
+    else
+
+      feed_url = params[:url]
     end
 
     #make sure we're not following them already
