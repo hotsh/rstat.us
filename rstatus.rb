@@ -500,7 +500,7 @@ class Rstatus < Sinatra::Base
     haml :"users/list", :locals => {:title => "Followers"}
   end
 
-  get '/world' do
+  get '/updates' do
     @updates = Update.paginate( :page => params[:page], :per_page => params[:per_page] || 20, :order => :created_at.desc)
 
     if @updates.next_page
