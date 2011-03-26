@@ -10,6 +10,8 @@
     Followers:
     %a{:href => "/users/#{@author.username}/followers"}
       #{@author.user.followers.length}
+  .updates
+    Updates: #{@author.user.feed.updates.count}
   - unless @author.website.blank?
     .website
       Website:
