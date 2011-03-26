@@ -89,7 +89,24 @@ body {
       .date {
         float: left
       }
-      .links {
+
+      .in-reply  {
+        .avatar, .name, .links {
+         display: inline;
+        }
+
+        .avatar {
+          float: none;
+          width: 18px;
+          padding: 0 2px;
+          img {
+            width: 18px;
+            margin-bottom: -4px;
+          }
+        }
+      }
+
+      .end-links {
         float: right;
       }
       .links, .date {

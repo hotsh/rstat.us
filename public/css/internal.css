@@ -673,7 +673,19 @@ body {
 .updates .update .content .date {
   float: left;
 }
-.updates .update .content .links {
+.updates .update .content .in-reply .avatar, .updates .update .content .in-reply .name, .updates .update .content .in-reply .links {
+  display: inline;
+}
+.updates .update .content .in-reply .avatar {
+  float: none;
+  width: 18px;
+  padding: 0 2px;
+}
+.updates .update .content .in-reply .avatar img {
+  width: 18px;
+  margin-bottom: -4px;
+}
+.updates .update .content .end-links {
   float: right;
 }
 .updates .update .content .links, .updates .update .content .date {
