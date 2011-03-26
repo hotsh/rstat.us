@@ -541,10 +541,11 @@ class Rstatus < Sinatra::Base
   end
 
   post '/updates' do
+    do_tweet = !params[:tweeted].nil? || params[:tweeted] == "1"
     u = Update.new(:text => params[:text],
                    :referral_id => params[:referral_id],
                    :author => current_user.author,
-                   :tweeted => (params[:tweeted] == "1"))
+                   :tweeted => do_tweet)
 
     # and entry to user's feed
     current_user.feed.updates << u
