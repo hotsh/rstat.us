@@ -28,7 +28,10 @@ end
 
 Factory.define :authorization do |a|
   a.uid { Factory.next(:integer) }
+  a.nickname "god"
   a.provider "twitter"
+  a.oauth_token "abcd"
+  a.oauth_secret "efgh"
   a.association :user
 end
 

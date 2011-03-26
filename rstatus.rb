@@ -203,8 +203,8 @@ class Rstatus < Sinatra::Base
       end
     end
 
-    session[:oauth_token] = auth['credentials']['token']
-    session[:oauth_secret] = auth['credentials']['secret']
+    # session[:oauth_token] = auth['credentials']['token']
+    # session[:oauth_secret] = auth['credentials']['secret']
     session[:user_id] = @auth.user.id
 
     flash[:notice] = "You're now logged in."
@@ -237,6 +237,9 @@ class Rstatus < Sinatra::Base
       auth['user_info']['urls']['Website'] = session[:website]
       auth['user_info']['description'] = session[:description]
       auth['user_info']['image'] = session[:image]
+      auth['credentials'] = {}
+      auth['credentials']['token'] = session[:oauth_token]
+      auth['credentials']['secret'] = session[:oauth_secret]
 
       Authorization.create_from_hash(auth, uri("/"), user)
 
@@ -463,7 +466,7 @@ class Rstatus < Sinatra::Base
 
   get '/users/:name/followers' do
     params[:page] ||= 1
-	params[:per_page] ||= 20
+    params[:per_page] ||= 20
     params[:page] = params[:page].to_i
     params[:per_page] = params[:per_page].to_i
     feeds = User.first(:username => params[:name]).followers
@@ -489,8 +492,7 @@ class Rstatus < Sinatra::Base
     u = Update.new(:text => params[:text],
                    :referral_id => params[:referral_id], 
                    :author => current_user.author,
-                   :oauth_token => session[:oauth_token],
-                   :oauth_secret => session[:oauth_secret])
+                   :tweeted => (params[:tweeted] == "1"))
 
     # and entry to user's feed
     current_user.feed.updates << u
