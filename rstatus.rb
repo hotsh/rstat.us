@@ -63,6 +63,7 @@ class Rstatus < Sinatra::Base
     require 'newrelic_rpm'
     Compass.configuration do |config|
       config.output_style = :compressed
+      config.cache_location = "tmp/sass-cache"
     end
   end
 
