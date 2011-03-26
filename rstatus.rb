@@ -62,7 +62,6 @@ class Rstatus < Sinatra::Base
     require 'newrelic_rpm'
     Compass.configuration do |config|
       config.output_style = :compressed
-      config.sass_options = {:cache_location => "./tmp/sass-cache"}
     end
   end
 
@@ -102,6 +101,7 @@ class Rstatus < Sinatra::Base
     # configure compass
     Compass.configuration do |config|
       config.project_path = File.dirname(__FILE__)
+      config.sass_options = {:cache_location => "./tmp/sass-cache"}
     end
   end
 
