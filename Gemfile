@@ -22,6 +22,8 @@ gem "opub"
 gem "redfinger"
 gem "nokogiri", "= 1.4.4"
 gem "newrelic_rpm"
+gem "sass"
+gem "compass"
 
 group :development, :test do
   gem 'coffee-script'

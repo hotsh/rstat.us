@@ -47,7 +47,7 @@ class Update
   end
 
   def mentioned? search
-    matches = text.match(/^@#{search}/)
+    matches = text.match(/^@#{search}\b/)
     matches.nil? ? false : matches.length > 0
   end
 
