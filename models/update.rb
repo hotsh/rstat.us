@@ -10,7 +10,6 @@ class Update
   key :language, String
   key :tweeted, Boolean
 
-
   # store in authorization
   #attr_accessor :oauth_token, :oauth_secret
 
@@ -86,7 +85,7 @@ class Update
 
   def tweet
     return if ENV['RACK_ENV'] == 'development'
-    if tweeted?
+    if tweeted? && author.user && author.user.twitter?
       begin
         Twitter.configure do |config|
           config.consumer_key = ENV["CONSUMER_KEY"]
