@@ -86,15 +86,36 @@ body {
         word-wrap: break-word;
         font-size: 1.1em;
       }
-      .date {
+      .date, .in-reply {
         float: left
       }
-      .links {
+
+      .in-reply  {
+        .avatar, .name, .links {
+         display: inline;
+        }
+
+        .avatar {
+          float: none;
+          width: 18px;
+          padding: 0 2px;
+          img {
+            width: 18px;
+            margin-bottom: -4px;
+          }
+        }
+      }
+
+      .end-links {
         float: right;
       }
-      .links, .date {
+      .links, .date, .in-reply {
       	font-size: 0.9em;
-      	color: #aaa;        
+      	color: #aaa;
+        line-height: 2em;
+      }
+      .in-reply {
+        margin-left: 0.5em;
       }
     }
 
