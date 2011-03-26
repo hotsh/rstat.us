@@ -70,18 +70,15 @@ module TestHelper
   def log_in_no_twitter(user)
     User.stubs(:authenticate).returns(user).once
     visit "/login"
-<<<<<<< HEAD
     within("form#login_form") do
       fill_in "username", :with => "anything"
       fill_in "password", :with => "anything"
     end
     click_button "Log in"
-=======
     fill_in "username", :with => "anything"
     fill_in "password", :with => "anything"
 
     click_button "Log in"    
->>>>>>> Added more tests for twitter update
   end
   
   Capybara.app = Rstatus
