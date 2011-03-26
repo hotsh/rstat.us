@@ -670,15 +670,31 @@ body {
   word-wrap: break-word;
   font-size: 1.1em;
 }
-.updates .update .content .date {
+.updates .update .content .date, .updates .update .content .in-reply {
   float: left;
 }
-.updates .update .content .links {
+.updates .update .content .in-reply .avatar, .updates .update .content .in-reply .name, .updates .update .content .in-reply .links {
+  display: inline;
+}
+.updates .update .content .in-reply .avatar {
+  float: none;
+  width: 18px;
+  padding: 0 2px;
+}
+.updates .update .content .in-reply .avatar img {
+  width: 18px;
+  margin-bottom: -4px;
+}
+.updates .update .content .end-links {
   float: right;
 }
-.updates .update .content .links, .updates .update .content .date {
+.updates .update .content .links, .updates .update .content .date, .updates .update .content .in-reply {
   font-size: 0.9em;
   color: #aaa;
+  line-height: 2em;
+}
+.updates .update .content .in-reply {
+  margin-left: 0.5em;
 }
 .updates .empty {
   background: white;
