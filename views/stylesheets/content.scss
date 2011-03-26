@@ -107,7 +107,7 @@ form#update-form {
   #update-content {
     textarea {
       @include copy-face;
-      width: 540px;
+      width: 538px;
       padding: 5px;
       height: 2.5em;
       margin: 0;
@@ -329,7 +329,7 @@ form#update-form {
       .end-links {
         float: right;
       }
-      .links, .date, .in-reply {
+      .end-links, .date, .in-reply {
       	font-size: 0.9em;
       	color: #aaa;
         line-height: 2em;
@@ -365,6 +365,12 @@ form#update-form {
   padding-top: 3em;
   width: 520px;
   margin: auto;
+  
+  #footer {
+    padding: 1em;
+    border-top: 1px solid #ccc;
+    width: 498px;
+  }
 }
 
 .single-update {
@@ -427,15 +433,5 @@ form#update-form {
     float: right;
     border: none;
     @include image-replaced('../images/trash.png', 13px, 16px)
-  }
-}
-
-#footer {
-  padding: 1em;
-  border-top: 1px solid #ccc;
-  width: 498px;
-  
-  #logo {
-    @include image-replaced("../images/logo-xs.png", 71px, 20px)
   }
 }
