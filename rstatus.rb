@@ -294,17 +294,17 @@ class Rstatus < Sinatra::Base
 
   # unsubscribe from a feed
   delete '/subscriptions/:id' do
-    require_login! :return => "/subscriptions/#{params[:id]}"
+    require_login! :return => request.referrer
 
     feed = Feed.first :id => params[:id]
 
     @author = feed.author
-    redirect "/" and return if @author.user == current_user
+    redirect request.referrer if @author.user == current_user
 
     #make sure we're following them already
     unless current_user.following? feed.url
       flash[:notice] = "You're not following #{@author.username}."
-      redirect "/"
+      redirect request.referrer
       return
     end
 
@@ -312,15 +312,27 @@ class Rstatus < Sinatra::Base
     current_user.unfollow! feed
 
     flash[:notice] = "No longer following #{@author.username}."
-    redirect "/"
+    redirect request.referrer
   end
 
   post "/subscriptions" do
-    require_login! :return => "/subscriptions"
+    require_login! :return => request.referrer
 
-    feed_url = params[:url]
-    if feed_url[0..3] == "feed"
-      feed_url = "http" + feed_url[4..-1]
+    feed_url = nil
+
+    # Allow for a variety of feed addresses
+    case params[:url]
+    when /^feed:\/\//
+      feed_url = "http" + params[:url][4..-1]
+    when /@/
+
+      # TODO: ensure caching of finger lookup.
+      acct = Redfinger.finger(params[:url])
+      feed_url = acct.links.find { |l| l['rel'] == 'http://schemas.google.com/g/2010#updates-from' }
+
+    else
+
+      feed_url = params[:url]
     end
 
     #make sure we're not following them already
@@ -333,11 +345,9 @@ class Rstatus < Sinatra::Base
       end
 
       flash[:notice] = "You're already following #{feed.author.username}."
-      if feed.local
-        redirect "/users/#{feed.author.username}"
-      else
-        redirect "/"
-      end
+
+      redirect request.referrer
+
       return
     end
 
@@ -346,11 +356,12 @@ class Rstatus < Sinatra::Base
     f = current_user.follow! feed_url
     unless f
       flash[:notice] = "The was a problem following #{params[:url]}."
-      redirect "/follow"
+      redirect request.referrer
       return
     end
 
-    if not f.local
+    if not f.local?
+
       # remote feeds require some talking to a hub
       hub_url = f.hubs.first
 
@@ -359,11 +370,11 @@ class Rstatus < Sinatra::Base
 
       name = f.author.username
       flash[:notice] = "Now following #{name}."
-      redirect "/"
+      redirect request.referrer
     else
       # local feed... redirect to that user's profile
       flash[:notice] = "Now following #{f.author.username}."
-      redirect "/users/#{f.author.username}"
+      redirect request.referrer
     end
   end
 
@@ -485,6 +496,20 @@ class Rstatus < Sinatra::Base
     haml :"users/list", :locals => {:title => "Followers"}
   end
 
+  get '/updates' do
+    @updates = Update.paginate( :page => params[:page], :per_page => params[:per_page] || 20, :order => :created_at.desc)
+
+    if @updates.next_page
+          @next_page = "?#{Rack::Utils.build_query :page => @updates.next_page}"
+    end
+
+    if @updates.previous_page
+          @prev_page = "?#{Rack::Utils.build_query :page => @updates.previous_page}"
+    end
+
+    haml :world
+  end
+
   post '/updates' do
     u = Update.new(:text => params[:text],
                    :referral_id => params[:referral_id], 
@@ -496,11 +521,16 @@ class Rstatus < Sinatra::Base
     current_user.feed.updates << u
     current_user.feed.save
     current_user.save
-
+    
     # tell hubs there is a new entry
     current_user.feed.ping_hubs(url(current_user.feed.url))
 
-    flash[:notice] = "Update created."
+    if params[:text].length >= 1 and params[:text].length <= 140
+      flash[:notice] = "Update created."
+    else
+      flash[:notice] = "Unable to save update."
+    end
+
     redirect "/"
   end
 

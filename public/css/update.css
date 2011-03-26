@@ -673,7 +673,19 @@ body {
 .updates .update .content .date {
   float: left;
 }
-.updates .update .content .links {
+.updates .update .content .in-reply .avatar, .updates .update .content .in-reply .name, .updates .update .content .in-reply .links {
+  display: inline;
+}
+.updates .update .content .in-reply .avatar {
+  float: none;
+  width: 18px;
+  padding: 0 2px;
+}
+.updates .update .content .in-reply .avatar img {
+  width: 18px;
+  margin-bottom: -4px;
+}
+.updates .update .content .end-links {
   float: right;
 }
 .updates .update .content .links, .updates .update .content .date {
@@ -803,7 +815,27 @@ body {
 #fourohfour .update .byline .links, #update .update .byline .links {
   float: right;
 }
-#fourohfour .update .remove-update, #update .update .remove-update {
+#fourohfour .update .in-reply .avatar,
+#update .update .in-reply .avatar,
+#fourohfour .update .in-reply .name,
+#update .update .in-reply .name,
+#fourohfour .update .in-reply .links,
+#update .update .in-reply .links {
+  display: inline;
+}
+#fourohfour .update .in-reply .avatar, #update .update .in-reply .avatar {
+  float: none;
+  width: 18px;
+  padding: 0 2px;
+}
+#fourohfour .update .in-reply .avatar img, #update .update .in-reply .avatar img {
+  width: 18px;
+  margin-bottom: -4px;
+}
+#fourohfour .update .links, #update .update .links {
+  float: right;
+}
+#fourohfour .update .remove-update, #update .update .remove-update, .update .remove-update {
   cursor: pointer;
   float: right;
   border: none;

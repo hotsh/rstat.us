@@ -8,14 +8,35 @@
       .name= "#{update.author.name} (#{update.author.username})"
       .text
         != update.to_html
+
       .date
         %a{:href => update.url}= update.created_at.ago_in_words
-      .links
+
+      -unless update.referral.nil?
+        .in-reply
+          %a{:href => "/updates/#{update.referral.id}"}
+            in reply to
+            .name
+              = update.referral.author.username 
+
+      .end-links
         -# when @timeline is true, this is a list on the user's page
         -unless current_user.nil? or (current_user.author.id == update.author.id)
           %a.share{:href => "/?share=#{update.id}"} share
           |
           %a.reply{:href => "/?reply=#{update.id}"} reply
+        
+        - if current_user and update.author.id == current_user.author.id
+          .remove-update
+            %form{:method => "post", :action => "/updates/#{update.id}"}
+              %input{:type => "hidden", :name => "_method", :value => "delete"}
+              %input.remove-update{:type => "submit", :value => "I Regret This"}
+    
 - if updates.empty?
   .empty
     There's no updates here yet
+
+- content_for :css do
+  %link{:href=>"/css/update.css", :media=>"screen", :rel=>"stylesheet"}
+- content_for :javascript do
+  %script{:src=>"/js/updates.show.js"}
