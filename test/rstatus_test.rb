@@ -288,6 +288,7 @@ class RstatusTest < MiniTest::Unit::TestCase
     log_in(u, a.uid)
     
     fill_in "text", :with => update_text
+    check("tweeted")
     click_button "Share"
     
     assert_match /Update created/, page.body
@@ -298,9 +299,8 @@ class RstatusTest < MiniTest::Unit::TestCase
     Twitter.expects(:configure).never
     u = Factory(:user)
     log_in_no_twitter(u)
-    
+        
     fill_in "text", :with => update_text
-    uncheck("tweeted")
     click_button "Share"
     
     assert_match /Update created/, page.body
