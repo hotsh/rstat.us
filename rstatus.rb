@@ -589,7 +589,11 @@ class Rstatus < Sinatra::Base
   end
 
   get "/login" do
-    haml :"login"
+    if logged_in?
+      redirect '/'
+    else
+      haml :"login"
+    end
   end
 
   post "/login" do
