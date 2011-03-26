@@ -16,7 +16,7 @@
     .website
       Website:
       - web_url = ""
-      - if @author.website[0,7] == "http://"
+      - if @author.website[0,7] == "http://" or @author.website[0,8] == "https://"
         - web_url = @author.website
       - else
         - web_url = "http://#{@author.website}"
