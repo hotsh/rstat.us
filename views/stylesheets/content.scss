@@ -373,6 +373,12 @@ form#update-form {
   }
 }
 
+#fourohfour {
+  .image404 {
+    text-align: center;
+  }
+}
+
 .single-update {
   .update-text-wrap {
     @include rounded(5px);
