@@ -5,11 +5,13 @@ class Update
   belongs_to :feed
   belongs_to :author
 
-  key :text, String
+  key :text, String, :default => ""
+  key :tags, Array, :default => []
 
   attr_accessor :oauth_token, :oauth_secret
 
   validates_length_of :text, :minimum => 1, :maximum => 140
+  before_create :get_tags
 
   key :remote_url
   key :referral_id
@@ -60,11 +62,15 @@ class Update
       :page => opts[:page],
       :per_page => opts[:per_page]
     }
-    where(:text => /##{tag}/).order(['created_at', 'descending']).paginate(popts)
+    where(:tags.in => [tag]).order(['created_at', 'descending']).paginate(popts)
   end
 
   def self.hot_updates
     all(:limit => 6, :order => 'created_at desc')
+  end
+
+  def get_tags
+    self[:tags] = self.text.scan(/#([\w\-\.]*)/).flatten
   end
 
   protected
