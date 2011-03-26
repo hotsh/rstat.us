@@ -111,7 +111,7 @@ class Rstatus < Sinatra::Base
   helpers do
     [:development, :production, :test].each do |environment|
       define_method "#{environment.to_s}?" do
-        return settings.environment == environment.to_sym
+        return settings.environment == environment
       end
     end
   end
