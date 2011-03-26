@@ -6,7 +6,7 @@ class Update
   belongs_to :author
 
   key :text, String
-  key :tweeted, Boolean
+  key :tweeted, Boolean, :default => false
 
   # store in authorization
   #attr_accessor :oauth_token, :oauth_secret
@@ -70,8 +70,8 @@ class Update
   protected
 
   def tweet
-    #return unless ENV['RACK_ENV'] == 'production'
-    if self.author.user.twitter?
+    return if ENV['RACK_ENV'] == 'development'
+    if tweeted?
       begin
         Twitter.configure do |config|
           config.consumer_key = ENV["CONSUMER_KEY"]
