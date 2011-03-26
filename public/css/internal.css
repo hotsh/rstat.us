@@ -593,6 +593,9 @@ next column, or to pull it into the previous column.  */
 .title-face {
   font-family: "Arial Black", Arial, sans-serif;
 }
+.copy-face {
+  font-family: Arial, sans-serif;
+}
 h1,
 h2,
 h3,
@@ -667,9 +670,31 @@ body {
   word-wrap: break-word;
   font-size: 1.1em;
 }
-.updates .update .content .date {
+.updates .update .content .date, .updates .update .content .in-reply {
+  float: left;
+}
+.updates .update .content .in-reply .avatar, .updates .update .content .in-reply .name, .updates .update .content .in-reply .links {
+  display: inline;
+}
+.updates .update .content .in-reply .avatar {
+  float: none;
+  width: 18px;
+  padding: 0 2px;
+}
+.updates .update .content .in-reply .avatar img {
+  width: 18px;
+  margin-bottom: -4px;
+}
+.updates .update .content .end-links {
+  float: right;
+}
+.updates .update .content .links, .updates .update .content .date, .updates .update .content .in-reply {
   font-size: 0.9em;
   color: #aaa;
+  line-height: 2em;
+}
+.updates .update .content .in-reply {
+  margin-left: 0.5em;
 }
 .updates .empty {
   background: white;
@@ -887,6 +912,7 @@ form#update-form:after {
   overflow: hidden;
 }
 form#update-form #update-content textarea {
+  font-family: Arial, sans-serif;
   width: 540px;
   padding: 5px;
   height: 2.5em;
@@ -954,6 +980,21 @@ form#update-form #update-info.negative #update-count {
 #timeline .mention {
   background: #e4feff;
 }
+/* Pagination */
+.pagination {
+  margin-top: 0.5em;
+}
+.pagination .button {
+  margin: 0;
+}
+.pagination #next_button {
+  float: right;
+  margin-right: 0.5em;
+}
+.pagination #prev_button {
+  float: left;
+  margin-left: 0.5em;
+}
 /* Profile */
 #profile {
   position: relative;
@@ -973,6 +1014,16 @@ form#update-form #update-info.negative #update-count {
 #profile #follow .follow-status {
   font-size: 0.8em;
   color: #999;
+}
+#profile textarea {
+  font-family: Arial, sans-serif;
+}
+#profile label {
+  display: inline-block;
+  width: 5em;
+}
+#profile .gravatar {
+  padding-top: 1em;
 }
 /* Login */
 #login-forms {
@@ -1015,7 +1066,10 @@ form#update-form #update-info.negative #update-count {
   border-right: 1px solid #ddd;
   margin-right: 40px;
 }
-#login #username, #login #password, #signup input[type="text"] {
+#login #username, #login #password {
+  width: 200px;
+}
+#signup input[type="text"] {
   width: 200px;
 }
 #login-other {

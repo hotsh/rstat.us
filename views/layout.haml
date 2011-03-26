@@ -9,27 +9,34 @@
             %h2
               rstat.us
         - if current_user
-          #profile
+          #profile.vcard
             %h3 Profile
             .profile-wrap
               .avatar
                 %a{:href=>"/users/#{current_user.username}"}
-                  %img{:alt => "avatar", :src => (current_user.author.avatar_url ||= "asdfasdf")}/
+                  %img.photo{:alt => "avatar", :src => (current_user.author.avatar_url ||= "asdfasdf")}/
               .userinfo
-                .name
-                  %a{:href=>"/users/#{current_user.username}"}
+                .nickname
+                  %a.url{:href=>"/users/#{current_user.username}"}
                     = current_user.username
                 .stats
                   .following
-                    Following: <a href="/users/#{current_user.username}/following">#{current_user.following.length}</a>
+                    Following:
+                    %a{ :href => "/users/#{current_user.username}/following"}
+                      #{current_user.following.length}
                   .followers
-                    Followers: <a href="/users/#{current_user.username}/followers">#{current_user.followers.length}</a>
+                    Followers: 
+                    %a{ :href => "/users/#{current_user.username}/followers"}
+                      #{current_user.followers.length}
                   .updates
                     Updates: #{current_user.feed.updates.count}
 
           .links
             %a{:href => "/follow"} Would you like to follow someone not on rstat.us?
-        
+
+          .links
+            %a{:href => "/feeds/#{current_user.feed.id}.atom"} Atom
+
           .logout
             %a{:href => "/logout"}
               Logout
@@ -37,11 +44,11 @@
       #right
         #content
           != yield_content :top
-          
+
           - if flash[:notice] || flash[:error]
             #flash
               = flash[:notice]
-          
+
           != yield 
-          
+
     != haml :footer

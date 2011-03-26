@@ -1,7 +1,8 @@
 %form#update-form{ :action => "/updates", :method => "POST", :name => "update_form"}
   %h3 What's going on?
   #update-content
-    %textarea#update-textarea{:name => "text"}
+    %textarea#update-textarea{:name => "text"}=@update_text
   #update-info
+    %input#update-referral{:type => 'hidden', :name => 'referral_id', :value => @update_id}
     %input#update-button.button{:type => "submit", :value => "Share"}
     #update-count

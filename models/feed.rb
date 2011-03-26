@@ -6,8 +6,7 @@ class Feed
   include MongoMapper::Document
 
   # Feed url (and an indicator that it is local)
-  key :url, String
-  key :local, Boolean
+  key :remote_url, String
 
   # OStatus subscriber information
   key :verify_token, String
@@ -37,9 +36,10 @@ class Feed
 
     a = f.author
 
-    self.author = Author.create(:name => a.name,
+    self.author = Author.create(:name => a.portable_contacts.display_name,
                                 :username => a.name,
                                 :email => a.email,
+                                :remote_url => a.uri,
                                 :image_url => avatar_url)
 
     self.hubs = f.hubs
@@ -67,12 +67,26 @@ class Feed
     end
   end
 
-  def ping_hubs
-    OPub::Publisher.new(url, hubs).ping_hubs
+  # Pings hub
+  # needs absolute url for feed to give to hub for callback
+  def ping_hubs(feed_url)
+    OPub::Publisher.new(feed_url, hubs).ping_hubs
   end
 
-  def update_entries(atom_xml, callback_url, signature)
-    sub = OSub::Subscription.new(callback_url, self.url, self.secret)
+  def local?
+    url.start_with?("/")
+  end
+
+  def url
+    if remote_url.nil?
+      "/feeds/#{id}"
+    else
+      remote_url
+    end
+  end
+
+  def update_entries(atom_xml, callback_url, feed_url, signature)
+    sub = OSub::Subscription.new(callback_url, feed_url, self.secret)
 
     if sub.verify_content(atom_xml, signature)
       os_feed = OStatus::Feed.from_string(atom_xml)
@@ -90,12 +104,8 @@ class Feed
     save
   end
 
-  # Generates and stores the absolute local url
-  def generate_url(base_uri)
-    self.url = base_uri + "/feeds/#{id}.atom"
-    save
-  end
-
+  # create atom feed
+  # need base_uri since urls outgoing should be absolute
   def atom(base_uri)
     # Create the OStatus::PortableContacts object
     poco = OStatus::PortableContacts.new(:id => author.id,
@@ -109,7 +119,7 @@ class Feed
                                  :portable_contacts => poco)
 
     # Gather entries as OStatus::Entry objects
-    entries = updates.sort{|a, b| b.created_at <=> a.created_at}.map do |update|
+    entries = updates.to_a.sort{|a, b| b.created_at <=> a.created_at}.map do |update|
       OStatus::Entry.new(:title => update.text,
                          :content => update.text,
                          :updated => update.updated_at,

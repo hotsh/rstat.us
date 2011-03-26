@@ -7,9 +7,13 @@
       %li
         %a{:href=>"/home"}
           Home
+      - unless logged_in?   
+        %li
+          %a{:href=>"/login"}
+            Login/Signup
       %li
-        %a{:href=>"/login"}
-          Login/Signup
+        %a{:href=>"/contact"}
+          Contact
       %li
         %a{:href=>"/open_source"}
           Open Source

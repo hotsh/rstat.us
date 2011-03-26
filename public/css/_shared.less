@@ -23,6 +23,10 @@
   font-family: "Arial Black", Arial, sans-serif;
 }
 
+.copy-face {
+  font-family: Arial, sans-serif;
+}
+
 h1,h2,h3,h4,h5 {
   .title-face;
 }
@@ -82,11 +86,40 @@ body {
         word-wrap: break-word;
         font-size: 1.1em;
       }
-      .date {
+      .date, .in-reply {
+        float: left
+      }
+
+      .in-reply  {
+        .avatar, .name, .links {
+         display: inline;
+        }
+
+        .avatar {
+          float: none;
+          width: 18px;
+          padding: 0 2px;
+          img {
+            width: 18px;
+            margin-bottom: -4px;
+          }
+        }
+      }
+
+      .end-links {
+        float: right;
+      }
+      .links, .date, .in-reply {
       	font-size: 0.9em;
       	color: #aaa;
+        line-height: 2em;
+      }
+      .in-reply {
+        margin-left: 0.5em;
       }
     }
+
+
   }
   
   .empty {

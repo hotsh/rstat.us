@@ -1,0 +1,2 @@
+$(document).ready ->
+  $("#pitch").equalHeights()

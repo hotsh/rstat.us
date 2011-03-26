@@ -4,7 +4,7 @@ require 'rack/test'
 require 'yaml'
 require 'database_cleaner'
 require 'factory_girl'
-
+require 'mocha'
 require_relative 'factories'
 
 require_relative '../rstatus'
@@ -30,6 +30,7 @@ module TestHelper
   end
 
   def log_in(u, uid = 12345)
+    Author.any_instance.stubs(:valid_gravatar?).returns(:false)
     OmniAuth.config.add_mock(:twitter, {
       :uid => uid,
       :user_info => {

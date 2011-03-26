@@ -6,7 +6,7 @@ Factory.sequence :update_text do |i|
 end
 
 Factory.define :update do |u|
-  u.text Factory.next(:update_text)
+  u.text { Factory.next(:update_text) }
 end
 
 Factory.sequence :usernames do |i|
@@ -18,7 +18,7 @@ Factory.sequence :emails do |i|
 end
 
 Factory.define :user do |u|
-  u.username Factory.next(:usernames)
+  u.username { Factory.next(:usernames) }
   u.author {|a| Factory(:author, :username => a.username) }
 end
 
@@ -27,14 +27,14 @@ Factory.sequence :integer do |i|
 end
 
 Factory.define :authorization do |a|
-  a.uid Factory.next(:integer)
+  a.uid { Factory.next(:integer) }
   a.provider "twitter"
   a.association :user
 end
 
 Factory.define :author do |a|
   a.username "user"
-  a.email Factory.next(:emails)
+  a.email { Factory.next(:emails) }
   a.website "http://example.com"
   a.name "Something"
   a.bio "Hi, I do stuff."

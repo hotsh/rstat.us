@@ -6,4 +6,12 @@
 
 != haml :_navigation
 #replies.updates
-  != haml :_updates, :locals => {:updates =>  current_user.at_replies.to_a.sort{|a, b| b.created_at <=> a.created_at }}
+  != haml :_updates, :locals => {:updates =>  @replies}
+  %nav.pagination
+    - unless @prev_page.nil?
+      %a.button{:href => @prev_page, :id => "prev_button"}
+        &laquo; Previous
+
+    - unless @next_page.nil?
+      %a.button{:href => @next_page, :id => "next_button"}
+        Next &raquo;

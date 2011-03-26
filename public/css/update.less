@@ -22,17 +22,46 @@
     .byline {
       .clearfix;
       padding: 1em;
+      a {
+        padding-right: 0.2em;
+      }
       .update-date, .avatar, .name {
-        float: left;
-        padding-right: 5px;
+        display: inline;
       }
       .avatar {
+        float: none;
+        width: 18px;
+        padding: 0 2px;
         img { 
-          height: 18px;
+          width: 18px;
+          margin-bottom: -4px;
+        }
+      }
+			
+			.links {
+        float: right;
+      }	
+    }
+		  
+    .in-reply	 {
+      .avatar, .name, .links {
+        display: inline;
+      }
+      .avatar {
+        float: none;
+        width: 18px;
+        padding: 0 2px;
+        img { 
+          width: 18px;
+          margin-bottom: -4px;
         }
       }
     }
-    
+  
+    .links {
+      float: right;
+    }	
+
     .remove-update {
       cursor: pointer;
       float: right;

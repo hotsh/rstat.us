@@ -69,6 +69,9 @@
             .updates
               %h3 Recent updates
               != haml :_updates, :locals => {:updates => Update.hot_updates}
+              .world-link
+                %a{:href => "/updates"}
+                  more...
               %h4 
                 %a{:href => "/login"}
                   Join the conversation

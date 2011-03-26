@@ -6,14 +6,22 @@ class User
 
   # Make the username required
   # However, this will break it when email authorization is used
-  key :username, String, :unique => true
+  key :username, String #, :unique => true
   key :perishable_token, String
+
+  key :email, String #, :unique => true, :allow_nil => true
+
+  # eff you mongo_mapper.
+  validates_uniqueness_of :email, :allow_nil => :true 
+  validates_uniqueness_of :username, :allow_nil => :true 
 
   belongs_to :author
   belongs_to :feed
 
-  def finalize(base_uri)
-    create_feed(base_uri)
+  after_create :finalize
+
+  def finalize
+    create_feed
     follow_yo_self
     reset_perishable_token
   end
@@ -25,10 +33,11 @@ class User
 
   def reset_perishable_token
     self.perishable_token = nil
+    save
   end
 
   def url
-    feed.local ? "/users/#{feed.author.username}" : feed.author.url
+    feed.local? ? "/users/#{feed.author.username}" : feed.author.url
   end
 
   key :following_ids, Array
@@ -40,16 +49,22 @@ class User
   # follow takes a url
   def follow! feed_url
     f = Feed.first(:url => feed_url)
+
+    # local feed?
+    if f.nil? and feed_url.start_with?("/")
+      feed_id = feed_url[/^\/feeds\/(.+)$/,1]
+      f = Feed.first(:id => feed_id)
+    end
+
     if f.nil?
-      f = Feed.create(:url => feed_url,
-                      :local => false)
+      f = Feed.create(:remote_url => feed_url)
       f.populate
     end
 
     following << f
     save
 
-    if f.local
+    if f.local?
       followee = User.first(:author_id => f.author.id)
       followee.followers << self.feed
       followee.save
@@ -62,7 +77,7 @@ class User
   def unfollow! followed_feed
     following_ids.delete(followed_feed.id)
     save
-    if followed_feed.local
+    if followed_feed.local?
       followee = User.first(:author_id => followed_feed.author.id)
       followee.followers_ids.delete(self.feed.id)
       followee.save
@@ -70,7 +85,14 @@ class User
   end
 
   def following? feed_url
-    f = Feed.first(:url => feed_url)
+    f = Feed.first(:remote_url => feed_url)
+
+    # local feed?
+    if f.nil? and feed_url[0] == "/"
+      feed_id = feed_url[/^\/feeds\/(.+)$/,1]
+      f = Feed.first(:id => feed_id)
+    end
+
     if f == nil
       false
     else
@@ -80,16 +102,20 @@ class User
 
   timestamps!
 
-  def timeline
-    following.map(&:updates).flatten
+  def timeline(opts)
+    popts = {
+      :page => opts[:page],
+      :per_page => opts[:per_page]
+    }
+    Update.where(:author_id => following.map(&:author_id)).order(['created_at', 'descending']).paginate(popts)
   end
 
-  def at_replies
-    Update.all(:text => /^@#{username} /)
-  end
-
-  def dm_replies
-    Update.all(:text => /^d #{username} /)
+  def at_replies(opts)
+    popts = {
+      :page => opts[:page],
+      :per_page => opts[:per_page]
+    }
+    Update.where(:text => /^@#{username} /).order(['created_at', 'descending']).paginate(popts)
   end
 
   key :status
@@ -111,13 +137,10 @@ class User
 
   private
 
-  def create_feed(base_uri)
+  def create_feed()
     f = Feed.create(
-      :author => author,
-      :local => true
+      :author => author
     )
-    f.generate_url(base_uri)
-    f.save
 
     self.feed = f
     save

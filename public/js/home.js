@@ -1,3 +1,5 @@
-$(document).ready(function() {
-  $('#pitch').equalHeights();
-})
+(function() {
+  $(document).ready(function() {
+    return $("#pitch").equalHeights();
+  });
+}).call(this);

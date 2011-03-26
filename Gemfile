@@ -19,9 +19,12 @@ gem "rdiscount"
 gem "ostatus"
 gem "osub"
 gem "opub"
+gem "redfinger"
 gem "nokogiri", "= 1.4.4"
+gem "newrelic_rpm"
 
 group :development, :test do
+  gem 'coffee-script'
   gem 'rack-test'
   gem "database_cleaner"
   gem "factory_girl"
@@ -29,4 +32,5 @@ group :development, :test do
   gem "minitest", :platforms => :ruby_18
   gem "rocco"
   gem "pygmentize"
+  gem "mocha"
 end

@@ -18,7 +18,6 @@ class Authorization
       user = User.create(:author => author,
                          :username => author.username
                         )
-      user.finalize(base_uri)
     end
 
     a = new(:user => user, 

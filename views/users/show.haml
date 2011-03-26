@@ -1,21 +1,25 @@
-#profile
-  %h3= @author.name
-  .username
+#profile.vcard
+  %h3.fn= @author.name
+  .nickname
     @#{@author.username}
-
-  - unless @author.email.blank?
-    .email
-      Email:
-      %a{:href => "mailto:#{@author.email}"}
-        #{@author.email}
-
+  .following
+    Following: 
+    %a{:href => "/users/#{@author.username}/following"} 
+      #{@author.user.following.length}
+  .followers
+    Followers:
+    %a{:href => "/users/#{@author.username}/followers"}
+      #{@author.user.followers.length}
   - unless @author.website.blank?
     .website
       Website:
-      %a{:href => @author.website}
-        #{@author.website}
+      %a.url{:rel => "me", :href => @author.website}
+        - if @author.website[0,7] == "http://"
+          #{@author.website}
+        - else
+          http://#{@author.website}
 
-  %p= @author.bio
+  %p.note= @author.bio
 
   - if current_user and @author.user == current_user
     %a{:href=>"/users/#{current_user.username}/edit"}
@@ -24,13 +28,27 @@
     #follow
       - if current_user and current_user.following? @author.feed.url
         .negative
-          %a.button{:href => "/users/#{@author.username}/unfollow"}
-            Unfollow
+          %form{:method => "post", :action => "/subscriptions/#{@author.feed.id}"}
+            %input{:type => "hidden", :name => "_method", :value => "delete"}
+              %input.button.unfollow{:type => "submit", :value => "Unfollow", :id => "unfollow-#{@author.feed.id}"}
           .follow-status You are currently following #{@author.username}
       - elsif current_user
-        %a.button{:href => "/users/#{@author.username}/follow"}
-          Follow
+        %form{:method => "post", :action => "/subscriptions"}
+          %input{:type => "hidden", :name => "url", :value => "/feeds/#{@author.feed.id}"}
+            %input.button.follow{:type => "submit", :value => "Follow", :id => "follow-#{@author.feed.id}"}
         .follow-status You are not following #{@author.username}
 
   #updates.updates
-    != haml :_updates, :locals => {:updates => @author.feed.updates.to_a.sort{|a, b| b.created_at <=> a.created_at }}
+    != haml :_updates, :locals => {:updates => @updates}
+
+%nav.pagination
+  - unless @prev_page.nil?
+    %a.button{:href => @prev_page, :id => "prev_button"}
+      &laquo; Previous
+
+  - unless @next_page.nil?
+    %a.button{:href => @next_page, :id => "next_button"}
+      Next &raquo;
+
+- content_for :javascript do
+  %script{:src=>"/js/users.js"}
