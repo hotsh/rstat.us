@@ -1,0 +1,37 @@
+%h1 Browse users
+%div#browse-navigation
+  - "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789".each_char do |c|
+    %a{:href => "/users?#{Rack::Utils.build_query :letter => c}"}
+      = c
+  %a{:href => "/users?#{Rack::Utils.build_query :letter => "other"}"}
+    other
+%ul.user-list
+  - if @users.empty?
+    %li
+      Sorry, no users that match.
+
+  - @users.each_with_index do |user, i|
+    %li.user{:class => i%2 == 0 ? "even" : "odd"}
+      -user_url = "/users/#{user.author.username}"
+      .avatar
+        %a{:href => user_url}
+          %img{:alt => "avatar", :src => user.author.avatar_url}/
+
+      .name
+        %a{:href => user_url}
+          %b
+            = user.author.name
+          %br
+          (#{user.author.username})
+
+%nav.pagination
+  - unless @prev_page.nil?
+    %a.button{:href => @prev_page, :id => "prev_button"}
+      &laquo; Previous
+
+  - unless @next_page.nil?
+    %a.button{:href => @next_page, :id => "next_button"}
+      Next &raquo;
+
+- content_for :javascript do
+  %script{:src=>"/js/users.js"}

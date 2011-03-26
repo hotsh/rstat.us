@@ -62,7 +62,7 @@ class Rstatus < Sinatra::Base
   configure :production do
     require 'newrelic_rpm'
   end
-  
+
 
   # We're using [SendGrid](http://sendgrid.com/) to send our emails. It's really
   # easy; the Heroku addon sets us up with environment variables with all of the
@@ -221,6 +221,34 @@ class Rstatus < Sinatra::Base
 
   get '/users/new' do
     haml :"users/new"
+  end
+
+  get '/users' do
+    params[:page] ||= 1
+    params[:per_page] ||= 20
+    params[:page] = params[:page].to_i
+    params[:per_page] = params[:per_page].to_i
+
+    if params[:letter] == "other"
+      @users = User.where(:username => /^[^a-z0-9]/i)
+    elsif params[:letter]
+      @users = User.where(:username => /^#{params[:letter][0]}/i)
+    else
+      @users = User
+    end
+
+    @users = @users.sort(:username).paginate(:page => params[:page], :per_page => params[:per_page])
+
+    @next_page = nil
+    @prev_page = nil
+
+    @next_page = "?#{Rack::Utils.build_query :page => params[:page] + 1}"
+
+    if params[:page] > 1
+      @prev_page = "?#{Rack::Utils.build_query :page => params[:page] - 1}"
+    end
+
+    haml :"users/index"
   end
 
   post '/users' do
@@ -478,16 +506,16 @@ class Rstatus < Sinatra::Base
     params[:page] = params[:page].to_i
     params[:per_page] = params[:per_page].to_i
     feeds = User.first(:username => params[:name]).followers
-    
+
     @users = feeds.paginate(:page => params[:page], :per_page => params[:per_page])
-	
+
     @next_page = nil
     @prev_page = nil
 
     if params[:page]*params[:per_page] < feeds.count
 	  @next_page = "?#{Rack::Utils.build_query :page => params[:page] + 1}"
     end
-    
+
     if params[:page] > 1
 	  @prev_page = "?#{Rack::Utils.build_query :page => params[:page] - 1}"
     end
@@ -512,7 +540,7 @@ class Rstatus < Sinatra::Base
 
   post '/updates' do
     u = Update.new(:text => params[:text],
-                   :referral_id => params[:referral_id], 
+                   :referral_id => params[:referral_id],
                    :author => current_user.author,
                    :oauth_token => session[:oauth_token],
                    :oauth_secret => session[:oauth_secret])
@@ -528,7 +556,7 @@ class Rstatus < Sinatra::Base
     if params[:text].length >= 1 and params[:text].length <= 140
       flash[:notice] = "Update created."
     else
-      flash[:notice] = "Unable to save update."
+      flash[:notice] = "Your status is too long!"
     end
 
     redirect "/"
@@ -541,7 +569,7 @@ class Rstatus < Sinatra::Base
   end
 
   post '/signup' do
-    u = User.create(:email => params[:email], 
+    u = User.create(:email => params[:email],
                     :status => "unconfirmed")
     u.set_perishable_token
 
