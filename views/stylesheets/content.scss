@@ -159,16 +159,12 @@ form#update-form {
       }
     }
     li.active {
-      background: $highlight;
+      background: $link_color;
       a { 
         color: white;
       }
     }
   }
-}
-
-#timeline .mention {
-  background: $mention;
 }
 
 /* Pagination */
@@ -326,20 +322,17 @@ form#update-form {
         }
       }
 
-      .end-links {
-        float: right;
-      }
-      .end-links, .date, .in-reply {
-      	font-size: 0.9em;
-      	color: #aaa;
-        line-height: 2em;
-      }
       .in-reply {
         margin-left: 0.5em;
       }
     }
-
-
+  }
+  
+  .mention {
+    background: $mention;
+  }
+  .mine {
+    background: $highlight;
   }
   
   .empty {
@@ -435,11 +428,20 @@ form#update-form {
   }	
 }
 
-.update, .single-update {
+.update {
   .remove-update {
     cursor: pointer;
     float: right;
     border: none;
     @include image-replaced('../images/trash.png', 13px, 16px)
+  }
+  
+  .end-links {
+    float: right;
+  }
+  .end-links, .date, .in-reply {
+  	font-size: 0.9em;
+  	color: #aaa;
+    line-height: 2em;
   }
 }
