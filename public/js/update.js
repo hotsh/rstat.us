@@ -23,7 +23,8 @@
       length = textarea.text().length;
       textarea.keypress();
       textarea[0].setSelectionRange(length, length);
-      return textarea.focus();
+      textarea.focus();
+      return window.scrollTo(0, $(textarea).position().top);
     };
     return $(".update").each(function() {
       var update;

@@ -23,7 +23,8 @@ $(document).ready ->
     textarea.keypress()
     textarea[0].setSelectionRange(length,length)
     textarea.focus()
-  
+    window.scrollTo(0, $(textarea).position().top)
+
   $(".update").each ->
     update = $(this)
     
