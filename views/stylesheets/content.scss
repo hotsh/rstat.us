@@ -322,14 +322,6 @@ form#update-form {
         }
       }
 
-      .end-links {
-        float: right;
-      }
-      .end-links, .date, .in-reply {
-      	font-size: 0.9em;
-      	color: #aaa;
-        line-height: 2em;
-      }
       .in-reply {
         margin-left: 0.5em;
       }
@@ -436,11 +428,20 @@ form#update-form {
   }	
 }
 
-.update, .single-update {
+.update {
   .remove-update {
     cursor: pointer;
     float: right;
     border: none;
     @include image-replaced('../images/trash.png', 13px, 16px)
+  }
+  
+  .end-links {
+    float: right;
+  }
+  .end-links, .date, .in-reply {
+  	font-size: 0.9em;
+  	color: #aaa;
+    line-height: 2em;
   }
 }
