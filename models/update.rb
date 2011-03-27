@@ -97,6 +97,7 @@ class Update
         rescue Exception => e
           #I should be shot for doing this.
         end
+
       end
     end
     

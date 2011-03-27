@@ -46,7 +46,7 @@ module TestHelper
     visit '/auth/twitter'
   end
   
-  def log_in_facebook(u, uid = 12345)
+  def log_in_fb(u, uid = 12345)
     Author.any_instance.stubs(:valid_gravatar?).returns(:false)
     OmniAuth.config.add_mock(:facebook, {
       :uid => uid,
