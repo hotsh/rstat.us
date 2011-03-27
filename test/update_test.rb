@@ -52,12 +52,12 @@ class UpdateTest < MiniTest::Unit::TestCase
   
   def test_tweeted_flag_default
     u = Update.new(:text => "This is a message with a #hashtag.")
-    assert_equal false, u.tweeted?
+    assert_equal false, u.twitter?
   end
 
   def test_tweeted_flag
-    u = Update.new(:text => "This is a message with a #hashtag.", :tweeted => true)
-    assert_equal true, u.tweeted?
+    u = Update.new(:text => "This is a message with a #hashtag.", :twitter => true)
+    assert_equal true, u.twitter?
   end
 
 

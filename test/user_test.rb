@@ -39,5 +39,17 @@ class UserTest < MiniTest::Unit::TestCase
     a = Factory.create(:authorization, :user => u)
     assert_equal a, u.twitter
   end
+  
+  def test_user_has_facebook
+    u = Factory.create(:user)
+    a = Factory.create(:authorization, :user => u, :provider => "facebook")
+    assert_equal true, u.facebook?
+  end
+  
+  def test_user_returns_facebook
+    u = Factory.create(:user)
+    a = Factory.create(:authorization, :user => u, :provider => "facebook")
+    assert_equal a, u.facebook
+  end
 
 end

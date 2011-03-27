@@ -294,7 +294,7 @@ class RstatusTest < MiniTest::Unit::TestCase
     a = Factory(:authorization, :user => u)
     log_in(u, a.uid)
     
-    assert_match page.body, /Tweet Me/
+    assert_match page.body, /Twitter/
   end
   
   def test_twitter_send
@@ -305,7 +305,7 @@ class RstatusTest < MiniTest::Unit::TestCase
     log_in(u, a.uid)
     
     fill_in "text", :with => update_text
-    check("tweeted")
+    check("tweet")
     click_button "Share"
     
     assert_match /Update created/, page.body
@@ -319,8 +319,7 @@ class RstatusTest < MiniTest::Unit::TestCase
     log_in(u, a.uid)
     
     fill_in "text", :with => update_text
-    uncheck("tweeted")
-
+    uncheck("tweet")
     click_button "Share"
     
     assert_match /Update created/, page.body
@@ -338,7 +337,7 @@ class RstatusTest < MiniTest::Unit::TestCase
     assert_match /Update created/, page.body
   end
   
-  def add_twitter_to_email_account
+  def add_twitter_to_account
     u = Factory(:user)
     OmniAuth.config.add_mock(:twitter, {
       :uid => uid,
@@ -354,6 +353,28 @@ class RstatusTest < MiniTest::Unit::TestCase
     log_in_no_twitter(u)
     visit "/users/#{u.username}/edit"
     click_button "Add Twitter Account"
+    
+    assert_equal "1234", u.twitter.oauth_token
+    assert_equal "4567", u.twitter.oauth_secret
+  end
+  
+  def add_facebook_to_account
+    u = Factory(:user)
+    OmniAuth.config.add_mock(:facebook, {
+      :uid => uid,
+      :user_info => {
+        :name => "Joe Public",
+        :email => "joe@public.com",
+        :nickname => u.username,
+        :urls => { :Website => "http://rstat.us" },
+        :description => "A description",
+        :image => "/images/something.png"
+      },
+      :credentials => {:token => "1234", :secret => "4567"}
+    })
+    log_in_no_twitter(u)
+    visit "/users/#{u.username}/edit"
+    click_button "Add Facebook Account"
     
     assert_equal "1234", u.twitter.oauth_token
     assert_equal "4567", u.twitter.oauth_secret

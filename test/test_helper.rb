@@ -67,6 +67,24 @@ module TestHelper
   end
 
   
+  def log_in_facebook(u, uid = 12345)
+    Author.any_instance.stubs(:valid_gravatar?).returns(:false)
+    OmniAuth.config.add_mock(:facebook, {
+      :uid => uid,
+      :user_info => {
+        :name => "Joe Public",
+        :email => "jow@public.com",
+        :nickname => u.username,
+        :urls => { :Website => "http://rstat.us" },
+        :description => "A description",
+        :image => "/images/something.png"
+      },
+      :credentials => {:token => "1234", :secret => "4567"}
+    })
+
+    visit '/auth/twitter'
+  end
+  
   def log_in_no_twitter(user)
     User.stubs(:authenticate).returns(user).once
     visit "/login"
