@@ -23,6 +23,8 @@ GEM
       coffee-script-source
       execjs
     coffee-script-source (1.0.1)
+    compass (0.10.6)
+      haml (>= 3.0.4)
     culerity (0.2.15)
     database_cleaner (0.6.6)
     execjs (0.1.0)
@@ -47,6 +49,7 @@ GEM
       mime-types (~> 1.16)
       treetop (~> 1.4.8)
     mime-types (1.16)
+    mocha (0.9.12)
     mongo (1.2.4)
       bson (>= 1.2.4)
     mongo_mapper (0.8.6)
@@ -58,6 +61,7 @@ GEM
     multipart-post (1.1.0)
     mustache (0.99.3)
     net-ldap (0.1.1)
+    newrelic_rpm (2.13.4)
     nokogiri (1.4.4)
     oa-basic (0.2.0)
       multi_json (~> 0.0.2)
@@ -123,6 +127,10 @@ GEM
       rack (>= 1.0)
     rake (0.8.7)
     rdiscount (1.6.8)
+    redfinger (0.1.0)
+      hashie
+      nokogiri (>= 1.4.0)
+      rest-client (>= 1.5.0)
     rest-client (1.6.1)
       mime-types (>= 1.16)
     rocco (0.6)
@@ -134,6 +142,7 @@ GEM
       ruby-openid (>= 2.1.7)
     rubyntlm (0.1.1)
     rubyzip (0.9.4)
+    sass (3.1.0.alpha.252)
     selenium-webdriver (0.1.4)
       childprocess (>= 0.1.7)
       ffi (>= 1.0.7)
@@ -170,11 +179,14 @@ DEPENDENCIES
   bson_ext
   capybara
   coffee-script
+  compass
   database_cleaner
   factory_girl
   haml
   i18n
+  mocha
   mongo_mapper
+  newrelic_rpm
   nokogiri (= 1.4.4)
   omniauth
   opub
@@ -185,7 +197,9 @@ DEPENDENCIES
   rack-flash
   rack-test
   rdiscount
+  redfinger
   rocco
+  sass
   sinatra
   sinatra-content-for
   time-ago-in-words

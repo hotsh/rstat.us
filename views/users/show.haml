@@ -1,6 +1,6 @@
-#profile
-  %h3= @author.name
-  .username
+#profile.vcard
+  %h3.fn= @author.name
+  .nickname
     @#{@author.username}
   .following
     Following: 
@@ -10,18 +10,22 @@
     Followers:
     %a{:href => "/users/#{@author.username}/followers"}
       #{@author.user.followers.length}
+  .updates
+    Updates: #{@author.user.feed.updates.count}
   - unless @author.website.blank?
     .website
       Website:
-      %a{:href => @author.website}
-        #{@author.website}
+      - web_url = ""
+      - if @author.website[0,7] == "http://" or @author.website[0,8] == "https://"
+        - web_url = @author.website
+      - else
+        - web_url = "http://#{@author.website}"
+      %a.url{:rel => "me", :href => web_url}
+        = web_url
 
-  %p= @author.bio
+  %p.note= @author.bio
 
-  - if current_user and @author.user == current_user
-    %a{:href=>"/users/#{current_user.username}/edit"}
-      Edit your profile
-  - else
+  - unless current_user and @author.user == current_user
     #follow
       - if current_user and current_user.following? @author.feed.url
         .negative
@@ -36,7 +40,7 @@
         .follow-status You are not following #{@author.username}
 
   #updates.updates
-    != haml :_updates, :locals => {:updates => @updates}
+    != haml :_updates, :locals => {:updates => @updates, :no_highlight => true}
 
 %nav.pagination
   - unless @prev_page.nil?

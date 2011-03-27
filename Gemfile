@@ -16,7 +16,11 @@ gem "rdiscount"
 gem "ostatus"
 gem "osub"
 gem "opub"
+gem "redfinger"
 gem "nokogiri", "= 1.4.4"
+gem "newrelic_rpm"
+gem "sass"
+gem "compass"
 
 group :development, :test do
   gem 'coffee-script'
@@ -26,4 +30,5 @@ group :development, :test do
   gem "capybara"
   gem "rocco"
   gem "pygmentize"
+  gem "mocha"
 end

@@ -73,7 +73,7 @@ class Feed
     OPub::Publisher.new(feed_url, hubs).ping_hubs
   end
 
-  def local
+  def local?
     url.start_with?("/")
   end
 
