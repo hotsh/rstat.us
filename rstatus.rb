@@ -143,13 +143,13 @@ class Rstatus < Sinatra::Base
   ############################
   before do
     @error_bar = ""
-    if current_user && (current_user.username.nil? or current_user.username.empty?)       
+    if current_user && (current_user.username.nil? or current_user.username.empty? or current_user.username.match(/profile.php/).nil?)
       @error_bar = haml :_username_error, :layout => false
     end
   end
 
   get '/reset-username' do
-    unless current_user.nil? || current_user.username.empty?
+    unless current_user.nil? || current_user.username.empty? || current_user.username.match(/profile.php/).nil?
       redirect "/"
     end
       
@@ -239,7 +239,7 @@ class Rstatus < Sinatra::Base
       session[:oauth_token] = auth['credentials']['token']
       session[:oauth_secret] = auth['credentials']['secret']
 
-      if User.first :username => auth['user_info']['nickname']  or auth['user_info']['nickname'] =~ /profile[.]php[?]id=/
+      if User.first :username => auth['user_info']['nickname'] or !auth['user_info']['nickname'].match(/profile.php/).nil?
         #we have a username conflict!
         flash[:notice] = "Sorry, someone has that name."
         redirect '/users/new'
