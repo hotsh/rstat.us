@@ -29,11 +29,8 @@ class Author
   end
 
   def url
-    if remote_url.nil?
-      "/users/#{username}"
-    else
-      remote_url
-    end
+    return remote_url if remote_url
+    "/users/#{username}"
   end
 
   def avatar_url
