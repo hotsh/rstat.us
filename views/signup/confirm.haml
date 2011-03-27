@@ -1,14 +1,15 @@
-%h1 Finish Signup
-
-%p Okay! Almost done. Pick a username and a password, please: 
-
-%form{:action => "/confirm", :method => "POST"}
-  Username: 
-  %input{:type => "text", :name => "username", :value => "#{@valid_username ? @username : ''}"}
-  %br/
-  Password
-  %input{:type => "password", :name => "password"}
-  %br/
-  %input{:type => "hidden", :name => "perishable_token", :value => @user.perishable_token}
-  %br/
-  %input{:type => "submit", :value => "submit"}
+#login-forms
+  #confirm
+    %form{:action => "/confirm", :method => "POST"}
+      %h1 Finish Signup
+      %p Okay! Almost done. Pick a username and a password, please:
+      .form-item
+        %label{:for => "username"} Username
+        %input{:id => "username", :name => "username", :size => 30, :type => "text" :value => "#{@valid_username ? @username : ''}"}
+      .form-item
+        %label{:for => "password"} Password
+        %input{:id => "password", :name => "password", :size => 30, :type => "password"}
+      .form-item
+        %input{:type => "hidden", :name => "perishable_token", :value => @user.perishable_token}
+      .form-item
+        %input{:value => "Finish", :type => "submit", :class => "button"}
