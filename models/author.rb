@@ -1,4 +1,6 @@
 class Author
+  GRAVATAR_HOST = "gravatar.com"
+  
   include MongoMapper::Document
   
   key :username, String
@@ -25,10 +27,6 @@ class Author
     )
   end
 
-  def self.gravatar_host
-    "gravatar.com"
-  end
-
   def url
     if remote_url.nil?
       "/users/#{username}"
@@ -49,22 +47,17 @@ class Author
   end
 
   def valid_gravatar?
-    uri = URI.parse(gravatar_url)
-    result = Net::HTTP.start(Author.gravatar_host, 80) do |http|
-      res = http.head(uri.path + "?" +  uri.query ) # Use HEAD instead of GET for a faster response
-
-      if res.class == Net::HTTPNotFound
-        return false
-      else
-        return true
-      end
+    Net::HTTP.start(GRAVATAR_HOST, 80) do |http|
+      # Use HEAD instead of GET for SPEED!
+      return http.head(gravatar_path).is_a?(Net::HTTPOK)
     end
   end
 
   def gravatar_url
-    path = "/avatar/" + Digest::MD5.hexdigest(email) + "?s=48&r=r&d=404"
-    "http://#{Author.gravatar_host}#{path}"
+    "http://#{GRAVATAR_HOST}#{gravatar_path}"
+  end
+
+  def gravatar_path
+    "/avatar/#{Digest::MD5.hexdigest(email)}?s=48&r=r&d=404"
   end
 end
-
-
