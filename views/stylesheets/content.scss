@@ -130,6 +130,7 @@ form#update-form {
       padding: 5px;
       height: 2.5em;
       margin: 0;
+      border: solid 1px #CCCCCC;
     }    
   }
 
@@ -224,9 +225,21 @@ form#update-form {
       color: #999;
     }
   }
+  
+  .bio {
+    margin: 0.5em 0em;
+  }
+  
+  input {
+    border: solid 1px #CCCCCC;
+	margin: 0.2em;
+  }
 
   textarea {
     @include copy-face;
+    border: solid 1px #CCCCCC;
+	width: 30em;
+	height: 10em;
   }
 
   label {
