@@ -243,11 +243,9 @@ class Rstatus < Sinatra::Base
         #we have a username conflict!
         flash[:notice] = "Sorry, someone has that name."
         redirect '/users/new'
-        return
       else
         # Redirect to confirm page to verify username and provide email
         redirect '/users/confirm'
-        return
       end
     end
 
@@ -383,7 +381,6 @@ class Rstatus < Sinatra::Base
     unless current_user.following? feed.url
       flash[:notice] = "You're not following #{@author.username}."
       redirect request.referrer
-      return
     end
 
     #unfollow them!
@@ -422,8 +419,6 @@ class Rstatus < Sinatra::Base
       flash[:notice] = "You're already following #{feed.author.username}."
 
       redirect request.referrer
-
-      return
     end
 
     # follow them!
@@ -431,7 +426,6 @@ class Rstatus < Sinatra::Base
     unless f
       flash[:notice] = "There was a problem following #{params[:url]}."
       redirect request.referrer
-      return
     end
 
     if not f.local?
@@ -509,7 +503,7 @@ class Rstatus < Sinatra::Base
         flash[:notice] = "Profile could not be saved!"
       end
       redirect "/users/#{params[:username]}"
-      return
+
     else
       redirect "/users/#{params[:username]}"
     end
