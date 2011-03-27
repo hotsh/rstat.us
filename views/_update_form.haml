@@ -6,11 +6,11 @@
     %input#update-referral{:type => 'hidden', :name => 'referral_id', :value => @update_id}
     - if current_user.twitter?
       %span
-        %input{:type => "checkbox", :name => "tweet", :id => "tweet", :checked => "checked"}
+        %input{:type => "checkbox", :name => "tweet", :id => "tweet", :checked => "checked", :value => "1"}
         %label{:for => "tweet"} Twitter
     - if current_user.facebook?
       %span
-        %input{:type => "checkbox", :name => "facebook", :id => "facebook", :checked => "checked"}
+        %input{:type => "checkbox", :name => "facebook", :id => "facebook", :checked => "checked", :value => "1"}
         %label{:for => "facebook"} Facebook
     %input#update-button.button{:type => "submit", :value => "Share"}
     #update-count

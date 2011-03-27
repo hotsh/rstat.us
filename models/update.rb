@@ -75,7 +75,7 @@ class Update
   def send_to_external_accounts
     return if ENV['RACK_ENV'] == 'development'
     if author.user
-      if twitter? && author.user.twitter?
+      if self.twitter? && author.user.twitter?
         begin
           Twitter.configure do |config|
             config.consumer_key = ENV["CONSUMER_KEY"]
@@ -90,7 +90,7 @@ class Update
         end
       end
       
-      if facebook? && author.user.facebook?
+      if self.facebook? && author.user.facebook?
         begin
           user = FbGraph::User.me(author.user.facebook.token)
           user.feed!(:message => text)

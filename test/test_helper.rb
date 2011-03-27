@@ -61,10 +61,10 @@ module TestHelper
       :credentials => {:token => "1234", :secret => "4567"}
     })
 
-    visit '/auth/twitter'
+    visit '/auth/facebook'
   end
   
-  def log_in_no_twitter(user)
+  def log_in_email(user)
     User.stubs(:authenticate).returns(user).once
     visit "/login"
     within("form#login_form") do
