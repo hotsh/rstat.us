@@ -25,10 +25,7 @@
 
   %p.note= @author.bio
 
-  - if current_user and @author.user == current_user
-    %a{:href=>"/users/#{current_user.username}/edit"}
-      Edit your profile
-  - else
+  - unless current_user and @author.user == current_user
     #follow
       - if current_user and current_user.following? @author.feed.url
         .negative
