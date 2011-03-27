@@ -15,12 +15,22 @@ body {
   padding-bottom: 2em;
 }
 
-#flash {
+#flash, #error {
   padding: 0.75em;
   font-size: 1.2em;
   color: white;
   background: #aaa;
   margin-bottom: 1em;
+}
+
+#error {
+  background: #990000;
+  p {
+    margin: 0.5em 0;
+  }
+  a {
+    color: #66ffff;
+  }
 }
 
 /* Homepage */
