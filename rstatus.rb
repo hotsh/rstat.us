@@ -503,12 +503,11 @@ class Rstatus < Sinatra::Base
   put "/users/:username" do
     @user = User.first :username => params[:username]
     if @user == current_user
-      @user.author.name    = params[:name]
-      @user.author.email   = params[:email]
-      @user.author.website = params[:website]
-      @user.author.bio     = params[:bio]
-      @user.author.save
-      flash[:notice] = "Profile saved!"
+      if @user.edit_user_profile(params)
+        flash[:notice] = "Profile saved!"
+      else
+        flash[:notice] = "Profile could not be saved!"
+      end
       redirect "/users/#{params[:username]}"
       return
     else
