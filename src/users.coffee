@@ -1,3 +1,3 @@
 $(document).ready ->
   $(".unfollow").click ->
-    confirm "Are you sure you want to unfollow this this user?"
+    confirm "Are you sure you want to unfollow this user?"
