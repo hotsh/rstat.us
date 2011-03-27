@@ -209,10 +209,10 @@ class Rstatus < Sinatra::Base
     haml :index, :layout => false
   end
   
-  get '/screen.css' do
-    cache_control :public, :must_revalidate, :max_age => 360
-    scss(:screen, Compass.sass_engine_options)
-  end
+  # get '/screen.css' do
+  #   cache_control :public, :must_revalidate, :max_age => 360
+  #   scss(:screen, Compass.sass_engine_options)
+  # end
 
   get '/replies' do
     if logged_in?
