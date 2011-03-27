@@ -1,8 +1,8 @@
 #login-forms
   #login
     %form{:action => "/login", :method => "POST"}
-      %h3 Log In
-      %p Sign in with your rstat.us email and password
+      %h3 Log In or Sign up
+      %p One form, no problem: Put in a username and password, and we'll take care of the rest.
       .form-item
         %label{:for => "username"} Username
         %input{:id => "username", :name => "username", :size => 30, :type => "text"}
@@ -13,25 +13,14 @@
         %input{:value => "Log in", :type => "submit", :class => "button"}
 
   #signup
-    %form{:action => "/signup", :method => "POST"}
-      %h3 Sign Up
-      %p New to rstat.us? Create a new account with your email address:
-      .form-item
-        %label{:for => "email"} Email
-        %input{:name => "email", :size => 30, :type => "text"}
-      .form-item
-        %input{:type => "Submit", :value => "Sign up", :class => "button"}
-
-#login-other
-  %h3 Want to sign in with Twitter or Facebook? 
-  %p Use the links below:
-  .options
+    %h3 Want to sign in with Twitter or Facebook? 
+    %p Use the links below:
     .twitter
       %a.button{:href=>'/auth/twitter'}
         %span.icon.twitter
         Twitter
+    %br/
     .facebook
       %a.button{:href=>'/auth/facebook'}
         %span.icon.facebook
         Facebook
-  

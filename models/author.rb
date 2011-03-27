@@ -39,7 +39,7 @@ class Author
 
     DEFAULT_AVATAR
   end
-  
+
   def display_name
     return username if name.nil? || name.empty?
     name
@@ -47,14 +47,17 @@ class Author
 
   def valid_gravatar?
     return unless email
-    
+
+    ret = nil
     Net::HTTP.start(GRAVATAR_HOST, 80) do |http|
       # Use HEAD instead of GET for SPEED!
-      return http.head(gravatar_path).is_a?(Net::HTTPOK)
+      ret = http.head(gravatar_path).is_a?(Net::HTTPOK)
     end
+    return ret
   end
 
   def gravatar_url
+    return DEFAULT_AVATAR if email.nil?
     "http://#{GRAVATAR_HOST}#{gravatar_path}"
   end
 

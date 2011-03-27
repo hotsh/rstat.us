@@ -138,6 +138,7 @@ class User
   private
 
   def create_feed()
+    self.author = Author.create :name => "", :username => username if author.nil?
     f = Feed.create(
       :author => author
     )
