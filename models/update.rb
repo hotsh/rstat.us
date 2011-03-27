@@ -71,6 +71,11 @@ class Update
 
   def tweet
     return unless ENV['RACK_ENV'] == 'production'
+    
+    # suppress crossposting of @replies
+    if text[0] == '@'
+      return
+    end
 
     begin
       Twitter.configure do |config|
