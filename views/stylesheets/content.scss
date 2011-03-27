@@ -29,7 +29,7 @@
         }
       }
       .userinfo {
-        .name {
+        .nickname {
         	font-weight: bold;
         	font-size: 1.25em;
         }
@@ -276,7 +276,31 @@ form#update-form {
     }
   }
 
+  #confirm {
+    float: left;
+    width: 340px;
+    @include clearfix;
+    label, input {
+      display: block;
+    }
+    label {
+      width: 100px;
+    }
+    input {
+      margin-bottom: 0.75em;
+    }
+  }
+
   #login {
+    padding-right: 30px;
+    border-right: 1px solid #ddd;
+    margin-right: 40px;
+    #username, #password {
+      width: 200px;
+    }
+  }
+
+  #confirm {
     padding-right: 30px;
     border-right: 1px solid #ddd;
     margin-right: 40px;
