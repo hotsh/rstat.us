@@ -395,5 +395,19 @@ class RstatusTest < MiniTest::Unit::TestCase
 
   end
 
+  def test_user_signup
+    u = User.first(:username => "new_user")
+    assert u.nil?
+
+    visit '/login'
+    fill_in "username", :with => "new_user"
+    fill_in "password", :with => "mypassword"
+    click_button "Log in"
+
+    u = User.first(:username => "new_user")
+    refute u.nil?
+    assert User.authenticate("new_user", "mypassword")
+  end
+
 end
 
