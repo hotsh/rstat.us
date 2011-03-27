@@ -1,5 +1,6 @@
 class Author
-  GRAVATAR_HOST = "gravatar.com"
+  DEFAULT_AVATAR = "/images/avatar.png"
+  GRAVATAR_HOST  = "gravatar.com"
   
   include MongoMapper::Document
   
@@ -36,17 +37,15 @@ class Author
   end
 
   def avatar_url
-    return image_url if image_url
+    return image_url    if image_url
+    return gravatar_url if valid_gravatar?
 
-    if email
-      valid_gravatar? ? gravatar_url : "/images/avatar.png"
-    else
-      # Using a default avatar
-      "/images/avatar.png"
-    end
+    DEFAULT_AVATAR
   end
 
   def valid_gravatar?
+    return unless email
+    
     Net::HTTP.start(GRAVATAR_HOST, 80) do |http|
       # Use HEAD instead of GET for SPEED!
       return http.head(gravatar_path).is_a?(Net::HTTPOK)
