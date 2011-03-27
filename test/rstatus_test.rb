@@ -251,18 +251,35 @@ class RstatusTest < MiniTest::Unit::TestCase
   
   def test_user_update_profile_twitter_button
     u = Factory(:user)
-    log_in_no_twitter(u)
+    log_in_email(u)
     visit "/users/#{u.username}/edit"
 
     assert_match page.body, /Add Twitter Account/
   end
   
-  def test_user_update_profile_twitter_button
+  def test_user_update_profile_facebook_button
+    u = Factory(:user)
+    log_in_email(u)
+    visit "/users/#{u.username}/edit"
+
+    assert_match page.body, /Add Facebook Account/
+  end
+  
+  def test_user_profile_with_twitter
     u = Factory(:user)
     a = Factory(:authorization, :user => u, :nickname => "Awesomeo the Great")
     log_in(u, a.uid)
     visit "/users/#{u.username}/edit"
 
+    assert_match page.body, /Awesomeo the Great/
+  end
+  
+  def test_user_profile_with_facebook
+    u = Factory(:user)
+    a = Factory(:authorization, :user => u, :provider => "facebook", :nickname => "Awesomeo the Great")
+    log_in_fb(u, a.uid)
+    visit "/users/#{u.username}/edit"
+    
     assert_match page.body, /Awesomeo the Great/
   end
 
@@ -284,7 +301,7 @@ class RstatusTest < MiniTest::Unit::TestCase
   
   def no_twitter_login
     u = Factory(:user)
-    log_in_no_twitter(u)
+    log_in_email(u)
     assert_match /Login successful/, page.body
     assert_equal current_user, u
   end
@@ -295,6 +312,16 @@ class RstatusTest < MiniTest::Unit::TestCase
     log_in(u, a.uid)
     
     assert_match page.body, /Twitter/
+    assert_equal find_field('tweet').checked?, true
+  end
+  
+  def test_facebook_send_checkbox_present
+    u = Factory(:user)
+    a = Factory(:authorization, :user => u, :provider => "facebook")
+    log_in_fb(u, a.uid)
+    
+    assert_match page.body, /Facebook/
+    assert_equal find_field('facebook').checked?, true
   end
   
   def test_twitter_send
@@ -305,6 +332,44 @@ class RstatusTest < MiniTest::Unit::TestCase
     log_in(u, a.uid)
     
     fill_in "text", :with => update_text
+    check("tweet")
+    click_button "Share"
+    
+    assert_match /Update created/, page.body
+  end
+  
+  def test_facebook_send
+    update_text = "Test Facebook Text"
+    u = Factory(:user)
+    a = Factory(:authorization, :user => u, :provider => "facebook")
+    
+    log_in_fb(u, a.uid)
+        
+    User.any_instance.expects(:facebook?).twice.returns(true)
+    Update.any_instance.expects(:facebook?).returns(true)
+    
+    FbGraph::User.any_instance.expects(:feed!)
+    
+    fill_in "text", :with => update_text
+    check("facebook")
+    click_button "Share"
+    
+    assert_match /Update created/, page.body
+  end
+  
+  def test_twitter_and_facebook_send
+    update_text = "Test Facebook and Twitter Text"
+    FbGraph::User.any_instance.expects(:feed!)
+    Twitter.expects(:update)
+    
+    u = Factory(:user)
+    Factory(:authorization, :user => u, :provider => "facebook")
+    a = Factory(:authorization, :user => u)
+    
+    log_in(u, a.uid)
+        
+    fill_in "text", :with => update_text
+    check("facebook")
     check("tweet")
     click_button "Share"
     
@@ -325,11 +390,37 @@ class RstatusTest < MiniTest::Unit::TestCase
     assert_match /Update created/, page.body
   end
   
+  def test_facebook_no_send
+    update_text = "Test Facebook Text"
+    FbGraph::User.expects(:me).never
+    u = Factory(:user)
+    a = Factory(:authorization, :user => u, :provider => "facebook")
+    log_in_fb(u, a.uid)
+    
+    fill_in "text", :with => update_text
+    uncheck("facebook")
+    click_button "Share"
+    
+    assert_match /Update created/, page.body
+  end
+  
   def test_no_twitter_no_send
     update_text = "Test Twitter Text"
     Twitter.expects(:update).never
     u = Factory(:user)
-    log_in_no_twitter(u)
+    log_in_email(u)
+        
+    fill_in "text", :with => update_text
+    click_button "Share"
+    
+    assert_match /Update created/, page.body
+  end
+  
+  def test_no_facebook_no_send
+    update_text = "Test Facebook Text"
+    FbGraph::User.expects(:me).never
+    u = Factory(:user)
+    log_in_email(u)
         
     fill_in "text", :with => update_text
     click_button "Share"
@@ -350,7 +441,7 @@ class RstatusTest < MiniTest::Unit::TestCase
       },
       :credentials => {:token => "1234", :secret => "4567"}
     })
-    log_in_no_twitter(u)
+    log_in_email(u)
     visit "/users/#{u.username}/edit"
     click_button "Add Twitter Account"
     
@@ -372,7 +463,7 @@ class RstatusTest < MiniTest::Unit::TestCase
       },
       :credentials => {:token => "1234", :secret => "4567"}
     })
-    log_in_no_twitter(u)
+    log_in_email(u)
     visit "/users/#{u.username}/edit"
     click_button "Add Facebook Account"
     

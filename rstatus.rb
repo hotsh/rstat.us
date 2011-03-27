@@ -592,8 +592,8 @@ class Rstatus < Sinatra::Base
   end
 
   post '/updates' do
-    do_tweet = !params[:tweet].nil? || params[:tweet] == "1"
-    do_facebook = !params[:facebook].nil? || params[:facebook] == "1"
+    do_tweet = params[:tweet] == "1"
+    do_facebook = params[:facebook] == "1"
     u = Update.new(:text => params[:text],
                    :referral_id => params[:referral_id],
                    :author => current_user.author,
