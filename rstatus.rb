@@ -159,13 +159,11 @@ class Rstatus < Sinatra::Base
   post '/reset-username' do
     exists = User.first :username => params[:username]
     if !params[:username].nil? && !params[:username].empty? && exists.nil?
-      user = current_user
-      user.username = params[:username]
-      user.author.username = params[:username]
-      user.save
-      user.author.save
-
-      flash[:notice] = "Thank you for updating your username"
+      if current_user.reset_username(params)
+        flash[:notice] = "Thank you for updating your username"
+      else
+        flash[:notice] = "Your username could not be updated"
+      end
       redirect "/"
     else
       flash[:notice] = "Sorry, that username has already been taken or is not valid. Please try again."

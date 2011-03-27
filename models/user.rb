@@ -135,6 +135,13 @@ class User
     nil
   end
   
+  def reset_username(params)
+    username = params[:username]
+    author.username = params[:username]
+    return false unless save
+    author.save
+  end
+
   def edit_user_profile(params)
       author.name    = params[:name]
       author.email   = params[:email]
