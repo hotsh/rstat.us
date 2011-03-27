@@ -558,7 +558,7 @@ class Rstatus < Sinatra::Base
 
     if params[:text].length <= 1
       flash[:notice] = "Your status is too short!"
-    elsif params[:text].length >= 140
+    elsif params[:text].length > 140
       flash[:notice] = "Your status is too long!"
     else
       flash[:notice] = "Update created."
