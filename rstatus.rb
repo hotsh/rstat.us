@@ -177,9 +177,8 @@ class Rstatus < Sinatra::Base
   get '/' do
     if logged_in?
       set_params_page
-      set_next_prev_page
-
       @updates = current_user.timeline(params)
+      set_next_prev_page if @updates.total_entries > params[:per_page]
 
       @timeline = true
 
@@ -218,9 +217,8 @@ class Rstatus < Sinatra::Base
   get '/replies' do
     if logged_in?
       set_params_page
-      set_next_prev_page
-
       @replies = current_user.at_replies(params)
+      set_next_prev_page if @replies.total_entries > params[:per_page]
       haml :replies
     else
       haml :index, :layout => false
@@ -711,9 +709,8 @@ class Rstatus < Sinatra::Base
   get "/hashtags/:tag" do
     @hashtag = params[:tag]
     set_params_page
-
-    set_next_prev_page
     @updates = Update.hashtag_search(@hashtag, params)
+    set_next_prev_page if @updates.total_entries > params[:per_page]
     @timeline = true
     @update_text = params[:status]
     haml :dashboard
