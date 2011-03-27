@@ -143,7 +143,7 @@ class Rstatus < Sinatra::Base
   ############################
   before do
     @error_bar = ""
-    if current_user && (current_user.username.nil? or current_user.username.empty? or current_user.username.match(/profile.php/).nil?)
+    if current_user && (current_user.username.nil? or current_user.username.empty?)       
       @error_bar = haml :_username_error, :layout => false
     end
   end
