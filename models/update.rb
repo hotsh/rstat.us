@@ -39,7 +39,7 @@ class Update
         match
       end
     end
-    out.gsub!(/(http[s]?:\/\/\S+[a-zA-Z0-9\/])/, "<a href='\\1'>\\1</a>")
+    out.gsub!(/(http[s]?:\/\/\S+[a-zA-Z0-9\/}])/, "<a href='\\1'>\\1</a>")
     out.gsub!(/(^|\s+)#(\w+)/) do |match|
       "#{$1}<a href='/hashtags/#{$2}'>##{$2}</a>"
     end
