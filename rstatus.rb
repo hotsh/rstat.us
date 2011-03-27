@@ -165,11 +165,13 @@ class Rstatus < Sinatra::Base
 
       haml :dashboard
     else
+      cache_control :public, :must_revalidate, :max_age => 60
       haml :index, :layout => false
     end
   end
 
   get '/home' do
+    cache_control :public, :must_revalidate, :max_age => 60
     haml :index, :layout => false
   end
   
