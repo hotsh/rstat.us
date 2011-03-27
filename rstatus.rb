@@ -174,6 +174,7 @@ class Rstatus < Sinatra::Base
   end
   
   get '/screen.css' do
+    cache_control :public, :must_revalidate, :max_age => 60
     scss(:screen, Compass.sass_engine_options)
   end
 
