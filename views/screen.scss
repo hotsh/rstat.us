@@ -1,3 +1,12 @@
+/* TO COMPILE CSS FROM SASS:
+
+Use the following command:
+compass compile views/screen.scss --output-style compressed --css-dir public
+
+Do not edit screen.css manually!
+
+*/
+
 /* Blueprint */
 @import "blueprint/reset";
 @import "stylesheets/base";
