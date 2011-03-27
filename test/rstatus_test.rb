@@ -293,7 +293,7 @@ class RstatusTest < MiniTest::Unit::TestCase
 
   def test_users_browse_shows_latest_users
     aardvark = Factory(:user, :username => "aardvark", :created_at => Date.new(2010, 10, 23))
-    zebra    = Factory(:user, :username => "zebra", :created_at => Date.new(2011, 10, 23))
+    zebra    = Factory(:user, :username => "zebra", :created_at => Date.new(2011, 10, 24))
     a = Factory(:authorization, :user => aardvark)
 
     log_in(aardvark, a.uid)
@@ -331,7 +331,7 @@ class RstatusTest < MiniTest::Unit::TestCase
     log_in(alpha, a.uid)
 
     visit "/users"
-    click_link "other"
+    click_link "Other"
 
     assert has_link? "__FILE__"
     refute_match "flop", page.body

@@ -238,19 +238,28 @@ class Rstatus < Sinatra::Base
   get '/users' do
     set_params_page
 
-    if params[:letter] == "other"
-      @users = User.where(:username => /^[^a-z0-9]/i)
+    # Filter users by search params
+    if params[:search] && !params[:search].empty?
+      @users = User.where(:username => /#{params[:search]}/i)
+      
+    # Filter users by letter
     elsif params[:letter]
-      @users = User.where(:username => /^#{params[:letter][0]}/i)
+      if params[:letter] == "other"
+        @users = User.where(:username => /^[^a-z0-9]/i)
+      elsif params[:letter]
+        @users = User.where(:username => /^#{params[:letter][0]}/i)
+      end
     else
       @users = User
     end
 
+    # Sort users alphabetically when filtering by letter
     if params[:letter]
-      @users = @users.sort(:username)
+      @users = @users.sort(:username.desc)
     else
       @users = @users.sort(:created_at.desc)
     end
+    
     @users = @users.paginate(:page => params[:page], :per_page => params[:per_page])
 
     @next_page = nil
@@ -479,7 +488,7 @@ class Rstatus < Sinatra::Base
     
     feeds = User.first(:username => params[:name]).following
 
-    @users = feeds.paginate(:page => params[:page], :per_page => params[:per_page], :order => :id.desc)
+    @users = feeds.paginate(:page => params[:page], :per_page => params[:per_page], :order => :id.desc).map{|f| f.author.user}
 
     @next_page = nil
     @prev_page = nil
@@ -499,7 +508,7 @@ class Rstatus < Sinatra::Base
     
     feeds = User.first(:username => params[:name]).followers
 
-    @users = feeds.paginate(:page => params[:page], :per_page => params[:per_page], :order => :id.desc)
+    @users = feeds.paginate(:page => params[:page], :per_page => params[:per_page], :order => :id.desc).map{|f| f.author.user}
 
     @next_page = nil
     @prev_page = nil

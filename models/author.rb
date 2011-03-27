@@ -10,7 +10,7 @@ class Author
 
   one :feed
   one :user
-
+  
  # The url of their profile page
   key :remote_url, String
 
@@ -46,6 +46,11 @@ class Author
       # Using a default avatar
       "/images/avatar.png"
     end
+  end
+  
+  def display_name
+    return username if name.nil? || name.empty?
+    name
   end
 
   def valid_gravatar?

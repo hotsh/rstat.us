@@ -43,7 +43,7 @@
         .follow-status You are not following #{@author.username}
 
   #updates.updates
-    != haml :_updates, :locals => {:updates => @updates}
+    != haml :_updates, :locals => {:updates => @updates, :no_highlight => true}
 
 %nav.pagination
   - unless @prev_page.nil?

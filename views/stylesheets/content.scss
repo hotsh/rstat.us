@@ -59,6 +59,7 @@
 }
 
 #content {
+  position: relative;
   padding-top: 1.5em;
 
   h1 {
@@ -68,10 +69,28 @@
 
 /* Following
 **********************/
+#users-search {
+  position: absolute;
+  top: 1.2em;
+  right: 0;
+  input[type="text"] {
+    padding: 0.45em;
+  }
+}
+
+#users-nav {
+  padding: 1em 0.5em;
+  font-size: 1.1em;
+  .all {
+    padding-right: 0.75em;
+    border-right: 1px solid #ccc;
+    margin-right: 0.5em;
+  }  
+}
 
 .user-list {
   padding: 0;
-  margin: 0;
+  margin: 0 0 1.5em 0;
   .user {
     position: relative;
     padding: 0.5em;
@@ -85,7 +104,7 @@
     }
   }
   .even {
-    background: #e5e5e5;
+    background: #e9e9e9;
   }
 }
 
@@ -369,6 +388,10 @@ form#update-form {
 #fourohfour {
   .image404 {
     text-align: center;
+    .credits {
+      font-size: 0.85em;
+      color: #aaa;
+    }
   }
 }
 
