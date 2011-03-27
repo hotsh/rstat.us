@@ -13,11 +13,22 @@ class UpdateTest < MiniTest::Unit::TestCase
     u = Update.new(:text => "This is a message mentioning @steveklabnik.")
     assert_match "This is a message mentioning @steveklabnik.", u.to_html
   end
+  
+  def test_at_replies_with_not_existing_user_after_create
+    u = Update.create(:text => "This is a message mentioning @steveklabnik.")
+    assert_match "This is a message mentioning @steveklabnik.", u.html
+  end
 
   def test_at_replies_with_existing_user
     Factory(:user, :username => "steveklabnik")
     u = Update.new(:text => "This is a message mentioning @SteveKlabnik.")
     assert_match /<a href='\/users\/steveklabnik'>@SteveKlabnik<\/a>/, u.to_html
+  end
+  
+  def test_at_replies_with_existing_user_after_create
+    Factory(:user, :username => "steveklabnik")
+    u = Update.create(:text => "This is a message mentioning @SteveKlabnik.")
+    assert_match /<a href='\/users\/steveklabnik'>@SteveKlabnik<\/a>/, u.html
   end
 
   def test_at_replies
@@ -26,6 +37,13 @@ class UpdateTest < MiniTest::Unit::TestCase
     u = Update.new(:text => "@SteveKlabnik @nobody foo@bar.wadus @SteveKlabnik")
     assert_match "<a href='\/users\/steveklabnik'>@SteveKlabnik<\/a> @nobody foo@bar.wadus <a href='\/users\/steveklabnik'>@SteveKlabnik<\/a>", u.to_html
   end
+  
+  def test_at_replies_after_create
+    Factory(:user, :username => "steveklabnik")
+    Factory(:user, :username => "bar")
+    u = Update.create(:text => "@SteveKlabnik @nobody foo@bar.wadus @SteveKlabnik")
+    assert_match "<a href='\/users\/steveklabnik'>@SteveKlabnik<\/a> @nobody foo@bar.wadus <a href='\/users\/steveklabnik'>@SteveKlabnik<\/a>", u.html
+  end
 
   def test_links
     u = Update.new(:text => "This is a message mentioning http://rstat.us/.")
@@ -33,12 +51,32 @@ class UpdateTest < MiniTest::Unit::TestCase
     u = Update.new(:text => "https://github.com/hotsh/rstat.us/issues#issue/11")
     assert_equal "<a href='https://github.com/hotsh/rstat.us/issues#issue/11'>https://github.com/hotsh/rstat.us/issues#issue/11</a>", u.to_html
   end
+  
+  def test_links_after_create
+    u = Update.create(:text => "This is a message mentioning http://rstat.us/.")
+    assert_match /<a href='http:\/\/rstat.us\/'>http:\/\/rstat.us\/<\/a>/, u.html
+    u = Update.create(:text => "https://github.com/hotsh/rstat.us/issues#issue/11")
+    assert_equal "<a href='https://github.com/hotsh/rstat.us/issues#issue/11'>https://github.com/hotsh/rstat.us/issues#issue/11</a>", u.html
+  end
 
   def test_hashtags
     u = Update.new(:text => "This is a message with a #hashtag.")
     assert_match /<a href='\/hashtags\/hashtag'>#hashtag<\/a>/, u.to_html
     u = Update.new(:text => "This is a message with a#hashtag.")
     assert_equal "This is a message with a#hashtag.", u.to_html
+  end
+  
+  def test_hashtags_after_create
+    u = Update.create(:text => "This is a message with a #hashtag.")
+    assert_match /<a href='\/hashtags\/hashtag'>#hashtag<\/a>/, u.html
+    u = Update.create(:text => "This is a message with a#hashtag.")
+    assert_equal "This is a message with a#hashtag.", u.html
+  end
+  
+  def test_html_exists_after_create
+    u = Update.create(:text => "This is a message with a #hashtag and mentions http://rstat.us/.")
+    assert_match /<a href='\/hashtags\/hashtag'>#hashtag<\/a>/, u.html
+    assert_match /<a href='http:\/\/rstat.us\/'>http:\/\/rstat.us\/<\/a>/, u.html
   end
 
 end
