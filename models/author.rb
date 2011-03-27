@@ -1,4 +1,7 @@
 class Author
+  DEFAULT_AVATAR = "/images/avatar.png"
+  GRAVATAR_HOST  = "gravatar.com"
+  
   include MongoMapper::Document
   
   key :username, String
@@ -10,7 +13,7 @@ class Author
 
   one :feed
   one :user
-
+  
  # The url of their profile page
   key :remote_url, String
 
@@ -25,46 +28,40 @@ class Author
     )
   end
 
-  def self.gravatar_host
-    "gravatar.com"
-  end
-
   def url
-    if remote_url.nil?
-      "/users/#{username}"
-    else
-      remote_url
-    end
+    return remote_url if remote_url
+    "/users/#{username}"
   end
 
   def avatar_url
-    return image_url if image_url
+    return image_url    if image_url
+    return gravatar_url if valid_gravatar?
 
-    if email
-      valid_gravatar? ? gravatar_url : "/images/avatar.png"
-    else
-      # Using a default avatar
-      "/images/avatar.png"
-    end
+    DEFAULT_AVATAR
+  end
+
+  def display_name
+    return username if name.nil? || name.empty?
+    name
   end
 
   def valid_gravatar?
-    uri = URI.parse(gravatar_url)
-    result = Net::HTTP.start(Author.gravatar_host, 80) do |http|
-      res = http.head(uri.path + "?" +  uri.query ) # Use HEAD instead of GET for a faster response
+    return unless email
 
-      if res.class == Net::HTTPNotFound
-        return false
-      else
-        return true
-      end
+    ret = nil
+    Net::HTTP.start(GRAVATAR_HOST, 80) do |http|
+      # Use HEAD instead of GET for SPEED!
+      ret = http.head(gravatar_path).is_a?(Net::HTTPOK)
     end
+    return ret
   end
 
   def gravatar_url
-    path = "/avatar/" + Digest::MD5.hexdigest(email) + "?s=48&r=r&d=404"
-    "http://#{Author.gravatar_host}#{path}"
+    return DEFAULT_AVATAR if email.nil?
+    "http://#{GRAVATAR_HOST}#{gravatar_path}"
+  end
+
+  def gravatar_path
+    "/avatar/#{Digest::MD5.hexdigest(email)}?s=48&r=r&d=404"
   end
 end
-
-

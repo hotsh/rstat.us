@@ -10,8 +10,8 @@ module Sinatra
     # keep track of that by just setting a session variable with their id. If it
     # doesn't exist, we just want to return nil.
     def current_user
-      return User.first(:id => session[:user_id]) if session[:user_id]
-      nil
+      @current_user = User.first(:id => session[:user_id]) if session[:user_id] if @current_user.nil?
+      @current_user
     end
 
     # This very simple method checks if we've got a logged in user. That's pretty
@@ -36,6 +36,23 @@ module Sinatra
       unless logged_in?
         flash[:error] = "Sorry, buddy"
         redirect opts[:return]
+      end
+    end
+
+    def set_params_page
+      params[:page] ||= 1
+      params[:per_page] ||= 25
+      params[:page] = params[:page].to_i
+      params[:per_page] = params[:per_page].to_i
+    end
+  
+    def set_next_prev_page
+      @next_page = "?#{Rack::Utils.build_query :page => params[:page] + 1}"
+
+      if params[:page] > 1
+        @prev_page = "?#{Rack::Utils.build_query :page => params[:page] - 1}"
+      else
+        @prev_page = nil
       end
     end
   end
@@ -111,7 +128,7 @@ class Rstatus < Sinatra::Base
   helpers do
     [:development, :production, :test].each do |environment|
       define_method "#{environment.to_s}?" do
-        return settings.environment == environment.to_sym
+        return settings.environment == environment
       end
     end
   end
@@ -121,19 +138,46 @@ class Rstatus < Sinatra::Base
     provider :facebook, ENV["APP_ID"], ENV["APP_SECRET"]
   end
 
+  ############################
+  # EMPTY USERNAME HANDLING - quick and dirty
+  ############################
+  before do
+    @error_bar = ""
+    if current_user && (current_user.username.nil? or current_user.username.empty?)       
+      @error_bar = haml :_username_error, :layout => false
+    end
+  end
+
+  get '/reset-username' do
+    unless current_user.nil? || current_user.username.empty?
+      redirect "/"
+    end
+      
+    haml :reset_username
+  end
+
+  post '/reset-username' do
+    exists = User.first :username => params[:username]
+    if !params[:username].nil? && !params[:username].empty? && exists.nil?
+      user = current_user
+      user.username = params[:username]
+      user.author.username = params[:username]
+      user.save
+      user.author.save
+
+      flash[:notice] = "Thank you for updating your username"
+      redirect "/"
+    else
+      flash[:notice] = "Sorry, that username has already been taken or is not valid. Please try again."
+      haml :reset_username    
+    end
+  end
+  ############################
+
   get '/' do
     if logged_in?
-
-      params[:page] ||= 1
-      params[:per_page] ||= 25
-      params[:page] = params[:page].to_i
-      params[:per_page] = params[:per_page].to_i
-
-      @next_page = "?#{Rack::Utils.build_query :page => params[:page] + 1}"
-
-      if params[:page] > 1
-        @prev_page = "?#{Rack::Utils.build_query :page => params[:page] - 1}"
-      end
+      set_params_page
+      set_next_prev_page
 
       @updates = current_user.timeline(params)
 
@@ -162,25 +206,19 @@ class Rstatus < Sinatra::Base
   end
 
   get '/home' do
+    cache_control :public, :must_revalidate, :max_age => 60
     haml :index, :layout => false
   end
   
-  get '/screen.css' do
-    scss(:screen, Compass.sass_engine_options)
-  end
+  # get '/screen.css' do
+  #   cache_control :public, :must_revalidate, :max_age => 360
+  #   scss(:screen, Compass.sass_engine_options)
+  # end
 
   get '/replies' do
     if logged_in?
-      params[:page] ||= 1
-      params[:per_page] ||= 25
-      params[:page] = params[:page].to_i
-      params[:per_page] = params[:per_page].to_i
-
-      @next_page = "?#{Rack::Utils.build_query :page => params[:page] + 1}"
-
-      if params[:page] > 1
-        @prev_page = "?#{Rack::Utils.build_query :page => params[:page] - 1}"
-      end
+      set_params_page
+      set_next_prev_page
 
       @replies = current_user.at_replies(params)
       haml :replies
@@ -192,26 +230,26 @@ class Rstatus < Sinatra::Base
   get '/auth/:provider/callback' do
     auth = request.env['omniauth.auth']
     unless @auth = Authorization.find_from_hash(auth)
-      if User.first :username => auth['user_info']['nickname']
+      session[:uid] = auth['uid']
+      session[:provider] = auth['provider']
+      session[:name] = auth['user_info']['name']
+      session[:nickname] = auth['user_info']['nickname']
+      session[:website] = auth['user_info']['urls']['Website']
+      session[:description] = auth['user_info']['description']
+      session[:image] = auth['user_info']['image']
+      #let's store their oauth stuff so they don't have to re-login after
+      session[:oauth_token] = auth['credentials']['token']
+      session[:oauth_secret] = auth['credentials']['secret']
+
+      if User.first :username => auth['user_info']['nickname']  or auth['user_info']['nickname'] =~ /profile[.]php[?]id=/
         #we have a username conflict!
-
-        #let's store their oauth stuff so they don't have to re-login after
-        session[:oauth_token] = auth['credentials']['token']
-        session[:oauth_secret] = auth['credentials']['secret']
-
-        session[:uid] = auth['uid']
-        session[:provider] = auth['provider']
-        session[:name] = auth['user_info']['name']
-        session[:nickname] = auth['user_info']['nickname']
-        session[:website] = auth['user_info']['urls']['Website']
-        session[:description] = auth['user_info']['description']
-        session[:image] = auth['user_info']['image']
-
         flash[:notice] = "Sorry, someone has that name."
         redirect '/users/new'
         return
       else
-        @auth = Authorization.create_from_hash(auth, uri("/"), current_user)
+        # Redirect to confirm page to verify username and provide email
+        redirect '/users/confirm'
+        return
       end
     end
 
@@ -231,36 +269,44 @@ class Rstatus < Sinatra::Base
     end
   end
 
+  get '/users/confirm' do
+    haml :"users/confirm"
+  end
+
   get '/users/new' do
     haml :"users/new"
   end
 
   get '/users' do
-    params[:page] ||= 1
-    params[:per_page] ||= 20
-    params[:letter] ||= ""
-    params[:page] = params[:page].to_i
-    params[:per_page] = params[:per_page].to_i
+    set_params_page
 
-    if params[:letter] == "other"
-      @users = User.where(:username => /^[^a-z0-9]/i)
-    elsif params[:letter] and not params[:letter].empty?
-      @users = User.where(:username => /^#{params[:letter][0].chr}/i)
+    # Filter users by search params
+    if params[:search] && !params[:search].empty?
+      @users = User.where(:username => /#{params[:search]}/i)
+      
+    # Filter users by letter
+    elsif params[:letter]
+      if params[:letter] == "other"
+        @users = User.where(:username => /^[^a-z0-9]/i)
+      elsif
+        @users = User.where(:username => /^#{params[:letter][0].chr}/i)
+      end
     else
       @users = User
     end
 
-    @users = @users.sort(:username).paginate(:page => params[:page], :per_page => params[:per_page])
+    # Sort users alphabetically when filtering by letter
+    if params[:letter]
+      @users = @users.sort(:username.desc)
+    else
+      @users = @users.sort(:created_at.desc)
+    end
+    
+    @users = @users.paginate(:page => params[:page], :per_page => params[:per_page])
 
     @next_page = nil
-    @prev_page = nil
-
-    @next_page = "?#{Rack::Utils.build_query :page => params[:page] + 1, :letter => params[:letter]}"
-
-    if params[:page] > 1
-      @prev_page = "?#{Rack::Utils.build_query :page => params[:page] - 1, :letter => params[:letter]}"
-    end
-
+    set_next_prev_page
+    
     haml :"users/index"
   end
 
@@ -300,10 +346,7 @@ class Rstatus < Sinatra::Base
 
   # show user profile
   get "/users/:slug" do
-    params[:page] ||= 1
-    params[:per_page] ||= 20
-    params[:page] = params[:page].to_i
-    params[:per_page] = params[:per_page].to_i
+    set_params_page
 
     user = User.first :username => params[:slug]
     if user.nil?
@@ -317,23 +360,17 @@ class Rstatus < Sinatra::Base
     @updates = Update.where(:feed_id => user.feed.id).order(['created_at', 'descending']).paginate(:page => params[:page], :per_page => params[:per_page])
 
     @next_page = nil
-    @prev_page = nil
-
-    @next_page = "?#{Rack::Utils.build_query :page => params[:page] + 1}"
-
-    if params[:page] > 1
-      @prev_page = "?#{Rack::Utils.build_query :page => params[:page] - 1}"
-    end
+    set_next_prev_page
 
     haml :"users/show"
   end
 
   # subscriber receives updates
   # should be 'put', PuSH sucks at REST
-  post "/feeds/:id.atom" do
-    feed = Feed.first :id => params[:id]
-    feed.update_entries(request.body.read, request.url, url(feed.url), request.env['HTTP_X_HUB_SIGNATURE'])
-  end
+  #post "/feeds/:id.atom" do
+  #  feed = Feed.first :id => params[:id]
+  #  feed.update_entries(request.body.read, request.url, url(feed.url), request.env['HTTP_X_HUB_SIGNATURE'])
+  #end
 
   # unsubscribe from a feed
   delete '/subscriptions/:id' do
@@ -368,13 +405,10 @@ class Rstatus < Sinatra::Base
     when /^feed:\/\//
       feed_url = "http" + params[:url][4..-1]
     when /@/
-
       # TODO: ensure caching of finger lookup.
       acct = Redfinger.finger(params[:url])
       feed_url = acct.links.find { |l| l['rel'] == 'http://schemas.google.com/g/2010#updates-from' }
-
     else
-
       feed_url = params[:url]
     end
 
@@ -395,10 +429,9 @@ class Rstatus < Sinatra::Base
     end
 
     # follow them!
-
     f = current_user.follow! feed_url
     unless f
-      flash[:notice] = "The was a problem following #{params[:url]}."
+      flash[:notice] = "There was a problem following #{params[:url]}."
       redirect request.referrer
       return
     end
@@ -429,29 +462,29 @@ class Rstatus < Sinatra::Base
     feed = Feed.first :id => params[:id]
 
     if params['hub.challenge']
-      sub = OSub::Subscription.new(request.url, feed.url, nil, feed.verify_token)
+      #sub = OSub::Subscription.new(request.url, feed.url, nil, feed.verify_token)
 
       # perform the hub's challenge
-      respond = sub.perform_challenge(params['hub.challenge'])
+      #respond = sub.perform_challenge(params['hub.challenge'])
 
       # verify that the random token is the same as when we
       # subscribed with the hub initially and that the topic
       # url matches what we expect
-      verified = params['hub.topic'] == feed.url
-      if verified and sub.verify_subscription(params['hub.verify_token'])
-        if development?
-          puts "Verified"
-        end
-        body respond[:body]
-        status respond[:status]
-      else
-        if development?
-          puts "Verification Failed"
-        end
+      #verified = params['hub.topic'] == feed.url
+      #if verified and sub.verify_subscription(params['hub.verify_token'])
+      #  if development?
+      #    puts "Verified"
+      #  end
+      #  body respond[:body]
+      #  status respond[:status]
+      #else
+      #  if development?
+      #    puts "Verification Failed"
+      #  end
         # if the verification fails, the specification forces us to
         # return a 404 status
         status 404
-      end
+      #end
     else
       # TODO: Abide by headers that supply cache information
       body feed.atom(uri("/"))
@@ -493,36 +526,39 @@ class Rstatus < Sinatra::Base
 
   # This lets us see who is following.
   get '/users/:name/following' do
-    params[:page] ||= 1
-    params[:per_page] ||= 20
-    params[:page] = params[:page].to_i
-    params[:per_page] = params[:per_page].to_i
+    set_params_page
+    
     feeds = User.first(:username => params[:name]).following
 
-    @users = feeds.paginate(:page => params[:page], :per_page => params[:per_page])
+    @users = feeds.paginate(:page => params[:page], :per_page => params[:per_page], :order => :id.desc).map{|f| f.author.user}
 
     @next_page = nil
     @prev_page = nil
-
+ 
     if params[:page]*params[:per_page] < feeds.count
       @next_page = "?#{Rack::Utils.build_query :page => params[:page] + 1}"
     end
-
+ 
     if params[:page] > 1
       @prev_page = "?#{Rack::Utils.build_query :page => params[:page] - 1}"
     end
-
     haml :"users/list", :locals => {:title => "Following"}
   end
 
+  get '/users/:name/following.json' do
+    set_params_page
+
+    users = User.first(:username => params[:name]).following
+    authors = users.map { |user| user.author }
+    authors.to_a.to_json
+  end
+
   get '/users/:name/followers' do
-    params[:page] ||= 1
-	params[:per_page] ||= 20
-    params[:page] = params[:page].to_i
-    params[:per_page] = params[:per_page].to_i
+    set_params_page
+    
     feeds = User.first(:username => params[:name]).followers
 
-    @users = feeds.paginate(:page => params[:page], :per_page => params[:per_page])
+    @users = feeds.paginate(:page => params[:page], :per_page => params[:per_page], :order => :id.desc).map{|f| f.author.user}
 
     @next_page = nil
     @prev_page = nil
@@ -534,7 +570,6 @@ class Rstatus < Sinatra::Base
     if params[:page] > 1
 	  @prev_page = "?#{Rack::Utils.build_query :page => params[:page] - 1}"
     end
-
 
     haml :"users/list", :locals => {:title => "Followers"}
   end
@@ -568,10 +603,12 @@ class Rstatus < Sinatra::Base
     # tell hubs there is a new entry
     current_user.feed.ping_hubs(url(current_user.feed.url))
 
-    if params[:text].length >= 1 and params[:text].length <= 140
-      flash[:notice] = "Update created."
-    else
+    if params[:text].length <= 1
+      flash[:notice] = "Your status is too short!"
+    elsif params[:text].length > 140
       flash[:notice] = "Your status is too long!"
+    else
+      flash[:notice] = "Update created."
     end
 
     redirect "/"
@@ -638,13 +675,29 @@ class Rstatus < Sinatra::Base
   end
 
   post "/login" do
-    if user = User.authenticate(params[:username], params[:password])
-      session[:user_id] = user.id
-      flash[:notice] = "Login successful."
-      redirect "/"
+    u = User.first :username => params[:username]
+    if u.nil?
+      #signup
+      user = User.new params
+      if user.save
+        session[:user_id] = user.id
+        flash[:notice] = "Thanks for signing up!"
+        redirect "/"
+      else
+        puts "not saved"
+        flash[:notice] = "There was a problem... can you pick a different username?"
+        redirect "/login"
+      end
     else
-      flash[:notice] = "The username or password you entered was incorrect"
-      redirect "/login"
+      #login
+      if user = User.authenticate(params[:username], params[:password])
+        session[:user_id] = user.id
+        flash[:notice] = "Login successful."
+        redirect "/"
+      else
+        flash[:notice] = "The username or password you entered was incorrect"
+        redirect "/login"
+      end
     end
   end
 
@@ -663,21 +716,18 @@ class Rstatus < Sinatra::Base
   end
 
   not_found do
-    haml :'404', :layout => false
+    haml :'error', :layout => false, :locals => {:code => 404, :message => "We couldn't find the page you're looking for"}
+  end
+
+  error do
+    haml :'error', :layout => false, :locals => {:code => 500, :message => "Something went wrong"}
   end
 
   get "/hashtags/:tag" do
     @hashtag = params[:tag]
-    params[:page] ||= 1
-    params[:per_page] ||= 25
-    params[:page] = params[:page].to_i
-    params[:per_page] = params[:per_page].to_i
+    set_params_page
 
-    @next_page = "?#{Rack::Utils.build_query :page => params[:page] + 1}"
-
-    if params[:page] > 1
-      @prev_page = "?#{Rack::Utils.build_query :page => params[:page] - 1}"
-    end
+    set_next_prev_page
     @updates = Update.hashtag_search(@hashtag, params)
     @timeline = true
     @update_text = params[:status]
@@ -697,4 +747,3 @@ class Rstatus < Sinatra::Base
   end
 
 end
-

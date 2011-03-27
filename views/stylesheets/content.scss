@@ -59,6 +59,7 @@
 }
 
 #content {
+  position: relative;
   padding-top: 1.5em;
 
   h1 {
@@ -68,10 +69,28 @@
 
 /* Following
 **********************/
+#users-search {
+  position: absolute;
+  top: 1.2em;
+  right: 0;
+  input[type="text"] {
+    padding: 0.45em;
+  }
+}
+
+#users-nav {
+  padding: 1em 0.5em;
+  font-size: 1.1em;
+  .all {
+    padding-right: 0.75em;
+    border-right: 1px solid #ccc;
+    margin-right: 0.5em;
+  }  
+}
 
 .user-list {
   padding: 0;
-  margin: 0;
+  margin: 0 0 1.5em 0;
   .user {
     position: relative;
     padding: 0.5em;
@@ -85,7 +104,7 @@
     }
   }
   .even {
-    background: #e5e5e5;
+    background: #e9e9e9;
   }
 }
 
@@ -111,6 +130,7 @@ form#update-form {
       padding: 5px;
       height: 2.5em;
       margin: 0;
+      border: solid 1px #CCCCCC;
     }    
   }
 
@@ -159,16 +179,12 @@ form#update-form {
       }
     }
     li.active {
-      background: $highlight;
+      background: $link_color;
       a { 
         color: white;
       }
     }
   }
-}
-
-#timeline .mention {
-  background: $mention;
 }
 
 /* Pagination */
@@ -209,9 +225,21 @@ form#update-form {
       color: #999;
     }
   }
+  
+  .bio {
+    margin: 0.5em 0em;
+  }
+  
+  input {
+    border: solid 1px #CCCCCC;
+	margin: 0.2em;
+  }
 
   textarea {
     @include copy-face;
+    border: solid 1px #CCCCCC;
+	width: 30em;
+	height: 10em;
   }
 
   label {
@@ -326,20 +354,17 @@ form#update-form {
         }
       }
 
-      .end-links {
-        float: right;
-      }
-      .end-links, .date, .in-reply {
-      	font-size: 0.9em;
-      	color: #aaa;
-        line-height: 2em;
-      }
       .in-reply {
         margin-left: 0.5em;
       }
     }
-
-
+  }
+  
+  .mention {
+    background: $mention;
+  }
+  .mine {
+    background: $highlight;
   }
   
   .empty {
@@ -370,6 +395,16 @@ form#update-form {
     padding: 1em;
     border-top: 1px solid #ccc;
     width: 498px;
+  }
+}
+
+#fourohfour {
+  .image404 {
+    text-align: center;
+    .credits {
+      font-size: 0.85em;
+      color: #aaa;
+    }
   }
 }
 
@@ -429,11 +464,20 @@ form#update-form {
   }	
 }
 
-.update, .single-update {
+.update {
   .remove-update {
     cursor: pointer;
     float: right;
     border: none;
     @include image-replaced('../images/trash.png', 13px, 16px)
+  }
+  
+  .end-links {
+    float: right;
+  }
+  .end-links, .date, .in-reply {
+  	font-size: 0.9em;
+  	color: #aaa;
+    line-height: 2em;
   }
 }

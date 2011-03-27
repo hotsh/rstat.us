@@ -2,7 +2,7 @@
 %html
   %head
     %meta{:charset => "utf-8"}
-    %title rstat.us - 404
+    %title rstat.us - #{code}
     %link{:href => "/screen.css", :media => "screen", :rel => "stylesheet"}
     %style
       
@@ -12,10 +12,17 @@
         %h1
           Oops!
         %h3
-          Something went wrong.
+          #{message}
 
         %a{:href => "/"}
           Go back to rstat.us
+        
+        .image404
+          %img{:src => "/images/404.jpg"}
+          .credits
+            Original artwork by 
+            %a{:href => "http://shelleymonahan.com"}
+              Shelley Monahan
     /
       Browsers like Google Chrome and Internet Explorer decide not to display 
       error pages if the content length of the page is too short.  For Internet Explorer,

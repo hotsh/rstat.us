@@ -1,6 +1,6 @@
 !!! 5
 %html.no-js
-  != haml :_head, :locals => {:css => ['internal']}
+  != haml :_head
   %body.internal
     #main
       #left
@@ -30,6 +30,9 @@
                       #{current_user.followers.length}
                   .updates
                     Updates: #{current_user.feed.updates.count}
+                  .edit-profile
+                    %a{ :href => "/users/#{current_user.username}/edit"}
+                      Edit profile
 
           .links
             %a{:href => "/follow"} Would you like to follow someone not on rstat.us?
@@ -45,6 +48,8 @@
               Logout
 
       #right
+        != @error_bar
+
         #content
           != yield_content :top
 

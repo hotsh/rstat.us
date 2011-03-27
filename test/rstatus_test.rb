@@ -146,6 +146,25 @@ class RstatusTest < MiniTest::Unit::TestCase
     assert_match "No longer following #{u2.username}", page.body
   end
 
+  def test_users_followers_in_order
+    aardvark = Factory(:user, :username => "aardvark", :created_at => Date.new(2010, 10, 23))
+    zebra    = Factory(:user, :username => "zebra", :created_at => Date.new(2011, 10, 23))
+    giraffe  = Factory(:user, :username => "giraffe", :created_at => Date.new(2011, 10, 23))
+    leopard  = Factory(:user, :username => "leopard", :created_at => Date.new(2011, 10, 23))
+    a = Factory(:authorization, :user => aardvark)
+
+    log_in(aardvark, a.uid)
+
+    visit "/users/#{leopard.username}"
+    click_button "follow-#{leopard.feed.id}"
+
+    visit "/users/#{zebra.username}"
+    click_button "follow-#{zebra.feed.id}"
+
+    visit "/users/#{aardvark.username}/following"
+    assert_match /zebra.*aardvark/m, page.body
+  end
+
   def test_user_following_paginates
     u = Factory(:user)
     a = Factory(:authorization, :user => u)
@@ -163,6 +182,21 @@ class RstatusTest < MiniTest::Unit::TestCase
 
     assert_match "Previous", page.body
     assert_match "Next", page.body
+  end
+
+  def test_user_following_outputs_json
+    u = Factory(:user)
+    a = Factory(:authorization, :user => u)
+
+    log_in(u, a.uid)
+
+    u2 = Factory(:user, :username => "user1")
+    u.follow! u2.feed.url
+
+    visit "/users/#{u.username}/following.json"
+
+    json = JSON.parse(page.body)
+    assert_equal "user1", json.last["username"]
   end
 
   def test_user_followers_paginates
@@ -190,7 +224,7 @@ class RstatusTest < MiniTest::Unit::TestCase
     log_in(u, a.uid)
     visit "/users/#{u.username}"
 
-    assert has_link? "Edit your profile"
+    assert has_link? "Edit profile"
   end
 
   def test_user_edit_profile
@@ -198,7 +232,7 @@ class RstatusTest < MiniTest::Unit::TestCase
     a = Factory(:authorization, :user => u)
     log_in(u, a.uid)
     visit "/users/#{u.username}"
-    click_link "Edit your profile"
+    click_link "Edit profile"
 
     assert_equal 200, page.status_code
   end
@@ -229,6 +263,17 @@ class RstatusTest < MiniTest::Unit::TestCase
     assert_match /Thanks! You're all signed up with nottaken for your username./, page.body
     assert_match /\//, page.current_url
 
+  end
+
+  def test_facebook_username
+    new_user = Factory.build(:user, :username => 'profile.php?id=12345')
+    log_in_fb(new_user)
+    assert_match /users\/new/, page.current_url, "not on the new user page."
+
+    fill_in "username", :with => "janepublic"
+    click_button "Finish Signup"
+    assert_match /Thanks! You're all signed up with janepublic for your username./, page.body
+    assert_match /\//, page.current_url
   end
 
   def test_junk_username_gives_404
@@ -273,15 +318,15 @@ class RstatusTest < MiniTest::Unit::TestCase
     assert_match "Next", page.body
   end
 
-  def test_users_browse_sorted
-    zebra    = Factory(:user, :username => "zebra")
-    aardvark = Factory(:user, :username => "aardvark")
+  def test_users_browse_shows_latest_users
+    aardvark = Factory(:user, :username => "aardvark", :created_at => Date.new(2010, 10, 23))
+    zebra    = Factory(:user, :username => "zebra", :created_at => Date.new(2011, 10, 24))
     a = Factory(:authorization, :user => aardvark)
 
     log_in(aardvark, a.uid)
 
     visit "/users"
-    assert_match /aardvark.*zebra/m, page.body
+    assert_match /zebra.*aardvark/m, page.body
   end
 
   def test_users_browse_by_letter
@@ -313,7 +358,7 @@ class RstatusTest < MiniTest::Unit::TestCase
     log_in(alpha, a.uid)
 
     visit "/users"
-    click_link "other"
+    click_link "Other"
 
     assert has_link? "__FILE__"
     refute_match "flop", page.body
@@ -331,5 +376,38 @@ class RstatusTest < MiniTest::Unit::TestCase
     assert_match "Sorry, no users that match.", page.body
 
   end
+
+  def test_user_signup_twitter
+    Author.any_instance.stubs(:valid_gravatar?).returns(:false)
+    omni_mock("twit")
+    visit '/auth/twitter'
+
+    assert_match /Confirm account information/, page.body
+    assert_match /\/users\/confirm/, page.current_url
+
+    fill_in "username", :with => "new_user"
+    fill_in "email", :with => "new_user@email.com"
+    click_button "Finish Signup"
+
+    u = User.first(:username => "new_user")
+    assert_equal u.nil?, false
+    assert_equal u.email, "new_user@email.com"
+
+  end
+
+  def test_user_signup
+    u = User.first(:username => "new_user")
+    assert u.nil?
+
+    visit '/login'
+    fill_in "username", :with => "new_user"
+    fill_in "password", :with => "mypassword"
+    click_button "Log in"
+
+    u = User.first(:username => "new_user")
+    refute u.nil?
+    assert User.authenticate("new_user", "mypassword")
+  end
+
 end
 
