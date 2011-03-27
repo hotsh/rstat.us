@@ -35,14 +35,30 @@ module TestHelper
       :user_info => {
         :name => "Joe Public",
         :nickname => u.username,
-        :urls => { :Website => "http://rstat.us" },
-        :description => "A description",
+        :urls => { :website => "http://rstat.us" },
+        :description => "a description",
         :image => "/images/something.png"
       },
       :credentials => {:token => "1234", :secret => "4567"}
     })
 
     visit '/auth/twitter'
+  end
+
+  def log_in_fb(u, uid = 12345)
+    OmniAuth.config.add_mock(:facebook, {
+      :uid => uid,
+      :user_info => {
+        :name => "Jane Public",
+        :nickname => u.username,
+        :urls => { :website => "http://rstat.us" },
+        :description => "a description",
+        :image => "/images/something.png"
+      },
+      :credentials => {:token => "1234", :secret => "4567"}
+    })
+
+    visit '/auth/facebook'
   end
 
   Capybara.app = Rstatus
