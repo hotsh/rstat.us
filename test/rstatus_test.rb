@@ -361,5 +361,23 @@ class RstatusTest < MiniTest::Unit::TestCase
 
   end
 
+  def test_user_signup_twitter
+    Author.any_instance.stubs(:valid_gravatar?).returns(:false)
+    omni_mock("twit")
+    visit '/auth/twitter'
+
+    assert_match /Confirm account information/, page.body
+    assert_match /\/users\/confirm/, page.current_url
+
+    fill_in "username", :with => "new_user"
+    fill_in "email", :with => "new_user@email.com"
+    click_button "Finish Signup"
+
+    u = User.first(:username => "new_user")
+    assert_equal u.nil?, false
+    assert_equal u.email, "new_user@email.com"
+
+  end
+
 end
 

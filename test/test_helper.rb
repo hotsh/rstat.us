@@ -29,19 +29,23 @@ module TestHelper
     DatabaseCleaner.clean
   end
 
-  def log_in(u, uid = 12345)
-    Author.any_instance.stubs(:valid_gravatar?).returns(:false)
-    OmniAuth.config.add_mock(:twitter, {
+  def omni_mock(username, uid = 12345)
+    return OmniAuth.config.add_mock(:twitter, {
       :uid => uid,
       :user_info => {
         :name => "Joe Public",
-        :nickname => u.username,
-        :urls => { :website => "http://rstat.us" },
-        :description => "a description",
+        :nickname => username,
+        :urls => { :Website => "http://rstat.us" },
+        :description => "A description",
         :image => "/images/something.png"
       },
       :credentials => {:token => "1234", :secret => "4567"}
     })
+  end
+
+  def log_in(u, uid = 12345)
+    Author.any_instance.stubs(:valid_gravatar?).returns(:false)
+    omni_mock(u.username, uid)
 
     visit '/auth/twitter'
   end
