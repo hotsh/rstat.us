@@ -249,6 +249,17 @@ class RstatusTest < MiniTest::Unit::TestCase
 
   end
 
+  def test_facebook_username
+    new_user = Factory.build(:user, :username => 'profile.php?id=12345')
+    log_in_fb(new_user)
+    assert_match /users\/new/, page.current_url, "not on the new user page."
+
+    fill_in "username", :with => "janepublic"
+    click_button "Finish Signup"
+    assert_match /Thanks! You're all signed up with janepublic for your username./, page.body
+    assert_match /\//, page.current_url
+  end
+
   def test_junk_username_gives_404
     visit "/users/1n2i12399992sjdsa21293jj"
     assert_equal 404, page.status_code
@@ -349,5 +360,6 @@ class RstatusTest < MiniTest::Unit::TestCase
     assert_match "Sorry, no users that match.", page.body
 
   end
+
 end
 

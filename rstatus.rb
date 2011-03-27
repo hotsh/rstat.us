@@ -194,7 +194,7 @@ class Rstatus < Sinatra::Base
   get '/auth/:provider/callback' do
     auth = request.env['omniauth.auth']
     unless @auth = Authorization.find_from_hash(auth)
-      if User.first :username => auth['user_info']['nickname']
+      if User.first :username => auth['user_info']['nickname'] or auth['user_info']['nickname'] =~ /profile[.]php[?]id=/
         #we have a username conflict!
 
         #let's store their oauth stuff so they don't have to re-login after
