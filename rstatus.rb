@@ -10,14 +10,14 @@ module Sinatra
     # keep track of that by just setting a session variable with their id. If it
     # doesn't exist, we just want to return nil.
     def current_user
-      @current_user = User.first(:id => session[:user_id]) if session[:user_id] if @current_user.nil?
-      @current_user
+      return unless session[:user_id]
+      @current_user ||= User.first(:id => session[:user_id])
     end
 
     # This very simple method checks if we've got a logged in user. That's pretty
     # easy: just check our current_user.
     def logged_in?
-      current_user != nil
+      current_user
     end
 
     # Our `admin_only!` helper will only let admin users visit the page. If
