@@ -238,19 +238,28 @@ class Rstatus < Sinatra::Base
   get '/users' do
     set_params_page
 
-    if params[:letter] == "other"
-      @users = User.where(:username => /^[^a-z0-9]/i)
+    # Filter users by search params
+    if params[:search] && !params[:search].empty?
+      @users = User.where(:username => /#{params[:search]}/i)
+      
+    # Filter users by letter
     elsif params[:letter]
-      @users = User.where(:username => /^#{params[:letter][0]}/i)
+      if params[:letter] == "other"
+        @users = User.where(:username => /^[^a-z0-9]/i)
+      elsif params[:letter]
+        @users = User.where(:username => /^#{params[:letter][0]}/i)
+      end
     else
       @users = User
     end
 
+    # Sort users alphabetically when filtering by letter
     if params[:letter]
-      @users = @users.sort(:username)
+      @users = @users.sort(:username.desc)
     else
       @users = @users.sort(:created_at.desc)
     end
+    
     @users = @users.paginate(:page => params[:page], :per_page => params[:per_page])
 
     @next_page = nil
@@ -316,10 +325,10 @@ class Rstatus < Sinatra::Base
 
   # subscriber receives updates
   # should be 'put', PuSH sucks at REST
-  post "/feeds/:id.atom" do
-    feed = Feed.first :id => params[:id]
-    feed.update_entries(request.body.read, request.url, url(feed.url), request.env['HTTP_X_HUB_SIGNATURE'])
-  end
+  #post "/feeds/:id.atom" do
+  #  feed = Feed.first :id => params[:id]
+  #  feed.update_entries(request.body.read, request.url, url(feed.url), request.env['HTTP_X_HUB_SIGNATURE'])
+  #end
 
   # unsubscribe from a feed
   delete '/subscriptions/:id' do
@@ -411,29 +420,29 @@ class Rstatus < Sinatra::Base
     feed = Feed.first :id => params[:id]
 
     if params['hub.challenge']
-      sub = OSub::Subscription.new(request.url, feed.url, nil, feed.verify_token)
+      #sub = OSub::Subscription.new(request.url, feed.url, nil, feed.verify_token)
 
       # perform the hub's challenge
-      respond = sub.perform_challenge(params['hub.challenge'])
+      #respond = sub.perform_challenge(params['hub.challenge'])
 
       # verify that the random token is the same as when we
       # subscribed with the hub initially and that the topic
       # url matches what we expect
-      verified = params['hub.topic'] == feed.url
-      if verified and sub.verify_subscription(params['hub.verify_token'])
-        if development?
-          puts "Verified"
-        end
-        body respond[:body]
-        status respond[:status]
-      else
-        if development?
-          puts "Verification Failed"
-        end
+      #verified = params['hub.topic'] == feed.url
+      #if verified and sub.verify_subscription(params['hub.verify_token'])
+      #  if development?
+      #    puts "Verified"
+      #  end
+      #  body respond[:body]
+      #  status respond[:status]
+      #else
+      #  if development?
+      #    puts "Verification Failed"
+      #  end
         # if the verification fails, the specification forces us to
         # return a 404 status
         status 404
-      end
+      #end
     else
       # TODO: Abide by headers that supply cache information
       body feed.atom(uri("/"))
@@ -479,7 +488,7 @@ class Rstatus < Sinatra::Base
     
     feeds = User.first(:username => params[:name]).following
 
-    @users = feeds.paginate(:page => params[:page], :per_page => params[:per_page], :order => :id.desc)
+    @users = feeds.paginate(:page => params[:page], :per_page => params[:per_page], :order => :id.desc).map{|f| f.author.user}
 
     @next_page = nil
     @prev_page = nil
@@ -499,7 +508,7 @@ class Rstatus < Sinatra::Base
     
     feeds = User.first(:username => params[:name]).followers
 
-    @users = feeds.paginate(:page => params[:page], :per_page => params[:per_page], :order => :id.desc)
+    @users = feeds.paginate(:page => params[:page], :per_page => params[:per_page], :order => :id.desc).map{|f| f.author.user}
 
     @next_page = nil
     @prev_page = nil

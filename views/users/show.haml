@@ -25,10 +25,7 @@
 
   %p.note= @author.bio
 
-  - if current_user and @author.user == current_user
-    %a{:href=>"/users/#{current_user.username}/edit"}
-      Edit your profile
-  - else
+  - unless current_user and @author.user == current_user
     #follow
       - if current_user and current_user.following? @author.feed.url
         .negative
@@ -43,7 +40,7 @@
         .follow-status You are not following #{@author.username}
 
   #updates.updates
-    != haml :_updates, :locals => {:updates => @updates}
+    != haml :_updates, :locals => {:updates => @updates, :no_highlight => true}
 
 %nav.pagination
   - unless @prev_page.nil?
