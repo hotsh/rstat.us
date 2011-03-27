@@ -6,6 +6,7 @@ class Update
   belongs_to :author
 
   key :text, String, :default => ""
+  key :html, String
   key :tags, Array, :default => []
   key :language, String
   
@@ -80,7 +81,7 @@ class Update
         match
       end
     end
-    out.gsub!(/(http[s]?:\/\/\S+[a-zA-Z0-9\/])/, "<a href='\\1'>\\1</a>")
+    out.gsub!(/(http[s]?:\/\/\S+[a-zA-Z0-9\/}])/, "<a href='\\1'>\\1</a>")
     out.gsub!(/(^|\s+)#(\w+)/) do |match|
       "#{$1}<a href='/hashtags/#{$2}'>##{$2}</a>"
     end
