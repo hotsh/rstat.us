@@ -208,7 +208,7 @@ class RstatusTest < MiniTest::Unit::TestCase
     log_in(u, a.uid)
     visit "/users/#{u.username}"
 
-    assert has_link? "Edit your profile"
+    assert has_link? "Edit profile"
   end
 
   def test_user_edit_profile
@@ -216,7 +216,7 @@ class RstatusTest < MiniTest::Unit::TestCase
     a = Factory(:authorization, :user => u)
     log_in(u, a.uid)
     visit "/users/#{u.username}"
-    click_link "Edit your profile"
+    click_link "Edit profile"
 
     assert_equal 200, page.status_code
   end
