@@ -1,6 +1,6 @@
 %head
   %meta{:charset => "utf-8"}
-  %title= locals[:title].nil? ? "#{locals[:title]} - rstat.us" : "rstat.us"
+  %title= locals[:title].nil? ? "rstat.us": "rstat.us - #{locals[:title]}"
   %script{:src=>"https://ajax.googleapis.com/ajax/libs/jquery/1.5.1/jquery.min.js"}
   %script{:src => "/js/app.js"}
   %link{:href => "/s/screen.css", :media => "screen", :rel => "stylesheet"}
