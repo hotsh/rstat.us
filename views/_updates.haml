@@ -18,8 +18,7 @@
         .in-reply
           %a{:href => "/updates/#{update.referral.id}"}
             in reply to
-            .name
-              = update.referral.author.username 
+            %span.name= update.referral.author.username 
 
       .end-links
         -# when @timeline is true, this is a list on the user's page

@@ -61,18 +61,18 @@ body#home {
 /* Internal */
 #main {
   #left {
-    @include prepend(2);
+    @include prepend(1);
     @include column(6);     
   }
   
   #right {
-    @include column(16);
+    @include column(14);
     @include last;
   }
 }
 
-#content {
-  @include column(14);
+.internal #main, .internal #footer {
+  width: 880px;
 }
 
 /* Footer */
