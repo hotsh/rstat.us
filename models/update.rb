@@ -6,7 +6,8 @@ class Update
   belongs_to :author
 
   key :text, String
-  key :tweeted, Boolean
+  key :twitter, Boolean
+  key :facebook, Boolean
 
   # store in authorization
   #attr_accessor :oauth_token, :oauth_secret
@@ -53,7 +54,7 @@ class Update
     matches.nil? ? false : matches.length > 0
   end
 
-  after_create :tweet
+  after_create :send_to_external_accounts
 
   timestamps!
 
@@ -71,22 +72,34 @@ class Update
 
   protected
 
-  def tweet
+  def send_to_external_accounts
     return if ENV['RACK_ENV'] == 'development'
-    if tweeted? && author.user && author.user.twitter?
-      begin
-        Twitter.configure do |config|
-          config.consumer_key = ENV["CONSUMER_KEY"]
-          config.consumer_secret = ENV["CONSUMER_SECRET"]
-          config.oauth_token = author.user.twitter.oauth_token
-          config.oauth_token_secret = author.user.twitter.oauth_secret
-        end
+    if author.user
+      if twitter? && author.user.twitter?
+        begin
+          Twitter.configure do |config|
+            config.consumer_key = ENV["CONSUMER_KEY"]
+            config.consumer_secret = ENV["CONSUMER_SECRET"]
+            config.oauth_token = author.user.twitter.oauth_token
+            config.oauth_token_secret = author.user.twitter.oauth_secret
+          end
 
-        Twitter.update(text)
-      rescue Exception => e
-        #I should be shot for doing this.
+          Twitter.update(text)
+        rescue Exception => e
+          #I should be shot for doing this.
+        end
+      end
+      
+      if facebook? && author.user.facebook?
+        begin
+          user = FbGraph::User.me(author.user.facebook.token)
+          user.feed!(:message => text)
+        rescue Exception => e
+          #I should be shot for doing this.
+        end
       end
     end
+    
   end
 
 end

@@ -135,7 +135,7 @@ class Rstatus < Sinatra::Base
 
   use OmniAuth::Builder do
     provider :twitter, ENV["CONSUMER_KEY"], ENV["CONSUMER_SECRET"]
-    provider :facebook, ENV["APP_ID"], ENV["APP_SECRET"]
+    provider :facebook, ENV["APP_ID"], ENV["APP_SECRET"], {:scope => 'publish_stream,offline_access,email'}
   end
 
   get '/' do
@@ -206,6 +206,7 @@ class Rstatus < Sinatra::Base
         session[:website] = auth['user_info']['urls']['Website']
         session[:description] = auth['user_info']['description']
         session[:image] = auth['user_info']['image']
+        session[:email] = auth['user_info']['email']
 
         flash[:notice] = "Sorry, someone has that name."
         redirect '/users/new'
@@ -286,6 +287,7 @@ class Rstatus < Sinatra::Base
       auth['user_info']['urls']['Website'] = session[:website]
       auth['user_info']['description'] = session[:description]
       auth['user_info']['image'] = session[:image]
+      auth['user_info']['email'] = session[:email]
       auth['credentials'] = {}
       auth['credentials']['token'] = session[:oauth_token]
       auth['credentials']['secret'] = session[:oauth_secret]
@@ -545,11 +547,13 @@ class Rstatus < Sinatra::Base
   end
 
   post '/updates' do
-    do_tweet = !params[:tweeted].nil? || params[:tweeted] == "1"
+    do_tweet = !params[:tweet].nil? || params[:tweet] == "1"
+    do_facebook = !params[:facebook].nil? || params[:facebook] == "1"
     u = Update.new(:text => params[:text],
                    :referral_id => params[:referral_id],
                    :author => current_user.author,
-                   :tweeted => do_tweet)
+                   :twitter => do_tweet,
+                   :facebook => do_facebook)
 
     # and entry to user's feed
     current_user.feed.updates << u

@@ -41,7 +41,23 @@ class User
   end
   
   def twitter?
-    a = Authorization.first(:provider => "twitter", :user_id => self.id)
+    has_authorization?(:twitter)
+  end
+  
+  def twitter
+    get_authorization(:twitter)
+  end
+  
+  def facebook?
+    has_authorization?(:facebook)
+  end
+  
+  def facebook
+    get_authorization(:facebook)
+  end
+  
+  def has_authorization?(auth)
+    a = Authorization.first(:provider => auth.to_s, :user_id => self.id)
     if a.nil?
       return false
     else
@@ -49,8 +65,8 @@ class User
     end
   end
   
-  def twitter
-    Authorization.first(:provider => "twitter", :user_id => self.id)
+  def get_authorization(auth)
+    Authorization.first(:provider => auth.to_s, :user_id => self.id)
   end
 
   key :following_ids, Array
