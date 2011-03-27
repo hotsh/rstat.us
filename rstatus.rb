@@ -530,16 +530,9 @@ class Rstatus < Sinatra::Base
 
     @users = feeds.paginate(:page => params[:page], :per_page => params[:per_page], :order => :id.desc).map{|f| f.author.user}
 
-    @next_page = nil
-    @prev_page = nil
- 
-    if params[:page]*params[:per_page] < feeds.count
-      @next_page = "?#{Rack::Utils.build_query :page => params[:page] + 1}"
-    end
- 
-    if params[:page] > 1
-      @prev_page = "?#{Rack::Utils.build_query :page => params[:page] - 1}"
-    end
+    set_next_prev_page 
+    @next_page = nil unless params[:page]*params[:per_page] < feeds.count
+    
     haml :"users/list", :locals => {:title => "Following"}
   end
 
@@ -558,16 +551,8 @@ class Rstatus < Sinatra::Base
 
     @users = feeds.paginate(:page => params[:page], :per_page => params[:per_page], :order => :id.desc).map{|f| f.author.user}
 
-    @next_page = nil
-    @prev_page = nil
-
-    if params[:page]*params[:per_page] < feeds.count
-	  @next_page = "?#{Rack::Utils.build_query :page => params[:page] + 1}"
-    end
-
-    if params[:page] > 1
-	  @prev_page = "?#{Rack::Utils.build_query :page => params[:page] - 1}"
-    end
+    set_next_prev_page 
+    @next_page = nil unless params[:page]*params[:per_page] < feeds.count
 
     haml :"users/list", :locals => {:title => "Followers"}
   end
