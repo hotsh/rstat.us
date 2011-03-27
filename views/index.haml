@@ -1,6 +1,6 @@
 !!! 5
 %html.no-js
-  != haml :_head, :locals => {:css => ['external']}
+  != haml :_head
   %body#home
     #main
       #header
@@ -33,12 +33,11 @@
             = flash[:notice]
 
         #pitch
-          %a{:href=>'/login'} 
-            #col-1.col
-              %h2.title
-                Sign Up
-              .content
-                with Twitter or Facebook, or create a new account
+          %a#col-1.col{:href=>'/login'} 
+            %h2.title
+              Sign Up
+            .content
+              with Twitter or Facebook, or create a new account
           #col-2.col
             %h2.title
               Connect

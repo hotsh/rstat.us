@@ -1,28 +1,26 @@
-%h1 Browse users
-%div#browse-navigation
+%h1 Users
+
+#users-search.search
+  %form{:method => :get, :action => "/users"}
+    %input{:name => "search", :type => "text"}
+    %input{:type => "submit", :value => "Search", :class => "button"}
+
+#users-nav.nav
+  %a{:href => "/users", :class => "all"} All
   - "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789".each_char do |c|
-    %a{:href => "/users?#{Rack::Utils.build_query :letter => c}"}
+    - if params[:letter] == c
       = c
+    - else
+      %a{:href => "/users?#{Rack::Utils.build_query :letter => c}"}= c
   %a{:href => "/users?#{Rack::Utils.build_query :letter => "other"}"}
-    other
-%ul.user-list
-  - if @users.empty?
-    %li
-      Sorry, no users that match.
+    Other
 
-  - @users.each_with_index do |user, i|
-    %li.user{:class => i%2 == 0 ? "even" : "odd"}
-      -user_url = "/users/#{user.author.username}"
-      .avatar
-        %a{:href => user_url}
-          %img{:alt => "avatar", :src => user.author.avatar_url}/
+- if @users.empty?
+  .empty
+    Sorry, no users that match.
+- else
+  != haml :"users/_list", :locals => {:users => @users}
 
-      .name
-        %a{:href => user_url}
-          %b
-            = user.author.name
-          %br
-          (#{user.author.username})
 
 %nav.pagination
   - unless @prev_page.nil?

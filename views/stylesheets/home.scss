@@ -48,6 +48,9 @@ body#home {
   
     #col-1 {
       background: url('../images/slide1.png') center bottom no-repeat;
+      &:hover {
+        text-decoration: none;
+      }
     }
     #col-2 {
       background: url('../images/slide2.png') center bottom no-repeat;
@@ -61,6 +64,7 @@ body#home {
   }
 
   #home-bottom {
+    @include clearfix();
     #manifesto {
       .wrap {
         padding: 1em 2em 0;
