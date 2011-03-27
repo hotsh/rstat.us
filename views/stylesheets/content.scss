@@ -140,11 +140,14 @@ form#update-form {
       float: left;
     }    
     #update-count {
+      font-size: 1.1em;
       .update-count {
-        font-size: 180%;
+        color: #666;
+        padding-right: 0.2em;
       }
-      color: #999;
+      color: #aaa;
       padding-left: 0.75em;
+      padding-top: 0.6em;
     }
   }
   #update-info.negative #update-count .update-count {

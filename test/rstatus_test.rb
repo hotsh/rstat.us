@@ -276,6 +276,13 @@ class RstatusTest < MiniTest::Unit::TestCase
     assert_match /\//, page.current_url
   end
 
+  def test_profile_php_rename_user
+    existing_user = Factory.build(:user, :username => 'profile.php?id=12345')
+    log_in_fb(existing_user)
+    click_link "reset_username"
+    assert_match /\/reset-username/, page.current_url
+  end
+
   def test_junk_username_gives_404
     visit "/users/1n2i12399992sjdsa21293jj"
     assert_equal 404, page.status_code
