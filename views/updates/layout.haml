@@ -1,11 +1,11 @@
 !!! 5
 %html.no-js
-  != haml :_head, :locals => {:css => ['update']}
+  != haml :_head, :locals => {:css => ['update'], :title => @update.text}
   %body#update
     - if flash[:notice] || flash[:error]
       #flash
         = flash[:notice]
-    
-    .update
-      != yield           
+
+    .single-update.update
+      != yield
     != haml :'updates/footer'

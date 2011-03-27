@@ -30,11 +30,24 @@ class UpdateTest < MiniTest::Unit::TestCase
   def test_links
     u = Update.new(:text => "This is a message mentioning http://rstat.us/.")
     assert_match /<a href='http:\/\/rstat.us\/'>http:\/\/rstat.us\/<\/a>/, u.to_html
+    u = Update.new(:text => "https://github.com/hotsh/rstat.us/issues#issue/11")
+    assert_equal "<a href='https://github.com/hotsh/rstat.us/issues#issue/11'>https://github.com/hotsh/rstat.us/issues#issue/11</a>", u.to_html
+  end
+
+  def test_edgecase_links
+    edgecase = <<-EDGECASE
+      Not perfect, but until there's an API, you can quick add text to your status using
+      links like this: http://rstat.us/?status={status}
+    EDGECASE
+    u = Update.new(:text => edgecase)
+    assert_match "<a href='http://rstat.us/?status={status}'>http://rstat.us/?status={status}</a>", u.to_html
   end
 
   def test_hashtags
     u = Update.new(:text => "This is a message with a #hashtag.")
     assert_match /<a href='\/hashtags\/hashtag'>#hashtag<\/a>/, u.to_html
+    u = Update.new(:text => "This is a message with a#hashtag.")
+    assert_equal "This is a message with a#hashtag.", u.to_html
   end
 
 end

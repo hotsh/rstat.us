@@ -115,7 +115,7 @@ class User
       :page => opts[:page],
       :per_page => opts[:per_page]
     }
-    Update.where(:text => /^@#{username} /).order(['created_at', 'descending']).paginate(popts)
+    Update.where(:text => /^@#{username}\b/).order(['created_at', 'descending']).paginate(popts)
   end
 
   key :status

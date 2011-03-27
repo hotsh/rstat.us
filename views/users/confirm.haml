@@ -1,0 +1,12 @@
+%h2 Confirm account information
+
+%p You are one step away from your new rstat.us account. Make sure you have the right username, provide an email address and you are all set.
+
+%form{:action => "/users", :method => "POST"}
+  %label{:for => "username" } Username: 
+  %input{:type => "text", :name => "username", :id => "username"}
+  %br/
+  %label{:for => "email" } Email: 
+  %input{:type => "text", :name => "email", :id => "email"}
+  %br/
+  %input{:type => "submit", :value => "Finish Signup"}

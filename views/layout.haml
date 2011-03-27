@@ -1,6 +1,6 @@
 !!! 5
 %html.no-js
-  != haml :_head, :locals => {:css => ['internal']}
+  != haml :_head
   %body.internal
     #main
       #left
@@ -25,14 +25,20 @@
                     %a{ :href => "/users/#{current_user.username}/following"}
                       #{current_user.following.length}
                   .followers
-                    Followers: 
+                    Followers:
                     %a{ :href => "/users/#{current_user.username}/followers"}
                       #{current_user.followers.length}
                   .updates
                     Updates: #{current_user.feed.updates.count}
+                  .edit-profile
+                    %a{ :href => "/users/#{current_user.username}/edit"}
+                      Edit profile
 
           .links
             %a{:href => "/follow"} Would you like to follow someone not on rstat.us?
+
+          .links
+            %a{:href => "/users"} Browse rstat.us users
 
           .links
             %a{:href => "/feeds/#{current_user.feed.id}.atom"} Atom
@@ -42,6 +48,8 @@
               Logout
 
       #right
+        != @error_bar
+
         #content
           != yield_content :top
 
@@ -49,6 +57,6 @@
             #flash
               = flash[:notice]
 
-          != yield 
+          != yield
 
     != haml :footer

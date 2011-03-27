@@ -1,3 +1,5 @@
 *.swp
 docs
 config.yml
+.sass-cache
+tmp

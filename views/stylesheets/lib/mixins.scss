@@ -1,0 +1,29 @@
+/* Helper functions 
+ *******************************************/
+@mixin image-replaced($image, $width: auto, $height: auto) {
+  display: block;
+  background: url($image) no-repeat;
+  text-indent: -9999px;
+  width: $width;
+  height: $height;
+}
+
+@mixin rounded($radius:5px) {
+  border-radius: $radius;
+}
+
+/* Color
+*******************************************/
+$link_color: #65bfc2;
+$mention: #e4feff;
+$highlight: #fffeef;
+
+/* Typography
+*******************************************/
+@mixin title-face {
+  font-family: "Arial Black", Arial, sans-serif;
+}
+
+@mixin copy-face {
+  font-family: Arial, sans-serif;
+}
