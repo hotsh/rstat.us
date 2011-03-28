@@ -2,6 +2,7 @@
   - if !defined?(no_highlight)
     - mine = current_user.nil? ? false : (update.author.user == current_user)
   - mentioned = current_user.nil? ? false : update.mentioned?(current_user.username)
+  - mine = current_user.nil? ? false : update.author.user == current_user
   .update{:class => (mentioned ? "mention " : "") + (mine ? "mine " : ""), :id => "update-#{update.id}", "data-id" => update.id, "data-name" => update.author.username}
     .avatar
       %a{:href => update.author.url}
