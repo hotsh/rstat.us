@@ -5,8 +5,6 @@ require_relative "helpers"
 
 class Rstatus < Sinatra::Base
 
-  set :port, 8088
-
   # The `PONY_VIA_OPTIONS` hash is used to configure `pony`. Basically, we only
   # want to actually send mail if we're in the production environment. So we set
   # the hash to just be `{}`, except when we want to send mail.
