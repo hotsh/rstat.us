@@ -4,35 +4,29 @@ rstat.us
 rstat.us is a microblogging site built on top of the [ostatus
 protocol](http://status.net/wiki/OStatus).
 
-Running your own (on Heroku)
+## Helping out with rstat.us
+
+If you'd like to contribute, here's some details:
+
+- Here's the stack: ruby/sinatra/mongodb
+- Here's [the code](http://github.com/hotsh/rstat.us)
+- Here's [the Issues list](http://github.com/hotsh/rstat.us/issues)
+- Please fork the project and make a pull request
+-- Pull requests will not be merged without tests/documentation
+--- We use [minitest](https://github.com/seattlerb/minitest)/[capybara](https://github.com/jnicklas/capybara) for tests
+--- We use [docco](https://github.com/jashkenas/docco) (rocc) for
+documentation
+--- If you think it doesn't need a test, make your case, I'm just
+saying.
+
+Setting up a dev environment
 ----------------------------
-
-You will need a validated heroku account.
-
-Just do this:
-
-    $ git clone https://github.com/hotsh/rstat.us.git
-    $ cd rstat.us
-    $ heroku create --stack bamboo-mri-1.9.2
-    $ heroku addons:add mongohq:free
-    $ heroku addons:add sendgrid:free
-    $ git push heroku master
-
-Bam!
-
-# BUT DON"T YET!!!!1111
-
-This is nowhere near done. Jump on Freenode and ping 'steveklabnik' if
-you want to contribute in some way.
-
-Running a local copy
---------------------
 
 First off: you will need MongoDB (www.mongodb.org).  They have a [quickstart guide](http://www.mongodb.org/display/DOCS/Quickstart) for getting it installed and running.
 
 Then do the same as above:
 
-    $ git clone https://github.com/hotsh/rstat.us.git (or your own fork, if applicable)
+    $ git clone https://github.com/$MY_GITHUB_USERNAME/rstat.us.git
     $ cd rstat.us
 
 Copy the config file; if you have actual Twitter API keys, you can add yours, but this file just needs to exist for the server to work.
@@ -43,6 +37,15 @@ Then update your gemset:
 
     $ gem install bundler && bundle install
 
-And instead of using heroku, start the server with sinatra:
+Start the server with rackup:
 
     $ rackup
+
+Bam! Visit http://localhost:9292/ in your browser, and you'll be good.
+
+Running your own node
+---------------------
+
+If you need help with this, then you're not ready to run one.
+Eventually, we plan on making this _super easy_, but until we feel that
+it's ready, we're keeping the instructions 'secret.' Sorry!
