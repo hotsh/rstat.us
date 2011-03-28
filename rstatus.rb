@@ -1,8 +1,6 @@
 require 'bundler'
 Bundler.require
 
-require_relative 'models/all'
-
 module Sinatra
   module UserHelper
 
@@ -45,7 +43,7 @@ module Sinatra
       params[:page] = params[:page].to_i
       params[:per_page] = params[:per_page].to_i
     end
-  
+
     def set_next_prev_page
       @next_page = "?#{Rack::Utils.build_query :page => params[:page] + 1}"
 
@@ -114,12 +112,13 @@ class Rstatus < Sinatra::Base
       MongoMapper.connection = Mongo::Connection.new('localhost')
       MongoMapper.database = "rstatus-#{settings.environment}"
     end
-    
+
     # configure compass
     Compass.configuration do |config|
       config.project_path = File.dirname(__FILE__)
       config.sass_options = {:cache_location => "./tmp/sass-cache"}
     end
+    require_relative 'models/all'
   end
 
   helpers Sinatra::UserHelper
@@ -167,7 +166,7 @@ class Rstatus < Sinatra::Base
       redirect "/"
     else
       flash[:notice] = "Sorry, that username has already been taken or is not valid. Please try again."
-      haml :reset_username    
+      haml :reset_username
     end
   end
   ############################
@@ -207,7 +206,7 @@ class Rstatus < Sinatra::Base
     cache_control :public, :must_revalidate, :max_age => 60
     haml :index, :layout => false
   end
-  
+
   # get '/screen.css' do
   #   cache_control :public, :must_revalidate, :max_age => 360
   #   scss(:screen, Compass.sass_engine_options)
@@ -278,7 +277,7 @@ class Rstatus < Sinatra::Base
     # Filter users by search params
     if params[:search] && !params[:search].empty?
       @users = User.where(:username => /#{params[:search]}/i)
-      
+
     # Filter users by letter
     elsif params[:letter]
       if params[:letter] == "other"
@@ -296,12 +295,12 @@ class Rstatus < Sinatra::Base
     else
       @users = @users.sort(:created_at.desc)
     end
-    
+
     @users = @users.paginate(:page => params[:page], :per_page => params[:per_page])
 
     @next_page = nil
     set_next_prev_page
-    
+
     haml :"users/index"
   end
 
@@ -517,14 +516,14 @@ class Rstatus < Sinatra::Base
   # This lets us see who is following.
   get '/users/:name/following' do
     set_params_page
-    
+
     feeds = User.first(:username => params[:name]).following
 
     @users = feeds.paginate(:page => params[:page], :per_page => params[:per_page], :order => :id.desc).map{|f| f.author.user}
 
-    set_next_prev_page 
+    set_next_prev_page
     @next_page = nil unless params[:page]*params[:per_page] < feeds.count
-    
+
     haml :"users/list", :locals => {:title => "Following"}
   end
 
@@ -538,12 +537,12 @@ class Rstatus < Sinatra::Base
 
   get '/users/:name/followers' do
     set_params_page
-    
+
     feeds = User.first(:username => params[:name]).followers
 
     @users = feeds.paginate(:page => params[:page], :per_page => params[:per_page], :order => :id.desc).map{|f| f.author.user}
 
-    set_next_prev_page 
+    set_next_prev_page
     @next_page = nil unless params[:page]*params[:per_page] < feeds.count
 
     haml :"users/list", :locals => {:title => "Followers"}
@@ -574,7 +573,7 @@ class Rstatus < Sinatra::Base
     current_user.feed.updates << u
     current_user.feed.save
     current_user.save
-    
+
     # tell hubs there is a new entry
     current_user.feed.ping_hubs(url(current_user.feed.url))
 
@@ -620,6 +619,24 @@ class Rstatus < Sinatra::Base
     end
 
     haml :"signup/confirm"
+  end
+
+  get "/search" do
+    @updates = []
+    if params[:q]
+      @updates = Update.filter(params[:q], :page => params[:page], :per_page => params[:per_page] || 20, :order => :created_at.desc)
+    end
+
+    @next_page = nil
+    @prev_page = nil
+
+    if !@updates.empty? && @updates.next_page
+      @next_page = "?#{Rack::Utils.build_query :page => @updates.next_page}"
+    end
+    if !@updates.empty? && @updates.previous_page
+      @prev_page = "?#{Rack::Utils.build_query :page => @updates.previous_page}"
+    end
+    haml :search
   end
 
   post "/confirm" do
