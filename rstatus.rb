@@ -1,8 +1,69 @@
+# encoding: utf-8
+# This is the source code for [rstat.us](http://rstat.us/), a microblogging 
+# website built on the ostatus protocol.
+#
+# To get started, you'll need to install some prerequisite software:
+#
+# **Ruby** is used to power the site. We're currently using ruby 1.9.2p180. I
+# highly reccomend that you use [rvm][rvm] to install and manage your Rubies.
+# It's a fantastic tool. If you do decide to use `rvm`, you can install the 
+# appropriate Ruby and create a gemset by simply `cd`-ing into the root project
+# directory; I have a magical `.rvmrc` file that'll set you up.
+#
+# **MongoDB** is a really awesome document store. We use it to persist all of
+# the data on the website. To get MongoDB, please visit their 
+# [downloads page](http://www.mongodb.org/downloads) to find a package for your
+# system.
+#
+# After installing Ruby and MongoDB, you need to aquire all of the Ruby gems
+# that we use. This is pretty easy, since we're using **bundler**. Just do
+# this:
+#
+#     $ gem install bundler
+#     $ bundle install
+#
+# That'll set it all up! Then, you need to make sure you're running MongoDB.
+# I have to open up another tab in my terminal and type
+#
+#     $ mongod
+#
+# to get this to happen. When you're done hacking, you can hit ^-c to stop
+# `mongod` from running.
+#
+# To actually start up the site, just 
+#
+#     $ rackup
+#
+# and then visit [http://localhost:9292/](http://localhost:9292). You're good
+# to go!
+# 
+# [rvm]: http://rvm.beginrescueend.com/
+
+#### About rstatus.rb
+#
+# This file is the main entry point to the application. It has three main
+# purposes:
+#
+# 1. Include all relevant gems and library code.
+# 2. Configure all settings based on our environment.
+# 3. Set up a few basic routes.
+#
+# Everything else is handled by code that's included from this file.
+
+#### Including gems
+
+# We need to require rubygems and bundler to get things going. Then we call
+# `Bundler.setup` to get all of the magic started.
 require 'bundler'
 Bundler.require
 
+# We moved lots of helpers into a separate file. These are all things that are
+# useful throughout the rest of the application.
 require_relative "helpers"
 
+# It's good form to make your Sinatra applications be a subclass of Sinatra::Base.
+# This way, we're not polluting the global namespace with our methods and routes
+# and such.
 class Rstatus < Sinatra::Base
 
   # The `PONY_VIA_OPTIONS` hash is used to configure `pony`. Basically, we only
@@ -17,7 +78,6 @@ class Rstatus < Sinatra::Base
   end
 
   configure :production do
-    require 'newrelic_rpm'
     Compass.configuration do |config|
       config.output_style = :compressed
     end
@@ -38,15 +98,26 @@ class Rstatus < Sinatra::Base
     }
   end
 
+  # We need a secret for our sessions. This is set via an environment variable so
+  # that we don't have to give it away in the source code. Heroku makes it really
+  # easy to keep environment variables set up, so this ends up being pretty nice.
+  # This also has to be included before rack-flash, or it blows up.
   use Rack::Session::Cookie, :secret => ENV['COOKIE_SECRET']
+
+  # We're using rack-timeout to ensure that our dynos don't get starved by renegade
+  # processes.
   use Rack::Timeout
-  Rack::Timeout.timeout = 10  # this line is optional. if omitted, default is 30 seconds.
+  Rack::Timeout.timeout = 10
 
   set :root, File.dirname(__FILE__)
   set :haml, :escape_html => true
+
+  # This method enables the ability for our forms to use the _method hack for 
+  # actual RESTful stuff.
   set :method_override, true
 
-  require 'rack-flash'
+  # If you've used Rails' flash messages, you know how convenient they are.
+  # rack-flash lets us use them.
   use Rack::Flash
 
   configure do
@@ -65,6 +136,8 @@ class Rstatus < Sinatra::Base
       config.sass_options = {:cache_location => "./tmp/sass-cache"}
     end
     MongoMapperExt.init
+
+    # now that we've connected to the db, let's load our models.
     require_relative 'models/all'
   end
 
@@ -84,9 +157,7 @@ class Rstatus < Sinatra::Base
     provider :facebook, ENV["APP_ID"], ENV["APP_SECRET"], {:scope => 'publish_stream,offline_access,email'}
   end
 
-  ############################
   # EMPTY USERNAME HANDLING - quick and dirty
-  ############################
   before do
     @error_bar = ""
     if current_user && (current_user.username.nil? or current_user.username.empty? or !current_user.username.match(/profile.php/).nil?)
@@ -116,7 +187,6 @@ class Rstatus < Sinatra::Base
       haml :reset_username
     end
   end
-  ############################
 
   get '/' do
     if logged_in?
