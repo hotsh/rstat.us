@@ -482,32 +482,6 @@ class RstatusTest < MiniTest::Unit::TestCase
     assert_match "Password successfully set", page.body
     assert_match "/", page.current_url
   end
-  
-  def test_successful_password_reset
-    u = Factory(:user, :email => "someone@somewhere.com")
-    token = u.set_password_reset_token
-    visit "/reset_password/#{token}"
-    
-    fill_in "password", :with => "password"
-    fill_in "password_confirm", :with => "password"
-    click_button "Reset"
-    
-    assert_match "Password successfully set", page.body
-    assert_match "/", page.current_url
-  end
-  
-  def test_successful_password_reset
-    u = Factory(:user, :email => "someone@somewhere.com")
-    token = u.set_password_reset_token
-    visit "/reset_password/#{token}"
-    
-    fill_in "password", :with => "password"
-    fill_in "password_confirm", :with => "password"
-    click_button "Reset"
-    
-    assert_match "Password successfully set", page.body
-    assert_match "/", page.current_url
-  end
 
   def test_user_password_reset
     u = Factory(:user, :email => "some@email.com")
@@ -610,29 +584,11 @@ class RstatusTest < MiniTest::Unit::TestCase
 
   end
 
-  def test_followers_displays_username_logged_in
-    u = Factory(:user, :username => "dfnkt")
-    a = Factory(:authorization, :user => u)
-
-    log_in(u, a.uid)
-
-    visit "/users/#{u.username}/followers"
-    assert_match "#{u.username}'s Followers", page.body
-
-  end
-
   def test_following_displays_username_logged_out
     u = Factory(:user, :username => "dfnkt")
 
     visit "/users/#{u.username}/following"
     assert_match "#{u.username}'s Following", page.body
-  end
-
-  def test_following_displays_username_logged_out
-    u = Factory(:user, :username => "dfnkt")
-
-    visit "/users/#{u.username}/followers"
-    assert_match "#{u.username}'s Followers", page.body
   end
 
   def test_user_password_reset
