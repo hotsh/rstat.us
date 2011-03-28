@@ -445,6 +445,20 @@ class RstatusTest < MiniTest::Unit::TestCase
     assert_match "/users/#{u.username}/edit", page.current_url
   end
 
+  def test_twitter_remove
+    u = Factory(:user)
+    a = Factory(:authorization, :user => u)
+    log_in(u, a.uid)
+    
+    visit "/users/#{u.username}/edit"
+    
+    assert_match /edit/, page.current_url
+    click_button "Remove"
+    
+    a = Authorization.first(:provider => "twitter", :user_id => u.id)
+    assert_equal a.nil?, true
+  end
+
   def test_add_facebook_to_account
     u = Factory(:user)
     OmniAuth.config.add_mock(:facebook, {
@@ -468,6 +482,20 @@ class RstatusTest < MiniTest::Unit::TestCase
     assert_equal "2222", auth.oauth_secret
     assert_match "/users/#{u.username}/edit", page.current_url
   end
+  
+  def test_facebook_remove
+    u = Factory(:user)
+    a = Factory(:authorization, :user => u, :provider => "facebook")
+    log_in_fb(u, a.uid)
+    
+    visit "/users/#{u.username}/edit"
+    
+    assert_match /edit/, page.current_url
+    click_button "Remove"
+    
+    a = Authorization.first(:provider => "facebook", :user_id => u.id)
+    assert_equal a.nil?, true
+  end
 
   def test_facebook_username
     new_user = Factory.build(:user, :username => 'profile.php?id=12345')
@@ -478,6 +506,20 @@ class RstatusTest < MiniTest::Unit::TestCase
     click_button "Finish Signup"
     assert_match /Thanks! You're all signed up with janepublic for your username./, page.body
     assert_match /\//, page.current_url
+    click_link "Logout"
+    log_in_fb(new_user)
+    assert_match /janepublic/, page.body
+  end
+
+  def test_existing_profile_php_rename_user
+    existing_user = Factory(:user, :username => 'profile.php?id=12345')
+    a = Factory(:authorization, :user => existing_user)
+    log_in(existing_user, a.uid)
+    click_link "reset_username"
+    assert_match /\/reset-username/, page.current_url
+    fill_in "username", :with => "janepublic"
+    click_button "Update"
+    assert_match /janepublic/, page.body
   end
 
   def test_username_clash
@@ -610,7 +652,7 @@ class RstatusTest < MiniTest::Unit::TestCase
     click_button "Finish Signup"
 
     u = User.first(:username => "new_user")
-    assert_equal u.nil?, false
+    refute u.nil?
     assert_equal u.email, "new_user@email.com"
 
   end

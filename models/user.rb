@@ -165,7 +165,7 @@ class User
   end
 
   def reset_username(params)
-    username = params[:username]
+    self.username = params[:username]
     author.username = params[:username]
     return false unless save
     author.save

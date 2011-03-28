@@ -24,18 +24,28 @@
     account to set and update your avatar.
   %br
 
-  - if @user.twitter?
-    %h4 Twitter
-    %span= @user.twitter.nickname
-  - else
-    %form#profile-update{:action => "/auth/twitter", :method => "GET", :name => "profile_update_form"}
-      %input#update-button.button{:type => "submit", :value => "Add Twitter Account"}
-  %br
-  - if @user.facebook?
-    %h4 Facebook
-    %span= @user.facebook.nickname
-  - else
-    %form#profile-update{:action => "/auth/facebook", :method => "GET", :name => "profile_update_form"}
-      %input#update-button.button{:type => "submit", :value => "Add Facebook Account"}
+  %h4 Linked Accounts
+  
+  %div{:style => "height: 35px;"}
+    - if @user.twitter?
+      %img{:src => "/images/twitter_newbird_blue.png", :style => "height: 35px; width: 35px; vertical-align:middle; margin-top: -5px;", :alt => "Twitter Account"}
+      ="#{@user.twitter.nickname}"
+      %form#profile-update{:action => "/users/#{@user.username}/auth/twitter", :method => "POST", :name => "profile_update_form", :style => "float: right;"}
+        %input{:type => "hidden", :name => "_method", :value => "delete"}
+        %input#update-button.button{:type => "submit", :value => "Remove"}
+    - else
+      %form#profile-update{:action => "/auth/twitter", :method => "GET", :name => "profile_update_form"}
+        %input#update-button.button{:type => "submit", :value => "Add Twitter Account"}
+  
+  %div{:style => "height: 35px;"}
+    - if @user.facebook?
+      %img{:src => "/images/f_logo.png", :style => "height: 25px; width: 25px; vertical-align:middle; margin-top: -5px;", :alt => "Facebook Account"}
+      ="#{@user.facebook.nickname}"
+      %form#profile-update{:action => "/users/#{@user.username}/auth/facebook", :method => "POST", :name => "profile_update_form", :style => "float: right;"}
+        %input{:type => "hidden", :name => "_method", :value => "delete"}
+        %input#update-button.button{:type => "submit", :value => "Remove"}
+    - else
+      %form#profile-update{:action => "/auth/facebook", :method => "GET", :name => "profile_update_form"}
+        %input#update-button.button{:type => "submit", :value => "Add Facebook Account"}
   
 
