@@ -151,11 +151,17 @@ class User
 
   attr_accessor :password
   key :hashed_password, String
-  key :password_reset_sent, Date, :default => nil
+  key :password_reset_sent, DateTime, :default => nil
 
   def password=(pass)
     @password = pass
     self.hashed_password = BCrypt::Password.create(@password, :cost => 10)
+  end
+  
+  def reset_password(pass)
+    password = pass
+    password_reset_sent = nil
+    reset_perishable_token
   end
 
   def self.authenticate(username, pass)

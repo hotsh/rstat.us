@@ -296,8 +296,50 @@ class Rstatus < Sinatra::Base
   end
   
   post '/forgot_password' do
-    User.where(:email => params[:email])
+    user = User.where(:email => params[:email])
+    
   end
+  
+  get '/password_reset/:token' do
+    user = User.where(:perishable_token => params[:token])
+    if user.nil? || user.password_reset_sent > 2.days.ago
+      params[:notice] == "Your link is no longer valid, please request another one."
+      haml :"forgot_password"
+    else
+      @token = params[:token]
+      haml :"password_reset"
+    end
+  end
+  
+  post '/password_reset' do
+    if params[:token]
+      if params[:password].size == 0
+        params[:notice] == "Password must be present"
+        redirect "/password_reset/#{params[:token]}"
+      end
+      if params[:password] != params[:password_confirm]
+        params[:notice] == "Passwords do not match"
+        redirect "/password_reset/#{params[:token]}"
+      end
+      user = User.where(:perishable_token => params[:token])
+      user.password = params[:password]
+      user.reset_password(params[:password])
+      params[:notice] == "Password successfully set"
+      redirect "/"
+    else
+      redirect "/forgot_password"
+    end
+  end
+  
+  get '/users/password_reset' do
+    if logged_in?
+      haml :"user/password_reset"
+    else
+      redirect "/forgot_password"
+    end
+  end
+  
+
 
   get '/users' do
     set_params_page
