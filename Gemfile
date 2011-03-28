@@ -11,9 +11,11 @@ gem "bson_ext"
 gem "i18n"
 gem "haml"
 gem "rack-flash"
+gem "rack-timeout"
 gem "time-ago-in-words"
 gem "sinatra-content-for", :require => "sinatra/content_for"
 gem "twitter"
+gem "fb_graph"
 gem "pony"
 gem "bcrypt-ruby", :require => "bcrypt"
 gem "rdiscount"
@@ -31,14 +33,15 @@ gem "whatlanguage"
 gem "tzinfo"
 
 group :development, :test do
+  gem "minitest", :platforms => :ruby_18
+  gem "minitest", :platforms => :ruby_18
   gem 'coffee-script'
   gem 'rack-test'
   gem "database_cleaner"
   gem "factory_girl"
   gem "capybara"
-  gem "minitest", :platforms => :ruby_18
   gem "rocco"
   gem "pygmentize"
   gem "mocha"
-  gem "minitest", :platforms => :ruby_18
+  gem "jammit"
 end

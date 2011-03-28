@@ -5,6 +5,9 @@ class Authorization
 
   key :uid, Integer, :required => true
   key :provider, String, :required => true
+  key :oauth_token, String
+  key :oauth_secret, String
+  key :nickname
 
   validates_uniqueness_of :uid, :scope => :provider
 
@@ -22,7 +25,10 @@ class Authorization
 
     a = new(:user => user, 
             :uid => hsh['uid'], 
-            :provider => hsh['provider']
+            :provider => hsh['provider'],
+            :nickname => hsh["user_info"]["nickname"],
+            :oauth_token => hsh['credentials']['token'],
+            :oauth_secret => hsh['credentials']['secret']
            )
 
     a.save
