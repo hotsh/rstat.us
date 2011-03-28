@@ -10,10 +10,13 @@ class Update
   key :html, String
   key :tags, Array, :default => []
   key :language, String
+  key :twitter, Boolean
+  key :facebook, Boolean
 
   before_save :generate_html
 
-  attr_accessor :oauth_token, :oauth_secret
+  # store in authorization
+  #attr_accessor :oauth_token, :oauth_secret
 
   validates_length_of :text, :minimum => 1, :maximum => 140
   before_create :get_tags
@@ -45,7 +48,7 @@ class Update
     matches.nil? ? false : matches.length > 0
   end
 
-  after_create :tweet
+  after_create :send_to_external_accounts
 
   timestamps!
 
@@ -90,27 +93,35 @@ class Update
     end
     self.html = out
   end
-  
-  def tweet
-    return unless ENV['RACK_ENV'] == 'production'
-    
-    # suppress crossposting of @replies
-    if text[0] == '@'
-      return
-    end
 
-    begin
-      Twitter.configure do |config|
-        config.consumer_key = ENV["CONSUMER_KEY"]
-        config.consumer_secret = ENV["CONSUMER_SECRET"]
-        config.oauth_token = oauth_token
-        config.oauth_token_secret = oauth_secret
+  def send_to_external_accounts
+    return if ENV['RACK_ENV'] == 'development'
+    if author.user
+      if self.twitter? && author.user.twitter?
+        begin
+          Twitter.configure do |config|
+            config.consumer_key = ENV["CONSUMER_KEY"]
+            config.consumer_secret = ENV["CONSUMER_SECRET"]
+            config.oauth_token = author.user.twitter.oauth_token
+            config.oauth_token_secret = author.user.twitter.oauth_secret
+          end
+
+          Twitter.update(text)
+        rescue Exception => e
+          #I should be shot for doing this.
+        end
       end
 
-      Twitter.update(text)
-    rescue Exception => e
-      #I should be shot for doing this.
+      if self.facebook? && author.user.facebook?
+        begin
+          user = FbGraph::User.me(author.user.facebook.oauth_token)
+          user.feed!(:message => text)
+        rescue Exception => e
+          #I should be shot for doing this.
+        end
+      end
     end
+
   end
 
 end

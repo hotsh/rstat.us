@@ -39,6 +39,35 @@ class User
   def url
     feed.local? ? "/users/#{feed.author.username}" : feed.author.url
   end
+  
+  def twitter?
+    has_authorization?(:twitter)
+  end
+  
+  def twitter
+    get_authorization(:twitter)
+  end
+  
+  def facebook?
+    has_authorization?(:facebook)
+  end
+  
+  def facebook
+    get_authorization(:facebook)
+  end
+  
+  def has_authorization?(auth)
+    a = Authorization.first(:provider => auth.to_s, :user_id => self.id)
+    if a.nil?
+      return false
+    else
+      return true
+    end
+  end
+  
+  def get_authorization(auth)
+    Authorization.first(:provider => auth.to_s, :user_id => self.id)
+  end
 
   key :following_ids, Array
   many :following, :in => :following_ids, :class_name => 'Feed'

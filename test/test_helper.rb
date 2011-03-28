@@ -49,12 +49,13 @@ module TestHelper
 
     visit '/auth/twitter'
   end
-
+  
   def log_in_fb(u, uid = 12345)
     OmniAuth.config.add_mock(:facebook, {
       :uid => uid,
       :user_info => {
         :name => "Jane Public",
+        :email => "jane@public.com",
         :nickname => u.username,
         :urls => { :website => "http://rstat.us" },
         :description => "a description",
@@ -65,7 +66,17 @@ module TestHelper
 
     visit '/auth/facebook'
   end
-
+  
+  def log_in_email(user)
+    User.stubs(:authenticate).returns(user)
+    visit "/login"
+    within("form") do
+      fill_in "username", :with => user.username
+      fill_in "password", :with => "anything"
+    end
+    click_button "Log in"
+  end
+  
   Capybara.app = Rstatus
 
 end
