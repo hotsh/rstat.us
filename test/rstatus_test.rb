@@ -482,6 +482,19 @@ class RstatusTest < MiniTest::Unit::TestCase
     assert_match "Password successfully set", page.body
     assert_match "/", page.current_url
   end
+  
+  def test_successful_password_reset
+    u = Factory(:user, :email => "someone@somewhere.com")
+    token = u.set_password_reset_token
+    visit "/reset_password/#{token}"
+    
+    fill_in "password", :with => "password"
+    fill_in "password_confirm", :with => "password"
+    click_button "Reset"
+    
+    assert_match "Password successfully set", page.body
+    assert_match "/", page.current_url
+  end
 
   def test_following_displays_username_logged_in
     u = Factory(:user, :username => "dfnkt")
