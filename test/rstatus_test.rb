@@ -468,6 +468,32 @@ class RstatusTest < MiniTest::Unit::TestCase
     assert_equal "2222", auth.oauth_secret
     assert_match "/users/#{u.username}/edit", page.current_url
   end
+  
+  def test_facebook_username_login_redirect
+    u = Factory(:user, :username => 'profile.php?id=12345')
+    a = Factory(:authorization, :user => u, :provider => "facebook")
+    OmniAuth.config.add_mock(:facebook, {
+      :uid => a.uid,
+      :user_info => {
+        :name => "Joe Public",
+        :email => "joe@public.com",
+        :nickname => 'profile.php?id=12345',
+        :urls => { :Website => "http://rstat.us" },
+        :description => "A description",
+        :image => "/images/something.png"
+      },
+      :credentials => {:token => "1111", :secret => "2222"}
+    })
+    visit '/auth/facebook'
+    assert_match /reset-username/, page.current_url
+    
+    fill_in "username", :with => "janepublic"
+    click_button "Update"
+    
+    user = User.first(:username => "janepublic")
+    assert_equal user.nil?, false
+    assert_equal user.author.username, "janepublic"
+  end
 
   def test_facebook_username
     new_user = Factory.build(:user, :username => 'profile.php?id=12345')
