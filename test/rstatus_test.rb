@@ -445,6 +445,20 @@ class RstatusTest < MiniTest::Unit::TestCase
     assert_match "/users/#{u.username}/edit", page.current_url
   end
 
+  def test_twitter_remove
+    u = Factory(:user)
+    a = Factory(:authorization, :user => u)
+    log_in(u, a.uid)
+    
+    visit "/users/#{u.username}/edit"
+    
+    assert_match /edit/, page.current_url
+    click_button "Remove"
+    
+    a = Authorization.first(:provider => "twitter", :user_id => u.id)
+    assert_equal a.nil?, true
+  end
+
   def test_add_facebook_to_account
     u = Factory(:user)
     OmniAuth.config.add_mock(:facebook, {
@@ -469,30 +483,18 @@ class RstatusTest < MiniTest::Unit::TestCase
     assert_match "/users/#{u.username}/edit", page.current_url
   end
   
-  def test_facebook_username_login_redirect
-    u = Factory(:user, :username => 'profile.php?id=12345')
+  def test_facebook_remove
+    u = Factory(:user)
     a = Factory(:authorization, :user => u, :provider => "facebook")
-    OmniAuth.config.add_mock(:facebook, {
-      :uid => a.uid,
-      :user_info => {
-        :name => "Joe Public",
-        :email => "joe@public.com",
-        :nickname => 'profile.php?id=12345',
-        :urls => { :Website => "http://rstat.us" },
-        :description => "A description",
-        :image => "/images/something.png"
-      },
-      :credentials => {:token => "1111", :secret => "2222"}
-    })
-    visit '/auth/facebook'
-    assert_match /reset-username/, page.current_url
+    log_in_fb(u, a.uid)
     
-    fill_in "username", :with => "janepublic"
-    click_button "Update"
+    visit "/users/#{u.username}/edit"
     
-    user = User.first(:username => "janepublic")
-    assert_equal user.nil?, false
-    assert_equal user.author.username, "janepublic"
+    assert_match /edit/, page.current_url
+    click_button "Remove"
+    
+    a = Authorization.first(:provider => "facebook", :user_id => u.id)
+    assert_equal a.nil?, true
   end
 
   def test_facebook_username
@@ -636,7 +638,7 @@ class RstatusTest < MiniTest::Unit::TestCase
     click_button "Finish Signup"
 
     u = User.first(:username => "new_user")
-    assert_equal u.nil?, false
+    refute u.nil?
     assert_equal u.email, "new_user@email.com"
 
   end

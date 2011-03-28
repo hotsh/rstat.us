@@ -157,5 +157,14 @@ class Rstatus
 
     haml :"users/list", :locals => {:title => "Followers"}
   end
+  
+  delete '/users/:username/auth/:provider' do
+    user = User.first(:username => params[:username])
+    if user
+      auth = Authorization.first(:provider => params[:provider], :user_id => user.id)
+      auth.destroy if auth
+    end
+    redirect "/users/#{params[:username]}/edit"
+  end
 
 end
