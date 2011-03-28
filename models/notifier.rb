@@ -12,6 +12,14 @@ class Notifier
               :body => render_haml_template("signup", {:token => token}),
               :via => :smtp, :via_options => Rstatus::PONY_VIA_OPTIONS)
   end
+  
+  def self.send_forgot_password_notification(recipient, token)
+    Pony.mail(:to => recipient, 
+              :subject => "Reset your rstat.us password",
+              :from => "steve+rstatus@steveklabnik.com",
+              :body => render_haml_template("forgot_password", {:token => token}),
+              :via => :smtp, :via_options => Rstatus::PONY_VIA_OPTIONS)
+  end
 
   private
 
