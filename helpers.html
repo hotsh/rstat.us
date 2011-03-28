@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="content-type" content="text/html;charset=utf-8">
+  <title>helpers.rb</title>
+  <link rel="stylesheet" href="http://github.com/jashkenas/docco/raw/0.3.0/resources/docco.css">
+</head>
+<body>
+<div id='container'>
+  <div id="background"></div>
+  <div id="jump_to">
+    Jump To &hellip;
+    <div id="jump_wrapper">
+      <div id="jump_page">
+          <a class="source" href="Rakefile.html">Rakefile</a>
+          <a class="source" href="helpers.html">helpers.rb</a>
+          <a class="source" href="models/all.html">all.rb</a>
+          <a class="source" href="models/author.html">author.rb</a>
+          <a class="source" href="models/authorization.html">authorization.rb</a>
+          <a class="source" href="models/feed.html">feed.rb</a>
+          <a class="source" href="models/notifier.html">notifier.rb</a>
+          <a class="source" href="models/update.html">update.rb</a>
+          <a class="source" href="models/user.html">user.rb</a>
+          <a class="source" href="rstatus.html">rstatus.rb</a>
+      </div>
+    </div>
+  </div>
+  <table cellspacing=0 cellpadding=0>
+  <thead>
+    <tr>
+      <th class=docs><h1>helpers.rb</h1></th>
+      <th class=code></th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr id='section-1'>
+      <td class=docs>
+        <div class="pilwrap">
+          <a class="pilcrow" href="#section-1">&#182;</a>
+        </div>
+        
+      </td>
+      <td class=code>
+        <div class='highlight'><pre><span class="k">module</span> <span class="nn">Sinatra</span>
+  <span class="k">module</span> <span class="nn">UserHelper</span></pre></div>
+      </td>
+    </tr>
+    <tr id='section-2'>
+      <td class=docs>
+        <div class="pilwrap">
+          <a class="pilcrow" href="#section-2">&#182;</a>
+        </div>
+        <p>This incredibly useful helper gives us the currently logged in user. We
+keep track of that by just setting a session variable with their id. If it
+doesn&rsquo;t exist, we just want to return nil.</p>
+      </td>
+      <td class=code>
+        <div class='highlight'><pre>    <span class="k">def</span> <span class="nf">current_user</span>
+      <span class="k">return</span> <span class="k">unless</span> <span class="n">session</span><span class="o">[</span><span class="ss">:user_id</span><span class="o">]</span>
+      <span class="vi">@current_user</span> <span class="o">||=</span> <span class="no">User</span><span class="o">.</span><span class="n">first</span><span class="p">(</span><span class="ss">:id</span> <span class="o">=&gt;</span> <span class="n">session</span><span class="o">[</span><span class="ss">:user_id</span><span class="o">]</span><span class="p">)</span>
+    <span class="k">end</span></pre></div>
+      </td>
+    </tr>
+    <tr id='section-3'>
+      <td class=docs>
+        <div class="pilwrap">
+          <a class="pilcrow" href="#section-3">&#182;</a>
+        </div>
+        <p>This very simple method checks if we&rsquo;ve got a logged in user. That&rsquo;s pretty
+easy: just check our current_user.</p>
+      </td>
+      <td class=code>
+        <div class='highlight'><pre>    <span class="k">def</span> <span class="nf">logged_in?</span>
+      <span class="n">current_user</span>
+    <span class="k">end</span></pre></div>
+      </td>
+    </tr>
+    <tr id='section-4'>
+      <td class=docs>
+        <div class="pilwrap">
+          <a class="pilcrow" href="#section-4">&#182;</a>
+        </div>
+        <p>Our <code>admin_only!</code> helper will only let admin users visit the page. If
+they&rsquo;re not an admin, we redirect them to either / or the page that we
+specified when we called it.</p>
+      </td>
+      <td class=code>
+        <div class='highlight'><pre>    <span class="k">def</span> <span class="nf">admin_only!</span><span class="p">(</span><span class="n">opts</span> <span class="o">=</span> <span class="p">{</span><span class="ss">:return</span> <span class="o">=&gt;</span> <span class="s2">&quot;/&quot;</span><span class="p">})</span>
+      <span class="k">unless</span> <span class="n">logged_in?</span> <span class="o">&amp;&amp;</span> <span class="n">current_user</span><span class="o">.</span><span class="n">admin?</span>
+        <span class="n">flash</span><span class="o">[</span><span class="ss">:error</span><span class="o">]</span> <span class="o">=</span> <span class="s2">&quot;Sorry, buddy&quot;</span>
+        <span class="n">redirect</span> <span class="n">opts</span><span class="o">[</span><span class="ss">:return</span><span class="o">]</span>
+      <span class="k">end</span>
+    <span class="k">end</span></pre></div>
+      </td>
+    </tr>
+    <tr id='section-5'>
+      <td class=docs>
+        <div class="pilwrap">
+          <a class="pilcrow" href="#section-5">&#182;</a>
+        </div>
+        <p>Similar to <code>admin_only!</code>, <code>require_login!</code> only lets logged in users access
+a particular page, and redirects them if they&rsquo;re not.</p>
+
+      </td>
+      <td class=code>
+        <div class='highlight'><pre>    <span class="k">def</span> <span class="nf">require_login!</span><span class="p">(</span><span class="n">opts</span> <span class="o">=</span> <span class="p">{</span><span class="ss">:return</span> <span class="o">=&gt;</span> <span class="s2">&quot;/&quot;</span><span class="p">})</span>
+      <span class="k">unless</span> <span class="n">logged_in?</span>
+        <span class="n">flash</span><span class="o">[</span><span class="ss">:error</span><span class="o">]</span> <span class="o">=</span> <span class="s2">&quot;Sorry, buddy&quot;</span>
+        <span class="n">redirect</span> <span class="n">opts</span><span class="o">[</span><span class="ss">:return</span><span class="o">]</span>
+      <span class="k">end</span>
+    <span class="k">end</span>
+
+    <span class="k">def</span> <span class="nf">set_params_page</span>
+      <span class="n">params</span><span class="o">[</span><span class="ss">:page</span><span class="o">]</span> <span class="o">||=</span> <span class="mi">1</span>
+      <span class="n">params</span><span class="o">[</span><span class="ss">:per_page</span><span class="o">]</span> <span class="o">||=</span> <span class="mi">25</span>
+      <span class="n">params</span><span class="o">[</span><span class="ss">:page</span><span class="o">]</span> <span class="o">=</span> <span class="n">params</span><span class="o">[</span><span class="ss">:page</span><span class="o">].</span><span class="n">to_i</span>
+      <span class="n">params</span><span class="o">[</span><span class="ss">:per_page</span><span class="o">]</span> <span class="o">=</span> <span class="n">params</span><span class="o">[</span><span class="ss">:per_page</span><span class="o">].</span><span class="n">to_i</span>
+    <span class="k">end</span>
+
+    <span class="k">def</span> <span class="nf">set_next_prev_page</span>
+      <span class="vi">@next_page</span> <span class="o">=</span> <span class="s2">&quot;?</span><span class="si">#{</span><span class="no">Rack</span><span class="o">::</span><span class="no">Utils</span><span class="o">.</span><span class="n">build_query</span> <span class="ss">:page</span> <span class="o">=&gt;</span> <span class="n">params</span><span class="o">[</span><span class="ss">:page</span><span class="o">]</span> <span class="o">+</span> <span class="mi">1</span><span class="si">}</span><span class="s2">&quot;</span>
+
+      <span class="k">if</span> <span class="n">params</span><span class="o">[</span><span class="ss">:page</span><span class="o">]</span> <span class="o">&gt;</span> <span class="mi">1</span>
+        <span class="vi">@prev_page</span> <span class="o">=</span> <span class="s2">&quot;?</span><span class="si">#{</span><span class="no">Rack</span><span class="o">::</span><span class="no">Utils</span><span class="o">.</span><span class="n">build_query</span> <span class="ss">:page</span> <span class="o">=&gt;</span> <span class="n">params</span><span class="o">[</span><span class="ss">:page</span><span class="o">]</span> <span class="o">-</span> <span class="mi">1</span><span class="si">}</span><span class="s2">&quot;</span>
+      <span class="k">else</span>
+        <span class="vi">@prev_page</span> <span class="o">=</span> <span class="kp">nil</span>
+      <span class="k">end</span>
+    <span class="k">end</span>
+  <span class="k">end</span>
+
+  <span class="n">helpers</span> <span class="no">UserHelper</span>
+<span class="k">end</span></pre></div>
+      </td>
+    </tr>
+  </table>
+</div>
+</body>

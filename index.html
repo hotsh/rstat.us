@@ -13,6 +13,7 @@
     <div id="jump_wrapper">
       <div id="jump_page">
           <a class="source" href="Rakefile.html">Rakefile</a>
+          <a class="source" href="helpers.html">helpers.rb</a>
           <a class="source" href="models/all.html">all.rb</a>
           <a class="source" href="models/author.html">author.rb</a>
           <a class="source" href="models/authorization.html">authorization.rb</a>
@@ -37,44 +38,83 @@
         <div class="pilwrap">
           <a class="pilcrow" href="#section-1">&#182;</a>
         </div>
-        
-      </td>
-      <td class=code>
-        <div class='highlight'><pre><span class="nb">require</span> <span class="s1">&#39;bundler&#39;</span>
-<span class="no">Bundler</span><span class="o">.</span><span class="n">require</span>
+        <p>This is the source code for <a href="http://rstat.us/">rstat.us</a>, a microblogging
+website built on the ostatus protocol.</p>
 
-<span class="k">module</span> <span class="nn">Sinatra</span>
-  <span class="k">module</span> <span class="nn">UserHelper</span></pre></div>
-      </td>
-    </tr>
-    <tr id='section-2'>
-      <td class=docs>
-        <div class="pilwrap">
-          <a class="pilcrow" href="#section-2">&#182;</a>
-        </div>
-        <p>This incredibly useful helper gives us the currently logged in user. We
-keep track of that by just setting a session variable with their id. If it
-doesn&rsquo;t exist, we just want to return nil.</p>
+<p>To get started, you&rsquo;ll need to install some prerequisite software:</p>
+
+<p><strong>Ruby</strong> is used to power the site. We&rsquo;re currently using ruby 1.9.2p180. I
+highly reccomend that you use <a href="http://rvm.beginrescueend.com/">rvm</a> to install and manage your Rubies.
+It&rsquo;s a fantastic tool. If you do decide to use <code>rvm</code>, you can install the
+appropriate Ruby and create a gemset by simply <code>cd</code>-ing into the root project
+directory; I have a magical <code>.rvmrc</code> file that&rsquo;ll set you up.</p>
+
+<p><strong>MongoDB</strong> is a really awesome document store. We use it to persist all of
+the data on the website. To get MongoDB, please visit their
+<a href="http://www.mongodb.org/downloads">downloads page</a> to find a package for your
+system.</p>
+
+<p>After installing Ruby and MongoDB, you need to aquire all of the Ruby gems
+that we use. This is pretty easy, since we&rsquo;re using <strong>bundler</strong>. Just do
+this:</p>
+
+<pre><code>$ gem install bundler
+$ bundle install
+</code></pre>
+
+<p>That&rsquo;ll set it all up! Then, you need to make sure you&rsquo;re running MongoDB.
+I have to open up another tab in my terminal and type</p>
+
+<pre><code>$ mongod
+</code></pre>
+
+<p>to get this to happen. When you&rsquo;re done hacking, you can hit ^-c to stop
+<code>mongod</code> from running.</p>
+
+<p>To actually start up the site, just</p>
+
+<pre><code>$ rackup
+</code></pre>
+
+<p>and then visit <a href="http://localhost:9292">http://localhost:9292/</a>. You&rsquo;re good
+to go!</p>
       </td>
       <td class=code>
-        <div class='highlight'><pre>    <span class="k">def</span> <span class="nf">current_user</span>
-      <span class="k">return</span> <span class="k">unless</span> <span class="n">session</span><span class="o">[</span><span class="ss">:user_id</span><span class="o">]</span>
-      <span class="vi">@current_user</span> <span class="o">||=</span> <span class="no">User</span><span class="o">.</span><span class="n">first</span><span class="p">(</span><span class="ss">:id</span> <span class="o">=&gt;</span> <span class="n">session</span><span class="o">[</span><span class="ss">:user_id</span><span class="o">]</span><span class="p">)</span>
-    <span class="k">end</span></pre></div>
+        <div class='highlight'><pre></pre></div>
       </td>
     </tr>
-    <tr id='section-3'>
+    <tr id='section-About_rstatus.rb'>
       <td class=docs>
         <div class="pilwrap">
-          <a class="pilcrow" href="#section-3">&#182;</a>
+          <a class="pilcrow" href="#section-About_rstatus.rb">&#182;</a>
         </div>
-        <p>This very simple method checks if we&rsquo;ve got a logged in user. That&rsquo;s pretty
-easy: just check our current_user.</p>
+        <h3>About rstatus.rb</h3>
+
+<p>This file is the main entry point to the application. It has three main
+purposes:</p>
+
+<ol>
+<li>Include all relevant gems and library code.</li>
+<li>Configure all settings based on our environment.</li>
+<li>Set up a few basic routes.</li>
+</ol>
+
+
+<p>Everything else is handled by code that&rsquo;s included from this file.</p>
       </td>
       <td class=code>
-        <div class='highlight'><pre>    <span class="k">def</span> <span class="nf">logged_in?</span>
-      <span class="n">current_user</span>
-    <span class="k">end</span></pre></div>
+        <div class='highlight'><pre></pre></div>
+      </td>
+    </tr>
+    <tr id='section-Including_gems'>
+      <td class=docs>
+        <div class="pilwrap">
+          <a class="pilcrow" href="#section-Including_gems">&#182;</a>
+        </div>
+        <h3>Including gems</h3>
+      </td>
+      <td class=code>
+        <div class='highlight'><pre></pre></div>
       </td>
     </tr>
     <tr id='section-4'>
@@ -82,17 +122,12 @@ easy: just check our current_user.</p>
         <div class="pilwrap">
           <a class="pilcrow" href="#section-4">&#182;</a>
         </div>
-        <p>Our <code>admin_only!</code> helper will only let admin users visit the page. If
-they&rsquo;re not an admin, we redirect them to either / or the page that we
-specified when we called it.</p>
+        <p>We need to require rubygems and bundler to get things going. Then we call
+<code>Bundler.setup</code> to get all of the magic started.</p>
       </td>
       <td class=code>
-        <div class='highlight'><pre>    <span class="k">def</span> <span class="nf">admin_only!</span><span class="p">(</span><span class="n">opts</span> <span class="o">=</span> <span class="p">{</span><span class="ss">:return</span> <span class="o">=&gt;</span> <span class="s2">&quot;/&quot;</span><span class="p">})</span>
-      <span class="k">unless</span> <span class="n">logged_in?</span> <span class="o">&amp;&amp;</span> <span class="n">current_user</span><span class="o">.</span><span class="n">admin?</span>
-        <span class="n">flash</span><span class="o">[</span><span class="ss">:error</span><span class="o">]</span> <span class="o">=</span> <span class="s2">&quot;Sorry, buddy&quot;</span>
-        <span class="n">redirect</span> <span class="n">opts</span><span class="o">[</span><span class="ss">:return</span><span class="o">]</span>
-      <span class="k">end</span>
-    <span class="k">end</span></pre></div>
+        <div class='highlight'><pre><span class="nb">require</span> <span class="s1">&#39;bundler&#39;</span>
+<span class="no">Bundler</span><span class="o">.</span><span class="n">require</span></pre></div>
       </td>
     </tr>
     <tr id='section-5'>
@@ -100,47 +135,30 @@ specified when we called it.</p>
         <div class="pilwrap">
           <a class="pilcrow" href="#section-5">&#182;</a>
         </div>
-        <p>Similar to <code>admin_only!</code>, <code>require_login!</code> only lets logged in users access
-a particular page, and redirects them if they&rsquo;re not.</p>
+        <p>We moved lots of helpers into a separate file. These are all things that are
+useful throughout the rest of the application.</p>
       </td>
       <td class=code>
-        <div class='highlight'><pre>    <span class="k">def</span> <span class="nf">require_login!</span><span class="p">(</span><span class="n">opts</span> <span class="o">=</span> <span class="p">{</span><span class="ss">:return</span> <span class="o">=&gt;</span> <span class="s2">&quot;/&quot;</span><span class="p">})</span>
-      <span class="k">unless</span> <span class="n">logged_in?</span>
-        <span class="n">flash</span><span class="o">[</span><span class="ss">:error</span><span class="o">]</span> <span class="o">=</span> <span class="s2">&quot;Sorry, buddy&quot;</span>
-        <span class="n">redirect</span> <span class="n">opts</span><span class="o">[</span><span class="ss">:return</span><span class="o">]</span>
-      <span class="k">end</span>
-    <span class="k">end</span>
-
-    <span class="k">def</span> <span class="nf">set_params_page</span>
-      <span class="n">params</span><span class="o">[</span><span class="ss">:page</span><span class="o">]</span> <span class="o">||=</span> <span class="mi">1</span>
-      <span class="n">params</span><span class="o">[</span><span class="ss">:per_page</span><span class="o">]</span> <span class="o">||=</span> <span class="mi">25</span>
-      <span class="n">params</span><span class="o">[</span><span class="ss">:page</span><span class="o">]</span> <span class="o">=</span> <span class="n">params</span><span class="o">[</span><span class="ss">:page</span><span class="o">].</span><span class="n">to_i</span>
-      <span class="n">params</span><span class="o">[</span><span class="ss">:per_page</span><span class="o">]</span> <span class="o">=</span> <span class="n">params</span><span class="o">[</span><span class="ss">:per_page</span><span class="o">].</span><span class="n">to_i</span>
-    <span class="k">end</span>
-
-    <span class="k">def</span> <span class="nf">set_next_prev_page</span>
-      <span class="vi">@next_page</span> <span class="o">=</span> <span class="s2">&quot;?</span><span class="si">#{</span><span class="no">Rack</span><span class="o">::</span><span class="no">Utils</span><span class="o">.</span><span class="n">build_query</span> <span class="ss">:page</span> <span class="o">=&gt;</span> <span class="n">params</span><span class="o">[</span><span class="ss">:page</span><span class="o">]</span> <span class="o">+</span> <span class="mi">1</span><span class="si">}</span><span class="s2">&quot;</span>
-
-      <span class="k">if</span> <span class="n">params</span><span class="o">[</span><span class="ss">:page</span><span class="o">]</span> <span class="o">&gt;</span> <span class="mi">1</span>
-        <span class="vi">@prev_page</span> <span class="o">=</span> <span class="s2">&quot;?</span><span class="si">#{</span><span class="no">Rack</span><span class="o">::</span><span class="no">Utils</span><span class="o">.</span><span class="n">build_query</span> <span class="ss">:page</span> <span class="o">=&gt;</span> <span class="n">params</span><span class="o">[</span><span class="ss">:page</span><span class="o">]</span> <span class="o">-</span> <span class="mi">1</span><span class="si">}</span><span class="s2">&quot;</span>
-      <span class="k">else</span>
-        <span class="vi">@prev_page</span> <span class="o">=</span> <span class="kp">nil</span>
-      <span class="k">end</span>
-    <span class="k">end</span>
-  <span class="k">end</span>
-
-  <span class="n">helpers</span> <span class="no">UserHelper</span>
-<span class="k">end</span>
-
-<span class="k">class</span> <span class="nc">Rstatus</span> <span class="o">&lt;</span> <span class="no">Sinatra</span><span class="o">::</span><span class="no">Base</span>
-
-  <span class="n">set</span> <span class="ss">:port</span><span class="p">,</span> <span class="mi">8088</span></pre></div>
+        <div class='highlight'><pre><span class="n">require_relative</span> <span class="s2">&quot;helpers&quot;</span></pre></div>
       </td>
     </tr>
     <tr id='section-6'>
       <td class=docs>
         <div class="pilwrap">
           <a class="pilcrow" href="#section-6">&#182;</a>
+        </div>
+        <p>It&rsquo;s good form to make your Sinatra applications be a subclass of Sinatra::Base.
+This way, we&rsquo;re not polluting the global namespace with our methods and routes
+and such.</p>
+      </td>
+      <td class=code>
+        <div class='highlight'><pre><span class="k">class</span> <span class="nc">Rstatus</span> <span class="o">&lt;</span> <span class="no">Sinatra</span><span class="o">::</span><span class="no">Base</span></pre></div>
+      </td>
+    </tr>
+    <tr id='section-7'>
+      <td class=docs>
+        <div class="pilwrap">
+          <a class="pilcrow" href="#section-7">&#182;</a>
         </div>
         <p>The <code>PONY_VIA_OPTIONS</code> hash is used to configure <code>pony</code>. Basically, we only
 want to actually send mail if we&rsquo;re in the production environment. So we set
@@ -156,17 +174,16 @@ the hash to just be <code>{}</code>, except when we want to send mail.</p>
   <span class="k">end</span>
 
   <span class="n">configure</span> <span class="ss">:production</span> <span class="k">do</span>
-    <span class="nb">require</span> <span class="s1">&#39;newrelic_rpm&#39;</span>
     <span class="no">Compass</span><span class="o">.</span><span class="n">configuration</span> <span class="k">do</span> <span class="o">|</span><span class="n">config</span><span class="o">|</span>
       <span class="n">config</span><span class="o">.</span><span class="n">output_style</span> <span class="o">=</span> <span class="ss">:compressed</span>
     <span class="k">end</span>
   <span class="k">end</span></pre></div>
       </td>
     </tr>
-    <tr id='section-7'>
+    <tr id='section-8'>
       <td class=docs>
         <div class="pilwrap">
-          <a class="pilcrow" href="#section-7">&#182;</a>
+          <a class="pilcrow" href="#section-8">&#182;</a>
         </div>
         <p>We&rsquo;re using <a href="http://sendgrid.com/">SendGrid</a> to send our emails. It&rsquo;s really
 easy; the Heroku addon sets us up with environment variables with all of the
@@ -182,18 +199,61 @@ configuration options that we need.</p>
       <span class="ss">:password</span>       <span class="o">=&gt;</span> <span class="no">ENV</span><span class="o">[</span><span class="s1">&#39;SENDGRID_PASSWORD&#39;</span><span class="o">]</span><span class="p">,</span>
       <span class="ss">:domain</span>         <span class="o">=&gt;</span> <span class="no">ENV</span><span class="o">[</span><span class="s1">&#39;SENDGRID_DOMAIN&#39;</span><span class="o">]</span>
     <span class="p">}</span>
-  <span class="k">end</span>
-
-  <span class="n">use</span> <span class="no">Rack</span><span class="o">::</span><span class="no">Session</span><span class="o">::</span><span class="no">Cookie</span><span class="p">,</span> <span class="ss">:secret</span> <span class="o">=&gt;</span> <span class="no">ENV</span><span class="o">[</span><span class="s1">&#39;COOKIE_SECRET&#39;</span><span class="o">]</span>
-  <span class="n">use</span> <span class="no">Rack</span><span class="o">::</span><span class="no">Timeout</span>
-  <span class="no">Rack</span><span class="o">::</span><span class="no">Timeout</span><span class="o">.</span><span class="n">timeout</span> <span class="o">=</span> <span class="mi">10</span>  <span class="c1"># this line is optional. if omitted, default is 30 seconds.</span>
+  <span class="k">end</span></pre></div>
+      </td>
+    </tr>
+    <tr id='section-9'>
+      <td class=docs>
+        <div class="pilwrap">
+          <a class="pilcrow" href="#section-9">&#182;</a>
+        </div>
+        <p>We need a secret for our sessions. This is set via an environment variable so
+that we don&rsquo;t have to give it away in the source code. Heroku makes it really
+easy to keep environment variables set up, so this ends up being pretty nice.
+This also has to be included before rack-flash, or it blows up.</p>
+      </td>
+      <td class=code>
+        <div class='highlight'><pre>  <span class="n">use</span> <span class="no">Rack</span><span class="o">::</span><span class="no">Session</span><span class="o">::</span><span class="no">Cookie</span><span class="p">,</span> <span class="ss">:secret</span> <span class="o">=&gt;</span> <span class="no">ENV</span><span class="o">[</span><span class="s1">&#39;COOKIE_SECRET&#39;</span><span class="o">]</span></pre></div>
+      </td>
+    </tr>
+    <tr id='section-10'>
+      <td class=docs>
+        <div class="pilwrap">
+          <a class="pilcrow" href="#section-10">&#182;</a>
+        </div>
+        <p>We&rsquo;re using rack-timeout to ensure that our dynos don&rsquo;t get starved by renegade
+processes.</p>
+      </td>
+      <td class=code>
+        <div class='highlight'><pre>  <span class="n">use</span> <span class="no">Rack</span><span class="o">::</span><span class="no">Timeout</span>
+  <span class="no">Rack</span><span class="o">::</span><span class="no">Timeout</span><span class="o">.</span><span class="n">timeout</span> <span class="o">=</span> <span class="mi">10</span>
 
   <span class="n">set</span> <span class="ss">:root</span><span class="p">,</span> <span class="no">File</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="bp">__FILE__</span><span class="p">)</span>
-  <span class="n">set</span> <span class="ss">:haml</span><span class="p">,</span> <span class="ss">:escape_html</span> <span class="o">=&gt;</span> <span class="kp">true</span>
-  <span class="n">set</span> <span class="ss">:method_override</span><span class="p">,</span> <span class="kp">true</span>
-
-  <span class="nb">require</span> <span class="s1">&#39;rack-flash&#39;</span>
-  <span class="n">use</span> <span class="no">Rack</span><span class="o">::</span><span class="no">Flash</span>
+  <span class="n">set</span> <span class="ss">:haml</span><span class="p">,</span> <span class="ss">:escape_html</span> <span class="o">=&gt;</span> <span class="kp">true</span></pre></div>
+      </td>
+    </tr>
+    <tr id='section-11'>
+      <td class=docs>
+        <div class="pilwrap">
+          <a class="pilcrow" href="#section-11">&#182;</a>
+        </div>
+        <p>This method enables the ability for our forms to use the _method hack for
+actual RESTful stuff.</p>
+      </td>
+      <td class=code>
+        <div class='highlight'><pre>  <span class="n">set</span> <span class="ss">:method_override</span><span class="p">,</span> <span class="kp">true</span></pre></div>
+      </td>
+    </tr>
+    <tr id='section-12'>
+      <td class=docs>
+        <div class="pilwrap">
+          <a class="pilcrow" href="#section-12">&#182;</a>
+        </div>
+        <p>If you&rsquo;ve used Rails' flash messages, you know how convenient they are.
+rack-flash lets us use them.</p>
+      </td>
+      <td class=code>
+        <div class='highlight'><pre>  <span class="n">use</span> <span class="no">Rack</span><span class="o">::</span><span class="no">Flash</span>
 
   <span class="n">configure</span> <span class="k">do</span>
     <span class="k">if</span> <span class="no">ENV</span><span class="o">[</span><span class="s1">&#39;MONGOHQ_URL&#39;</span><span class="o">]</span>
@@ -206,10 +266,10 @@ configuration options that we need.</p>
     <span class="k">end</span></pre></div>
       </td>
     </tr>
-    <tr id='section-8'>
+    <tr id='section-13'>
       <td class=docs>
         <div class="pilwrap">
-          <a class="pilcrow" href="#section-8">&#182;</a>
+          <a class="pilcrow" href="#section-13">&#182;</a>
         </div>
         <p>configure compass</p>
       </td>
@@ -218,8 +278,18 @@ configuration options that we need.</p>
       <span class="n">config</span><span class="o">.</span><span class="n">project_path</span> <span class="o">=</span> <span class="no">File</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="bp">__FILE__</span><span class="p">)</span>
       <span class="n">config</span><span class="o">.</span><span class="n">sass_options</span> <span class="o">=</span> <span class="p">{</span><span class="ss">:cache_location</span> <span class="o">=&gt;</span> <span class="s2">&quot;./tmp/sass-cache&quot;</span><span class="p">}</span>
     <span class="k">end</span>
-    <span class="no">MongoMapperExt</span><span class="o">.</span><span class="n">init</span>
-    <span class="n">require_relative</span> <span class="s1">&#39;models/all&#39;</span>
+    <span class="no">MongoMapperExt</span><span class="o">.</span><span class="n">init</span></pre></div>
+      </td>
+    </tr>
+    <tr id='section-14'>
+      <td class=docs>
+        <div class="pilwrap">
+          <a class="pilcrow" href="#section-14">&#182;</a>
+        </div>
+        <p>now that we&rsquo;ve connected to the db, let&rsquo;s load our models.</p>
+      </td>
+      <td class=code>
+        <div class='highlight'><pre>    <span class="n">require_relative</span> <span class="s1">&#39;models/all&#39;</span>
   <span class="k">end</span>
 
   <span class="n">helpers</span> <span class="no">Sinatra</span><span class="o">::</span><span class="no">UserHelper</span>
@@ -239,16 +309,12 @@ configuration options that we need.</p>
   <span class="k">end</span></pre></div>
       </td>
     </tr>
-    <tr id='section-#'>
+    <tr id='section-15'>
       <td class=docs>
         <div class="pilwrap">
-          <a class="pilcrow" href="#section-#">&#182;</a>
+          <a class="pilcrow" href="#section-15">&#182;</a>
         </div>
-        <h6>#</h6>
-
-<p>EMPTY USERNAME HANDLING &ndash; quick and dirty</p>
-
-<h6>#</h6>
+        <p>EMPTY USERNAME HANDLING &ndash; quick and dirty</p>
       </td>
       <td class=code>
         <div class='highlight'><pre>  <span class="n">before</span> <span class="k">do</span>
@@ -279,18 +345,9 @@ configuration options that we need.</p>
       <span class="n">flash</span><span class="o">[</span><span class="ss">:notice</span><span class="o">]</span> <span class="o">=</span> <span class="s2">&quot;Sorry, that username has already been taken or is not valid. Please try again.&quot;</span>
       <span class="n">haml</span> <span class="ss">:reset_username</span>
     <span class="k">end</span>
-  <span class="k">end</span></pre></div>
-      </td>
-    </tr>
-    <tr id='section-#'>
-      <td class=docs>
-        <div class="pilwrap">
-          <a class="pilcrow" href="#section-#">&#182;</a>
-        </div>
-        <h6>#</h6>
-      </td>
-      <td class=code>
-        <div class='highlight'><pre>  <span class="n">get</span> <span class="s1">&#39;/&#39;</span> <span class="k">do</span>
+  <span class="k">end</span>
+
+  <span class="n">get</span> <span class="s1">&#39;/&#39;</span> <span class="k">do</span>
     <span class="k">if</span> <span class="n">logged_in?</span>
       <span class="n">set_params_page</span>
       <span class="vi">@updates</span> <span class="o">=</span> <span class="n">current_user</span><span class="o">.</span><span class="n">timeline</span><span class="p">(</span><span class="n">params</span><span class="p">)</span>
@@ -327,10 +384,10 @@ configuration options that we need.</p>
   <span class="k">end</span></pre></div>
       </td>
     </tr>
-    <tr id='section-11'>
+    <tr id='section-16'>
       <td class=docs>
         <div class="pilwrap">
-          <a class="pilcrow" href="#section-11">&#182;</a>
+          <a class="pilcrow" href="#section-16">&#182;</a>
         </div>
         <p>get &lsquo;/screen.css&rsquo; do
   cache_control :public, :must_revalidate, :max_age => 360
@@ -366,10 +423,10 @@ end</p>
         <span class="n">session</span><span class="o">[</span><span class="ss">:email</span><span class="o">]</span> <span class="o">=</span> <span class="n">auth</span><span class="o">[</span><span class="s1">&#39;user_info&#39;</span><span class="o">][</span><span class="s1">&#39;email&#39;</span><span class="o">]</span></pre></div>
       </td>
     </tr>
-    <tr id='section-12'>
+    <tr id='section-17'>
       <td class=docs>
         <div class="pilwrap">
-          <a class="pilcrow" href="#section-12">&#182;</a>
+          <a class="pilcrow" href="#section-17">&#182;</a>
         </div>
         <p>let&rsquo;s store their oauth stuff so they don&rsquo;t have to re-login after</p>
       </td>
@@ -389,10 +446,10 @@ end</p>
         <div class='highlight'><pre>        <span class="k">if</span> <span class="no">User</span><span class="o">.</span><span class="n">first</span> <span class="ss">:username</span> <span class="o">=&gt;</span> <span class="n">auth</span><span class="o">[</span><span class="s1">&#39;user_info&#39;</span><span class="o">][</span><span class="s1">&#39;nickname&#39;</span><span class="o">]</span> <span class="ow">or</span> <span class="n">auth</span><span class="o">[</span><span class="s1">&#39;user_info&#39;</span><span class="o">][</span><span class="s1">&#39;nickname&#39;</span><span class="o">]</span> <span class="o">=~</span> <span class="sr">/profile[.]php[?]id=/</span></pre></div>
       </td>
     </tr>
-    <tr id='section-14'>
+    <tr id='section-19'>
       <td class=docs>
         <div class="pilwrap">
-          <a class="pilcrow" href="#section-14">&#182;</a>
+          <a class="pilcrow" href="#section-19">&#182;</a>
         </div>
         <p>we have a username conflict!</p>
       </td>
@@ -403,10 +460,10 @@ end</p>
         <span class="k">else</span></pre></div>
       </td>
     </tr>
-    <tr id='section-15'>
+    <tr id='section-20'>
       <td class=docs>
         <div class="pilwrap">
-          <a class="pilcrow" href="#section-15">&#182;</a>
+          <a class="pilcrow" href="#section-20">&#182;</a>
         </div>
         <p>Redirect to confirm page to verify username and provide email</p>
       </td>
@@ -459,10 +516,10 @@ end</p>
     <span class="n">set_params_page</span></pre></div>
       </td>
     </tr>
-    <tr id='section-17'>
+    <tr id='section-22'>
       <td class=docs>
         <div class="pilwrap">
-          <a class="pilcrow" href="#section-17">&#182;</a>
+          <a class="pilcrow" href="#section-22">&#182;</a>
         </div>
         <p>Filter users by search params</p>
       </td>
@@ -471,10 +528,10 @@ end</p>
       <span class="vi">@users</span> <span class="o">=</span> <span class="no">User</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="ss">:username</span> <span class="o">=&gt;</span> <span class="sr">/</span><span class="si">#{</span><span class="n">params</span><span class="o">[</span><span class="ss">:search</span><span class="o">]</span><span class="si">}</span><span class="sr">/i</span><span class="p">)</span></pre></div>
       </td>
     </tr>
-    <tr id='section-18'>
+    <tr id='section-23'>
       <td class=docs>
         <div class="pilwrap">
-          <a class="pilcrow" href="#section-18">&#182;</a>
+          <a class="pilcrow" href="#section-23">&#182;</a>
         </div>
         <p>Filter users by letter</p>
       </td>
@@ -490,10 +547,10 @@ end</p>
     <span class="k">end</span></pre></div>
       </td>
     </tr>
-    <tr id='section-19'>
+    <tr id='section-24'>
       <td class=docs>
         <div class="pilwrap">
-          <a class="pilcrow" href="#section-19">&#182;</a>
+          <a class="pilcrow" href="#section-24">&#182;</a>
         </div>
         <p>Sort users alphabetically when filtering by letter</p>
       </td>
@@ -517,10 +574,10 @@ end</p>
     <span class="k">if</span> <span class="n">user</span><span class="o">.</span><span class="n">save</span></pre></div>
       </td>
     </tr>
-    <tr id='section-20'>
+    <tr id='section-25'>
       <td class=docs>
         <div class="pilwrap">
-          <a class="pilcrow" href="#section-20">&#182;</a>
+          <a class="pilcrow" href="#section-25">&#182;</a>
         </div>
         <p>this is really stupid.</p>
       </td>
@@ -560,10 +617,10 @@ end</p>
   <span class="k">end</span></pre></div>
       </td>
     </tr>
-    <tr id='section-21'>
+    <tr id='section-26'>
       <td class=docs>
         <div class="pilwrap">
-          <a class="pilcrow" href="#section-21">&#182;</a>
+          <a class="pilcrow" href="#section-26">&#182;</a>
         </div>
         <p>show user profile</p>
       </td>
@@ -578,10 +635,10 @@ end</p>
     <span class="vi">@author</span> <span class="o">=</span> <span class="n">user</span><span class="o">.</span><span class="n">author</span></pre></div>
       </td>
     </tr>
-    <tr id='section-22'>
+    <tr id='section-27'>
       <td class=docs>
         <div class="pilwrap">
-          <a class="pilcrow" href="#section-22">&#182;</a>
+          <a class="pilcrow" href="#section-27">&#182;</a>
         </div>
         <p>XXX: the following doesn&rsquo;t work for some reasond
 @updates = user.feed.updates.sort{|a, b| b.created_at &lt;=> a.created_at}.paginate(:page => params[:page], :per_page => params[:per_page])</p>
@@ -590,10 +647,10 @@ end</p>
         <div class='highlight'><pre></pre></div>
       </td>
     </tr>
-    <tr id='section-23'>
+    <tr id='section-28'>
       <td class=docs>
         <div class="pilwrap">
-          <a class="pilcrow" href="#section-23">&#182;</a>
+          <a class="pilcrow" href="#section-28">&#182;</a>
         </div>
         <p>XXX: this is not webscale</p>
       </td>
@@ -607,10 +664,10 @@ end</p>
   <span class="k">end</span></pre></div>
       </td>
     </tr>
-    <tr id='section-24'>
+    <tr id='section-29'>
       <td class=docs>
         <div class="pilwrap">
-          <a class="pilcrow" href="#section-24">&#182;</a>
+          <a class="pilcrow" href="#section-29">&#182;</a>
         </div>
         <p>subscriber receives updates
 should be &lsquo;put&rsquo;, PuSH sucks at REST
@@ -623,10 +680,10 @@ end</p>
         <div class='highlight'><pre></pre></div>
       </td>
     </tr>
-    <tr id='section-25'>
+    <tr id='section-30'>
       <td class=docs>
         <div class="pilwrap">
-          <a class="pilcrow" href="#section-25">&#182;</a>
+          <a class="pilcrow" href="#section-30">&#182;</a>
         </div>
         <p>unsubscribe from a feed</p>
       </td>
@@ -640,10 +697,10 @@ end</p>
     <span class="n">redirect</span> <span class="n">request</span><span class="o">.</span><span class="n">referrer</span> <span class="k">if</span> <span class="vi">@author</span><span class="o">.</span><span class="n">user</span> <span class="o">==</span> <span class="n">current_user</span></pre></div>
       </td>
     </tr>
-    <tr id='section-26'>
+    <tr id='section-31'>
       <td class=docs>
         <div class="pilwrap">
-          <a class="pilcrow" href="#section-26">&#182;</a>
+          <a class="pilcrow" href="#section-31">&#182;</a>
         </div>
         <p>make sure we&rsquo;re following them already</p>
       </td>
@@ -654,10 +711,10 @@ end</p>
     <span class="k">end</span></pre></div>
       </td>
     </tr>
-    <tr id='section-27'>
+    <tr id='section-32'>
       <td class=docs>
         <div class="pilwrap">
-          <a class="pilcrow" href="#section-27">&#182;</a>
+          <a class="pilcrow" href="#section-32">&#182;</a>
         </div>
         <p>unfollow them!</p>
       </td>
@@ -674,10 +731,10 @@ end</p>
     <span class="n">feed_url</span> <span class="o">=</span> <span class="kp">nil</span></pre></div>
       </td>
     </tr>
-    <tr id='section-28'>
+    <tr id='section-33'>
       <td class=docs>
         <div class="pilwrap">
-          <a class="pilcrow" href="#section-28">&#182;</a>
+          <a class="pilcrow" href="#section-33">&#182;</a>
         </div>
         <p>Allow for a variety of feed addresses</p>
       </td>
@@ -688,10 +745,10 @@ end</p>
     <span class="k">when</span><span class="sr"> /@/</span></pre></div>
       </td>
     </tr>
-    <tr id='section-29'>
+    <tr id='section-34'>
       <td class=docs>
         <div class="pilwrap">
-          <a class="pilcrow" href="#section-29">&#182;</a>
+          <a class="pilcrow" href="#section-34">&#182;</a>
         </div>
         <p>TODO: ensure caching of finger lookup.</p>
       </td>
@@ -703,10 +760,10 @@ end</p>
     <span class="k">end</span></pre></div>
       </td>
     </tr>
-    <tr id='section-30'>
+    <tr id='section-35'>
       <td class=docs>
         <div class="pilwrap">
-          <a class="pilcrow" href="#section-30">&#182;</a>
+          <a class="pilcrow" href="#section-35">&#182;</a>
         </div>
         <p>make sure we&rsquo;re not following them already</p>
       </td>
@@ -714,10 +771,10 @@ end</p>
         <div class='highlight'><pre>    <span class="k">if</span> <span class="n">current_user</span><span class="o">.</span><span class="n">following?</span> <span class="n">feed_url</span></pre></div>
       </td>
     </tr>
-    <tr id='section-31'>
+    <tr id='section-36'>
       <td class=docs>
         <div class="pilwrap">
-          <a class="pilcrow" href="#section-31">&#182;</a>
+          <a class="pilcrow" href="#section-36">&#182;</a>
         </div>
         <p>which means it exists</p>
       </td>
@@ -734,10 +791,10 @@ end</p>
     <span class="k">end</span></pre></div>
       </td>
     </tr>
-    <tr id='section-32'>
+    <tr id='section-37'>
       <td class=docs>
         <div class="pilwrap">
-          <a class="pilcrow" href="#section-32">&#182;</a>
+          <a class="pilcrow" href="#section-37">&#182;</a>
         </div>
         <p>follow them!</p>
       </td>
@@ -751,10 +808,10 @@ end</p>
     <span class="k">if</span> <span class="ow">not</span> <span class="n">f</span><span class="o">.</span><span class="n">local?</span></pre></div>
       </td>
     </tr>
-    <tr id='section-33'>
+    <tr id='section-38'>
       <td class=docs>
         <div class="pilwrap">
-          <a class="pilcrow" href="#section-33">&#182;</a>
+          <a class="pilcrow" href="#section-38">&#182;</a>
         </div>
         <p>remote feeds require some talking to a hub</p>
       </td>
@@ -770,10 +827,10 @@ end</p>
     <span class="k">else</span></pre></div>
       </td>
     </tr>
-    <tr id='section-34'>
+    <tr id='section-39'>
       <td class=docs>
         <div class="pilwrap">
-          <a class="pilcrow" href="#section-34">&#182;</a>
+          <a class="pilcrow" href="#section-39">&#182;</a>
         </div>
         <p>local feed&hellip; redirect to that user&rsquo;s profile</p>
       </td>
@@ -784,10 +841,10 @@ end</p>
   <span class="k">end</span></pre></div>
       </td>
     </tr>
-    <tr id='section-35'>
+    <tr id='section-40'>
       <td class=docs>
         <div class="pilwrap">
-          <a class="pilcrow" href="#section-35">&#182;</a>
+          <a class="pilcrow" href="#section-40">&#182;</a>
         </div>
         <p>publisher will feed the atom to a hub
 subscribers will verify a subscription</p>
@@ -801,10 +858,10 @@ subscribers will verify a subscription</p>
     <span class="k">if</span> <span class="n">params</span><span class="o">[</span><span class="s1">&#39;hub.challenge&#39;</span><span class="o">]</span></pre></div>
       </td>
     </tr>
-    <tr id='section-36'>
+    <tr id='section-41'>
       <td class=docs>
         <div class="pilwrap">
-          <a class="pilcrow" href="#section-36">&#182;</a>
+          <a class="pilcrow" href="#section-41">&#182;</a>
         </div>
         <p>sub = OSub::Subscription.new(request.url, feed.url, nil, feed.verify_token)</p>
       </td>
@@ -812,10 +869,10 @@ subscribers will verify a subscription</p>
         <div class='highlight'><pre></pre></div>
       </td>
     </tr>
-    <tr id='section-37'>
+    <tr id='section-42'>
       <td class=docs>
         <div class="pilwrap">
-          <a class="pilcrow" href="#section-37">&#182;</a>
+          <a class="pilcrow" href="#section-42">&#182;</a>
         </div>
         <p>perform the hub&rsquo;s challenge
 respond = sub.perform_challenge(params[&lsquo;hub.challenge&rsquo;])</p>
@@ -824,10 +881,10 @@ respond = sub.perform_challenge(params[&lsquo;hub.challenge&rsquo;])</p>
         <div class='highlight'><pre></pre></div>
       </td>
     </tr>
-    <tr id='section-38'>
+    <tr id='section-43'>
       <td class=docs>
         <div class="pilwrap">
-          <a class="pilcrow" href="#section-38">&#182;</a>
+          <a class="pilcrow" href="#section-43">&#182;</a>
         </div>
         <p>verify that the random token is the same as when we
 subscribed with the hub initially and that the topic
@@ -850,10 +907,10 @@ return a 404 status</p>
         <div class='highlight'><pre>        <span class="n">status</span> <span class="mi">404</span></pre></div>
       </td>
     </tr>
-    <tr id='section-39'>
+    <tr id='section-44'>
       <td class=docs>
         <div class="pilwrap">
-          <a class="pilcrow" href="#section-39">&#182;</a>
+          <a class="pilcrow" href="#section-44">&#182;</a>
         </div>
         <p>end</p>
       </td>
@@ -861,10 +918,10 @@ return a 404 status</p>
         <div class='highlight'><pre>    <span class="k">else</span></pre></div>
       </td>
     </tr>
-    <tr id='section-40'>
+    <tr id='section-45'>
       <td class=docs>
         <div class="pilwrap">
-          <a class="pilcrow" href="#section-40">&#182;</a>
+          <a class="pilcrow" href="#section-45">&#182;</a>
         </div>
         <p>TODO: Abide by headers that supply cache information</p>
       </td>
@@ -874,10 +931,10 @@ return a 404 status</p>
   <span class="k">end</span></pre></div>
       </td>
     </tr>
-    <tr id='section-41'>
+    <tr id='section-46'>
       <td class=docs>
         <div class="pilwrap">
-          <a class="pilcrow" href="#section-41">&#182;</a>
+          <a class="pilcrow" href="#section-46">&#182;</a>
         </div>
         <p>user edits own profile</p>
       </td>
@@ -892,10 +949,10 @@ return a 404 status</p>
   <span class="k">end</span></pre></div>
       </td>
     </tr>
-    <tr id='section-42'>
+    <tr id='section-47'>
       <td class=docs>
         <div class="pilwrap">
-          <a class="pilcrow" href="#section-42">&#182;</a>
+          <a class="pilcrow" href="#section-47">&#182;</a>
         </div>
         <p>user updates own profile</p>
       </td>
@@ -916,10 +973,10 @@ return a 404 status</p>
   <span class="k">end</span></pre></div>
       </td>
     </tr>
-    <tr id='section-43'>
+    <tr id='section-48'>
       <td class=docs>
         <div class="pilwrap">
-          <a class="pilcrow" href="#section-43">&#182;</a>
+          <a class="pilcrow" href="#section-48">&#182;</a>
         </div>
         <p>an alias for the route of the feed</p>
       </td>
@@ -930,10 +987,10 @@ return a 404 status</p>
   <span class="k">end</span></pre></div>
       </td>
     </tr>
-    <tr id='section-44'>
+    <tr id='section-49'>
       <td class=docs>
         <div class="pilwrap">
-          <a class="pilcrow" href="#section-44">&#182;</a>
+          <a class="pilcrow" href="#section-49">&#182;</a>
         </div>
         <p>This lets us see who is following.</p>
       </td>
@@ -996,10 +1053,10 @@ return a 404 status</p>
                    <span class="ss">:facebook</span> <span class="o">=&gt;</span> <span class="n">do_facebook</span><span class="p">)</span></pre></div>
       </td>
     </tr>
-    <tr id='section-45'>
+    <tr id='section-50'>
       <td class=docs>
         <div class="pilwrap">
-          <a class="pilcrow" href="#section-45">&#182;</a>
+          <a class="pilcrow" href="#section-50">&#182;</a>
         </div>
         <p>and entry to user&rsquo;s feed</p>
       </td>
@@ -1009,10 +1066,10 @@ return a 404 status</p>
     <span class="n">current_user</span><span class="o">.</span><span class="n">save</span></pre></div>
       </td>
     </tr>
-    <tr id='section-46'>
+    <tr id='section-51'>
       <td class=docs>
         <div class="pilwrap">
-          <a class="pilcrow" href="#section-46">&#182;</a>
+          <a class="pilcrow" href="#section-51">&#182;</a>
         </div>
         <p>tell hubs there is a new entry</p>
       </td>
@@ -1054,10 +1111,10 @@ return a 404 status</p>
     <span class="vi">@user</span> <span class="o">=</span> <span class="no">User</span><span class="o">.</span><span class="n">first</span> <span class="ss">:perishable_token</span> <span class="o">=&gt;</span> <span class="n">params</span><span class="o">[</span><span class="ss">:token</span><span class="o">]</span></pre></div>
       </td>
     </tr>
-    <tr id='section-47'>
+    <tr id='section-52'>
       <td class=docs>
         <div class="pilwrap">
-          <a class="pilcrow" href="#section-47">&#182;</a>
+          <a class="pilcrow" href="#section-52">&#182;</a>
         </div>
         <p>XXX: Handle user being nil (invalid confirmation)</p>
       </td>
@@ -1099,10 +1156,10 @@ return a 404 status</p>
                                 <span class="ss">:email</span> <span class="o">=&gt;</span> <span class="n">user</span><span class="o">.</span><span class="n">email</span><span class="p">)</span></pre></div>
       </td>
     </tr>
-    <tr id='section-48'>
+    <tr id='section-53'>
       <td class=docs>
         <div class="pilwrap">
-          <a class="pilcrow" href="#section-48">&#182;</a>
+          <a class="pilcrow" href="#section-53">&#182;</a>
         </div>
         <p>propagate the authorship to their feed as well</p>
       </td>
@@ -1130,10 +1187,10 @@ return a 404 status</p>
     <span class="k">if</span> <span class="n">u</span><span class="o">.</span><span class="n">nil?</span></pre></div>
       </td>
     </tr>
-    <tr id='section-49'>
+    <tr id='section-54'>
       <td class=docs>
         <div class="pilwrap">
-          <a class="pilcrow" href="#section-49">&#182;</a>
+          <a class="pilcrow" href="#section-54">&#182;</a>
         </div>
         <p>signup</p>
       </td>
@@ -1151,10 +1208,10 @@ return a 404 status</p>
     <span class="k">else</span></pre></div>
       </td>
     </tr>
-    <tr id='section-50'>
+    <tr id='section-55'>
       <td class=docs>
         <div class="pilwrap">
-          <a class="pilcrow" href="#section-50">&#182;</a>
+          <a class="pilcrow" href="#section-55">&#182;</a>
         </div>
         <p>login</p>
 
