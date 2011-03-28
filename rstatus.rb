@@ -152,7 +152,7 @@ class Rstatus < Sinatra::Base
     unless current_user.nil? || current_user.username.empty?
       redirect "/"
     end
-      
+
     haml :reset_username
   end
 

@@ -5,6 +5,3 @@ function focusOnDiv(divId)
   divElement: document.getElementById(divId)
   if divElement != null and typeofdivElement != "undefined"
     divElement.focus()
-
-
-	
