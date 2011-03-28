@@ -290,6 +290,14 @@ class Rstatus < Sinatra::Base
   get '/users/new' do
     haml :"users/new"
   end
+  
+  get '/forgot_password' do
+    haml :"forgot_password"
+  end
+  
+  post '/forgot_password' do
+    User.where(:email => params[:email])
+  end
 
   get '/users' do
     set_params_page

@@ -151,6 +151,7 @@ class User
 
   attr_accessor :password
   key :hashed_password, String
+  key :password_reset_sent, Date, :default => nil
 
   def password=(pass)
     @password = pass
