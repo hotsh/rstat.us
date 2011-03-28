@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="content-type" content="text/html;charset=utf-8">
+  <title>update.rb</title>
+  <link rel="stylesheet" href="http://github.com/jashkenas/docco/raw/0.3.0/resources/docco.css">
+</head>
+<body>
+<div id='container'>
+  <div id="background"></div>
+  <div id="jump_to">
+    Jump To &hellip;
+    <div id="jump_wrapper">
+      <div id="jump_page">
+          <a class="source" href="../Rakefile.html">Rakefile</a>
+          <a class="source" href="all.html">all.rb</a>
+          <a class="source" href="author.html">author.rb</a>
+          <a class="source" href="authorization.html">authorization.rb</a>
+          <a class="source" href="feed.html">feed.rb</a>
+          <a class="source" href="notifier.html">notifier.rb</a>
+          <a class="source" href="update.html">update.rb</a>
+          <a class="source" href="user.html">user.rb</a>
+          <a class="source" href="../rstatus.html">rstatus.rb</a>
+      </div>
+    </div>
+  </div>
+  <table cellspacing=0 cellpadding=0>
+  <thead>
+    <tr>
+      <th class=docs><h1>update.rb</h1></th>
+      <th class=code></th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr id='section-1'>
+      <td class=docs>
+        <div class="pilwrap">
+          <a class="pilcrow" href="#section-1">&#182;</a>
+        </div>
+        
+      </td>
+      <td class=code>
+        <div class='highlight'><pre><span class="k">class</span> <span class="nc">Update</span>
+  <span class="nb">require</span> <span class="s1">&#39;cgi&#39;</span>
+  <span class="kp">include</span> <span class="no">MongoMapper</span><span class="o">::</span><span class="no">Document</span>
+  <span class="kp">include</span> <span class="no">MongoMapperExt</span><span class="o">::</span><span class="no">Filter</span>
+
+  <span class="n">belongs_to</span> <span class="ss">:feed</span>
+  <span class="n">belongs_to</span> <span class="ss">:author</span>
+
+  <span class="n">key</span> <span class="ss">:text</span><span class="p">,</span> <span class="nb">String</span><span class="p">,</span> <span class="ss">:default</span> <span class="o">=&gt;</span> <span class="s2">&quot;&quot;</span>
+  <span class="n">key</span> <span class="ss">:html</span><span class="p">,</span> <span class="nb">String</span>
+  <span class="n">key</span> <span class="ss">:tags</span><span class="p">,</span> <span class="nb">Array</span><span class="p">,</span> <span class="ss">:default</span> <span class="o">=&gt;</span> <span class="o">[]</span>
+  <span class="n">key</span> <span class="ss">:language</span><span class="p">,</span> <span class="nb">String</span>
+  <span class="n">key</span> <span class="ss">:twitter</span><span class="p">,</span> <span class="no">Boolean</span>
+  <span class="n">key</span> <span class="ss">:facebook</span><span class="p">,</span> <span class="no">Boolean</span>
+
+  <span class="n">before_save</span> <span class="ss">:generate_html</span></pre></div>
+      </td>
+    </tr>
+    <tr id='section-2'>
+      <td class=docs>
+        <div class="pilwrap">
+          <a class="pilcrow" href="#section-2">&#182;</a>
+        </div>
+        <p>store in authorization
+attr_accessor :oauth_token, :oauth_secret</p>
+      </td>
+      <td class=code>
+        <div class='highlight'><pre>  <span class="n">validates_length_of</span> <span class="ss">:text</span><span class="p">,</span> <span class="ss">:minimum</span> <span class="o">=&gt;</span> <span class="mi">1</span><span class="p">,</span> <span class="ss">:maximum</span> <span class="o">=&gt;</span> <span class="mi">140</span>
+  <span class="n">before_create</span> <span class="ss">:get_tags</span>
+  <span class="n">before_create</span> <span class="ss">:get_language</span>
+
+  <span class="n">key</span> <span class="ss">:remote_url</span>
+  <span class="n">key</span> <span class="ss">:referral_id</span>
+
+  <span class="n">filterable_keys</span> <span class="ss">:text</span>
+
+  <span class="k">def</span> <span class="nf">referral</span>
+    <span class="no">Update</span><span class="o">.</span><span class="n">first</span><span class="p">(</span><span class="ss">:id</span> <span class="o">=&gt;</span> <span class="n">referral_id</span><span class="p">)</span>
+  <span class="k">end</span>
+
+  <span class="k">def</span> <span class="nf">url</span>
+    <span class="n">feed</span><span class="o">.</span><span class="n">local?</span> <span class="p">?</span> <span class="s2">&quot;/updates/</span><span class="si">#{</span><span class="nb">id</span><span class="si">}</span><span class="s2">&quot;</span> <span class="p">:</span> <span class="n">remote_url</span>
+  <span class="k">end</span>
+
+  <span class="k">def</span> <span class="nf">url</span><span class="o">=</span><span class="p">(</span><span class="n">the_url</span><span class="p">)</span>
+    <span class="nb">self</span><span class="o">.</span><span class="n">remote_url</span> <span class="o">=</span> <span class="n">the_url</span>
+  <span class="k">end</span>
+
+  <span class="k">def</span> <span class="nf">to_html</span>
+    <span class="nb">self</span><span class="o">.</span><span class="n">html</span> <span class="o">||</span> <span class="n">generate_html</span>
+  <span class="k">end</span>
+
+  <span class="k">def</span> <span class="nf">mentioned?</span> <span class="n">search</span>
+    <span class="n">matches</span> <span class="o">=</span> <span class="n">text</span><span class="o">.</span><span class="n">match</span><span class="p">(</span><span class="sr">/^@</span><span class="si">#{</span><span class="n">search</span><span class="si">}</span><span class="sr">\b/</span><span class="p">)</span>
+    <span class="n">matches</span><span class="o">.</span><span class="n">nil?</span> <span class="p">?</span> <span class="kp">false</span> <span class="p">:</span> <span class="n">matches</span><span class="o">.</span><span class="n">length</span> <span class="o">&gt;</span> <span class="mi">0</span>
+  <span class="k">end</span>
+
+  <span class="n">after_create</span> <span class="ss">:send_to_external_accounts</span>
+
+  <span class="n">timestamps!</span>
+
+  <span class="k">def</span> <span class="nc">self</span><span class="o">.</span><span class="nf">hashtag_search</span><span class="p">(</span><span class="n">tag</span><span class="p">,</span> <span class="n">opts</span><span class="p">)</span>
+    <span class="n">popts</span> <span class="o">=</span> <span class="p">{</span>
+      <span class="ss">:page</span> <span class="o">=&gt;</span> <span class="n">opts</span><span class="o">[</span><span class="ss">:page</span><span class="o">]</span><span class="p">,</span>
+      <span class="ss">:per_page</span> <span class="o">=&gt;</span> <span class="n">opts</span><span class="o">[</span><span class="ss">:per_page</span><span class="o">]</span>
+    <span class="p">}</span>
+    <span class="n">where</span><span class="p">(</span><span class="ss">:tags</span><span class="o">.</span><span class="n">in</span> <span class="o">=&gt;</span> <span class="o">[</span><span class="n">tag</span><span class="o">]</span><span class="p">)</span><span class="o">.</span><span class="n">order</span><span class="p">(</span><span class="o">[</span><span class="s1">&#39;created_at&#39;</span><span class="p">,</span> <span class="s1">&#39;descending&#39;</span><span class="o">]</span><span class="p">)</span><span class="o">.</span><span class="n">paginate</span><span class="p">(</span><span class="n">popts</span><span class="p">)</span>
+  <span class="k">end</span>
+
+  <span class="k">def</span> <span class="nc">self</span><span class="o">.</span><span class="nf">hot_updates</span>
+    <span class="n">all</span><span class="p">(</span><span class="ss">:limit</span> <span class="o">=&gt;</span> <span class="mi">6</span><span class="p">,</span> <span class="ss">:order</span> <span class="o">=&gt;</span> <span class="s1">&#39;created_at desc&#39;</span><span class="p">)</span>
+  <span class="k">end</span>
+
+  <span class="k">def</span> <span class="nf">get_tags</span>
+    <span class="nb">self</span><span class="o">[</span><span class="ss">:tags</span><span class="o">]</span> <span class="o">=</span> <span class="nb">self</span><span class="o">.</span><span class="n">text</span><span class="o">.</span><span class="n">scan</span><span class="p">(</span><span class="sr">/#([\w\-\.]*)/</span><span class="p">)</span><span class="o">.</span><span class="n">flatten</span>
+  <span class="k">end</span>
+
+  <span class="k">def</span> <span class="nf">get_language</span>
+    <span class="nb">self</span><span class="o">[</span><span class="ss">:language</span><span class="o">]</span> <span class="o">=</span> <span class="nb">self</span><span class="o">.</span><span class="n">text</span><span class="o">.</span><span class="n">language</span>
+  <span class="k">end</span>
+
+  <span class="kp">protected</span>
+  
+  <span class="k">def</span> <span class="nf">generate_html</span>
+    <span class="n">out</span> <span class="o">=</span> <span class="no">CGI</span><span class="o">.</span><span class="n">escapeHTML</span><span class="p">(</span><span class="n">text</span><span class="p">)</span></pre></div>
+      </td>
+    </tr>
+    <tr id='section-3'>
+      <td class=docs>
+        <div class="pilwrap">
+          <a class="pilcrow" href="#section-3">&#182;</a>
+        </div>
+        <p>we let almost anything be in a username, except those that mess with urls.  but you can&rsquo;t end in a .:;, or !
+also ignore container chars [] () &ldquo;&rdquo; &lsquo;&rsquo; {}
+XXX: the <em>correct</em> solution will be to use an email validator</p>
+      </td>
+      <td class=code>
+        <div class='highlight'><pre>    <span class="n">out</span><span class="o">.</span><span class="n">gsub!</span><span class="p">(</span><span class="sr">/(^|[ \t\n\r\f&quot;&#39;\(\[{]+)@([^ \t\n\r\f&amp;?=@%\/\#]*[^ \t\n\r\f&amp;?=@%\/\#.!:;,&quot;&#39;\]}\)])/</span><span class="p">)</span> <span class="k">do</span> <span class="o">|</span><span class="n">match</span><span class="o">|</span>
+      <span class="k">if</span> <span class="n">u</span> <span class="o">=</span> <span class="no">User</span><span class="o">.</span><span class="n">first</span><span class="p">(</span><span class="ss">:username</span> <span class="o">=&gt;</span> <span class="sr">/^</span><span class="si">#{</span><span class="vg">$2</span><span class="si">}</span><span class="sr">$/i</span><span class="p">)</span>
+        <span class="s2">&quot;</span><span class="si">#{</span><span class="vg">$1</span><span class="si">}</span><span class="s2">&lt;a href=&#39;/users/</span><span class="si">#{</span><span class="n">u</span><span class="o">.</span><span class="n">username</span><span class="si">}</span><span class="s2">&#39;&gt;@</span><span class="si">#{</span><span class="vg">$2</span><span class="si">}</span><span class="s2">&lt;/a&gt;&quot;</span>
+      <span class="k">else</span>
+        <span class="n">match</span>
+      <span class="k">end</span>
+    <span class="k">end</span>
+    <span class="n">out</span><span class="o">.</span><span class="n">gsub!</span><span class="p">(</span><span class="sr">/(http[s]?:\/\/\S+[a-zA-Z0-9\/}])/</span><span class="p">,</span> <span class="s2">&quot;&lt;a href=&#39;</span><span class="se">\\</span><span class="s2">1&#39;&gt;</span><span class="se">\\</span><span class="s2">1&lt;/a&gt;&quot;</span><span class="p">)</span>
+    <span class="n">out</span><span class="o">.</span><span class="n">gsub!</span><span class="p">(</span><span class="sr">/(^|\s+)#(\w+)/</span><span class="p">)</span> <span class="k">do</span> <span class="o">|</span><span class="n">match</span><span class="o">|</span>
+      <span class="s2">&quot;</span><span class="si">#{</span><span class="vg">$1</span><span class="si">}</span><span class="s2">&lt;a href=&#39;/hashtags/</span><span class="si">#{</span><span class="vg">$2</span><span class="si">}</span><span class="s2">&#39;&gt;#</span><span class="si">#{</span><span class="vg">$2</span><span class="si">}</span><span class="s2">&lt;/a&gt;&quot;</span>
+    <span class="k">end</span>
+    <span class="nb">self</span><span class="o">.</span><span class="n">html</span> <span class="o">=</span> <span class="n">out</span>
+  <span class="k">end</span>
+
+  <span class="k">def</span> <span class="nf">send_to_external_accounts</span>
+    <span class="k">return</span> <span class="k">if</span> <span class="no">ENV</span><span class="o">[</span><span class="s1">&#39;RACK_ENV&#39;</span><span class="o">]</span> <span class="o">==</span> <span class="s1">&#39;development&#39;</span>
+    <span class="k">if</span> <span class="n">author</span><span class="o">.</span><span class="n">user</span>
+      <span class="k">if</span> <span class="nb">self</span><span class="o">.</span><span class="n">twitter?</span> <span class="o">&amp;&amp;</span> <span class="n">author</span><span class="o">.</span><span class="n">user</span><span class="o">.</span><span class="n">twitter?</span>
+        <span class="k">begin</span>
+          <span class="no">Twitter</span><span class="o">.</span><span class="n">configure</span> <span class="k">do</span> <span class="o">|</span><span class="n">config</span><span class="o">|</span>
+            <span class="n">config</span><span class="o">.</span><span class="n">consumer_key</span> <span class="o">=</span> <span class="no">ENV</span><span class="o">[</span><span class="s2">&quot;CONSUMER_KEY&quot;</span><span class="o">]</span>
+            <span class="n">config</span><span class="o">.</span><span class="n">consumer_secret</span> <span class="o">=</span> <span class="no">ENV</span><span class="o">[</span><span class="s2">&quot;CONSUMER_SECRET&quot;</span><span class="o">]</span>
+            <span class="n">config</span><span class="o">.</span><span class="n">oauth_token</span> <span class="o">=</span> <span class="n">author</span><span class="o">.</span><span class="n">user</span><span class="o">.</span><span class="n">twitter</span><span class="o">.</span><span class="n">oauth_token</span>
+            <span class="n">config</span><span class="o">.</span><span class="n">oauth_token_secret</span> <span class="o">=</span> <span class="n">author</span><span class="o">.</span><span class="n">user</span><span class="o">.</span><span class="n">twitter</span><span class="o">.</span><span class="n">oauth_secret</span>
+          <span class="k">end</span>
+
+          <span class="no">Twitter</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">text</span><span class="p">)</span>
+        <span class="k">rescue</span> <span class="no">Exception</span> <span class="o">=&gt;</span> <span class="n">e</span></pre></div>
+      </td>
+    </tr>
+    <tr id='section-4'>
+      <td class=docs>
+        <div class="pilwrap">
+          <a class="pilcrow" href="#section-4">&#182;</a>
+        </div>
+        <p>I should be shot for doing this.</p>
+      </td>
+      <td class=code>
+        <div class='highlight'><pre>        <span class="k">end</span>
+      <span class="k">end</span>
+
+      <span class="k">if</span> <span class="nb">self</span><span class="o">.</span><span class="n">facebook?</span> <span class="o">&amp;&amp;</span> <span class="n">author</span><span class="o">.</span><span class="n">user</span><span class="o">.</span><span class="n">facebook?</span>
+        <span class="k">begin</span>
+          <span class="n">user</span> <span class="o">=</span> <span class="no">FbGraph</span><span class="o">::</span><span class="no">User</span><span class="o">.</span><span class="n">me</span><span class="p">(</span><span class="n">author</span><span class="o">.</span><span class="n">user</span><span class="o">.</span><span class="n">facebook</span><span class="o">.</span><span class="n">oauth_token</span><span class="p">)</span>
+          <span class="n">user</span><span class="o">.</span><span class="n">feed!</span><span class="p">(</span><span class="ss">:message</span> <span class="o">=&gt;</span> <span class="n">text</span><span class="p">)</span>
+        <span class="k">rescue</span> <span class="no">Exception</span> <span class="o">=&gt;</span> <span class="n">e</span></pre></div>
+      </td>
+    </tr>
+    <tr id='section-5'>
+      <td class=docs>
+        <div class="pilwrap">
+          <a class="pilcrow" href="#section-5">&#182;</a>
+        </div>
+        <p>I should be shot for doing this.</p>
+
+      </td>
+      <td class=code>
+        <div class='highlight'><pre>        <span class="k">end</span>
+      <span class="k">end</span>
+    <span class="k">end</span>
+
+  <span class="k">end</span>
+
+<span class="k">end</span></pre></div>
+      </td>
+    </tr>
+  </table>
+</div>
+</body>

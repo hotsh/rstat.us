@@ -1,0 +1,295 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="content-type" content="text/html;charset=utf-8">
+  <title>user.rb</title>
+  <link rel="stylesheet" href="http://github.com/jashkenas/docco/raw/0.3.0/resources/docco.css">
+</head>
+<body>
+<div id='container'>
+  <div id="background"></div>
+  <div id="jump_to">
+    Jump To &hellip;
+    <div id="jump_wrapper">
+      <div id="jump_page">
+          <a class="source" href="../Rakefile.html">Rakefile</a>
+          <a class="source" href="all.html">all.rb</a>
+          <a class="source" href="author.html">author.rb</a>
+          <a class="source" href="authorization.html">authorization.rb</a>
+          <a class="source" href="feed.html">feed.rb</a>
+          <a class="source" href="notifier.html">notifier.rb</a>
+          <a class="source" href="update.html">update.rb</a>
+          <a class="source" href="user.html">user.rb</a>
+          <a class="source" href="../rstatus.html">rstatus.rb</a>
+      </div>
+    </div>
+  </div>
+  <table cellspacing=0 cellpadding=0>
+  <thead>
+    <tr>
+      <th class=docs><h1>user.rb</h1></th>
+      <th class=code></th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr id='section-1'>
+      <td class=docs>
+        <div class="pilwrap">
+          <a class="pilcrow" href="#section-1">&#182;</a>
+        </div>
+        
+      </td>
+      <td class=code>
+        <div class='highlight'><pre><span class="k">class</span> <span class="nc">User</span>
+  <span class="nb">require</span> <span class="s1">&#39;digest/md5&#39;</span>
+
+  <span class="kp">include</span> <span class="no">MongoMapper</span><span class="o">::</span><span class="no">Document</span>
+  <span class="n">many</span> <span class="ss">:authorizations</span><span class="p">,</span> <span class="ss">:dependant</span> <span class="o">=&gt;</span> <span class="ss">:destroy</span></pre></div>
+      </td>
+    </tr>
+    <tr id='section-2'>
+      <td class=docs>
+        <div class="pilwrap">
+          <a class="pilcrow" href="#section-2">&#182;</a>
+        </div>
+        <p>Make the username required
+However, this will break it when email authorization is used</p>
+      </td>
+      <td class=code>
+        <div class='highlight'><pre>  <span class="n">key</span> <span class="ss">:username</span><span class="p">,</span> <span class="nb">String</span> <span class="c1">#, :unique =&gt; true</span>
+  <span class="n">key</span> <span class="ss">:perishable_token</span><span class="p">,</span> <span class="nb">String</span>
+
+  <span class="n">key</span> <span class="ss">:email</span><span class="p">,</span> <span class="nb">String</span> <span class="c1">#, :unique =&gt; true, :allow_nil =&gt; true</span></pre></div>
+      </td>
+    </tr>
+    <tr id='section-3'>
+      <td class=docs>
+        <div class="pilwrap">
+          <a class="pilcrow" href="#section-3">&#182;</a>
+        </div>
+        <p>eff you mongo_mapper.</p>
+      </td>
+      <td class=code>
+        <div class='highlight'><pre>  <span class="n">validates_uniqueness_of</span> <span class="ss">:email</span><span class="p">,</span> <span class="ss">:allow_nil</span> <span class="o">=&gt;</span> <span class="ss">:true</span> 
+  <span class="n">validates_uniqueness_of</span> <span class="ss">:username</span><span class="p">,</span> <span class="ss">:allow_nil</span> <span class="o">=&gt;</span> <span class="ss">:true</span> 
+
+  <span class="n">belongs_to</span> <span class="ss">:author</span>
+  <span class="n">belongs_to</span> <span class="ss">:feed</span>
+
+  <span class="n">after_create</span> <span class="ss">:finalize</span>
+
+  <span class="k">def</span> <span class="nf">finalize</span>
+    <span class="n">create_feed</span>
+    <span class="n">follow_yo_self</span>
+    <span class="n">reset_perishable_token</span>
+  <span class="k">end</span>
+
+  <span class="k">def</span> <span class="nf">set_perishable_token</span>
+    <span class="nb">self</span><span class="o">.</span><span class="n">perishable_token</span> <span class="o">=</span> <span class="no">Digest</span><span class="o">::</span><span class="no">MD5</span><span class="o">.</span><span class="n">hexdigest</span><span class="p">(</span> <span class="nb">rand</span><span class="o">.</span><span class="n">to_s</span> <span class="p">)</span>
+    <span class="n">save</span>
+  <span class="k">end</span>
+
+  <span class="k">def</span> <span class="nf">reset_perishable_token</span>
+    <span class="nb">self</span><span class="o">.</span><span class="n">perishable_token</span> <span class="o">=</span> <span class="kp">nil</span>
+    <span class="n">save</span>
+  <span class="k">end</span>
+
+  <span class="k">def</span> <span class="nf">url</span>
+    <span class="n">feed</span><span class="o">.</span><span class="n">local?</span> <span class="p">?</span> <span class="s2">&quot;/users/</span><span class="si">#{</span><span class="n">feed</span><span class="o">.</span><span class="n">author</span><span class="o">.</span><span class="n">username</span><span class="si">}</span><span class="s2">&quot;</span> <span class="p">:</span> <span class="n">feed</span><span class="o">.</span><span class="n">author</span><span class="o">.</span><span class="n">url</span>
+  <span class="k">end</span>
+  
+  <span class="k">def</span> <span class="nf">twitter?</span>
+    <span class="n">has_authorization?</span><span class="p">(</span><span class="ss">:twitter</span><span class="p">)</span>
+  <span class="k">end</span>
+  
+  <span class="k">def</span> <span class="nf">twitter</span>
+    <span class="n">get_authorization</span><span class="p">(</span><span class="ss">:twitter</span><span class="p">)</span>
+  <span class="k">end</span>
+  
+  <span class="k">def</span> <span class="nf">facebook?</span>
+    <span class="n">has_authorization?</span><span class="p">(</span><span class="ss">:facebook</span><span class="p">)</span>
+  <span class="k">end</span>
+  
+  <span class="k">def</span> <span class="nf">facebook</span>
+    <span class="n">get_authorization</span><span class="p">(</span><span class="ss">:facebook</span><span class="p">)</span>
+  <span class="k">end</span>
+  
+  <span class="k">def</span> <span class="nf">has_authorization?</span><span class="p">(</span><span class="n">auth</span><span class="p">)</span>
+    <span class="n">a</span> <span class="o">=</span> <span class="no">Authorization</span><span class="o">.</span><span class="n">first</span><span class="p">(</span><span class="ss">:provider</span> <span class="o">=&gt;</span> <span class="n">auth</span><span class="o">.</span><span class="n">to_s</span><span class="p">,</span> <span class="ss">:user_id</span> <span class="o">=&gt;</span> <span class="nb">self</span><span class="o">.</span><span class="n">id</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">a</span><span class="o">.</span><span class="n">nil?</span>
+      <span class="k">return</span> <span class="kp">false</span>
+    <span class="k">else</span>
+      <span class="k">return</span> <span class="kp">true</span>
+    <span class="k">end</span>
+  <span class="k">end</span>
+  
+  <span class="k">def</span> <span class="nf">get_authorization</span><span class="p">(</span><span class="n">auth</span><span class="p">)</span>
+    <span class="no">Authorization</span><span class="o">.</span><span class="n">first</span><span class="p">(</span><span class="ss">:provider</span> <span class="o">=&gt;</span> <span class="n">auth</span><span class="o">.</span><span class="n">to_s</span><span class="p">,</span> <span class="ss">:user_id</span> <span class="o">=&gt;</span> <span class="nb">self</span><span class="o">.</span><span class="n">id</span><span class="p">)</span>
+  <span class="k">end</span>
+
+  <span class="n">key</span> <span class="ss">:following_ids</span><span class="p">,</span> <span class="nb">Array</span>
+  <span class="n">many</span> <span class="ss">:following</span><span class="p">,</span> <span class="ss">:in</span> <span class="o">=&gt;</span> <span class="ss">:following_ids</span><span class="p">,</span> <span class="ss">:class_name</span> <span class="o">=&gt;</span> <span class="s1">&#39;Feed&#39;</span>
+
+  <span class="n">key</span> <span class="ss">:followers_ids</span><span class="p">,</span> <span class="nb">Array</span>
+  <span class="n">many</span> <span class="ss">:followers</span><span class="p">,</span> <span class="ss">:in</span> <span class="o">=&gt;</span> <span class="ss">:followers_ids</span><span class="p">,</span> <span class="ss">:class_name</span> <span class="o">=&gt;</span> <span class="s1">&#39;Feed&#39;</span></pre></div>
+      </td>
+    </tr>
+    <tr id='section-4'>
+      <td class=docs>
+        <div class="pilwrap">
+          <a class="pilcrow" href="#section-4">&#182;</a>
+        </div>
+        <p>follow takes a url</p>
+      </td>
+      <td class=code>
+        <div class='highlight'><pre>  <span class="k">def</span> <span class="nf">follow!</span> <span class="n">feed_url</span>
+    <span class="n">f</span> <span class="o">=</span> <span class="no">Feed</span><span class="o">.</span><span class="n">first</span><span class="p">(</span><span class="ss">:url</span> <span class="o">=&gt;</span> <span class="n">feed_url</span><span class="p">)</span></pre></div>
+      </td>
+    </tr>
+    <tr id='section-5'>
+      <td class=docs>
+        <div class="pilwrap">
+          <a class="pilcrow" href="#section-5">&#182;</a>
+        </div>
+        <p>local feed?</p>
+      </td>
+      <td class=code>
+        <div class='highlight'><pre>    <span class="k">if</span> <span class="n">f</span><span class="o">.</span><span class="n">nil?</span> <span class="ow">and</span> <span class="n">feed_url</span><span class="o">.</span><span class="n">start_with?</span><span class="p">(</span><span class="s2">&quot;/&quot;</span><span class="p">)</span>
+      <span class="n">feed_id</span> <span class="o">=</span> <span class="n">feed_url</span><span class="o">[/^</span><span class="p">\</span><span class="o">/</span><span class="n">feeds</span><span class="p">\</span><span class="o">/</span><span class="p">(</span><span class="o">.</span><span class="n">+</span><span class="p">)</span><span class="vg">$/</span><span class="p">,</span><span class="mi">1</span><span class="o">]</span>
+      <span class="n">f</span> <span class="o">=</span> <span class="no">Feed</span><span class="o">.</span><span class="n">first</span><span class="p">(</span><span class="ss">:id</span> <span class="o">=&gt;</span> <span class="n">feed_id</span><span class="p">)</span>
+    <span class="k">end</span>
+
+    <span class="k">if</span> <span class="n">f</span><span class="o">.</span><span class="n">nil?</span>
+      <span class="n">f</span> <span class="o">=</span> <span class="no">Feed</span><span class="o">.</span><span class="n">create</span><span class="p">(</span><span class="ss">:remote_url</span> <span class="o">=&gt;</span> <span class="n">feed_url</span><span class="p">)</span>
+      <span class="n">f</span><span class="o">.</span><span class="n">populate</span>
+    <span class="k">end</span>
+
+    <span class="n">following</span> <span class="o">&lt;&lt;</span> <span class="n">f</span>
+    <span class="n">save</span>
+
+    <span class="k">if</span> <span class="n">f</span><span class="o">.</span><span class="n">local?</span>
+      <span class="n">followee</span> <span class="o">=</span> <span class="no">User</span><span class="o">.</span><span class="n">first</span><span class="p">(</span><span class="ss">:author_id</span> <span class="o">=&gt;</span> <span class="n">f</span><span class="o">.</span><span class="n">author</span><span class="o">.</span><span class="n">id</span><span class="p">)</span>
+      <span class="n">followee</span><span class="o">.</span><span class="n">followers</span> <span class="o">&lt;&lt;</span> <span class="nb">self</span><span class="o">.</span><span class="n">feed</span>
+      <span class="n">followee</span><span class="o">.</span><span class="n">save</span>
+    <span class="k">end</span>
+
+    <span class="n">f</span>
+  <span class="k">end</span></pre></div>
+      </td>
+    </tr>
+    <tr id='section-6'>
+      <td class=docs>
+        <div class="pilwrap">
+          <a class="pilcrow" href="#section-6">&#182;</a>
+        </div>
+        <p>unfollow takes a feed (since it is guaranteed to exist)</p>
+      </td>
+      <td class=code>
+        <div class='highlight'><pre>  <span class="k">def</span> <span class="nf">unfollow!</span> <span class="n">followed_feed</span>
+    <span class="n">following_ids</span><span class="o">.</span><span class="n">delete</span><span class="p">(</span><span class="n">followed_feed</span><span class="o">.</span><span class="n">id</span><span class="p">)</span>
+    <span class="n">save</span>
+    <span class="k">if</span> <span class="n">followed_feed</span><span class="o">.</span><span class="n">local?</span>
+      <span class="n">followee</span> <span class="o">=</span> <span class="no">User</span><span class="o">.</span><span class="n">first</span><span class="p">(</span><span class="ss">:author_id</span> <span class="o">=&gt;</span> <span class="n">followed_feed</span><span class="o">.</span><span class="n">author</span><span class="o">.</span><span class="n">id</span><span class="p">)</span>
+      <span class="n">followee</span><span class="o">.</span><span class="n">followers_ids</span><span class="o">.</span><span class="n">delete</span><span class="p">(</span><span class="nb">self</span><span class="o">.</span><span class="n">feed</span><span class="o">.</span><span class="n">id</span><span class="p">)</span>
+      <span class="n">followee</span><span class="o">.</span><span class="n">save</span>
+    <span class="k">end</span>
+  <span class="k">end</span>
+
+  <span class="k">def</span> <span class="nf">following?</span> <span class="n">feed_url</span>
+    <span class="n">f</span> <span class="o">=</span> <span class="no">Feed</span><span class="o">.</span><span class="n">first</span><span class="p">(</span><span class="ss">:remote_url</span> <span class="o">=&gt;</span> <span class="n">feed_url</span><span class="p">)</span></pre></div>
+      </td>
+    </tr>
+    <tr id='section-7'>
+      <td class=docs>
+        <div class="pilwrap">
+          <a class="pilcrow" href="#section-7">&#182;</a>
+        </div>
+        <p>local feed?</p>
+
+      </td>
+      <td class=code>
+        <div class='highlight'><pre>    <span class="k">if</span> <span class="n">f</span><span class="o">.</span><span class="n">nil?</span> <span class="ow">and</span> <span class="n">feed_url</span><span class="o">[</span><span class="mi">0</span><span class="o">].</span><span class="n">chr</span> <span class="o">==</span> <span class="s2">&quot;/&quot;</span>
+      <span class="n">feed_id</span> <span class="o">=</span> <span class="n">feed_url</span><span class="o">[/^</span><span class="p">\</span><span class="o">/</span><span class="n">feeds</span><span class="p">\</span><span class="o">/</span><span class="p">(</span><span class="o">.</span><span class="n">+</span><span class="p">)</span><span class="vg">$/</span><span class="p">,</span><span class="mi">1</span><span class="o">]</span>
+      <span class="n">f</span> <span class="o">=</span> <span class="no">Feed</span><span class="o">.</span><span class="n">first</span><span class="p">(</span><span class="ss">:id</span> <span class="o">=&gt;</span> <span class="n">feed_id</span><span class="p">)</span>
+    <span class="k">end</span>
+
+    <span class="k">if</span> <span class="n">f</span> <span class="o">==</span> <span class="kp">nil</span>
+      <span class="kp">false</span>
+    <span class="k">else</span>
+      <span class="n">following</span><span class="o">.</span><span class="n">include?</span> <span class="n">f</span>
+    <span class="k">end</span>
+  <span class="k">end</span>
+
+  <span class="n">timestamps!</span>
+
+  <span class="k">def</span> <span class="nf">timeline</span><span class="p">(</span><span class="n">opts</span><span class="p">)</span>
+    <span class="n">popts</span> <span class="o">=</span> <span class="p">{</span>
+      <span class="ss">:page</span> <span class="o">=&gt;</span> <span class="n">opts</span><span class="o">[</span><span class="ss">:page</span><span class="o">]</span><span class="p">,</span>
+      <span class="ss">:per_page</span> <span class="o">=&gt;</span> <span class="n">opts</span><span class="o">[</span><span class="ss">:per_page</span><span class="o">]</span>
+    <span class="p">}</span>
+    <span class="no">Update</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="ss">:author_id</span> <span class="o">=&gt;</span> <span class="n">following</span><span class="o">.</span><span class="n">map</span><span class="p">(</span><span class="o">&amp;</span><span class="ss">:author_id</span><span class="p">))</span><span class="o">.</span><span class="n">order</span><span class="p">(</span><span class="o">[</span><span class="s1">&#39;created_at&#39;</span><span class="p">,</span> <span class="s1">&#39;descending&#39;</span><span class="o">]</span><span class="p">)</span><span class="o">.</span><span class="n">paginate</span><span class="p">(</span><span class="n">popts</span><span class="p">)</span>
+  <span class="k">end</span>
+
+  <span class="k">def</span> <span class="nf">at_replies</span><span class="p">(</span><span class="n">opts</span><span class="p">)</span>
+    <span class="n">popts</span> <span class="o">=</span> <span class="p">{</span>
+      <span class="ss">:page</span> <span class="o">=&gt;</span> <span class="n">opts</span><span class="o">[</span><span class="ss">:page</span><span class="o">]</span><span class="p">,</span>
+      <span class="ss">:per_page</span> <span class="o">=&gt;</span> <span class="n">opts</span><span class="o">[</span><span class="ss">:per_page</span><span class="o">]</span>
+    <span class="p">}</span>
+    <span class="no">Update</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="ss">:text</span> <span class="o">=&gt;</span> <span class="sr">/^@</span><span class="si">#{</span><span class="n">username</span><span class="si">}</span><span class="sr">\b/</span><span class="p">)</span><span class="o">.</span><span class="n">order</span><span class="p">(</span><span class="o">[</span><span class="s1">&#39;created_at&#39;</span><span class="p">,</span> <span class="s1">&#39;descending&#39;</span><span class="o">]</span><span class="p">)</span><span class="o">.</span><span class="n">paginate</span><span class="p">(</span><span class="n">popts</span><span class="p">)</span>
+  <span class="k">end</span>
+
+  <span class="n">key</span> <span class="ss">:status</span>
+
+  <span class="kp">attr_accessor</span> <span class="ss">:password</span>
+  <span class="n">key</span> <span class="ss">:hashed_password</span><span class="p">,</span> <span class="nb">String</span>
+
+  <span class="k">def</span> <span class="nf">password</span><span class="o">=</span><span class="p">(</span><span class="n">pass</span><span class="p">)</span>
+    <span class="vi">@password</span> <span class="o">=</span> <span class="n">pass</span>
+    <span class="nb">self</span><span class="o">.</span><span class="n">hashed_password</span> <span class="o">=</span> <span class="no">BCrypt</span><span class="o">::</span><span class="no">Password</span><span class="o">.</span><span class="n">create</span><span class="p">(</span><span class="vi">@password</span><span class="p">,</span> <span class="ss">:cost</span> <span class="o">=&gt;</span> <span class="mi">10</span><span class="p">)</span>
+  <span class="k">end</span>
+
+  <span class="k">def</span> <span class="nc">self</span><span class="o">.</span><span class="nf">authenticate</span><span class="p">(</span><span class="n">username</span><span class="p">,</span> <span class="n">pass</span><span class="p">)</span>
+    <span class="n">user</span> <span class="o">=</span> <span class="no">User</span><span class="o">.</span><span class="n">first</span><span class="p">(</span><span class="ss">:username</span> <span class="o">=&gt;</span> <span class="n">username</span><span class="p">)</span>
+    <span class="k">return</span> <span class="kp">nil</span> <span class="k">if</span> <span class="n">user</span><span class="o">.</span><span class="n">nil?</span>
+    <span class="k">return</span> <span class="n">user</span> <span class="k">if</span> <span class="no">BCrypt</span><span class="o">::</span><span class="no">Password</span><span class="o">.</span><span class="n">new</span><span class="p">(</span><span class="n">user</span><span class="o">.</span><span class="n">hashed_password</span><span class="p">)</span> <span class="o">==</span> <span class="n">pass</span>
+    <span class="kp">nil</span>
+  <span class="k">end</span>
+
+  <span class="k">def</span> <span class="nf">reset_username</span><span class="p">(</span><span class="n">params</span><span class="p">)</span>
+    <span class="n">username</span> <span class="o">=</span> <span class="n">params</span><span class="o">[</span><span class="ss">:username</span><span class="o">]</span>
+    <span class="n">author</span><span class="o">.</span><span class="n">username</span> <span class="o">=</span> <span class="n">params</span><span class="o">[</span><span class="ss">:username</span><span class="o">]</span>
+    <span class="k">return</span> <span class="kp">false</span> <span class="k">unless</span> <span class="n">save</span>
+    <span class="n">author</span><span class="o">.</span><span class="n">save</span>
+  <span class="k">end</span>
+
+  <span class="k">def</span> <span class="nf">edit_user_profile</span><span class="p">(</span><span class="n">params</span><span class="p">)</span>
+      <span class="n">author</span><span class="o">.</span><span class="n">name</span>    <span class="o">=</span> <span class="n">params</span><span class="o">[</span><span class="ss">:name</span><span class="o">]</span>
+      <span class="n">author</span><span class="o">.</span><span class="n">email</span>   <span class="o">=</span> <span class="n">params</span><span class="o">[</span><span class="ss">:email</span><span class="o">]</span>
+      <span class="n">author</span><span class="o">.</span><span class="n">website</span> <span class="o">=</span> <span class="n">params</span><span class="o">[</span><span class="ss">:website</span><span class="o">]</span>
+      <span class="n">author</span><span class="o">.</span><span class="n">bio</span>     <span class="o">=</span> <span class="n">params</span><span class="o">[</span><span class="ss">:bio</span><span class="o">]</span>
+      <span class="n">author</span><span class="o">.</span><span class="n">save</span>
+  <span class="k">end</span>
+
+  <span class="kp">private</span>
+
+  <span class="k">def</span> <span class="nf">create_feed</span><span class="p">()</span>
+    <span class="nb">self</span><span class="o">.</span><span class="n">author</span> <span class="o">=</span> <span class="no">Author</span><span class="o">.</span><span class="n">create</span> <span class="ss">:name</span> <span class="o">=&gt;</span> <span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="ss">:username</span> <span class="o">=&gt;</span> <span class="n">username</span> <span class="k">if</span> <span class="n">author</span><span class="o">.</span><span class="n">nil?</span>
+    <span class="n">f</span> <span class="o">=</span> <span class="no">Feed</span><span class="o">.</span><span class="n">create</span><span class="p">(</span>
+      <span class="ss">:author</span> <span class="o">=&gt;</span> <span class="n">author</span>
+    <span class="p">)</span>
+
+    <span class="nb">self</span><span class="o">.</span><span class="n">feed</span> <span class="o">=</span> <span class="n">f</span>
+    <span class="n">save</span>
+  <span class="k">end</span>
+
+  <span class="k">def</span> <span class="nf">follow_yo_self</span>
+    <span class="n">following</span> <span class="o">&lt;&lt;</span> <span class="n">feed</span>
+    <span class="n">followers</span> <span class="o">&lt;&lt;</span> <span class="n">feed</span>
+    <span class="n">save</span>
+  <span class="k">end</span>
+<span class="k">end</span></pre></div>
+      </td>
+    </tr>
+  </table>
+</div>
+</body>

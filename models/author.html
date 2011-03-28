@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="content-type" content="text/html;charset=utf-8">
+  <title>author.rb</title>
+  <link rel="stylesheet" href="http://github.com/jashkenas/docco/raw/0.3.0/resources/docco.css">
+</head>
+<body>
+<div id='container'>
+  <div id="background"></div>
+  <div id="jump_to">
+    Jump To &hellip;
+    <div id="jump_wrapper">
+      <div id="jump_page">
+          <a class="source" href="../Rakefile.html">Rakefile</a>
+          <a class="source" href="all.html">all.rb</a>
+          <a class="source" href="author.html">author.rb</a>
+          <a class="source" href="authorization.html">authorization.rb</a>
+          <a class="source" href="feed.html">feed.rb</a>
+          <a class="source" href="notifier.html">notifier.rb</a>
+          <a class="source" href="update.html">update.rb</a>
+          <a class="source" href="user.html">user.rb</a>
+          <a class="source" href="../rstatus.html">rstatus.rb</a>
+      </div>
+    </div>
+  </div>
+  <table cellspacing=0 cellpadding=0>
+  <thead>
+    <tr>
+      <th class=docs><h1>author.rb</h1></th>
+      <th class=code></th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr id='section-1'>
+      <td class=docs>
+        <div class="pilwrap">
+          <a class="pilcrow" href="#section-1">&#182;</a>
+        </div>
+        
+      </td>
+      <td class=code>
+        <div class='highlight'><pre><span class="k">class</span> <span class="nc">Author</span>
+  <span class="no">DEFAULT_AVATAR</span> <span class="o">=</span> <span class="s2">&quot;/images/avatar.png&quot;</span>
+  <span class="no">GRAVATAR_HOST</span>  <span class="o">=</span> <span class="s2">&quot;gravatar.com&quot;</span>
+  
+  <span class="kp">include</span> <span class="no">MongoMapper</span><span class="o">::</span><span class="no">Document</span>
+  
+  <span class="n">key</span> <span class="ss">:username</span><span class="p">,</span> <span class="nb">String</span>
+  <span class="n">key</span> <span class="ss">:name</span><span class="p">,</span> <span class="nb">String</span>
+  <span class="n">key</span> <span class="ss">:email</span><span class="p">,</span> <span class="nb">String</span>
+  <span class="n">key</span> <span class="ss">:website</span><span class="p">,</span> <span class="nb">String</span>
+  <span class="n">key</span> <span class="ss">:bio</span><span class="p">,</span> <span class="nb">String</span>
+  <span class="n">key</span> <span class="ss">:image_url</span><span class="p">,</span> <span class="nb">String</span>
+
+  <span class="n">one</span> <span class="ss">:feed</span>
+  <span class="n">one</span> <span class="ss">:user</span>
+  </pre></div>
+      </td>
+    </tr>
+    <tr id='section-2'>
+      <td class=docs>
+        <div class="pilwrap">
+          <a class="pilcrow" href="#section-2">&#182;</a>
+        </div>
+        <p>The url of their profile page</p>
+      </td>
+      <td class=code>
+        <div class='highlight'><pre>  <span class="n">key</span> <span class="ss">:remote_url</span><span class="p">,</span> <span class="nb">String</span>
+
+  <span class="k">def</span> <span class="nc">self</span><span class="o">.</span><span class="nf">create_from_hash!</span><span class="p">(</span><span class="n">hsh</span><span class="p">)</span>
+    <span class="n">create!</span><span class="p">(</span>
+      <span class="ss">:name</span> <span class="o">=&gt;</span> <span class="n">hsh</span><span class="o">[</span><span class="s1">&#39;user_info&#39;</span><span class="o">][</span><span class="s1">&#39;name&#39;</span><span class="o">]</span><span class="p">,</span>
+      <span class="ss">:username</span> <span class="o">=&gt;</span> <span class="n">hsh</span><span class="o">[</span><span class="s1">&#39;user_info&#39;</span><span class="o">][</span><span class="s1">&#39;nickname&#39;</span><span class="o">]</span><span class="p">,</span>
+      <span class="ss">:website</span> <span class="o">=&gt;</span> <span class="n">hsh</span><span class="o">[</span><span class="s1">&#39;user_info&#39;</span><span class="o">][</span><span class="s1">&#39;urls&#39;</span><span class="o">][</span><span class="s1">&#39;Website&#39;</span><span class="o">]</span><span class="p">,</span>
+      <span class="ss">:bio</span> <span class="o">=&gt;</span> <span class="n">hsh</span><span class="o">[</span><span class="s1">&#39;user_info&#39;</span><span class="o">][</span><span class="s1">&#39;description&#39;</span><span class="o">]</span><span class="p">,</span>
+      <span class="ss">:image_url</span> <span class="o">=&gt;</span> <span class="n">hsh</span><span class="o">[</span><span class="s1">&#39;user_info&#39;</span><span class="o">][</span><span class="s1">&#39;image&#39;</span><span class="o">]</span><span class="p">,</span>
+      <span class="ss">:remote_url</span> <span class="o">=&gt;</span> <span class="n">hsh</span><span class="o">[</span><span class="s1">&#39;user_info&#39;</span><span class="o">][</span><span class="s1">&#39;url&#39;</span><span class="o">]</span>
+    <span class="p">)</span>
+  <span class="k">end</span>
+
+  <span class="k">def</span> <span class="nf">url</span>
+    <span class="k">return</span> <span class="n">remote_url</span> <span class="k">if</span> <span class="n">remote_url</span>
+    <span class="s2">&quot;/users/</span><span class="si">#{</span><span class="n">username</span><span class="si">}</span><span class="s2">&quot;</span>
+  <span class="k">end</span>
+
+  <span class="k">def</span> <span class="nf">avatar_url</span>
+    <span class="k">return</span> <span class="n">image_url</span>    <span class="k">if</span> <span class="n">image_url</span>
+    <span class="k">return</span> <span class="n">gravatar_url</span> <span class="k">if</span> <span class="n">valid_gravatar?</span>
+
+    <span class="no">DEFAULT_AVATAR</span>
+  <span class="k">end</span>
+
+  <span class="k">def</span> <span class="nf">display_name</span>
+    <span class="k">return</span> <span class="n">username</span> <span class="k">if</span> <span class="nb">name</span><span class="o">.</span><span class="n">nil?</span> <span class="o">||</span> <span class="nb">name</span><span class="o">.</span><span class="n">empty?</span>
+    <span class="nb">name</span>
+  <span class="k">end</span>
+
+  <span class="k">def</span> <span class="nf">valid_gravatar?</span>
+    <span class="k">return</span> <span class="k">unless</span> <span class="n">email</span>
+
+    <span class="k">begin</span>
+      <span class="n">ret</span> <span class="o">=</span> <span class="kp">nil</span>
+      <span class="no">Net</span><span class="o">::</span><span class="no">HTTP</span><span class="o">.</span><span class="n">start</span><span class="p">(</span><span class="no">GRAVATAR_HOST</span><span class="p">,</span> <span class="mi">80</span><span class="p">)</span> <span class="k">do</span> <span class="o">|</span><span class="n">http</span><span class="o">|</span></pre></div>
+      </td>
+    </tr>
+    <tr id='section-3'>
+      <td class=docs>
+        <div class="pilwrap">
+          <a class="pilcrow" href="#section-3">&#182;</a>
+        </div>
+        <p>Use HEAD instead of GET for SPEED!</p>
+      </td>
+      <td class=code>
+        <div class='highlight'><pre>        <span class="n">ret</span> <span class="o">=</span> <span class="n">http</span><span class="o">.</span><span class="n">head</span><span class="p">(</span><span class="n">gravatar_path</span><span class="p">)</span><span class="o">.</span><span class="n">is_a?</span><span class="p">(</span><span class="no">Net</span><span class="o">::</span><span class="no">HTTPOK</span><span class="p">)</span>
+      <span class="k">end</span>
+      <span class="k">return</span> <span class="n">ret</span>
+    <span class="k">rescue</span></pre></div>
+      </td>
+    </tr>
+    <tr id='section-4'>
+      <td class=docs>
+        <div class="pilwrap">
+          <a class="pilcrow" href="#section-4">&#182;</a>
+        </div>
+        <p>No internet connection</p>
+
+      </td>
+      <td class=code>
+        <div class='highlight'><pre>      <span class="kp">false</span>
+    <span class="k">end</span>
+  <span class="k">end</span>
+
+  <span class="k">def</span> <span class="nf">gravatar_url</span>
+    <span class="k">return</span> <span class="no">DEFAULT_AVATAR</span> <span class="k">if</span> <span class="n">email</span><span class="o">.</span><span class="n">nil?</span>
+    <span class="s2">&quot;http://</span><span class="si">#{</span><span class="no">GRAVATAR_HOST</span><span class="si">}#{</span><span class="n">gravatar_path</span><span class="si">}</span><span class="s2">&quot;</span>
+  <span class="k">end</span>
+
+  <span class="k">def</span> <span class="nf">gravatar_path</span>
+    <span class="s2">&quot;/avatar/</span><span class="si">#{</span><span class="no">Digest</span><span class="o">::</span><span class="no">MD5</span><span class="o">.</span><span class="n">hexdigest</span><span class="p">(</span><span class="n">email</span><span class="p">)</span><span class="si">}</span><span class="s2">?s=48&amp;r=r&amp;d=404&quot;</span>
+  <span class="k">end</span>
+<span class="k">end</span></pre></div>
+      </td>
+    </tr>
+  </table>
+</div>
+</body>
