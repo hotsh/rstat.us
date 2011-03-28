@@ -32,7 +32,7 @@ $(document).ready ->
     textarea.focus()
     window.scrollTo(0, $(textarea).position().top)
 
-  $(".update").each ->
+  $(".has-update-form .update").each ->
     update = $(this)
     
     $(this).find(".reply").bind "click", (ev) ->
