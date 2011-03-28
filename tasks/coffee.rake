@@ -9,7 +9,7 @@ begin
       source = "#{File.dirname(__FILE__)}/../src/"
       javascripts = "#{File.dirname(__FILE__)}/../public/js/"
 
-      sh "compass compile views/screen.scss --output-style compressed --css-dir public/assets"
+      sh "compass compile views/screen.scss --output-style compressed --css-dir ../public/css"
 
       Dir.foreach(source) do |cf|
         unless cf == '.' || cf == '..' 

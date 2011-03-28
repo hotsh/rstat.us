@@ -3,7 +3,7 @@ gzip_assets: off
 
 stylesheets:
   screen:
-    - public/assets/s/screen.css
+    - public/css/n.css
     
 javascripts:
   app:
