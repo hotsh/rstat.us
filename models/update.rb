@@ -1,6 +1,7 @@
 class Update
   require 'cgi'
   include MongoMapper::Document
+  include MongoMapperExt::Filter
 
   belongs_to :feed
   belongs_to :author
@@ -20,6 +21,8 @@ class Update
 
   key :remote_url
   key :referral_id
+
+  filterable_keys :text
 
   def referral
     Update.first(:id => referral_id)

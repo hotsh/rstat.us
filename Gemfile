@@ -6,6 +6,7 @@ gem "require_relative", :git => 'git://github.com/bct/require_relative.git', :pl
 gem "omniauth"
 gem "sinatra", :require => "sinatra/base"
 gem "mongo_mapper"
+gem "mongomapper_ext"
 gem "bson_ext"
 gem "i18n"
 gem "haml"
@@ -22,9 +23,12 @@ gem "opub"
 gem "redfinger"
 gem "nokogiri", "= 1.4.4"
 gem "newrelic_rpm"
+gem "whatlanguage"
+gem "ruby-stemmer"
 gem "sass"
 gem "compass"
 gem "whatlanguage"
+gem "tzinfo"
 
 group :development, :test do
   gem 'coffee-script'
