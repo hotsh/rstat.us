@@ -4,6 +4,16 @@ class UpdateTest < MiniTest::Unit::TestCase
 
   include TestHelper
 
+  def test_0_minimum
+    u = Update.new(:text => "")
+    refute u.save, "I made an empty update, it's very zen."
+  end
+
+  def test_1_character_update
+    u = Update.new(:text => "?")
+    assert u.save
+  end
+
   def test_140_limit
     u = Update.new(:text => "This is a long update. This is a long update. This is a long update. This is a long update. This is a long update. This is a long update. jklol")
     refute u.save, "I made an update with over 140 characters"
