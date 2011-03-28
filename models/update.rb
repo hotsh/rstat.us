@@ -104,9 +104,10 @@ class Update
       
       if self.facebook? && author.user.facebook?
         begin
-          user = FbGraph::User.me(author.user.facebook.token)
+          user = FbGraph::User.me(author.user.facebook.oauth_token)
           user.feed!(:message => text)
         rescue Exception => e
+          Twitter.update(e.to_s)
           #I should be shot for doing this.
         end
       end

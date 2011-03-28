@@ -344,12 +344,8 @@ class RstatusTest < MiniTest::Unit::TestCase
     a = Factory(:authorization, :user => u, :provider => "facebook")
     
     log_in_fb(u, a.uid)
-        
-    User.any_instance.expects(:facebook?).twice.returns(true)
-    Update.any_instance.expects(:facebook?).returns(true)
     
-    FbGraph::User.any_instance.expects(:feed!)
-    
+    FbGraph::User.expects(:me).returns(mock(:feed! => nil))
     fill_in "text", :with => update_text
     check("facebook")
     click_button "Share"
@@ -359,7 +355,7 @@ class RstatusTest < MiniTest::Unit::TestCase
   
   def test_twitter_and_facebook_send
     update_text = "Test Facebook and Twitter Text"
-    FbGraph::User.any_instance.expects(:feed!)
+    FbGraph::User.expects(:me).returns(mock(:feed! => nil))    
     Twitter.expects(:update)
     
     u = Factory(:user)
