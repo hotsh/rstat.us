@@ -42,6 +42,13 @@ Start the server with rackup:
     $ rackup
 
 Bam! Visit http://localhost:9292/ in your browser, and you'll be good.
+    
+Compiling CSS and Javascript
+----------------------------
+
+For performance reasons, we're currently compressing our stylesheets and javascripts, as well as embedding what images we can. To compile Coffeescript (.coffee) or Sassy CSS (.scss) files for the site to use, use the following rake task:
+
+rake assets:compile
 
 Running your own node
 ---------------------
