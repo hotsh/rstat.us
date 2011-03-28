@@ -46,3 +46,10 @@ Then update your gemset:
 And instead of using heroku, start the server with sinatra:
 
     $ rackup
+    
+Compiling CSS and Javascript
+----------------------------
+
+For performance reasons, we're currently compressing our stylesheets and javascripts, as well as embedding what images we can. To compile Coffeescript (.coffee) or Sassy CSS (.scss) files for the site to use, use the following rake task:
+
+rake assets:compile
