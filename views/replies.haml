@@ -1,11 +1,8 @@
 - content_for :top do
   != haml :_update_form
 
-- content_for :javascript do
-  %script{:src => "/js/update.js"}
-
 != haml :_navigation
-#replies.updates
+#replies.updates.has-update-form
   != haml :_updates, :locals => {:updates =>  @replies}
   %nav.pagination
     - unless @prev_page.nil?

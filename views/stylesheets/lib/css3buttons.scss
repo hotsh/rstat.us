@@ -1,4 +1,4 @@
-.button { display: inline-block; padding: 7px 9px; font-size: 12px; line-height:1; color: #3C3C3D; text-shadow: 1px 1px 0 #FFFFFF; background: #ECECEC url('/images/css3buttons_backgrounds.png') 0 0 no-repeat; white-space: nowrap; overflow: visible; cursor: pointer; text-decoration: none; border: 1px solid #CACACA; -webkit-border-radius: 2px; -moz-border-radius: 2px; -webkit-background-clip: padding-box; border-radius: 2px; outline: none; position: relative; zoom: 1; *display: inline; }
+.button { display: inline-block; padding: 7px 9px; font-size: 12px; line-height:1; color: #3C3C3D; text-shadow: 1px 1px 0 #FFFFFF; background: #ECECEC url('/images/embed/css3buttons_backgrounds.png') 0 0 no-repeat; white-space: nowrap; overflow: visible; cursor: pointer; text-decoration: none; border: 1px solid #CACACA; -webkit-border-radius: 2px; -moz-border-radius: 2px; -webkit-background-clip: padding-box; border-radius: 2px; outline: none; position: relative; zoom: 1; *display: inline; }
 .button.primary { font-weight: bold }
 .button:hover { color: #FFFFFF; border-color: #4c9092; text-decoration: none; text-shadow: -1px -1px 0 rgba(0,0,0,0.3); background-position: 0 -40px; background-color: #378284; }
 .button:active,
@@ -15,7 +15,7 @@
 .button.middle:active,
 .button.right:active { top: 0px }
 .button.big { font-size: 16px; padding: 7px 16px; }
-.button span.icon { display: inline-block; width: 12px; height: 12px; margin: auto 4px auto auto; position: relative; top: 1px; background-image: url('/images/css3buttons_icons.png'); background-repeat: no-repeat; }
+.button span.icon { display: inline-block; width: 12px; height: 12px; margin: auto 4px auto auto; position: relative; top: 1px; background-image: url('/images/embed/css3buttons_icons.png'); background-repeat: no-repeat; }
 a.big.button span.icon { top: 0px }
 .button span.icon.book { background-position: 0 0 }
 .button:hover span.icon.book { background-position: 0 -15px }

@@ -35,7 +35,7 @@
       textarea.focus();
       return window.scrollTo(0, $(textarea).position().top);
     };
-    return $(".update").each(function() {
+    return $(".has-update-form .update").each(function() {
       var update;
       update = $(this);
       $(this).find(".reply").bind("click", function(ev) {

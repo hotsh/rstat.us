@@ -39,6 +39,35 @@ class User
   def url
     feed.local? ? "/users/#{feed.author.username}" : feed.author.url
   end
+  
+  def twitter?
+    has_authorization?(:twitter)
+  end
+  
+  def twitter
+    get_authorization(:twitter)
+  end
+  
+  def facebook?
+    has_authorization?(:facebook)
+  end
+  
+  def facebook
+    get_authorization(:facebook)
+  end
+  
+  def has_authorization?(auth)
+    a = Authorization.first(:provider => auth.to_s, :user_id => self.id)
+    if a.nil?
+      return false
+    else
+      return true
+    end
+  end
+  
+  def get_authorization(auth)
+    Authorization.first(:provider => auth.to_s, :user_id => self.id)
+  end
 
   key :following_ids, Array
   many :following, :in => :following_ids, :class_name => 'Feed'
@@ -117,7 +146,7 @@ class User
     }
     Update.where(:text => /^@#{username}\b/).order(['created_at', 'descending']).paginate(popts)
   end
-    
+
   key :status
 
   attr_accessor :password
@@ -134,7 +163,14 @@ class User
     return user if BCrypt::Password.new(user.hashed_password) == pass
     nil
   end
-  
+
+  def reset_username(params)
+    self.username = params[:username]
+    author.username = params[:username]
+    return false unless save
+    author.save
+  end
+
   def edit_user_profile(params)
       author.name    = params[:name]
       author.email   = params[:email]
@@ -142,7 +178,7 @@ class User
       author.bio     = params[:bio]
       author.save
   end
-  
+
   private
 
   def create_feed()

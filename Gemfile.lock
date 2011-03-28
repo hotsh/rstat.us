@@ -25,6 +25,7 @@ GEM
     celerity (0.8.8)
     childprocess (0.1.8)
       ffi (~> 1.0.6)
+    closure-compiler (1.1.1)
     coffee-script (2.2.0)
       coffee-script-source
       execjs
@@ -41,13 +42,22 @@ GEM
       rack (< 2, >= 1.1.0)
     faraday_middleware (0.3.2)
       faraday (~> 0.5.4)
+    fb_graph (1.6.3)
+      activesupport (>= 2.3)
+      json (>= 1.4.3)
+      oauth2 (>= 0.1.0)
+      restclient_with_cert
     ffi (1.0.7)
       rake (>= 0.8.7)
     haml (3.0.25)
     hashie (1.0.0)
     i18n (0.5.0)
+    jammit (0.6.0)
+      closure-compiler (>= 0.1.0)
+      yui-compressor (>= 0.9.1)
     jnunemaker-validatable (1.8.4)
       activesupport (>= 2.3.4)
+    json (1.5.1)
     json_pure (1.5.1)
     mail (2.2.15)
       activesupport (>= 2.3.6)
@@ -63,6 +73,9 @@ GEM
       activesupport (>= 2.3.4)
       jnunemaker-validatable (~> 1.8.4)
       plucky (~> 0.3.6)
+    mongomapper_ext (0.5.1)
+      mongo_mapper (~> 0.8)
+      uuidtools (>= 2.0.0)
     multi_json (0.0.5)
     multi_xml (0.2.2)
     multipart-post (1.1.0)
@@ -132,6 +145,7 @@ GEM
       ruby-openid (>= 2.1.8)
     rack-test (0.5.7)
       rack (>= 1.0)
+    rack-timeout (0.0.1)
     rake (0.8.7)
     rdiscount (1.6.8)
     redfinger (0.1.0)
@@ -140,6 +154,8 @@ GEM
       rest-client (>= 1.5.0)
     rest-client (1.6.1)
       mime-types (>= 1.16)
+    restclient_with_cert (0.0.3)
+      rest-client (>= 1.6)
     rocco (0.6)
       mustache
       rdiscount
@@ -147,6 +163,7 @@ GEM
     ruby-openid (2.1.8)
     ruby-openid-apps-discovery (1.2.0)
       ruby-openid (>= 2.1.7)
+    ruby-stemmer (0.9.1)
     rubyntlm (0.1.1)
     rubyzip (0.9.4)
     sass (3.1.0.alpha.252)
@@ -175,9 +192,12 @@ GEM
       multi_json (~> 0.0.5)
       multi_xml (~> 0.2.0)
       simple_oauth (~> 0.1.4)
+    tzinfo (0.3.25)
+    uuidtools (2.1.2)
     whatlanguage (1.0.0)
     xpath (0.1.3)
       nokogiri (~> 1.3)
+    yui-compressor (0.9.4)
 
 PLATFORMS
   ruby
@@ -190,11 +210,14 @@ DEPENDENCIES
   compass
   database_cleaner
   factory_girl
+  fb_graph
   haml
   i18n
+  jammit
   minitest
   mocha
   mongo_mapper
+  mongomapper_ext
   newrelic_rpm
   nokogiri (= 1.4.4)
   omniauth
@@ -205,13 +228,16 @@ DEPENDENCIES
   pygmentize
   rack-flash
   rack-test
+  rack-timeout
   rdiscount
   redfinger
   require_relative!
   rocco
+  ruby-stemmer
   sass
   sinatra
   sinatra-content-for
   time-ago-in-words
   twitter
+  tzinfo
   whatlanguage
