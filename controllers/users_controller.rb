@@ -137,7 +137,7 @@ class Rstatus
 
     #build title
     title = ""
-    title << @user.username + "'s" + " Following"
+    title << "#{@user.username}'s Following"
     
     haml :"users/list", :locals => {:title => title}
   end
