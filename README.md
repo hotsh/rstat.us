@@ -10,6 +10,8 @@ If you'd like to contribute, here's some details:
 
 - Here's the stack: ruby/sinatra/mongodb
 - Here's [the code](http://github.com/hotsh/rstat.us)
+- Here's [the documentation](http://hotsh.github.com/rstat.us/) (need
+  lots of improvment here!)
 - Here's [the Issues list](http://github.com/hotsh/rstat.us/issues)
 - Please fork the project and make a pull request
 -- Pull requests will not be merged without tests/documentation

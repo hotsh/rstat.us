@@ -67,9 +67,23 @@ class RstatusTest < MiniTest::Unit::TestCase
     visit "/"
     fill_in 'update-textarea', :with => update_text
     click_button :'update-button'
-    visit "/users/#{u.username}/feed"
 
     assert_match page.body, /#{update_text}/
+  end
+
+  def test_user_can_make_short_update
+    u = Factory(:user)
+    a = Factory(:authorization, :user => u)
+    update_text = "Q"
+    params = {
+      :text => update_text
+    }
+    log_in(u, a.uid)
+    visit "/"
+    fill_in 'update-textarea', :with => update_text
+    click_button :'update-button'
+
+    refute_match page.body, /Your status is too short!/
   end
 
   def test_user_can_see_replies
@@ -248,12 +262,12 @@ class RstatusTest < MiniTest::Unit::TestCase
 
     assert_match page.body, /#{bio_text}/
   end
-  
+
   def test_user_update_profile_twitter_button
     u = Factory(:user)
     log_in_email(u)
     visit "/users/#{u.username}/edit"
-
+  
     assert_match page.body, /Add Twitter Account/
   end
   
@@ -261,7 +275,7 @@ class RstatusTest < MiniTest::Unit::TestCase
     u = Factory(:user)
     log_in_email(u)
     visit "/users/#{u.username}/edit"
-
+  
     assert_match page.body, /Add Facebook Account/
   end
   
@@ -270,7 +284,7 @@ class RstatusTest < MiniTest::Unit::TestCase
     a = Factory(:authorization, :user => u, :nickname => "Awesomeo the Great")
     log_in(u, a.uid)
     visit "/users/#{u.username}/edit"
-
+  
     assert_match page.body, /Awesomeo the Great/
   end
   
@@ -279,24 +293,8 @@ class RstatusTest < MiniTest::Unit::TestCase
     a = Factory(:authorization, :user => u, :provider => "facebook", :nickname => "Awesomeo the Great")
     log_in_fb(u, a.uid)
     visit "/users/#{u.username}/edit"
-    
+  
     assert_match page.body, /Awesomeo the Great/
-  end
-
-  def test_username_clash
-    existing_user = Factory(:user, :username => "taken")
-    new_user = Factory.build(:user, :username => 'taken')
-
-    old_count = User.count
-    log_in(new_user)
-    assert_match /users\/new/, page.current_url, "not on the new user page."
-
-    fill_in "username", :with => "nottaken"
-    click_button "Finish Signup"
-
-    assert_match /Thanks! You're all signed up with nottaken for your username./, page.body
-    assert_match /\//, page.current_url
-
   end
   
   def no_twitter_login
@@ -310,7 +308,7 @@ class RstatusTest < MiniTest::Unit::TestCase
     u = Factory(:user)
     a = Factory(:authorization, :user => u)
     log_in(u, a.uid)
-    
+  
     assert_match page.body, /Twitter/
     assert_equal find_field('tweet').checked?, true
   end
@@ -319,7 +317,7 @@ class RstatusTest < MiniTest::Unit::TestCase
     u = Factory(:user)
     a = Factory(:authorization, :user => u, :provider => "facebook")
     log_in_fb(u, a.uid)
-    
+  
     assert_match page.body, /Facebook/
     assert_equal find_field('facebook').checked?, true
   end
@@ -330,11 +328,11 @@ class RstatusTest < MiniTest::Unit::TestCase
     u = Factory(:user)
     a = Factory(:authorization, :user => u)
     log_in(u, a.uid)
-    
+  
     fill_in "text", :with => update_text
     check("tweet")
     click_button "Share"
-    
+  
     assert_match /Update created/, page.body
   end
   
@@ -343,13 +341,13 @@ class RstatusTest < MiniTest::Unit::TestCase
     u = Factory(:user)
     a = Factory(:authorization, :user => u, :provider => "facebook")
     FbGraph::User.expects(:me).returns(mock(:feed! => nil))
-    
+  
     log_in_fb(u, a.uid)
-    
+  
     fill_in "text", :with => update_text
     check("facebook")
     click_button "Share"
-    
+  
     assert_match /Update created/, page.body
   end
   
@@ -357,18 +355,18 @@ class RstatusTest < MiniTest::Unit::TestCase
     update_text = "Test Facebook and Twitter Text"
     FbGraph::User.expects(:me).returns(mock(:feed! => nil))    
     Twitter.expects(:update)
-    
+  
     u = Factory(:user)
     Factory(:authorization, :user => u, :provider => "facebook")
     a = Factory(:authorization, :user => u)
-    
+  
     log_in(u, a.uid)
-        
+      
     fill_in "text", :with => update_text
     check("facebook")
     check("tweet")
     click_button "Share"
-    
+  
     assert_match /Update created/, page.body
   end
   
@@ -378,11 +376,11 @@ class RstatusTest < MiniTest::Unit::TestCase
     u = Factory(:user)
     a = Factory(:authorization, :user => u)
     log_in(u, a.uid)
-    
+  
     fill_in "text", :with => update_text
     uncheck("tweet")
     click_button "Share"
-    
+  
     assert_match /Update created/, page.body
   end
   
@@ -392,11 +390,11 @@ class RstatusTest < MiniTest::Unit::TestCase
     u = Factory(:user)
     a = Factory(:authorization, :user => u, :provider => "facebook")
     log_in_fb(u, a.uid)
-    
+  
     fill_in "text", :with => update_text
     uncheck("facebook")
     click_button "Share"
-    
+  
     assert_match /Update created/, page.body
   end
   
@@ -405,10 +403,10 @@ class RstatusTest < MiniTest::Unit::TestCase
     Twitter.expects(:update).never
     u = Factory(:user)
     log_in_email(u)
-        
+      
     fill_in "text", :with => update_text
     click_button "Share"
-    
+  
     assert_match /Update created/, page.body
   end
   
@@ -417,17 +415,17 @@ class RstatusTest < MiniTest::Unit::TestCase
     FbGraph::User.expects(:me).never
     u = Factory(:user)
     log_in_email(u)
-        
+      
     fill_in "text", :with => update_text
     click_button "Share"
-    
+  
     assert_match /Update created/, page.body
   end
-  
-  def add_twitter_to_account
+
+  def test_add_twitter_to_account
     u = Factory(:user)
     OmniAuth.config.add_mock(:twitter, {
-      :uid => uid,
+      :uid => "78654",
       :user_info => {
         :name => "Joe Public",
         :nickname => u.username,
@@ -435,20 +433,22 @@ class RstatusTest < MiniTest::Unit::TestCase
         :description => "A description",
         :image => "/images/something.png"
       },
-      :credentials => {:token => "1234", :secret => "4567"}
+      :credentials => {:token => "1111", :secret => "2222"}
     })
     log_in_email(u)
     visit "/users/#{u.username}/edit"
     click_button "Add Twitter Account"
-    
-    assert_equal "1234", u.twitter.oauth_token
-    assert_equal "4567", u.twitter.oauth_secret
-  end
   
-  def add_facebook_to_account
+    auth = Authorization.first(:provider => "twitter", :uid => 78654)
+    assert_equal "1111", auth.oauth_token
+    assert_equal "2222", auth.oauth_secret
+    assert_match "/users/#{u.username}/edit", page.current_url
+  end
+
+  def test_add_facebook_to_account
     u = Factory(:user)
     OmniAuth.config.add_mock(:facebook, {
-      :uid => uid,
+      :uid => 78654,
       :user_info => {
         :name => "Joe Public",
         :email => "joe@public.com",
@@ -457,21 +457,23 @@ class RstatusTest < MiniTest::Unit::TestCase
         :description => "A description",
         :image => "/images/something.png"
       },
-      :credentials => {:token => "1234", :secret => "4567"}
+      :credentials => {:token => "1111", :secret => "2222"}
     })
     log_in_email(u)
     visit "/users/#{u.username}/edit"
     click_button "Add Facebook Account"
-    
-    assert_equal "1234", u.twitter.oauth_token
-    assert_equal "4567", u.twitter.oauth_secret
+  
+    auth = Authorization.first(:provider => "facebook", :uid => 78654)
+    assert_equal "1111", auth.oauth_token
+    assert_equal "2222", auth.oauth_secret
+    assert_match "/users/#{u.username}/edit", page.current_url
   end
 
   def test_facebook_username
     new_user = Factory.build(:user, :username => 'profile.php?id=12345')
     log_in_fb(new_user)
     assert_match /users\/new/, page.current_url, "not on the new user page."
-
+  
     fill_in "username", :with => "janepublic"
     click_button "Finish Signup"
     assert_match /Thanks! You're all signed up with janepublic for your username./, page.body
@@ -490,6 +492,22 @@ class RstatusTest < MiniTest::Unit::TestCase
     fill_in "username", :with => "janepublic"
     click_button "Update"
     assert_match /janepublic/, page.body
+  end
+
+  def test_username_clash
+    existing_user = Factory(:user, :username => "taken")
+    new_user = Factory.build(:user, :username => 'taken')
+
+    old_count = User.count
+    log_in(new_user)
+    assert_match /users\/new/, page.current_url, "not on the new user page."
+
+    fill_in "username", :with => "nottaken"
+    click_button "Finish Signup"
+
+    assert_match /Thanks! You're all signed up with nottaken for your username./, page.body
+    assert_match /\//, page.current_url
+
   end
 
   def test_junk_username_gives_404

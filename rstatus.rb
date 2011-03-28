@@ -1,66 +1,70 @@
+# encoding: utf-8
+# This is the source code for [rstat.us](http://rstat.us/), a microblogging 
+# website built on the ostatus protocol.
+#
+# To get started, you'll need to install some prerequisite software:
+#
+# **Ruby** is used to power the site. We're currently using ruby 1.9.2p180. I
+# highly reccomend that you use [rvm][rvm] to install and manage your Rubies.
+# It's a fantastic tool. If you do decide to use `rvm`, you can install the 
+# appropriate Ruby and create a gemset by simply `cd`-ing into the root project
+# directory; I have a magical `.rvmrc` file that'll set you up.
+#
+# **MongoDB** is a really awesome document store. We use it to persist all of
+# the data on the website. To get MongoDB, please visit their 
+# [downloads page](http://www.mongodb.org/downloads) to find a package for your
+# system.
+#
+# After installing Ruby and MongoDB, you need to aquire all of the Ruby gems
+# that we use. This is pretty easy, since we're using **bundler**. Just do
+# this:
+#
+#     $ gem install bundler
+#     $ bundle install
+#
+# That'll set it all up! Then, you need to make sure you're running MongoDB.
+# I have to open up another tab in my terminal and type
+#
+#     $ mongod
+#
+# to get this to happen. When you're done hacking, you can hit ^-c to stop
+# `mongod` from running.
+#
+# To actually start up the site, just 
+#
+#     $ rackup
+#
+# and then visit [http://localhost:9292/](http://localhost:9292). You're good
+# to go!
+# 
+# [rvm]: http://rvm.beginrescueend.com/
+
+#### About rstatus.rb
+#
+# This file is the main entry point to the application. It has three main
+# purposes:
+#
+# 1. Include all relevant gems and library code.
+# 2. Configure all settings based on our environment.
+# 3. Set up a few basic routes.
+#
+# Everything else is handled by code that's included from this file.
+
+#### Including gems
+
+# We need to require rubygems and bundler to get things going. Then we call
+# `Bundler.setup` to get all of the magic started.
 require 'bundler'
 Bundler.require
 
-module Sinatra
-  module UserHelper
+# We moved lots of helpers into a separate file. These are all things that are
+# useful throughout the rest of the application.
+require_relative "helpers"
 
-    # This incredibly useful helper gives us the currently logged in user. We
-    # keep track of that by just setting a session variable with their id. If it
-    # doesn't exist, we just want to return nil.
-    def current_user
-      return unless session[:user_id]
-      @current_user ||= User.first(:id => session[:user_id])
-    end
-
-    # This very simple method checks if we've got a logged in user. That's pretty
-    # easy: just check our current_user.
-    def logged_in?
-      current_user
-    end
-
-    # Our `admin_only!` helper will only let admin users visit the page. If
-    # they're not an admin, we redirect them to either / or the page that we
-    # specified when we called it.
-    def admin_only!(opts = {:return => "/"})
-      unless logged_in? && current_user.admin?
-        flash[:error] = "Sorry, buddy"
-        redirect opts[:return]
-      end
-    end
-
-    # Similar to `admin_only!`, `require_login!` only lets logged in users access
-    # a particular page, and redirects them if they're not.
-    def require_login!(opts = {:return => "/"})
-      unless logged_in?
-        flash[:error] = "Sorry, buddy"
-        redirect opts[:return]
-      end
-    end
-
-    def set_params_page
-      params[:page] ||= 1
-      params[:per_page] ||= 25
-      params[:page] = params[:page].to_i
-      params[:per_page] = params[:per_page].to_i
-    end
-
-    def set_next_prev_page
-      @next_page = "?#{Rack::Utils.build_query :page => params[:page] + 1}"
-
-      if params[:page] > 1
-        @prev_page = "?#{Rack::Utils.build_query :page => params[:page] - 1}"
-      else
-        @prev_page = nil
-      end
-    end
-  end
-
-  helpers UserHelper
-end
-
+# It's good form to make your Sinatra applications be a subclass of Sinatra::Base.
+# This way, we're not polluting the global namespace with our methods and routes
+# and such.
 class Rstatus < Sinatra::Base
-
-  set :port, 8088
 
   # The `PONY_VIA_OPTIONS` hash is used to configure `pony`. Basically, we only
   # want to actually send mail if we're in the production environment. So we set
@@ -74,7 +78,6 @@ class Rstatus < Sinatra::Base
   end
 
   configure :production do
-    require 'newrelic_rpm'
     Compass.configuration do |config|
       config.output_style = :compressed
     end
@@ -95,15 +98,26 @@ class Rstatus < Sinatra::Base
     }
   end
 
+  # We need a secret for our sessions. This is set via an environment variable so
+  # that we don't have to give it away in the source code. Heroku makes it really
+  # easy to keep environment variables set up, so this ends up being pretty nice.
+  # This also has to be included before rack-flash, or it blows up.
   use Rack::Session::Cookie, :secret => ENV['COOKIE_SECRET']
+
+  # We're using rack-timeout to ensure that our dynos don't get starved by renegade
+  # processes.
   use Rack::Timeout
-  Rack::Timeout.timeout = 10  # this line is optional. if omitted, default is 30 seconds.
+  Rack::Timeout.timeout = 10
 
   set :root, File.dirname(__FILE__)
   set :haml, :escape_html => true
+
+  # This method enables the ability for our forms to use the _method hack for 
+  # actual RESTful stuff.
   set :method_override, true
 
-  require 'rack-flash'
+  # If you've used Rails' flash messages, you know how convenient they are.
+  # rack-flash lets us use them.
   use Rack::Flash
 
   configure do
@@ -122,6 +136,8 @@ class Rstatus < Sinatra::Base
       config.sass_options = {:cache_location => "./tmp/sass-cache"}
     end
     MongoMapperExt.init
+
+    # now that we've connected to the db, let's load our models.
     require_relative 'models/all'
   end
 
@@ -141,9 +157,7 @@ class Rstatus < Sinatra::Base
     provider :facebook, ENV["APP_ID"], ENV["APP_SECRET"], {:scope => 'publish_stream,offline_access,email'}
   end
 
-  ############################
   # EMPTY USERNAME HANDLING - quick and dirty
-  ############################
   before do
     @error_bar = ""
     if current_user && (current_user.username.nil? or current_user.username.empty? or not current_user.username.match(/profile.php/).nil?)
@@ -173,7 +187,6 @@ class Rstatus < Sinatra::Base
       haml :reset_username
     end
   end
-  ############################
 
   get '/' do
     if logged_in?
@@ -230,25 +243,10 @@ class Rstatus < Sinatra::Base
   get '/auth/:provider/callback' do
     auth = request.env['omniauth.auth']
     unless @auth = Authorization.find_from_hash(auth)
-      session[:uid] = auth['uid']
-      session[:provider] = auth['provider']
-      session[:name] = auth['user_info']['name']
-      session[:nickname] = auth['user_info']['nickname']
-      session[:website] = auth['user_info']['urls']['Website']
-      session[:description] = auth['user_info']['description']
-      session[:image] = auth['user_info']['image']
-      #let's store their oauth stuff so they don't have to re-login after
-      session[:oauth_token] = auth['credentials']['token']
-      session[:oauth_secret] = auth['credentials']['secret']
-
-      ## We can probably get rid of this since the user confirmation will check for duplicate usernames [brimil01]
-      if User.first :username => auth['user_info']['nickname'] or not auth['user_info']['nickname'].match(/profile.php/).nil?
-        #we have a username conflict!
-      
-        #let's store their oauth stuff so they don't have to re-login after
-        session[:oauth_token] = auth['credentials']['token']
-        session[:oauth_secret] = auth['credentials']['secret']
-      
+      if logged_in?
+        Authorization.create_from_hash(auth, uri("/"), current_user)
+        redirect "/users/#{current_user.username}/edit"
+      else
         session[:uid] = auth['uid']
         session[:provider] = auth['provider']
         session[:name] = auth['user_info']['name']
@@ -257,15 +255,24 @@ class Rstatus < Sinatra::Base
         session[:description] = auth['user_info']['description']
         session[:image] = auth['user_info']['image']
         session[:email] = auth['user_info']['email']
-      
-        flash[:notice] = "Sorry, someone has that name."
-        redirect '/users/new'
-      else
-        # Redirect to confirm page to verify username and provide email
-        redirect '/users/confirm'
+        #let's store their oauth stuff so they don't have to re-login after
+        session[:oauth_token] = auth['credentials']['token']
+        session[:oauth_secret] = auth['credentials']['secret']
+
+        ## We can probably get rid of this since the user confirmation will check for duplicate usernames [brimil01]
+        if User.first :username => auth['user_info']['nickname'] or auth['user_info']['nickname'] =~ /profile[.]php[?]id=/
+          #we have a username conflict!
+          flash[:notice] = "Sorry, someone has that name."
+          redirect '/users/new'
+          return
+        else
+          # Redirect to confirm page to verify username and provide email
+          redirect '/users/confirm'
+          return
+        end
       end
     end
-    
+
     ## Lets store the tokens if they don't alreay exist
     if @auth.oauth_token.nil?
       @auth.oauth_token = auth['credentials']['token']
@@ -274,14 +281,10 @@ class Rstatus < Sinatra::Base
       @auth.save
     end
 
-    if logged_in?
-      redirect "/users/#{current_user.username}edit"
-    else
-      session[:user_id] = @auth.user.id
+    session[:user_id] = @auth.user.id
 
-      flash[:notice] = "You're now logged in."
-      redirect '/'      
-    end
+    flash[:notice] = "You're now logged in."
+    redirect '/'
   end
 
   get '/auth/failure' do
@@ -612,7 +615,7 @@ class Rstatus < Sinatra::Base
     # tell hubs there is a new entry
     current_user.feed.ping_hubs(url(current_user.feed.url))
 
-    if params[:text].length <= 1
+    if params[:text].length < 1
       flash[:notice] = "Your status is too short!"
     elsif params[:text].length > 140
       flash[:notice] = "Your status is too long!"
