@@ -516,13 +516,6 @@ class RstatusTest < MiniTest::Unit::TestCase
     pass_hash = u.hashed_password
     log_in_email(u)
 
-  def test_user_password_reset
-    u = Factory(:user, :email => "some@email.com")
-    u.password = "password"
-    u.save
-    pass_hash = u.hashed_password
-    log_in_email(u)
-
     visit "/users/password_reset"
     assert_match "Password Reset", page.body
     
