@@ -74,18 +74,28 @@ class UpdateTest < MiniTest::Unit::TestCase
     u = Update.new(:text => "This is a message with a#hashtag.")
     assert_equal "This is a message with a#hashtag.", u.to_html
   end
-  
+
   def test_hashtags_after_create
     u = Update.create(:text => "This is a message with a #hashtag.")
     assert_match /<a href='\/hashtags\/hashtag'>#hashtag<\/a>/, u.html
     u = Update.create(:text => "This is a message with a#hashtag.")
     assert_equal "This is a message with a#hashtag.", u.html
   end
-  
+
   def test_html_exists_after_create
     u = Update.create(:text => "This is a message with a #hashtag and mentions http://rstat.us/.")
     assert_match /<a href='\/hashtags\/hashtag'>#hashtag<\/a>/, u.html
     assert_match /<a href='http:\/\/rstat.us\/'>http:\/\/rstat.us\/<\/a>/, u.html
+  end
+
+  def test_tweeted_flag_default
+    u = Update.new(:text => "This is a message with a #hashtag.")
+    assert_equal false, u.twitter?
+  end
+
+  def test_tweeted_flag
+    u = Update.new(:text => "This is a message with a #hashtag.", :twitter => true)
+    assert_equal true, u.twitter?
   end
 
 end

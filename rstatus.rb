@@ -134,7 +134,7 @@ class Rstatus < Sinatra::Base
 
   use OmniAuth::Builder do
     provider :twitter, ENV["CONSUMER_KEY"], ENV["CONSUMER_SECRET"]
-    provider :facebook, ENV["APP_ID"], ENV["APP_SECRET"]
+    provider :facebook, ENV["APP_ID"], ENV["APP_SECRET"], {:scope => 'publish_stream,offline_access,email'}
   end
 
   ############################
@@ -239,6 +239,20 @@ class Rstatus < Sinatra::Base
 
       if User.first :username => auth['user_info']['nickname']  or auth['user_info']['nickname'] =~ /profile[.]php[?]id=/
         #we have a username conflict!
+
+        #let's store their oauth stuff so they don't have to re-login after
+        session[:oauth_token] = auth['credentials']['token']
+        session[:oauth_secret] = auth['credentials']['secret']
+
+        session[:uid] = auth['uid']
+        session[:provider] = auth['provider']
+        session[:name] = auth['user_info']['name']
+        session[:nickname] = auth['user_info']['nickname']
+        session[:website] = auth['user_info']['urls']['Website']
+        session[:description] = auth['user_info']['description']
+        session[:image] = auth['user_info']['image']
+        session[:email] = auth['user_info']['email']
+
         flash[:notice] = "Sorry, someone has that name."
         redirect '/users/new'
       else
@@ -247,12 +261,16 @@ class Rstatus < Sinatra::Base
       end
     end
 
-    session[:oauth_token] = auth['credentials']['token']
-    session[:oauth_secret] = auth['credentials']['secret']
-    session[:user_id] = @auth.user.id
+    # session[:oauth_token] = auth['credentials']['token']
+    # session[:oauth_secret] = auth['credentials']['secret']
+    if logged_in?
+      redirect "/users/#{current_user.username}edit"
+    else
+      session[:user_id] = @auth.user.id
 
-    flash[:notice] = "You're now logged in."
-    redirect '/'
+      flash[:notice] = "You're now logged in."
+      redirect '/'      
+    end
   end
 
   get '/auth/failure' do
@@ -318,6 +336,10 @@ class Rstatus < Sinatra::Base
       auth['user_info']['urls']['Website'] = session[:website]
       auth['user_info']['description'] = session[:description]
       auth['user_info']['image'] = session[:image]
+      auth['user_info']['email'] = session[:email]
+      auth['credentials'] = {}
+      auth['credentials']['token'] = session[:oauth_token]
+      auth['credentials']['secret'] = session[:oauth_secret]
 
       Authorization.create_from_hash(auth, uri("/"), user)
 
@@ -563,11 +585,13 @@ class Rstatus < Sinatra::Base
   end
 
   post '/updates' do
+    do_tweet = params[:tweet] == "1"
+    do_facebook = params[:facebook] == "1"
     u = Update.new(:text => params[:text],
                    :referral_id => params[:referral_id],
                    :author => current_user.author,
-                   :oauth_token => session[:oauth_token],
-                   :oauth_secret => session[:oauth_secret])
+                   :twitter => do_tweet,
+                   :facebook => do_facebook)
 
     # and entry to user's feed
     current_user.feed.updates << u
