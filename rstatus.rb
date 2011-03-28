@@ -239,13 +239,14 @@ class Rstatus < Sinatra::Base
       session[:oauth_token] = auth['credentials']['token']
       session[:oauth_secret] = auth['credentials']['secret']
 
-      if User.first :username => auth['user_info']['nickname']  or auth['user_info']['nickname'] =~ /profile[.]php[?]id=/
+      ## We can probably get rid of this since the user confirmation will check for duplicate usernames [brimil01]
+      if User.first :username => auth['user_info']['nickname'] or auth['user_info']['nickname'] =~ /profile[.]php[?]id=/
         #we have a username conflict!
-
+      
         #let's store their oauth stuff so they don't have to re-login after
         session[:oauth_token] = auth['credentials']['token']
         session[:oauth_secret] = auth['credentials']['secret']
-
+      
         session[:uid] = auth['uid']
         session[:provider] = auth['provider']
         session[:name] = auth['user_info']['name']
@@ -254,7 +255,7 @@ class Rstatus < Sinatra::Base
         session[:description] = auth['user_info']['description']
         session[:image] = auth['user_info']['image']
         session[:email] = auth['user_info']['email']
-
+      
         flash[:notice] = "Sorry, someone has that name."
         redirect '/users/new'
         return
@@ -264,9 +265,15 @@ class Rstatus < Sinatra::Base
         return
       end
     end
+    
+    ## Lets store the tokens if they don't alreay exist
+    if @auth.oauth_token.nil?
+      @auth.oauth_token = auth['credentials']['token']
+      @auth.oauth_secret = auth['credentials']['secret']
+      @auth.nickname = auth['user_info']['nickname']
+      @auth.save
+    end
 
-    # session[:oauth_token] = auth['credentials']['token']
-    # session[:oauth_secret] = auth['credentials']['secret']
     if logged_in?
       redirect "/users/#{current_user.username}edit"
     else
