@@ -506,6 +506,20 @@ class RstatusTest < MiniTest::Unit::TestCase
     click_button "Finish Signup"
     assert_match /Thanks! You're all signed up with janepublic for your username./, page.body
     assert_match /\//, page.current_url
+    click_link "Logout"
+    log_in_fb(new_user)
+    assert_match /janepublic/, page.body
+  end
+
+  def test_existing_profile_php_rename_user
+    existing_user = Factory(:user, :username => 'profile.php?id=12345')
+    a = Factory(:authorization, :user => existing_user)
+    log_in(existing_user, a.uid)
+    click_link "reset_username"
+    assert_match /\/reset-username/, page.current_url
+    fill_in "username", :with => "janepublic"
+    click_button "Update"
+    assert_match /janepublic/, page.body
   end
 
   def test_username_clash
