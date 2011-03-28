@@ -679,7 +679,18 @@ class RstatusTest < MiniTest::Unit::TestCase
     assert_equal "1234", u.twitter.oauth_token
     assert_equal "4567", u.twitter.oauth_secret
     assert_equal u.username, u.twitter.nickname
-    
+  end
+  
+  def test_correct_reset_password_link
+  end
+  
+  def test_incorrect_reset_password_link
+  end
+  
+  def test_forgot_password
+  end
+  
+  def test_forgot_password_not_found
   end
 
 end
