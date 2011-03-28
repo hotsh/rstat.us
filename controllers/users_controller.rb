@@ -129,12 +129,17 @@ class Rstatus
 
     feeds = User.first(:username => params[:name]).following
 
+    @user = User.first(:username => params[:name])
     @users = feeds.paginate(:page => params[:page], :per_page => params[:per_page], :order => :id.desc).map{|f| f.author.user}
 
     set_next_prev_page
     @next_page = nil unless params[:page]*params[:per_page] < feeds.count
 
-    haml :"users/list", :locals => {:title => "Following"}
+    #build title
+    title = ""
+    title << "#{@user.username}'s Following"
+    
+    haml :"users/list", :locals => {:title => title}
   end
 
   get '/users/:name/following.json' do
@@ -149,13 +154,18 @@ class Rstatus
     set_params_page
 
     feeds = User.first(:username => params[:name]).followers
-
+    
+    @user = User.first(:username => params[:name])
     @users = feeds.paginate(:page => params[:page], :per_page => params[:per_page], :order => :id.desc).map{|f| f.author.user}
 
     set_next_prev_page
     @next_page = nil unless params[:page]*params[:per_page] < feeds.count
 
-    haml :"users/list", :locals => {:title => "Followers"}
+    #build title
+    title = ""
+    title << "#{@user.username}'s Followers"
+
+    haml :"users/list", :locals => {:title => title}
   end
   
   delete '/users/:username/auth/:provider' do
