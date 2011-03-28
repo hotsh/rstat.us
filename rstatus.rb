@@ -96,6 +96,9 @@ class Rstatus < Sinatra::Base
   end
 
   use Rack::Session::Cookie, :secret => ENV['COOKIE_SECRET']
+  use Rack::Timeout
+  Rack::Timeout.timeout = 10  # this line is optional. if omitted, default is 30 seconds.
+
   set :root, File.dirname(__FILE__)
   set :haml, :escape_html => true
   set :method_override, true
@@ -118,6 +121,7 @@ class Rstatus < Sinatra::Base
       config.project_path = File.dirname(__FILE__)
       config.sass_options = {:cache_location => "./tmp/sass-cache"}
     end
+    MongoMapperExt.init
     require_relative 'models/all'
   end
 

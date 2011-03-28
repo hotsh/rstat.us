@@ -139,6 +139,7 @@ GEM
       ruby-openid (>= 2.1.8)
     rack-test (0.5.7)
       rack (>= 1.0)
+    rack-timeout (0.0.1)
     rake (0.8.7)
     rdiscount (1.6.8)
     redfinger (0.1.0)
@@ -218,6 +219,7 @@ DEPENDENCIES
   pygmentize
   rack-flash
   rack-test
+  rack-timeout
   rdiscount
   redfinger
   require_relative!
