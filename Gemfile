@@ -36,4 +36,5 @@ group :development, :test do
   gem "rocco"
   gem "pygmentize"
   gem "mocha"
+  gem "jammit"
 end

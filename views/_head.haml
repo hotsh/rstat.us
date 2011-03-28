@@ -2,9 +2,15 @@
   %meta{:charset => "utf-8"}
   %title= locals[:title].nil? ? "rstat.us": "rstat.us - #{locals[:title]}"
   %script{:src=>"https://ajax.googleapis.com/ajax/libs/jquery/1.5.1/jquery.min.js"}
-  %script{:src => "/js/app.js"}
-  %link{:href => "/s/screen.css", :media => "screen", :rel => "stylesheet"}
-
+  %script{:src => "/assets/app.js"}
+  
+  <!--[if (!IE)|(gte IE 8)]><!-->
+  %link{:href => "/assets/screen-datauri.css", :media => "screen", :rel => "stylesheet"}
+  <!--<![endif]-->
+  <!--[if lte IE 7]>
+  <link href="assets/screen.css" media="screen" rel="stylesheet" type="text/css" />
+  <![endif]-->
+  
   != yield_content :css
   
   - if production?

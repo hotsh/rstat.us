@@ -48,12 +48,17 @@ class Author
   def valid_gravatar?
     return unless email
 
-    ret = nil
-    Net::HTTP.start(GRAVATAR_HOST, 80) do |http|
-      # Use HEAD instead of GET for SPEED!
-      ret = http.head(gravatar_path).is_a?(Net::HTTPOK)
+    begin
+      ret = nil
+      Net::HTTP.start(GRAVATAR_HOST, 80) do |http|
+        # Use HEAD instead of GET for SPEED!
+        ret = http.head(gravatar_path).is_a?(Net::HTTPOK)
+      end
+      return ret
+    rescue
+      # No internet connection
+      false
     end
-    return ret
   end
 
   def gravatar_url
