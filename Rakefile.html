@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="content-type" content="text/html;charset=utf-8">
+  <title>Rakefile</title>
+  <link rel="stylesheet" href="http://github.com/jashkenas/docco/raw/0.3.0/resources/docco.css">
+</head>
+<body>
+<div id='container'>
+  <div id="background"></div>
+  <div id="jump_to">
+    Jump To &hellip;
+    <div id="jump_wrapper">
+      <div id="jump_page">
+          <a class="source" href="Rakefile.html">Rakefile</a>
+          <a class="source" href="models/all.html">all.rb</a>
+          <a class="source" href="models/author.html">author.rb</a>
+          <a class="source" href="models/authorization.html">authorization.rb</a>
+          <a class="source" href="models/feed.html">feed.rb</a>
+          <a class="source" href="models/notifier.html">notifier.rb</a>
+          <a class="source" href="models/update.html">update.rb</a>
+          <a class="source" href="models/user.html">user.rb</a>
+          <a class="source" href="rstatus.html">rstatus.rb</a>
+      </div>
+    </div>
+  </div>
+  <table cellspacing=0 cellpadding=0>
+  <thead>
+    <tr>
+      <th class=docs><h1>Rakefile</h1></th>
+      <th class=code></th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr id='section-1'>
+      <td class=docs>
+        <div class="pilwrap">
+          <a class="pilcrow" href="#section-1">&#182;</a>
+        </div>
+        
+
+      </td>
+      <td class=code>
+        <div class='highlight'><pre><span class="nb">require</span> <span class="s1">&#39;rake/testtask&#39;</span>
+<span class="nb">require</span> <span class="s1">&#39;rake/clean&#39;</span>
+
+<span class="n">task</span> <span class="ss">:environment</span> <span class="k">do</span>
+  <span class="nb">require</span><span class="p">(</span><span class="no">File</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="no">File</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="bp">__FILE__</span><span class="p">),</span><span class="s2">&quot;rstatus&quot;</span><span class="p">))</span> 
+<span class="k">end</span>
+
+<span class="no">Dir</span><span class="o">.</span><span class="n">glob</span><span class="p">(</span><span class="s2">&quot;tasks/*.rake&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">each</span> <span class="p">{</span> <span class="o">|</span><span class="n">r</span><span class="o">|</span> <span class="n">import</span> <span class="n">r</span> <span class="p">}</span></pre></div>
+      </td>
+    </tr>
+  </table>
+</div>
+</body>
