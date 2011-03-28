@@ -121,6 +121,7 @@ class Rstatus < Sinatra::Base
       config.project_path = File.dirname(__FILE__)
       config.sass_options = {:cache_location => "./tmp/sass-cache"}
     end
+    MongoMapperExt.init
     require_relative 'models/all'
   end
 
