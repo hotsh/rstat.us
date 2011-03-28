@@ -573,5 +573,23 @@ class RstatusTest < MiniTest::Unit::TestCase
     assert_match "/users/password_reset", page.current_url
   end
   
+  def test_reset_password_link_for_profile_no_password
+    u = Factory(:user, :email => "some@email.com")
+    log_in_email(u)
+
+    visit "/users/#{u.username}/edit"
+
+    assert_match "Set Password", page.body
+  end
+  
+  def test_reset_password_link_for_profile
+    u = Factory(:user, :email => "some@email.com", :hashed_password => "blerg")
+    log_in_email(u)
+
+    visit "/users/#{u.username}/edit"
+
+    assert_match "Reset Password", page.body
+  end
+  
 end
 
