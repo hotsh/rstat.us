@@ -8,7 +8,7 @@ class Rstatus
   end
 
   get '/reset-username' do
-    unless current_user.nil? || current_user.username.empty?
+    unless current_user.nil? || current_user.username.empty? || current_user.username.match(/profile.php/)
       redirect "/"
     end
 
