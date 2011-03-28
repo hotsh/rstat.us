@@ -31,14 +31,15 @@ gem "whatlanguage"
 gem "tzinfo"
 
 group :development, :test do
+  gem "minitest", :platforms => :ruby_18
+  gem "minitest", :platforms => :ruby_18
   gem 'coffee-script'
   gem 'rack-test'
   gem "database_cleaner"
   gem "factory_girl"
   gem "capybara"
-  gem "minitest", :platforms => :ruby_18
   gem "rocco"
   gem "pygmentize"
   gem "mocha"
-  gem "minitest", :platforms => :ruby_18
+  gem "jammit"
 end

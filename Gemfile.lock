@@ -25,6 +25,7 @@ GEM
     celerity (0.8.8)
     childprocess (0.1.8)
       ffi (~> 1.0.6)
+    closure-compiler (1.1.1)
     coffee-script (2.2.0)
       coffee-script-source
       execjs
@@ -46,6 +47,9 @@ GEM
     haml (3.0.25)
     hashie (1.0.0)
     i18n (0.5.0)
+    jammit (0.6.0)
+      closure-compiler (>= 0.1.0)
+      yui-compressor (>= 0.9.1)
     jnunemaker-validatable (1.8.4)
       activesupport (>= 2.3.4)
     json_pure (1.5.1)
@@ -184,6 +188,7 @@ GEM
     whatlanguage (1.0.0)
     xpath (0.1.3)
       nokogiri (~> 1.3)
+    yui-compressor (0.9.4)
 
 PLATFORMS
   ruby
@@ -198,6 +203,7 @@ DEPENDENCIES
   factory_girl
   haml
   i18n
+  jammit
   minitest
   mocha
   mongo_mapper
