@@ -67,9 +67,23 @@ class RstatusTest < MiniTest::Unit::TestCase
     visit "/"
     fill_in 'update-textarea', :with => update_text
     click_button :'update-button'
-    visit "/users/#{u.username}/feed"
 
     assert_match page.body, /#{update_text}/
+  end
+
+  def test_user_can_make_short_update
+    u = Factory(:user)
+    a = Factory(:authorization, :user => u)
+    update_text = "Q"
+    params = {
+      :text => update_text
+    }
+    log_in(u, a.uid)
+    visit "/"
+    fill_in 'update-textarea', :with => update_text
+    click_button :'update-button'
+
+    refute_match page.body, /Your status is too short!/
   end
 
   def test_user_can_see_replies
