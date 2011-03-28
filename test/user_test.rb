@@ -31,7 +31,7 @@ class UserTest < MiniTest::Unit::TestCase
   def test_user_has_twitter
     u = Factory.create(:user)
     a = Factory.create(:authorization, :user => u)
-    assert_equal true, u.twitter?
+    assert u.twitter?
   end
   
   def test_user_returns_twitter
@@ -43,13 +43,31 @@ class UserTest < MiniTest::Unit::TestCase
   def test_user_has_facebook
     u = Factory.create(:user)
     a = Factory.create(:authorization, :user => u, :provider => "facebook")
-    assert_equal true, u.facebook?
+    assert u.facebook?
   end
   
   def test_user_returns_facebook
     u = Factory.create(:user)
     a = Factory.create(:authorization, :user => u, :provider => "facebook")
     assert_equal a, u.facebook
+  end
+  
+  def test_set_reset_password_token
+    u = Factory.create(:user)
+    assert_nil u.perishable_token
+    assert_nil u.password_reset_sent
+    u.set_password_reset_token
+    refute u.perishable_token.nil?
+    refute u.password_reset_sent.nil?
+  end
+  
+  def test_reset_password
+    u = Factory.create(:user)
+    u.password = "test_password"
+    u.save
+    prev_pass = u.hashed_password
+    u.reset_password("password")
+    assert u.hashed_password != prev_pass
   end
 
 end

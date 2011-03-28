@@ -6,6 +6,54 @@ class Rstatus
   get '/users/new' do
     haml :"users/new"
   end
+  
+  # Password reset for users that are currently logged in. If a user does not
+  # have an email address they are prompted to enter one
+  get '/users/password_reset' do
+    if logged_in?
+      haml :"users/password_reset"
+    else
+      redirect "/forgot_password"
+    end
+  end
+  
+  # Submitted passwords are checked for length and confirmation. If the user
+  # does not have an email address they are required to provide one. Once the
+  # password has been reset the user is redirected to /
+  post '/users/password_reset' do
+    if logged_in?
+      # Repeated in user_handler /reset_password/:token, make sure any changes
+      # are in sync
+      if params[:password].size == 0
+        flash[:notice] = "Password must be present"
+        redirect "/users/password_reset"
+        return
+      end
+      if params[:password] != params[:password_confirm]
+        flash[:notice] = "Passwords do not match"
+        redirect "/users/password_reset"
+        return
+      end
+      # end
+      
+      if current_user.email.nil? 
+        if params[:email].empty?
+          flash[:notice] = "Email must be provided"
+          redirect "/users/password_reset"
+          return
+        else
+          current_user.email = params[:email]
+        end
+      end
+      
+      current_user.password = params[:password]
+      current_user.save
+      flash[:notice] = "Password successfully set"
+      redirect "/"
+    else
+      redirect "/forgot_password"
+    end
+  end
 
   get '/users' do
     set_params_page

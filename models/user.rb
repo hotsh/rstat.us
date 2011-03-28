@@ -158,9 +158,19 @@ class User
     self.hashed_password = BCrypt::Password.create(@password, :cost => 10)
   end
   
+  # Create a new perishable token and set the date the password reset token was
+  # sent so tokens can be expired after 2 days
+  def set_password_reset_token
+    self.password_reset_sent = DateTime.now
+    set_perishable_token
+    return self.perishable_token
+  end
+  
+  # Set a new password, clear the date the password reset token was sent and
+  # reset the perishable token
   def reset_password(pass)
-    password = pass
-    password_reset_sent = nil
+    self.password = pass
+    self.password_reset_sent = nil
     reset_perishable_token
   end
 
@@ -179,11 +189,11 @@ class User
   end
 
   def edit_user_profile(params)
-      author.name    = params[:name]
-      author.email   = params[:email]
-      author.website = params[:website]
-      author.bio     = params[:bio]
-      author.save
+    author.name    = params[:name]
+    author.email   = params[:email]
+    author.website = params[:website]
+    author.bio     = params[:bio]
+    author.save
   end
 
   private
