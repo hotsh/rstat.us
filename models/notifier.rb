@@ -2,6 +2,9 @@
 # here, that way it's just as easy as
 # `Notifier.send_message_notification(me, you)` to send a message.
 class Notifier 
+
+  #this isn't used anymore, but I'm keeping it around so that it's easy to 
+  #write the new confirmation code that will happen soon.
   def self.send_signup_notification(recipient, token)
     Pony.mail(:to => recipient, 
               :subject => "Thanks for signing up for rstat.us!",

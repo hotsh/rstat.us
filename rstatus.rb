@@ -133,19 +133,6 @@ class Rstatus
     haml :"signup/thanks"
   end
 
-  get "/confirm/:token" do
-    @user = User.first :perishable_token => params[:token]
-    # XXX: Handle user being nil (invalid confirmation)
-    @username = @user.email.match(/^([^@]+?)@/)[1]
-
-    @valid_username = false
-    unless User.first :username => @username
-      @valid_username = true
-    end
-
-    haml :"signup/confirm"
-  end
-
   get "/search" do
     @updates = []
     if params[:q]
@@ -162,25 +149,6 @@ class Rstatus
       @prev_page = "?#{Rack::Utils.build_query :page => @updates.previous_page}"
     end
     haml :search
-  end
-
-  post "/confirm" do
-    user = User.first :perishable_token => params[:perishable_token]
-    user.username = params[:username]
-    user.password = params[:password]
-    user.status = "confirmed"
-    user.author = Author.create(:username => user.username,
-                                :email => user.email)
-
-    # propagate the authorship to their feed as well
-    user.feed.author = user.author
-    user.feed.save
-
-    user.save
-    session[:user_id] = user.id.to_s
-
-    flash[:notice] = "Thanks for signing up!"
-    redirect '/'
   end
 
   not_found do
