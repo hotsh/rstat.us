@@ -1,5 +1,0 @@
-development:
-  # Twitter API stuff (these fake keys work)
-  CONSUMER_KEY: asdf
-  CONSUMER_SECRET: asdf
-
