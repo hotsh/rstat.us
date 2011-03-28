@@ -2,9 +2,6 @@
   - content_for :top do
     != haml :_update_form
 
-- content_for :javascript do
-  %script{:src => "/js/update.js"}
-
 != haml :_navigation
 #timeline.updates
   != haml :_updates, :locals => {:updates => current_user.timeline}

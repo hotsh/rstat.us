@@ -1,8 +1,6 @@
 require 'bundler'
 Bundler.require
 
-require_relative 'models/all'
-
 module Sinatra
   module UserHelper
 
@@ -45,7 +43,7 @@ module Sinatra
       params[:page] = params[:page].to_i
       params[:per_page] = params[:per_page].to_i
     end
-  
+
     def set_next_prev_page
       @next_page = "?#{Rack::Utils.build_query :page => params[:page] + 1}"
 
@@ -98,6 +96,9 @@ class Rstatus < Sinatra::Base
   end
 
   use Rack::Session::Cookie, :secret => ENV['COOKIE_SECRET']
+  use Rack::Timeout
+  Rack::Timeout.timeout = 10  # this line is optional. if omitted, default is 30 seconds.
+
   set :root, File.dirname(__FILE__)
   set :haml, :escape_html => true
   set :method_override, true
@@ -114,12 +115,14 @@ class Rstatus < Sinatra::Base
       MongoMapper.connection = Mongo::Connection.new('localhost')
       MongoMapper.database = "rstatus-#{settings.environment}"
     end
-    
+
     # configure compass
     Compass.configuration do |config|
       config.project_path = File.dirname(__FILE__)
       config.sass_options = {:cache_location => "./tmp/sass-cache"}
     end
+    MongoMapperExt.init
+    require_relative 'models/all'
   end
 
   helpers Sinatra::UserHelper
@@ -135,7 +138,7 @@ class Rstatus < Sinatra::Base
 
   use OmniAuth::Builder do
     provider :twitter, ENV["CONSUMER_KEY"], ENV["CONSUMER_SECRET"]
-    provider :facebook, ENV["APP_ID"], ENV["APP_SECRET"]
+    provider :facebook, ENV["APP_ID"], ENV["APP_SECRET"], {:scope => 'publish_stream,offline_access,email'}
   end
 
   ############################
@@ -153,24 +156,22 @@ class Rstatus < Sinatra::Base
     unless current_user.nil? || current_user.username.empty?
       redirect "/"
     end
-      
+
     haml :reset_username
   end
 
   post '/reset-username' do
     exists = User.first :username => params[:username]
     if !params[:username].nil? && !params[:username].empty? && exists.nil?
-      user = current_user
-      user.username = params[:username]
-      user.author.username = params[:username]
-      user.save
-      user.author.save
-
-      flash[:notice] = "Thank you for updating your username"
+      if current_user.reset_username(params)
+        flash[:notice] = "Thank you for updating your username"
+      else
+        flash[:notice] = "Your username could not be updated"
+      end
       redirect "/"
     else
       flash[:notice] = "Sorry, that username has already been taken or is not valid. Please try again."
-      haml :reset_username    
+      haml :reset_username
     end
   end
   ############################
@@ -183,8 +184,6 @@ class Rstatus < Sinatra::Base
 
       @timeline = true
 
-      @update_text = ""
-      @update_id = ""
       if params[:reply]
         u = Update.first(:id => params[:reply])
         @update_text = "@#{u.author.username} "
@@ -193,6 +192,9 @@ class Rstatus < Sinatra::Base
         u = Update.first(:id => params[:share])
         @update_text = "RS @#{u.author.username}: #{u.text}"
         @update_id = u.id
+      else
+        @update_text = ""
+        @update_id = ""
       end
 
       if params[:status]
@@ -209,7 +211,7 @@ class Rstatus < Sinatra::Base
     cache_control :public, :must_revalidate, :max_age => 60
     haml :index, :layout => false
   end
-  
+
   # get '/screen.css' do
   #   cache_control :public, :must_revalidate, :max_age => 360
   #   scss(:screen, Compass.sass_engine_options)
@@ -229,31 +231,44 @@ class Rstatus < Sinatra::Base
   get '/auth/:provider/callback' do
     auth = request.env['omniauth.auth']
     unless @auth = Authorization.find_from_hash(auth)
-      session[:uid] = auth['uid']
-      session[:provider] = auth['provider']
-      session[:name] = auth['user_info']['name']
-      session[:nickname] = auth['user_info']['nickname']
-      session[:website] = auth['user_info']['urls']['Website']
-      session[:description] = auth['user_info']['description']
-      session[:image] = auth['user_info']['image']
-      #let's store their oauth stuff so they don't have to re-login after
-      session[:oauth_token] = auth['credentials']['token']
-      session[:oauth_secret] = auth['credentials']['secret']
-
-      if User.first :username => auth['user_info']['nickname']  or auth['user_info']['nickname'] =~ /profile[.]php[?]id=/
-        #we have a username conflict!
-        flash[:notice] = "Sorry, someone has that name."
-        redirect '/users/new'
-        return
+      if logged_in?
+        Authorization.create_from_hash(auth, uri("/"), current_user)
+        redirect "/users/#{current_user.username}/edit"
       else
-        # Redirect to confirm page to verify username and provide email
-        redirect '/users/confirm'
-        return
+        session[:uid] = auth['uid']
+        session[:provider] = auth['provider']
+        session[:name] = auth['user_info']['name']
+        session[:nickname] = auth['user_info']['nickname']
+        session[:website] = auth['user_info']['urls']['Website']
+        session[:description] = auth['user_info']['description']
+        session[:image] = auth['user_info']['image']
+        session[:email] = auth['user_info']['email']
+        #let's store their oauth stuff so they don't have to re-login after
+        session[:oauth_token] = auth['credentials']['token']
+        session[:oauth_secret] = auth['credentials']['secret']
+
+        ## We can probably get rid of this since the user confirmation will check for duplicate usernames [brimil01]
+        if User.first :username => auth['user_info']['nickname'] or auth['user_info']['nickname'] =~ /profile[.]php[?]id=/
+          #we have a username conflict!
+          flash[:notice] = "Sorry, someone has that name."
+          redirect '/users/new'
+          return
+        else
+          # Redirect to confirm page to verify username and provide email
+          redirect '/users/confirm'
+          return
+        end
       end
     end
 
-    session[:oauth_token] = auth['credentials']['token']
-    session[:oauth_secret] = auth['credentials']['secret']
+    ## Lets store the tokens if they don't alreay exist
+    if @auth.oauth_token.nil?
+      @auth.oauth_token = auth['credentials']['token']
+      @auth.oauth_secret = auth['credentials']['secret']
+      @auth.nickname = auth['user_info']['nickname']
+      @auth.save
+    end
+
     session[:user_id] = @auth.user.id
 
     flash[:notice] = "You're now logged in."
@@ -282,7 +297,7 @@ class Rstatus < Sinatra::Base
     # Filter users by search params
     if params[:search] && !params[:search].empty?
       @users = User.where(:username => /#{params[:search]}/i)
-      
+
     # Filter users by letter
     elsif params[:letter]
       if params[:letter] == "other"
@@ -300,12 +315,12 @@ class Rstatus < Sinatra::Base
     else
       @users = @users.sort(:created_at.desc)
     end
-    
+
     @users = @users.paginate(:page => params[:page], :per_page => params[:per_page])
 
     @next_page = nil
     set_next_prev_page
-    
+
     haml :"users/index"
   end
 
@@ -323,6 +338,10 @@ class Rstatus < Sinatra::Base
       auth['user_info']['urls']['Website'] = session[:website]
       auth['user_info']['description'] = session[:description]
       auth['user_info']['image'] = session[:image]
+      auth['user_info']['email'] = session[:email]
+      auth['credentials'] = {}
+      auth['credentials']['token'] = session[:oauth_token]
+      auth['credentials']['secret'] = session[:oauth_secret]
 
       Authorization.create_from_hash(auth, uri("/"), user)
 
@@ -384,7 +403,6 @@ class Rstatus < Sinatra::Base
     unless current_user.following? feed.url
       flash[:notice] = "You're not following #{@author.username}."
       redirect request.referrer
-      return
     end
 
     #unfollow them!
@@ -423,8 +441,6 @@ class Rstatus < Sinatra::Base
       flash[:notice] = "You're already following #{feed.author.username}."
 
       redirect request.referrer
-
-      return
     end
 
     # follow them!
@@ -432,7 +448,6 @@ class Rstatus < Sinatra::Base
     unless f
       flash[:notice] = "There was a problem following #{params[:url]}."
       redirect request.referrer
-      return
     end
 
     if not f.local?
@@ -510,7 +525,7 @@ class Rstatus < Sinatra::Base
         flash[:notice] = "Profile could not be saved!"
       end
       redirect "/users/#{params[:username]}"
-      return
+
     else
       redirect "/users/#{params[:username]}"
     end
@@ -525,14 +540,14 @@ class Rstatus < Sinatra::Base
   # This lets us see who is following.
   get '/users/:name/following' do
     set_params_page
-    
+
     feeds = User.first(:username => params[:name]).following
 
     @users = feeds.paginate(:page => params[:page], :per_page => params[:per_page], :order => :id.desc).map{|f| f.author.user}
 
-    set_next_prev_page 
+    set_next_prev_page
     @next_page = nil unless params[:page]*params[:per_page] < feeds.count
-    
+
     haml :"users/list", :locals => {:title => "Following"}
   end
 
@@ -546,12 +561,12 @@ class Rstatus < Sinatra::Base
 
   get '/users/:name/followers' do
     set_params_page
-    
+
     feeds = User.first(:username => params[:name]).followers
 
     @users = feeds.paginate(:page => params[:page], :per_page => params[:per_page], :order => :id.desc).map{|f| f.author.user}
 
-    set_next_prev_page 
+    set_next_prev_page
     @next_page = nil unless params[:page]*params[:per_page] < feeds.count
 
     haml :"users/list", :locals => {:title => "Followers"}
@@ -572,17 +587,19 @@ class Rstatus < Sinatra::Base
   end
 
   post '/updates' do
+    do_tweet = params[:tweet] == "1"
+    do_facebook = params[:facebook] == "1"
     u = Update.new(:text => params[:text],
                    :referral_id => params[:referral_id],
                    :author => current_user.author,
-                   :oauth_token => session[:oauth_token],
-                   :oauth_secret => session[:oauth_secret])
+                   :twitter => do_tweet,
+                   :facebook => do_facebook)
 
     # and entry to user's feed
     current_user.feed.updates << u
     current_user.feed.save
     current_user.save
-    
+
     # tell hubs there is a new entry
     current_user.feed.ping_hubs(url(current_user.feed.url))
 
@@ -628,6 +645,24 @@ class Rstatus < Sinatra::Base
     end
 
     haml :"signup/confirm"
+  end
+
+  get "/search" do
+    @updates = []
+    if params[:q]
+      @updates = Update.filter(params[:q], :page => params[:page], :per_page => params[:per_page] || 20, :order => :created_at.desc)
+    end
+
+    @next_page = nil
+    @prev_page = nil
+
+    if !@updates.empty? && @updates.next_page
+      @next_page = "?#{Rack::Utils.build_query :page => @updates.next_page}"
+    end
+    if !@updates.empty? && @updates.previous_page
+      @prev_page = "?#{Rack::Utils.build_query :page => @updates.previous_page}"
+    end
+    haml :search
   end
 
   post "/confirm" do

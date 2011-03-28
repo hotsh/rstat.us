@@ -1,0 +1,15 @@
+embed_assets: on
+gzip_assets: off
+
+stylesheets:
+  screen:
+    - public/assets/s/screen.css
+    
+javascripts:
+  app:
+    - public/js/jquery.equalHeights.js
+    - public/js/home.js
+    - public/js/app.js
+    - public/js/update.js
+    - public/js/updates.show.js
+    - public/js/users.js

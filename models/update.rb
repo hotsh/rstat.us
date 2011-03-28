@@ -1,15 +1,22 @@
 class Update
   require 'cgi'
   include MongoMapper::Document
+  include MongoMapperExt::Filter
 
   belongs_to :feed
   belongs_to :author
 
   key :text, String, :default => ""
+  key :html, String
   key :tags, Array, :default => []
   key :language, String
+  key :twitter, Boolean
+  key :facebook, Boolean
 
-  attr_accessor :oauth_token, :oauth_secret
+  before_save :generate_html
+
+  # store in authorization
+  #attr_accessor :oauth_token, :oauth_secret
 
   validates_length_of :text, :minimum => 1, :maximum => 140
   before_create :get_tags
@@ -17,6 +24,8 @@ class Update
 
   key :remote_url
   key :referral_id
+
+  filterable_keys :text
 
   def referral
     Update.first(:id => referral_id)
@@ -31,23 +40,7 @@ class Update
   end
 
   def to_html
-    out = CGI.escapeHTML(text)
-
-    # we let almost anything be in a username, except those that mess with urls.  but you can't end in a .:;, or !
-    #also ignore container chars [] () "" '' {}
-    # XXX: the _correct_ solution will be to use an email validator
-    out.gsub!(/(^|[ \t\n\r\f"'\(\[{]+)@([^ \t\n\r\f&?=@%\/\#]*[^ \t\n\r\f&?=@%\/\#.!:;,"'\]}\)])/) do |match|
-      if u = User.first(:username => /^#{$2}$/i)
-        "#{$1}<a href='/users/#{u.username}'>@#{$2}</a>"
-      else
-        match
-      end
-    end
-    out.gsub!(/(http[s]?:\/\/\S+[a-zA-Z0-9\/}])/, "<a href='\\1'>\\1</a>")
-    out.gsub!(/(^|\s+)#(\w+)/) do |match|
-      "#{$1}<a href='/hashtags/#{$2}'>##{$2}</a>"
-    end
-    out
+    self.html || generate_html
   end
 
   def mentioned? search
@@ -55,7 +48,7 @@ class Update
     matches.nil? ? false : matches.length > 0
   end
 
-  after_create :tweet
+  after_create :send_to_external_accounts
 
   timestamps!
 
@@ -80,27 +73,55 @@ class Update
   end
 
   protected
+  
+  def generate_html
+    out = CGI.escapeHTML(text)
 
-  def tweet
-    return unless ENV['RACK_ENV'] == 'production'
-    
-    # suppress crossposting of @replies
-    if text[0] == '@'
-      return
+    # we let almost anything be in a username, except those that mess with urls.  but you can't end in a .:;, or !
+    #also ignore container chars [] () "" '' {}
+    # XXX: the _correct_ solution will be to use an email validator
+    out.gsub!(/(^|[ \t\n\r\f"'\(\[{]+)@([^ \t\n\r\f&?=@%\/\#]*[^ \t\n\r\f&?=@%\/\#.!:;,"'\]}\)])/) do |match|
+      if u = User.first(:username => /^#{$2}$/i)
+        "#{$1}<a href='/users/#{u.username}'>@#{$2}</a>"
+      else
+        match
+      end
     end
+    out.gsub!(/(http[s]?:\/\/\S+[a-zA-Z0-9\/}])/, "<a href='\\1'>\\1</a>")
+    out.gsub!(/(^|\s+)#(\w+)/) do |match|
+      "#{$1}<a href='/hashtags/#{$2}'>##{$2}</a>"
+    end
+    self.html = out
+  end
 
-    begin
-      Twitter.configure do |config|
-        config.consumer_key = ENV["CONSUMER_KEY"]
-        config.consumer_secret = ENV["CONSUMER_SECRET"]
-        config.oauth_token = oauth_token
-        config.oauth_token_secret = oauth_secret
+  def send_to_external_accounts
+    return if ENV['RACK_ENV'] == 'development'
+    if author.user
+      if self.twitter? && author.user.twitter?
+        begin
+          Twitter.configure do |config|
+            config.consumer_key = ENV["CONSUMER_KEY"]
+            config.consumer_secret = ENV["CONSUMER_SECRET"]
+            config.oauth_token = author.user.twitter.oauth_token
+            config.oauth_token_secret = author.user.twitter.oauth_secret
+          end
+
+          Twitter.update(text)
+        rescue Exception => e
+          #I should be shot for doing this.
+        end
       end
 
-      Twitter.update(text)
-    rescue Exception => e
-      #I should be shot for doing this.
+      if self.facebook? && author.user.facebook?
+        begin
+          user = FbGraph::User.me(author.user.facebook.oauth_token)
+          user.feed!(:message => text)
+        rescue Exception => e
+          #I should be shot for doing this.
+        end
+      end
     end
+
   end
 
 end

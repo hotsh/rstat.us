@@ -2,7 +2,7 @@
   #left {
     #logo {
       h2 {
-        @include image-replaced("../images/logo-sm.png", 159px, 45px)        
+        @include image-replaced("/images/embed/logo-sm.png", 159px, 45px)        
       }
     }
     
@@ -73,9 +73,16 @@
   position: absolute;
   top: 1.2em;
   right: 0;
+}
+
+#search-form {
+  padding: 0 0 2em 0;
+}
+
+.search {
   input[type="text"] {
     padding: 0.45em;
-  }
+  }  
 }
 
 #users-nav {
@@ -146,6 +153,7 @@ form#update-form {
         padding-right: 0.2em;
       }
       color: #aaa;
+      padding-top: 0.5em;
       padding-left: 0.75em;
     }
   }
@@ -234,7 +242,7 @@ form#update-form {
     margin: 0.5em 0em;
   }
   
-  input {
+  input[type="text"] {
     border: solid 1px #CCCCCC;
 	margin: 0.2em;
   }
@@ -497,7 +505,7 @@ form#update-form {
     cursor: pointer;
     float: right;
     border: none;
-    @include image-replaced('../images/trash.png', 13px, 16px)
+    @include image-replaced('/images/embed/trash.png', 13px, 16px)
   }
   
   .end-links {

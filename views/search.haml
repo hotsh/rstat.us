@@ -1,9 +1,12 @@
-- unless current_user.nil?
-  - content_for :top do
-    != haml :_update_form
+%h1 Search
+
+%form#search-form.search{:action => "search", :method => "GET", :name => "search_form"}
+  %input#search-input{:name => "q", :type => "text"}
+  %input#search-button.button{:type => "submit", :value => "Search"}
 
 != haml :_navigation
-#world.updates.has-update-form
+
+#search.updates
   != haml :_updates, :locals => {:updates =>  @updates}
   %nav.pagination
     - unless @prev_page.nil?
