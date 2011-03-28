@@ -1,8 +1,6 @@
 require 'bundler'
 Bundler.require
 
-require_relative 'models/all'
-
 module Sinatra
   module UserHelper
 
@@ -45,7 +43,7 @@ module Sinatra
       params[:page] = params[:page].to_i
       params[:per_page] = params[:per_page].to_i
     end
-  
+
     def set_next_prev_page
       @next_page = "?#{Rack::Utils.build_query :page => params[:page] + 1}"
 
@@ -114,12 +112,13 @@ class Rstatus < Sinatra::Base
       MongoMapper.connection = Mongo::Connection.new('localhost')
       MongoMapper.database = "rstatus-#{settings.environment}"
     end
-    
+
     # configure compass
     Compass.configuration do |config|
       config.project_path = File.dirname(__FILE__)
       config.sass_options = {:cache_location => "./tmp/sass-cache"}
     end
+    require_relative 'models/all'
   end
 
   helpers Sinatra::UserHelper
@@ -143,7 +142,7 @@ class Rstatus < Sinatra::Base
   ############################
   before do
     @error_bar = ""
-    if current_user && (current_user.username.nil? or current_user.username.empty?)       
+    if current_user && (current_user.username.nil? or current_user.username.empty? or !current_user.username.match(/profile.php/).nil?)
       @error_bar = haml :_username_error, :layout => false
     end
   end
@@ -152,24 +151,22 @@ class Rstatus < Sinatra::Base
     unless current_user.nil? || current_user.username.empty?
       redirect "/"
     end
-      
+
     haml :reset_username
   end
 
   post '/reset-username' do
     exists = User.first :username => params[:username]
     if !params[:username].nil? && !params[:username].empty? && exists.nil?
-      user = current_user
-      user.username = params[:username]
-      user.author.username = params[:username]
-      user.save
-      user.author.save
-
-      flash[:notice] = "Thank you for updating your username"
+      if current_user.reset_username(params)
+        flash[:notice] = "Thank you for updating your username"
+      else
+        flash[:notice] = "Your username could not be updated"
+      end
       redirect "/"
     else
       flash[:notice] = "Sorry, that username has already been taken or is not valid. Please try again."
-      haml :reset_username    
+      haml :reset_username
     end
   end
   ############################
@@ -182,8 +179,6 @@ class Rstatus < Sinatra::Base
 
       @timeline = true
 
-      @update_text = ""
-      @update_id = ""
       if params[:reply]
         u = Update.first(:id => params[:reply])
         @update_text = "@#{u.author.username} "
@@ -192,6 +187,9 @@ class Rstatus < Sinatra::Base
         u = Update.first(:id => params[:share])
         @update_text = "RS @#{u.author.username}: #{u.text}"
         @update_id = u.id
+      else
+        @update_text = ""
+        @update_id = ""
       end
 
       if params[:status]
@@ -208,7 +206,7 @@ class Rstatus < Sinatra::Base
     cache_control :public, :must_revalidate, :max_age => 60
     haml :index, :layout => false
   end
-  
+
   # get '/screen.css' do
   #   cache_control :public, :must_revalidate, :max_age => 360
   #   scss(:screen, Compass.sass_engine_options)
@@ -243,11 +241,9 @@ class Rstatus < Sinatra::Base
         #we have a username conflict!
         flash[:notice] = "Sorry, someone has that name."
         redirect '/users/new'
-        return
       else
         # Redirect to confirm page to verify username and provide email
         redirect '/users/confirm'
-        return
       end
     end
 
@@ -281,7 +277,7 @@ class Rstatus < Sinatra::Base
     # Filter users by search params
     if params[:search] && !params[:search].empty?
       @users = User.where(:username => /#{params[:search]}/i)
-      
+
     # Filter users by letter
     elsif params[:letter]
       if params[:letter] == "other"
@@ -299,12 +295,12 @@ class Rstatus < Sinatra::Base
     else
       @users = @users.sort(:created_at.desc)
     end
-    
+
     @users = @users.paginate(:page => params[:page], :per_page => params[:per_page])
 
     @next_page = nil
     set_next_prev_page
-    
+
     haml :"users/index"
   end
 
@@ -383,7 +379,6 @@ class Rstatus < Sinatra::Base
     unless current_user.following? feed.url
       flash[:notice] = "You're not following #{@author.username}."
       redirect request.referrer
-      return
     end
 
     #unfollow them!
@@ -422,8 +417,6 @@ class Rstatus < Sinatra::Base
       flash[:notice] = "You're already following #{feed.author.username}."
 
       redirect request.referrer
-
-      return
     end
 
     # follow them!
@@ -431,7 +424,6 @@ class Rstatus < Sinatra::Base
     unless f
       flash[:notice] = "There was a problem following #{params[:url]}."
       redirect request.referrer
-      return
     end
 
     if not f.local?
@@ -509,7 +501,7 @@ class Rstatus < Sinatra::Base
         flash[:notice] = "Profile could not be saved!"
       end
       redirect "/users/#{params[:username]}"
-      return
+
     else
       redirect "/users/#{params[:username]}"
     end
@@ -524,14 +516,14 @@ class Rstatus < Sinatra::Base
   # This lets us see who is following.
   get '/users/:name/following' do
     set_params_page
-    
+
     feeds = User.first(:username => params[:name]).following
 
     @users = feeds.paginate(:page => params[:page], :per_page => params[:per_page], :order => :id.desc).map{|f| f.author.user}
 
-    set_next_prev_page 
+    set_next_prev_page
     @next_page = nil unless params[:page]*params[:per_page] < feeds.count
-    
+
     haml :"users/list", :locals => {:title => "Following"}
   end
 
@@ -545,12 +537,12 @@ class Rstatus < Sinatra::Base
 
   get '/users/:name/followers' do
     set_params_page
-    
+
     feeds = User.first(:username => params[:name]).followers
 
     @users = feeds.paginate(:page => params[:page], :per_page => params[:per_page], :order => :id.desc).map{|f| f.author.user}
 
-    set_next_prev_page 
+    set_next_prev_page
     @next_page = nil unless params[:page]*params[:per_page] < feeds.count
 
     haml :"users/list", :locals => {:title => "Followers"}
@@ -581,7 +573,7 @@ class Rstatus < Sinatra::Base
     current_user.feed.updates << u
     current_user.feed.save
     current_user.save
-    
+
     # tell hubs there is a new entry
     current_user.feed.ping_hubs(url(current_user.feed.url))
 
@@ -627,6 +619,24 @@ class Rstatus < Sinatra::Base
     end
 
     haml :"signup/confirm"
+  end
+
+  get "/search" do
+    @updates = []
+    if params[:q]
+      @updates = Update.filter(params[:q], :page => params[:page], :per_page => params[:per_page] || 20, :order => :created_at.desc)
+    end
+
+    @next_page = nil
+    @prev_page = nil
+
+    if !@updates.empty? && @updates.next_page
+      @next_page = "?#{Rack::Utils.build_query :page => @updates.next_page}"
+    end
+    if !@updates.empty? && @updates.previous_page
+      @prev_page = "?#{Rack::Utils.build_query :page => @updates.previous_page}"
+    end
+    haml :search
   end
 
   post "/confirm" do

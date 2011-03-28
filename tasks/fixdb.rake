@@ -8,5 +8,12 @@ namespace :fixdb do
        update.set(:tags => update.tags, :language => update.language)
      end
   end
+
+  task :keywords => :environment do
+    Update.find_each do |update|
+      update.send(:_update_keywords)
+      update.set(:_keywords => update._keywords)
+    end
+  end
 end
 

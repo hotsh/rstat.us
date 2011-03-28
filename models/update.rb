@@ -1,13 +1,17 @@
 class Update
   require 'cgi'
   include MongoMapper::Document
+  include MongoMapperExt::Filter
 
   belongs_to :feed
   belongs_to :author
 
   key :text, String, :default => ""
+  key :html, String
   key :tags, Array, :default => []
   key :language, String
+
+  before_save :generate_html
 
   attr_accessor :oauth_token, :oauth_secret
 
@@ -17,6 +21,8 @@ class Update
 
   key :remote_url
   key :referral_id
+
+  filterable_keys :text
 
   def referral
     Update.first(:id => referral_id)
@@ -31,23 +37,7 @@ class Update
   end
 
   def to_html
-    out = CGI.escapeHTML(text)
-
-    # we let almost anything be in a username, except those that mess with urls.  but you can't end in a .:;, or !
-    #also ignore container chars [] () "" '' {}
-    # XXX: the _correct_ solution will be to use an email validator
-    out.gsub!(/(^|[ \t\n\r\f"'\(\[{]+)@([^ \t\n\r\f&?=@%\/\#]*[^ \t\n\r\f&?=@%\/\#.!:;,"'\]}\)])/) do |match|
-      if u = User.first(:username => /^#{$2}$/i)
-        "#{$1}<a href='/users/#{u.username}'>@#{$2}</a>"
-      else
-        match
-      end
-    end
-    out.gsub!(/(http[s]?:\/\/\S+[a-zA-Z0-9\/}])/, "<a href='\\1'>\\1</a>")
-    out.gsub!(/(^|\s+)#(\w+)/) do |match|
-      "#{$1}<a href='/hashtags/#{$2}'>##{$2}</a>"
-    end
-    out
+    self.html || generate_html
   end
 
   def mentioned? search
@@ -80,7 +70,27 @@ class Update
   end
 
   protected
+  
+  def generate_html
+    out = CGI.escapeHTML(text)
 
+    # we let almost anything be in a username, except those that mess with urls.  but you can't end in a .:;, or !
+    #also ignore container chars [] () "" '' {}
+    # XXX: the _correct_ solution will be to use an email validator
+    out.gsub!(/(^|[ \t\n\r\f"'\(\[{]+)@([^ \t\n\r\f&?=@%\/\#]*[^ \t\n\r\f&?=@%\/\#.!:;,"'\]}\)])/) do |match|
+      if u = User.first(:username => /^#{$2}$/i)
+        "#{$1}<a href='/users/#{u.username}'>@#{$2}</a>"
+      else
+        match
+      end
+    end
+    out.gsub!(/(http[s]?:\/\/\S+[a-zA-Z0-9\/}])/, "<a href='\\1'>\\1</a>")
+    out.gsub!(/(^|\s+)#(\w+)/) do |match|
+      "#{$1}<a href='/hashtags/#{$2}'>##{$2}</a>"
+    end
+    self.html = out
+  end
+  
   def tweet
     return unless ENV['RACK_ENV'] == 'production'
     

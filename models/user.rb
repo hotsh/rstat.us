@@ -117,7 +117,7 @@ class User
     }
     Update.where(:text => /^@#{username}\b/).order(['created_at', 'descending']).paginate(popts)
   end
-    
+
   key :status
 
   attr_accessor :password
@@ -134,7 +134,14 @@ class User
     return user if BCrypt::Password.new(user.hashed_password) == pass
     nil
   end
-  
+
+  def reset_username(params)
+    username = params[:username]
+    author.username = params[:username]
+    return false unless save
+    author.save
+  end
+
   def edit_user_profile(params)
       author.name    = params[:name]
       author.email   = params[:email]
@@ -142,7 +149,7 @@ class User
       author.bio     = params[:bio]
       author.save
   end
-  
+
   private
 
   def create_feed()
