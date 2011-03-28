@@ -49,7 +49,7 @@ module TestHelper
 
     visit '/auth/twitter'
   end
-
+  
   def log_in_fb(u, uid = 12345)
     OmniAuth.config.add_mock(:facebook, {
       :uid => uid,

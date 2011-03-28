@@ -342,10 +342,10 @@ class RstatusTest < MiniTest::Unit::TestCase
     update_text = "Test Facebook Text"
     u = Factory(:user)
     a = Factory(:authorization, :user => u, :provider => "facebook")
+    FbGraph::User.expects(:me).returns(mock(:feed! => nil))
     
     log_in_fb(u, a.uid)
     
-    FbGraph::User.expects(:me).returns(mock(:feed! => nil))
     fill_in "text", :with => update_text
     check("facebook")
     click_button "Share"
