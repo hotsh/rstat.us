@@ -682,5 +682,41 @@ class RstatusTest < MiniTest::Unit::TestCase
     
   end
 
+  def test_following_displays_username_logged_in
+    u = Factory(:user, :username => "dfnkt")
+    a = Factory(:authorization, :user => u)
+
+    log_in(u, a.uid)
+
+    visit "/users/#{u.username}/following"
+    assert_match "#{u.username}'s Following", page.body
+
+  end
+
+  def test_followers_displays_username_logged_in
+    u = Factory(:user, :username => "dfnkt")
+    a = Factory(:authorization, :user => u)
+
+    log_in(u, a.uid)
+
+    visit "/users/#{u.username}/followers"
+    assert_match "#{u.username}'s Followers", page.body
+
+  end
+
+  def test_following_displays_username_logged_out
+    u = Factory(:user, :username => "dfnkt")
+
+    visit "/users/#{u.username}/following"
+    assert_match "#{u.username}'s Following", page.body
+  end
+
+  def test_following_displays_username_logged_out
+    u = Factory(:user, :username => "dfnkt")
+
+    visit "/users/#{u.username}/followers"
+    assert_match "#{u.username}'s Followers", page.body
+  end
+
 end
 
