@@ -143,7 +143,8 @@ class Rstatus < Sinatra::Base
   ############################
   before do
     @error_bar = ""
-    if current_user && (current_user.username.nil? or current_user.username.empty?)       
+
+    if current_user && (current_user.username.nil? or current_user.username.empty? or !current_user.username.match(/profile.php/).nil?)
       @error_bar = haml :_username_error, :layout => false
     end
   end
@@ -286,8 +287,8 @@ class Rstatus < Sinatra::Base
     elsif params[:letter]
       if params[:letter] == "other"
         @users = User.where(:username => /^[^a-z0-9]/i)
-      elsif params[:letter]
-        @users = User.where(:username => /^#{params[:letter][0]}/i)
+      elsif
+        @users = User.where(:username => /^#{params[:letter][0].chr}/i)
       end
     else
       @users = User

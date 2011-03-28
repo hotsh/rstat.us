@@ -1,3 +1,9 @@
+GIT
+  remote: git://github.com/bct/require_relative.git
+  revision: 5cc633c2d2ae691273264be33c3275fa2dc2d570
+  specs:
+    require_relative (0.0.2)
+
 GEM
   remote: http://rubygems.org/
   specs:
@@ -49,6 +55,7 @@ GEM
       mime-types (~> 1.16)
       treetop (~> 1.4.8)
     mime-types (1.16)
+    minitest (2.0.2)
     mocha (0.9.12)
     minitest (2.0.2)
     mongo (1.2.4)
@@ -186,6 +193,7 @@ DEPENDENCIES
   factory_girl
   haml
   i18n
+  minitest
   mocha
   minitest
   mongo_mapper
@@ -201,6 +209,7 @@ DEPENDENCIES
   rack-test
   rdiscount
   redfinger
+  require_relative!
   rocco
   sass
   sinatra

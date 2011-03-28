@@ -6,3 +6,4 @@ function focusOnDiv(divId)
   if divElement != null and typeofdivElement != "undefined"
     divElement.focus()
 
+
