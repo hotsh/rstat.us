@@ -547,6 +547,16 @@ class RstatusTest < MiniTest::Unit::TestCase
     assert_match "/users/password_reset", page.current_url
   end
   
+  def test_user_password_reset_email_does_not_show
+    u = Factory(:user, :email => "something@something.com")
+    a = Factory(:authorization, :user => u)
+    log_in(u, a.uid)
+    
+    visit "/users/password_reset"
+    
+    assert_equal page.has_selector?("input[name=email]"), false
+  end
+  
   def test_user_password_reset_passwords_dont_match
     u = Factory(:user, :email => "some@email.com")
     log_in_email(u)
