@@ -610,6 +610,17 @@ class RstatusTest < MiniTest::Unit::TestCase
     refute u.nil?
     assert User.authenticate("new_user", "mypassword")
   end
+  
+  def test_user_token_migration
+    u = Factory(:user)
+    a = Factory(:authorization, :user => u, :oauth_token => nil, :oauth_secret => nil, :nickname => nil)
+    log_in(u, a.uid)
+    
+    assert_equal "1234", u.twitter.oauth_token
+    assert_equal "4567", u.twitter.oauth_secret
+    assert_equal u.username, u.twitter.nickname
+    
+  end
 
 end
 
