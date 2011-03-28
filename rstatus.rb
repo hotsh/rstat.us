@@ -159,13 +159,11 @@ class Rstatus < Sinatra::Base
   post '/reset-username' do
     exists = User.first :username => params[:username]
     if !params[:username].nil? && !params[:username].empty? && exists.nil?
-      user = current_user
-      user.username = params[:username]
-      user.author.username = params[:username]
-      user.save
-      user.author.save
-
-      flash[:notice] = "Thank you for updating your username"
+      if current_user.reset_username(params)
+        flash[:notice] = "Thank you for updating your username"
+      else
+        flash[:notice] = "Your username could not be updated"
+      end
       redirect "/"
     else
       flash[:notice] = "Sorry, that username has already been taken or is not valid. Please try again."
@@ -182,8 +180,6 @@ class Rstatus < Sinatra::Base
 
       @timeline = true
 
-      @update_text = ""
-      @update_id = ""
       if params[:reply]
         u = Update.first(:id => params[:reply])
         @update_text = "@#{u.author.username} "
@@ -192,6 +188,9 @@ class Rstatus < Sinatra::Base
         u = Update.first(:id => params[:share])
         @update_text = "RS @#{u.author.username}: #{u.text}"
         @update_id = u.id
+      else
+        @update_text = ""
+        @update_id = ""
       end
 
       if params[:status]
@@ -243,11 +242,9 @@ class Rstatus < Sinatra::Base
         #we have a username conflict!
         flash[:notice] = "Sorry, someone has that name."
         redirect '/users/new'
-        return
       else
         # Redirect to confirm page to verify username and provide email
         redirect '/users/confirm'
-        return
       end
     end
 
@@ -383,7 +380,6 @@ class Rstatus < Sinatra::Base
     unless current_user.following? feed.url
       flash[:notice] = "You're not following #{@author.username}."
       redirect request.referrer
-      return
     end
 
     #unfollow them!
@@ -422,8 +418,6 @@ class Rstatus < Sinatra::Base
       flash[:notice] = "You're already following #{feed.author.username}."
 
       redirect request.referrer
-
-      return
     end
 
     # follow them!
@@ -431,7 +425,6 @@ class Rstatus < Sinatra::Base
     unless f
       flash[:notice] = "There was a problem following #{params[:url]}."
       redirect request.referrer
-      return
     end
 
     if not f.local?
@@ -509,7 +502,7 @@ class Rstatus < Sinatra::Base
         flash[:notice] = "Profile could not be saved!"
       end
       redirect "/users/#{params[:username]}"
-      return
+
     else
       redirect "/users/#{params[:username]}"
     end
