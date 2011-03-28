@@ -29,4 +29,12 @@ class Rstatus
       haml :reset_username
     end
   end
+  
+  get '/forgot_password' do
+    haml :"forgot_password"
+  end
+  
+  post '/forgot_password' do
+    User.where(:email => params[:email])
+  end
 end
