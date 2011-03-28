@@ -118,7 +118,7 @@ class Rstatus
       haml :index, :layout => false
     end
   end
-
+  
   post '/signup' do
     u = User.create(:email => params[:email],
                     :status => "unconfirmed")
