@@ -46,4 +46,5 @@ group :development, :test do
   gem "mocha"
   gem "jammit"
   gem "vcr"
+  gem "webmock"
 end
