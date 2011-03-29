@@ -14,12 +14,10 @@ If you'd like to contribute, here are some details:
   lots of improvement here!)
 - [The Issues list](http://github.com/hotsh/rstat.us/issues)
 - Please fork the project and make a pull request
--- Pull requests will not be merged without tests/documentation
---- We use [minitest](https://github.com/seattlerb/minitest)/[capybara](https://github.com/jnicklas/capybara) for tests
---- We use [docco](https://github.com/jashkenas/docco) (rocc) for
-documentation
---- If you think it doesn't need a test, make your case, I'm just
-saying.
+  - Pull requests will not be merged without tests/documentation
+    - We use [minitest](https://github.com/seattlerb/minitest)/[capybara](https://github.com/jnicklas/capybara) for tests
+    - We use [docco](https://github.com/jashkenas/docco) (rocc) for documentation
+    - If you think it doesn't need a test, make your case, I'm just saying.
 
 Setting up a dev environment
 ----------------------------
@@ -39,7 +37,7 @@ Then update your gemset:
 
     $ gem install bundler && bundle install
 
-Start the server with rackup:
+And start the server:
 
     $ rackup
 
@@ -52,7 +50,7 @@ For performance reasons, we're currently compressing our stylesheets and javascr
 
     $ rake assets:compile
 
-Note: You need to have the CoffeeScript binary installed on your system for this to work.  There's an Ubuntu package available [here](http://opinionated-programmer.com/2010/12/installing-coffeescript-on-debian-or-ubuntu/); everyone else will have to ask your friendly neighborhood Google.
+Note: You need to have the CoffeeScript compiler (not just the gem) installed on your system for this to work.  There's an Ubuntu package available [here](http://opinionated-programmer.com/2010/12/installing-coffeescript-on-debian-or-ubuntu/); everyone else, you will have to ask your friendly neighborhood Google (and then come back and edit this README).
 
 Running your own node
 ---------------------
