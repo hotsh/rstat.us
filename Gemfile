@@ -45,4 +45,5 @@ group :development, :test do
   gem "pygmentize"
   gem "mocha"
   gem "jammit"
+  gem "vcr"
 end
