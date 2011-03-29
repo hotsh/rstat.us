@@ -181,6 +181,7 @@ GEM
     sinatra-redirect-with-flash (0.1.2)
       rack-flash (>= 0.1.1)
       sinatra (>= 0.9.1)
+    therubyracer (0.8.1)
     tilt (1.2.2)
     time-ago-in-words (0.1.2)
     tinyatom (0.3.4)
@@ -241,6 +242,7 @@ DEPENDENCIES
   sinatra
   sinatra-content-for
   sinatra-redirect-with-flash
+  therubyracer
   time-ago-in-words
   twitter
   tzinfo
