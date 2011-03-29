@@ -9,27 +9,36 @@ protocol](http://status.net/wiki/OStatus).
 If you'd like to contribute, here are some details:
 
 - The stack: ruby/sinatra/mongodb
-- [The code](http://github.com/hotsh/rstat.us)
-- [The documentation](http://hotsh.github.com/rstat.us/) (need
-  lots of improvement here!)
-- [The Issues list](http://github.com/hotsh/rstat.us/issues)
+- [The code][code]
+- [The documentation][docs] (need lots of improvement here!)
+- [The Issues list][issues]
 - Please fork the project and make a pull request
   - Pull requests will not be merged without tests/documentation
-    - We use [minitest](https://github.com/seattlerb/minitest)/[capybara](https://github.com/jnicklas/capybara) for tests
-    - We use [docco](https://github.com/jashkenas/docco) (rocc) for documentation
+    - We use [minitest][minitest]/[capybara][capy] for tests
+    - We use [docco][docco] (rocc) for documentation
     - If you think it doesn't need a test, make your case, I'm just saying.
+
+[code]: http://github.com/hotsh/rstat.us
+[docs]: http://hotsh.github.com/rstat.us/
+[issues]: http://github.com/hotsh/rstat.us/issues
+[minitest]: https://github.com/seattlerb/minitest
+[capy]: https://github.com/jnicklas/capybara
+[docco]: https://github.com/jashkenas/docco
+
 
 Setting up a dev environment
 ----------------------------
 
-First off: you will need MongoDB (www.mongodb.org).  They have a [quickstart guide](http://www.mongodb.org/display/DOCS/Quickstart) for getting it installed and running.
+First off: you will need MongoDB (www.mongodb.org).  They have a [quickstart
+guide][mongo-quickstart] for getting it installed and running.
 
 Then do:
 
     $ git clone https://github.com/$MY_GITHUB_USERNAME/rstat.us.git
     $ cd rstat.us
 
-Copy the config file; if you have actual Twitter API keys, you can add yours, but this file just needs to exist for the server to work.
+Copy the config file; if you have actual Twitter API keys, you can add yours,
+but this file just needs to exist for the server to work.
 
     $ cp config.yml.sample config.yml
 
@@ -42,15 +51,33 @@ And start the server:
     $ rackup
 
 Bam! Visit http://localhost:9292/ in your browser, and you'll be good.
-    
+   
+[mongo-quickstart]: http://www.mongodb.org/display/DOCS/Quickstart
+
 Compiling CSS and Javascript
 ----------------------------
 
-For performance reasons, we're currently compressing our stylesheets and javascripts, as well as embedding what images we can. To compile Coffeescript (.coffee) or Sassy CSS (.scss) files for the site to use, use the following rake task:
+For performance reasons, we're currently compressing our stylesheets and
+javascripts, as well as embedding what images we can. To compile Coffeescript
+(.coffee) or Sassy CSS (.scss) files for the site to use, use the following
+rake task:
 
     $ rake assets:compile
 
-Note: This relies on some sort of coffee compiler being installed globally.  If you get "undefined method 'compile' for nil:NilClass", that might be your problem.  On Ubuntu, installing the nodejs package fixes this; for other systems, check out [nodejs.org](http://nodejs.org).
+Note: This relies on some sort of coffee compiler being installed globally.  If
+you get "undefined method 'compile' for nil:NilClass", that might be your
+problem.  On Ubuntu, installing the nodejs package fixes this; for other
+systems, check out [nodejs.org][node].
+
+For coffee-script installation, [check the docs][coffee-install].
+
+You may also need the java runtime for asset compression, which is handled by
+jammit using yui compressor and closure compiler. Installing a JDK, such as
+[OpenJDK][openjdk] should do the trick.
+
+[node]: http://nodejs.org
+[coffee-install]: http://jashkenas.github.com/coffee-script/#installation
+[openjdk]: http://openjdk.java.net/
 
 Running your own node
 ---------------------
