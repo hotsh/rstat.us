@@ -19,20 +19,20 @@
 # that we use. This is pretty easy, since we're using **bundler**. Just do
 # this:
 #
-# $ gem install bundler
-# $ bundle install
+#     $ gem install bundler
+#     $ bundle install
 #
 # That'll set it all up! Then, you need to make sure you're running MongoDB.
 # I have to open up another tab in my terminal and type
 #
-# $ mongod
+#     $ mongod
 #
 # to get this to happen. When you're done hacking, you can hit ^-c to stop
 # `mongod` from running.
 #
 # To actually start up the site, just
 #
-# $ rackup
+#     $ rackup
 #
 # and then visit [http://localhost:9292/](http://localhost:9292). You're good
 # to go!
