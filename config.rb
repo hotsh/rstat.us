@@ -10,13 +10,6 @@ class Rstatus
     PONY_VIA_OPTIONS = {}
   end
 
-  configure :production do
-    Compass.configuration do |config|
-      config.output_style = :compressed
-    end
-  end
-
-
   # We're using [SendGrid](http://sendgrid.com/) to send our emails. It's really
   # easy; the Heroku addon sets us up with environment variables with all of the
   # configuration options that we need.
@@ -63,11 +56,7 @@ class Rstatus
       MongoMapper.database = "rstatus-#{settings.environment}"
     end
 
-    # configure compass
-    Compass.configuration do |config|
-      config.project_path = File.dirname(__FILE__)
-      config.sass_options = {:cache_location => "./tmp/sass-cache"}
-    end
+    Compass.add_project_configuration(File.join(File.dirname(__FILE__), 'config', 'compass.config'))        
     MongoMapperExt.init
 
     # now that we've connected to the db, let's load our models.

@@ -23,6 +23,14 @@
       Gravatar
     account to set and update your avatar.
   %br
+  
+  .reset-password 
+    %a{:href => "/users/password_reset"}
+      - if current_user.hashed_password.nil?
+        Set Password
+      - else
+        Reset Password
+  %br
 
   %h4 Linked Accounts
   

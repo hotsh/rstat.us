@@ -96,6 +96,12 @@ class Update
 
   def send_to_external_accounts
     return if ENV['RACK_ENV'] == 'development'
+
+    # suppress crossposting of @replies
+    if text[0] == '@'
+      return
+    end
+
     if author.user
       if self.twitter? && author.user.twitter?
         begin
