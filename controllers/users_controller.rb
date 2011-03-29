@@ -124,7 +124,12 @@ class Rstatus
 
     user = User.first :username => params[:slug]
     if user.nil?
-      raise Sinatra::NotFound
+      user = User.first("$where" => "this.username.match(/#{params[:slug]}/i)")
+      if user.nil?
+        raise Sinatra::NotFound
+      else
+        redirect "/users/#{user.username}"
+      end
     end
     @author = user.author
     #XXX: the following doesn't work for some reasond
