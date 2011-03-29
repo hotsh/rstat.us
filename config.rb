@@ -8,9 +8,7 @@ class Rstatus
 
   configure :development do
     PONY_VIA_OPTIONS = {}
-  end
 
-  configure do
     Compass.add_project_configuration(File.join(Sinatra::Application.root, 'config', 'compass.config'))
   end
 
@@ -59,7 +57,7 @@ class Rstatus
       MongoMapper.connection = Mongo::Connection.new('localhost')
       MongoMapper.database = "rstatus-#{settings.environment}"
     end
-    
+        
     MongoMapperExt.init
 
     # now that we've connected to the db, let's load our models.
