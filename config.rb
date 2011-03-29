@@ -55,7 +55,8 @@ class Rstatus
       MongoMapper.connection = Mongo::Connection.new('localhost')
       MongoMapper.database = "rstatus-#{settings.environment}"
     end
-        
+
+    Compass.add_project_configuration(File.join(File.dirname(__FILE__), 'config', 'compass.config'))        
     MongoMapperExt.init
 
     # now that we've connected to the db, let's load our models.
