@@ -1,6 +1,6 @@
 GIT
   remote: git://github.com/bct/require_relative.git
-  revision: 5cc633c2d2ae691273264be33c3275fa2dc2d570
+  revision: 7751a6ce9229aa1f839ee286e104114510dbc170
   specs:
     require_relative (0.0.2)
 
@@ -178,6 +178,9 @@ GEM
       tilt (< 2.0, >= 1.2.2)
     sinatra-content-for (0.2)
       sinatra
+    sinatra-redirect-with-flash (0.1.2)
+      rack-flash (>= 0.1.1)
+      sinatra (>= 0.9.1)
     tilt (1.2.2)
     time-ago-in-words (0.1.2)
     tinyatom (0.3.4)
@@ -237,6 +240,7 @@ DEPENDENCIES
   sass
   sinatra
   sinatra-content-for
+  sinatra-redirect-with-flash
   time-ago-in-words
   twitter
   tzinfo
