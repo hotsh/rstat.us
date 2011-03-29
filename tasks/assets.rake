@@ -6,10 +6,10 @@ begin
   namespace :assets do
     desc "compile coffee-scripts from ./src to ./public/js"
     task :compile do
-      source = "#{File.dirname(__FILE__)}/../src/"
-      javascripts = "#{File.dirname(__FILE__)}/../public/js/"
 
-      sh "compass compile views/screen.scss --output-style compressed --css-dir ../public/css"
+      sh "compass compile views/screen.scss --output-style compressed --css-dir ../public/assets/src"
+      source = "#{File.dirname(__FILE__)}/../src/"
+      javascripts = "#{File.dirname(__FILE__)}/../public/assets/src/"
 
       Dir.foreach(source) do |cf|
         unless cf == '.' || cf == '..' 

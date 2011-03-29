@@ -3,3 +3,4 @@ docs
 config.yml
 .sass-cache
 tmp
+public/assets/src

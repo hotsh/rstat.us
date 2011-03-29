@@ -3,13 +3,13 @@ gzip_assets: off
 
 stylesheets:
   screen:
-    - public/css/n.css
+    - public/assets/src/n.css
     
 javascripts:
   app:
     - public/js/jquery.equalHeights.js
-    - public/js/home.js
-    - public/js/app.js
-    - public/js/update.js
-    - public/js/updates.show.js
-    - public/js/users.js
+    - public/assets/src/home.js
+    - public/assets/src/app.js
+    - public/assets/src/update.js
+    - public/assets/src/updates.show.js
+    - public/assets/src/users.js
