@@ -50,9 +50,7 @@ For performance reasons, we're currently compressing our stylesheets and javascr
 
     $ rake assets:compile
 
-Note: This relies on some sort of coffee compiler being installed globally.  If you get "undefined method 'compile' for nil:NilClass", that might be your problem.
-
-On Ubuntu, installing the nodejs package fixes this; for other systems, check out [nodejs.org](http://nodejs.org).
+Note: This relies on some sort of coffee compiler being installed globally.  If you get "undefined method 'compile' for nil:NilClass", that might be your problem.  On Ubuntu, installing the nodejs package fixes this; for other systems, check out [nodejs.org](http://nodejs.org).
 
 Running your own node
 ---------------------
