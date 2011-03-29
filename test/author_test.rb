@@ -15,16 +15,16 @@ class AuthorTest < MiniTest::Unit::TestCase
 
   def test_url
     @author.remote_url = "some_url.com"
-    assert_equal @author.url, @author.remote_url
+    assert_equal @author.remote_url, @author.url
   end
 
   def test_valid_avatar_url
     @author.email = "jamecook@gmail.com"
-    assert_equal @author.avatar_url, @author.gravatar_url
+    assert_equal @author.gravatar_url, @author.avatar_url
   end
 
   def test_invalid_avatar_url
     @author.email = "completely@invalid-email.asdfasd.com"
-    assert_equal @author.avatar_url, "/images/avatar.png"
+    assert_equal "/images/avatar.png", @author.avatar_url
   end
 end
