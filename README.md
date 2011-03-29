@@ -6,13 +6,13 @@ protocol](http://status.net/wiki/OStatus).
 
 ## Helping out with rstat.us
 
-If you'd like to contribute, here's some details:
+If you'd like to contribute, here are some details:
 
-- Here's the stack: ruby/sinatra/mongodb
-- Here's [the code](http://github.com/hotsh/rstat.us)
-- Here's [the documentation](http://hotsh.github.com/rstat.us/) (need
-  lots of improvment here!)
-- Here's [the Issues list](http://github.com/hotsh/rstat.us/issues)
+- The stack: ruby/sinatra/mongodb
+- [The code](http://github.com/hotsh/rstat.us)
+- [The documentation](http://hotsh.github.com/rstat.us/) (need
+  lots of improvement here!)
+- [The Issues list](http://github.com/hotsh/rstat.us/issues)
 - Please fork the project and make a pull request
 -- Pull requests will not be merged without tests/documentation
 --- We use [minitest](https://github.com/seattlerb/minitest)/[capybara](https://github.com/jnicklas/capybara) for tests
@@ -26,7 +26,7 @@ Setting up a dev environment
 
 First off: you will need MongoDB (www.mongodb.org).  They have a [quickstart guide](http://www.mongodb.org/display/DOCS/Quickstart) for getting it installed and running.
 
-Then do the same as above:
+Then do:
 
     $ git clone https://github.com/$MY_GITHUB_USERNAME/rstat.us.git
     $ cd rstat.us
@@ -51,6 +51,8 @@ Compiling CSS and Javascript
 For performance reasons, we're currently compressing our stylesheets and javascripts, as well as embedding what images we can. To compile Coffeescript (.coffee) or Sassy CSS (.scss) files for the site to use, use the following rake task:
 
     $ rake assets:compile
+
+Note: You need to have the CoffeeScript binary installed on your system for this to work.  There's an Ubuntu package available [here](http://opinionated-programmer.com/2010/12/installing-coffeescript-on-debian-or-ubuntu/); everyone else will have to ask your friendly neighborhood Google.
 
 Running your own node
 ---------------------
