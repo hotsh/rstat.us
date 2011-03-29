@@ -65,6 +65,16 @@
   h1 {
     margin-top: -0.35em;
   }
+
+  input[type="text"] {
+    border: 1px solid #ddd;
+	margin: 0.2em;
+  }
+
+  label {
+    display: inline-block;
+    width: 6em;
+  }
 }
 
 /* Following
