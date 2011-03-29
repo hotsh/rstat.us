@@ -5,6 +5,7 @@ $(document).ready ->
   
   textarea = $("#update-form textarea")
   update_field = $("#update-form #update-referral")
+  userTickiedBox = false
 
   updateCounter = ->
     remainingLength = MAX_LENGTH - textarea.val().length
@@ -16,6 +17,32 @@ $(document).ready ->
     $("#update-info").toggleClass "negative", remainingLength < 0
 
   textarea.keypress(updateCounter).keyup(updateCounter)
+
+  updateTickyboxes = ->
+    return if(userTickiedBox)
+
+    firstLetter = ""
+    if(textarea.val() != "")
+      firstLetter = textarea.val()[0]
+
+    enabled = true
+    if firstLetter == "@"
+      enabled = false
+
+    if( $("#tweet").length > 0)
+      $("#tweet").attr('checked', enabled)
+    if( $("#facebook").length > 0)
+      $("#facebook").attr('checked', enabled)
+ 
+  textarea.keypress(updateTickyboxes).keyup(updateTickyboxes)
+
+  recordTickyboxChange = ->
+    userTickiedBox = true
+
+  if( $("#tweet").length > 0)
+    $("#tweet").change(recordTickyboxChange)
+  if( $("#facebook").length > 0)
+    $("#facebook").change(recordTickyboxChange)
 
   $("#update-form").submit ->
     false if textarea.val().length <= 0 || textarea.val().length > MAX_LENGTH
