@@ -124,11 +124,12 @@ class Rstatus
 
     user = User.first :username => params[:slug]
     if user.nil?
-      user = User.first("$where" => "this.username.match(/#{params[:slug]}/i)")
+      slug = Regexp.escape(params[:slug])
+      user = User.first("$where" => "this.username.match(/#{slug}/i)")
       if user.nil?
         raise Sinatra::NotFound
       else
-        redirect "/users/#{user.username}"
+        redirect "users/#{user.username}"
       end
     end
     @author = user.author
