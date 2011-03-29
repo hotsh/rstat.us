@@ -57,7 +57,7 @@ class Rstatus
       flash[:notice] = "Update Baleeted!"
       redirect "/"
     else
-      flash[:notice] = "I'm afraid I can't let you do that, " + current_user.name + "."
+      flash[:notice] = "I'm afraid I can't let you do that, #{current_user.name}."
       redirect back
     end
   end

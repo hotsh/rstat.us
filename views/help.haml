@@ -1,0 +1,54 @@
+%h2 Help
+
+%h3 I logged in with facebook and my username looks like this profile.php?id=00000000
+
+%p 
+  You can use the username reset to change your username
+  %a{:href => "/reset-username"} http://rstat.us/reset-username
+  %br
+  Note: This is only for users that have a blank username or a facebook url. Username resets will be added at a later date.
+  
+%h3 My username is blank
+
+%p 
+  You can use the username reset to change your username
+  %a{:href => "/reset-username"} http://rstat.us/reset-username
+  %br
+  Note: This is only for users that have a blank username or a facebook url. Username resets will be added at a later date.
+  
+%h3 I signed in with twitter or facebook, but I want use the rstat.us login
+
+%p
+  You can enable username/password logins by setting your password in the 
+  - if logged_in?
+    %a{:href => "/users/#{current_user.username}/edit"} edit profile screen
+  - else
+    edit profile screen.
+  You will be prompted to enter an email address for password recovery.
+
+%h3 How can I link my twitter or facebook account to my rstat.us account?
+
+%p
+  You can link your twitter or facebook account in your
+  - if logged_in?
+    %a{:href => "/users/#{current_user.username}/edit"} edit profile screen
+  - else
+    edit profile screen.
+    
+%h3 Do you have an api?
+
+%p
+  We currently do not have an api, but we hope to add one soon. If you would like to help please
+  %a{:href => "https://github.com/hotsh/rstat.us"} check out the repo
+  
+%h3 I would really like the site to do &lt;something&gt;
+
+%p
+  Let us know! Log a ticket at
+  %a{:href => "http://rstatus.lighthouseapp.com/projects/73488-rstatus/overview"} lighthouse
+
+%hr
+
+%p 
+  If you did not find answers to your questions log a ticket at 
+  %a{:href => "http://rstatus.lighthouseapp.com/projects/73488-rstatus/overview"} lighthouse

@@ -55,8 +55,9 @@ class Author
         ret = http.head(gravatar_path).is_a?(Net::HTTPOK)
       end
       return ret
-    rescue
-      # No internet connection
+    rescue Exception => e
+      # No internet connection or Gravatar is down
+      # Must rescue all exceptions because Timeout is not a StandardError
       false
     end
   end
