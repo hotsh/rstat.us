@@ -70,4 +70,9 @@ class UserTest < MiniTest::Unit::TestCase
     assert u.hashed_password != prev_pass
   end
 
+  def test_no_at_in_usernames
+    u = User.new :username => "someone@something.com"
+    refute u.save, "@ in username"
+  end
+
 end

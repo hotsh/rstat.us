@@ -1,5 +1,6 @@
 embed_assets: on
 gzip_assets: off
+compress_assets: on
 
 stylesheets:
   screen:
