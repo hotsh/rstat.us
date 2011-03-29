@@ -37,7 +37,6 @@ group :development, :test do
   gem "minitest", :platforms => :ruby_18
   gem "minitest", :platforms => :ruby_18
   gem 'coffee-script'
-  gem 'therubyracer'  # for coffeescript compilation without nodejs
   gem 'rack-test'
   gem "database_cleaner"
   gem "factory_girl"
