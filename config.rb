@@ -8,8 +8,6 @@ class Rstatus
 
   configure :development do
     PONY_VIA_OPTIONS = {}
-
-    Compass.add_project_configuration(File.join(Sinatra::Application.root, 'config', 'compass.config'))
   end
 
   # We're using [SendGrid](http://sendgrid.com/) to send our emails. It's really
