@@ -50,7 +50,7 @@ For performance reasons, we're currently compressing our stylesheets and javascr
 
     $ rake assets:compile
 
-Note: You need to have the CoffeeScript compiler (not just the gem) installed on your system for this to work.  There's an Ubuntu package available [here](http://opinionated-programmer.com/2010/12/installing-coffeescript-on-debian-or-ubuntu/); everyone else, you will have to ask your friendly neighborhood Google (and then come back and edit this README).
+Note: On Ubuntu, I needed to have nodejs installed on my system for this to work.  If you get "undefined method 'compile' for nil:NilClass", that might be your problem, too.  "sudo apt-get install nodejs" for Ubuntu; for other systems, http://nodejs.org probably has all the answers.
 
 Running your own node
 ---------------------
