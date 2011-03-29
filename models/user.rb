@@ -61,11 +61,8 @@ class User
   
   def has_authorization?(auth)
     a = Authorization.first(:provider => auth.to_s, :user_id => self.id)
-    if a.nil?
-      return false
-    else
-      return true
-    end
+    #return false if not authenticated and true otherwise.
+    !a.nil?
   end
   
   def get_authorization(auth)
@@ -125,7 +122,7 @@ class User
       f = Feed.first(:id => feed_id)
     end
 
-    if f == nil
+    if f.nil?
       false
     else
       following.include? f
@@ -134,18 +131,18 @@ class User
 
   timestamps!
 
-  def timeline(opts)
+  def timeline(params)
     popts = {
-      :page => opts[:page],
-      :per_page => opts[:per_page]
+      :page => params[:page],
+      :per_page => params[:per_page]
     }
     Update.where(:author_id => following.map(&:author_id)).order(['created_at', 'descending']).paginate(popts)
   end
 
-  def at_replies(opts)
+  def at_replies(params)
     popts = {
-      :page => opts[:page],
-      :per_page => opts[:per_page]
+      :page => params[:page],
+      :per_page => params[:per_page]
     }
     Update.where(:text => /^@#{username}\b/).order(['created_at', 'descending']).paginate(popts)
   end
@@ -166,7 +163,7 @@ class User
   def set_password_reset_token
     self.password_reset_sent = DateTime.now
     set_perishable_token
-    return self.perishable_token
+    self.perishable_token
   end
   
   # Set a new password, clear the date the password reset token was sent and
