@@ -45,6 +45,7 @@ class Author
     name
   end
 
+  # this should really be cached.
   def valid_gravatar?
     return unless email
 

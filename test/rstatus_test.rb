@@ -5,6 +5,13 @@ class RstatusTest < MiniTest::Unit::TestCase
 
   include TestHelper
 
+  alias_method :cleanup_database, :setup
+
+  def setup
+    cleanup_database
+    Author.any_instance.stubs(:valid_gravatar?).returns(false)
+  end
+
   def test_hello_world
     visit '/'
     assert_equal 200, page.status_code
