@@ -132,6 +132,18 @@ def test_facebook_send_checkbox_present
   assert_equal find_field('facebook').checked?, true
 end
 
+def test_checkboxes_disabled_for_reply
+  u = Factory(:user)
+  a = Factory(:authorization, :user => u)
+  log_in(u, a.uid)
+
+  update_text = "Test Update Text"
+  assert_equal find_field('tweet').checked?, true
+
+  update_text = "@test Update Text"
+  assert_equal find_field('tweet').checked?, false
+end
+
 def test_twitter_send
   update_text = "Test Twitter Text"
   Twitter.expects(:update)
