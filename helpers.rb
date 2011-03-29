@@ -33,7 +33,10 @@ module Sinatra
         redirect opts[:return]
       end
     end
-
+    
+    # Many pages on rstatus are paginated. To keep track of it in all the
+    # different routes we have this handy helper that either picks up
+    # the previous setting or resets it to a default value.
     def set_params_page
       params[:page] ||= 1
       params[:per_page] ||= 25
@@ -41,6 +44,9 @@ module Sinatra
       params[:per_page] = params[:per_page].to_i
     end
 
+    # Similar to the set_params_page helper this one creates the links
+    # for the previous and the next page on all routes that display 
+    # stuff on more than one page.
     def set_next_prev_page
       @next_page = "?#{Rack::Utils.build_query :page => params[:page] + 1}"
 

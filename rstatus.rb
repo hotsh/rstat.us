@@ -37,6 +37,14 @@
 # and then visit [http://localhost:9292/](http://localhost:9292). You're good
 # to go!
 #
+# If you want to contribute to rstatus you will have to run the tests before you
+# send a pull request. You can do so by calling
+#
+#    $ rake test
+#
+# in the rstat.us root directory. Once your changes pass all tests you may commit
+# and send a pull request via Github.
+#
 # [rvm]: http://rvm.beginrescueend.com/
 
 #### About rstatus.rb
