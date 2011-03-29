@@ -9,19 +9,19 @@
         %a.url{:href => update.author.url}
           %img.photo{:alt => "avatar", :src => update.author.avatar_url}/
       %span.fn= update.author.display_name
-      %span.nickname= update.author.username
-
+      (<span class="nickname">#{update.author.username}</span>)
     .entry-content
       != update.to_html
 
-    %time.published{:pubdate => "pubdate", :datetime => update.created_at.iso8601}
-      %a{:href => update.url, :rel => "bookmark"}= update.created_at.ago_in_words
+    .entry-info
+      %time.published{:pubdate => "pubdate", :datetime => update.created_at.iso8601}
+        %a{:href => update.url, :rel => "bookmark"}= update.created_at.ago_in_words
 
-    -unless update.referral.nil?
-      .in-reply
-        %a{:href => "/updates/#{update.referral.id}"}
-          in reply to
-          %span.name= update.referral.author.username 
+      -unless update.referral.nil?
+        .in-reply
+          %a{:href => "/updates/#{update.referral.id}"}
+            in reply to
+            %span.name= update.referral.author.username 
 
     .end-links
       -# when @timeline is true, this is a list on the user's page

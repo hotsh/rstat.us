@@ -370,39 +370,25 @@ form#update-form {
   	clear: both;
   	overflow: auto;
 
-     .fn, .nickname {
-     font-weight: bold;
-     }
-
-     .nickname:before { content: "("; }
-     .nickname:after  { content: ")"; }
+    .fn, .nickname {
+      font-weight: bold;
+    }
 
     .entry-content {
       word-wrap: break-word;
       font-size: 1.1em;
+      margin-left: 45px;
     }
-    .published, .in-reply {
-      float: left
-    }
-
-    .in-reply  {
-      .avatar, .links {
-       display: inline;
+    
+    .entry-info {
+      margin-left: 45px;
+    
+      .published, .in-reply {
+        float: left;
       }
-
-      .avatar {
-        float: none;
-        width: 18px;
-        padding: 0 2px;
-        img {
-          width: 18px;
-          margin-bottom: -4px;
-        }
+      .in-reply  {
+        margin-left: 0.5em;
       }
-    }
-
-    .in-reply {
-      margin-left: 0.5em;
     }
 
   }
@@ -423,13 +409,13 @@ form#update-form {
 }
 
 .avatar {
-	float: left;
+  float: left;
   width: 35px;
   height: 35px;
-	padding-right: 1em;
-	img {
-	  width: 35px;
-	}
+  padding-right: 10px;
+  img {
+    width: 35px;
+  }
 }
 
 #fourohfour, #update {
