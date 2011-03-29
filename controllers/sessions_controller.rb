@@ -19,6 +19,7 @@ class Rstatus
         redirect "/"
       end
       flash[:notice] = "There was a problem... can you pick a different username?"
+      redirect "/login"
     else
       #login
       if user = User.authenticate(params[:username], params[:password])
@@ -27,8 +28,8 @@ class Rstatus
         redirect "/"
       end
       flash[:notice] = "The username or password you entered was incorrect"
+      redirect "/login"
     end
-    redirect "/login"
   end
 
   get "/logout" do
