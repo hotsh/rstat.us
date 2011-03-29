@@ -124,6 +124,7 @@ class Rstatus
 
     user = User.first :username => params[:slug]
     if user.nil?
+      #check for a case insensitive match and then redirect to the correct address
       slug = Regexp.escape(params[:slug])
       user = User.first("$where" => "this.username.match(/#{slug}/i)")
       if user.nil?
