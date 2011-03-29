@@ -7,17 +7,8 @@ class RstatusTest < MiniTest::Unit::TestCase
 
   def test_add_twitter_to_account
     u = Factory(:user)
-    OmniAuth.config.add_mock(:twitter, {
-      :uid => "78654",
-      :user_info => {
-        :name => "Joe Public",
-        :nickname => u.username,
-        :urls => { :Website => "http://rstat.us" },
-        :description => "A description",
-        :image => "/images/something.png"
-      },
-      :credentials => {:token => "1111", :secret => "2222"}
-    })
+    omni_mock(u.username, {:uid => 78654, :token => "1111", :secret => "2222"})
+
     log_in_email(u)
     visit "/users/#{u.username}/edit"
     click_button "Add Twitter Account"
@@ -44,18 +35,8 @@ class RstatusTest < MiniTest::Unit::TestCase
 
   def test_add_facebook_to_account
     u = Factory(:user)
-    OmniAuth.config.add_mock(:facebook, {
-      :uid => 78654,
-      :user_info => {
-        :name => "Joe Public",
-        :email => "joe@public.com",
-        :nickname => u.username,
-        :urls => { :Website => "http://rstat.us" },
-        :description => "A description",
-        :image => "/images/something.png"
-      },
-      :credentials => {:token => "1111", :secret => "2222"}
-    })
+    omni_mock(u.username, {:provider => "facebook", :uid => 78654, :token => "1111", :secret => "2222"})
+
     log_in_email(u)
     visit "/users/#{u.username}/edit"
     click_button "Add Facebook Account"

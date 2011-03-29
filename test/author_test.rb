@@ -33,4 +33,14 @@ class AuthorTest < MiniTest::Unit::TestCase
     @author.email = nil
     assert_equal Author::DEFAULT_AVATAR, @author.avatar_url
   end
+  
+  def test_display_name_as_username
+    @author.name = nil
+    assert_equal @author.display_name, @author.username
+  end
+  
+  def test_display_name_as_name
+    @author.name = "Bender"
+    assert_equal @author.display_name, "Bender"
+  end
 end

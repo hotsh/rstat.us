@@ -32,7 +32,7 @@ class Authorization
            )
 
     a.save
-    a.errors.each{|e| puts e.inspect }
+    #a.errors.each{|e| puts e.inspect }
     a
   end
 
