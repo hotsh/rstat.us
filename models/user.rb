@@ -6,7 +6,7 @@ class User
 
   # Make the username required
   # However, this will break it when email authorization is used
-  key :username, String #, :unique => true
+  key :username, String #:unique => true
   key :perishable_token, String
 
   key :email, String #, :unique => true, :allow_nil => true
@@ -14,6 +14,9 @@ class User
   # eff you mongo_mapper.
   validates_uniqueness_of :email, :allow_nil => :true 
   validates_uniqueness_of :username, :allow_nil => :true 
+
+  # validate users don't have @ in their usernames
+  validate :no_at
 
   belongs_to :author
   belongs_to :feed
@@ -212,5 +215,12 @@ class User
     following << feed
     followers << feed
     save
+  end
+
+  # validation that checks @s in usernames
+  def no_at
+    unless (username =~ /@/).nil?
+      errors.add(:username, "can't have @.") 
+    end
   end
 end
