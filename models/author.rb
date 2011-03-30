@@ -36,7 +36,8 @@ class Author
   end
 
   def avatar_url
-    return image_url if image_url
+    return image_url      if image_url
+    return DEFAULT_AVATAR if email.nil?
 
     # if the gravatar doesn't exist, gravatar will use a default that we provide
     gravatar_url
@@ -48,7 +49,6 @@ class Author
   end
 
   def gravatar_url
-    return DEFAULT_AVATAR if email.nil?
     "http://#{GRAVATAR_HOST}#{gravatar_path}"
   end
 
