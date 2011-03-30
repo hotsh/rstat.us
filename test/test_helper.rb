@@ -46,14 +46,12 @@ module TestHelper
   end
 
   def log_in(u, uid = 12345)
-    Author.any_instance.stubs(:valid_gravatar?).returns(:false)
     omni_mock(u.username, {:uid => uid})
 
     visit '/auth/twitter'
   end
   
   def log_in_fb(u, uid = 12345)
-    Author.any_instance.stubs(:valid_gravatar?).returns(:false)
     omni_mock(u.username, {:uid => uid, :provider => :facebook})
 
     visit '/auth/facebook'

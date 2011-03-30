@@ -265,7 +265,6 @@ class RstatusTest < MiniTest::Unit::TestCase
   end
 
   def test_user_signup_twitter
-    Author.any_instance.stubs(:valid_gravatar?).returns(:false)
     omni_mock("twit")
     visit '/auth/twitter'
 
