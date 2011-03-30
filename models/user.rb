@@ -23,17 +23,21 @@ class User
 
   after_create :finalize
 
+  # After a user is created create the feed, add yourself as a follower and
+  # reset the token
   def finalize
     create_feed
     follow_yo_self
     reset_perishable_token
   end
 
+  # Generate a multi-use token for account confirmation and password resets
   def set_perishable_token
     self.perishable_token = Digest::MD5.hexdigest( rand.to_s )
     save
   end
 
+  # Reset the perishable token
   def reset_perishable_token
     self.perishable_token = nil
     save
@@ -43,6 +47,7 @@ class User
     feed.local? ? "/users/#{feed.author.username}" : feed.author.url
   end
   
+
   def twitter?
     has_authorization?(:twitter)
   end
@@ -59,12 +64,15 @@ class User
     get_authorization(:facebook)
   end
   
+  # Check if a a user has a certain authorization by providing the assoaciated
+  # provider
   def has_authorization?(auth)
     a = Authorization.first(:provider => auth.to_s, :user_id => self.id)
     #return false if not authenticated and true otherwise.
     !a.nil?
   end
   
+  # Get an authorization by providing the assoaciated provider
   def get_authorization(auth)
     Authorization.first(:provider => auth.to_s, :user_id => self.id)
   end
