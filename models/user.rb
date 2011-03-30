@@ -4,9 +4,7 @@ class User
   include MongoMapper::Document
   many :authorizations, :dependant => :destroy
 
-  # Make the username required
-  # However, this will break it when email authorization is used
-  key :username, String #:unique => true
+  key :username, String, :required => true
   key :perishable_token, String
 
   key :email, String #, :unique => true, :allow_nil => true
