@@ -48,7 +48,7 @@ $(document).ready ->
     false if textarea.val().length <= 0 || textarea.val().length > MAX_LENGTH
   
   shareText = (update) ->
-    "RS @" + $(update).data("name") + ": " + $(update).find(".text").text().trim()
+    "RS @" + $(update).data("name") + ": " + $(update).find(".entry-content").text().trim()
     
   focusTextArea = (update) ->
     $(update_field).attr("value", $(update).data("id"))

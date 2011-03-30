@@ -5,12 +5,6 @@ class RstatusAuthTest < MiniTest::Unit::TestCase
 
   include TestHelper
 
-  alias_method :cleanup_database, :setup
-  def setup
-    cleanup_database
-    Author.any_instance.stubs(:valid_gravatar?).returns(false)
-  end
-
   def test_add_twitter_to_account
     u = Factory(:user)
     OmniAuth.config.add_mock(:twitter, {
