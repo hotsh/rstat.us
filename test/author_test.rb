@@ -18,13 +18,19 @@ class AuthorTest < MiniTest::Unit::TestCase
     assert_equal @author.url, @author.remote_url
   end
 
-  def test_valid_avatar_url
-    @author.email = "jamecook@gmail.com"
-    assert_equal @author.avatar_url, @author.gravatar_url
+  def test_internal_avatar
+    image_url = 'http://example.net/cool-avatar'
+    @author.image_url = image_url
+    assert_equal image_url, @author.avatar_url
   end
 
-  def test_invalid_avatar_url
-    @author.email = "completely@invalid-email.asdfasd.com"
-    assert_equal @author.avatar_url, "/images/avatar.png"
+  def test_gravatar_avatar
+    @author.email = "jamecook@gmail.com"
+    assert_match 'http://gravatar.com/', @author.avatar_url
+  end
+
+  def test_fallback_avatar
+    @author.email = nil
+    assert_equal Author::DEFAULT_AVATAR, @author.avatar_url
   end
 end
