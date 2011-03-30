@@ -188,7 +188,7 @@ GEM
       rack-flash (>= 0.1.1)
       sinatra (>= 0.9.1)
     tilt (1.2.2)
-    time-ago-in-words (0.1.2)
+    time-lord (0.1.5)
     tinyatom (0.3.4)
       builder (~> 2.0)
       public_suffix_service (~> 0.0)
@@ -252,7 +252,7 @@ DEPENDENCIES
   sinatra
   sinatra-content-for
   sinatra-redirect-with-flash
-  time-ago-in-words
+  time-lord
   twitter
   tzinfo
   vcr
