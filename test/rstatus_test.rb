@@ -71,9 +71,12 @@ class RstatusTest < MiniTest::Unit::TestCase
       :text => update_text
     }
     log_in(u, a.uid)
-    visit "/"
-    fill_in 'update-textarea', :with => update_text
-    click_button :'update-button'
+
+    VCR.use_cassette('publish_update') do
+      visit "/"
+      fill_in 'update-textarea', :with => update_text
+      click_button :'update-button'
+    end
 
     assert_match page.body, /#{update_text}/
   end
@@ -86,9 +89,12 @@ class RstatusTest < MiniTest::Unit::TestCase
       :text => update_text
     }
     log_in(u, a.uid)
-    visit "/"
-    fill_in 'update-textarea', :with => update_text
-    click_button :'update-button'
+
+    VCR.use_cassette('publish_short_update') do
+      visit "/"
+      fill_in 'update-textarea', :with => update_text
+      click_button :'update-button'
+    end
 
     refute_match page.body, /Your status is too short!/
   end
@@ -130,9 +136,11 @@ class RstatusTest < MiniTest::Unit::TestCase
     click_link "Would you like to follow someone not on rstat.us?"
     assert_match "ostatus Sites", page.body
 
-    #this should really be mocked
-    fill_in 'url', :with => "http://identi.ca/api/statuses/user_timeline/396889.atom"
-    click_button "Follow"
+    VCR.use_cassette('subscribe_remote') do
+      fill_in 'url', :with => "http://identi.ca/api/statuses/user_timeline/396889.atom"
+      click_button "Follow"
+    end
+
     assert_match "Now following steveklabnik.", page.body
     assert "/", current_path
   end

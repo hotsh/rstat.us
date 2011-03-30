@@ -15,7 +15,7 @@ class AuthorTest < MiniTest::Unit::TestCase
 
   def test_url
     @author.remote_url = "some_url.com"
-    assert_equal @author.url, @author.remote_url
+    assert_equal @author.remote_url, @author.url
   end
 
   def test_internal_avatar

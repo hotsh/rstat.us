@@ -9,6 +9,13 @@ require_relative 'factories'
 
 require_relative '../rstatus'
 
+require 'vcr'
+
+VCR.config do |c|
+  c.cassette_library_dir = 'test/data/vcr_cassettes'
+  c.stub_with :webmock
+end
+
 module TestHelper
   require 'capybara/dsl'
   include Capybara
