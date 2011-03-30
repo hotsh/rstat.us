@@ -13,6 +13,8 @@
     <div id="jump_wrapper">
       <div id="jump_page">
           <a class="source" href="../Rakefile.html">Rakefile</a>
+          <a class="source" href="../config.html">config.rb</a>
+          <a class="source" href="../helpers.html">helpers.rb</a>
           <a class="source" href="all.html">all.rb</a>
           <a class="source" href="author.html">author.rb</a>
           <a class="source" href="authorization.html">authorization.rb</a>
@@ -122,9 +124,7 @@ attr_accessor :oauth_token, :oauth_secret</p>
   <span class="k">end</span>
 
   <span class="kp">protected</span>
-  
-  <span class="k">def</span> <span class="nf">generate_html</span>
-    <span class="n">out</span> <span class="o">=</span> <span class="no">CGI</span><span class="o">.</span><span class="n">escapeHTML</span><span class="p">(</span><span class="n">text</span><span class="p">)</span></pre></div>
+  </pre></div>
       </td>
     </tr>
     <tr id='section-3'>
@@ -132,7 +132,20 @@ attr_accessor :oauth_token, :oauth_secret</p>
         <div class="pilwrap">
           <a class="pilcrow" href="#section-3">&#182;</a>
         </div>
-        <p>we let almost anything be in a username, except those that mess with urls.  but you can&rsquo;t end in a .:;, or !
+        <p>Generate and store the html</p>
+      </td>
+      <td class=code>
+        <div class='highlight'><pre>  <span class="k">def</span> <span class="nf">generate_html</span>
+    <span class="n">out</span> <span class="o">=</span> <span class="no">CGI</span><span class="o">.</span><span class="n">escapeHTML</span><span class="p">(</span><span class="n">text</span><span class="p">)</span></pre></div>
+      </td>
+    </tr>
+    <tr id='section-4'>
+      <td class=docs>
+        <div class="pilwrap">
+          <a class="pilcrow" href="#section-4">&#182;</a>
+        </div>
+        <p>we let almost anything be in a username, except those that mess with urls.
+but you can&rsquo;t end in a .:;, or !
 also ignore container chars [] () &ldquo;&rdquo; &lsquo;&rsquo; {}
 XXX: the <em>correct</em> solution will be to use an email validator</p>
       </td>
@@ -149,12 +162,45 @@ XXX: the <em>correct</em> solution will be to use an email validator</p>
       <span class="s2">&quot;</span><span class="si">#{</span><span class="vg">$1</span><span class="si">}</span><span class="s2">&lt;a href=&#39;/hashtags/</span><span class="si">#{</span><span class="vg">$2</span><span class="si">}</span><span class="s2">&#39;&gt;#</span><span class="si">#{</span><span class="vg">$2</span><span class="si">}</span><span class="s2">&lt;/a&gt;&quot;</span>
     <span class="k">end</span>
     <span class="nb">self</span><span class="o">.</span><span class="n">html</span> <span class="o">=</span> <span class="n">out</span>
-  <span class="k">end</span>
-
-  <span class="k">def</span> <span class="nf">send_to_external_accounts</span>
+  <span class="k">end</span></pre></div>
+      </td>
+    </tr>
+    <tr id='section-5'>
+      <td class=docs>
+        <div class="pilwrap">
+          <a class="pilcrow" href="#section-5">&#182;</a>
+        </div>
+        <p>If a user has twitter or facebook enabled on their account and they checked
+either twitter, facebook or both on update form, repost the update to
+facebook or twitter.</p>
+      </td>
+      <td class=code>
+        <div class='highlight'><pre>  <span class="k">def</span> <span class="nf">send_to_external_accounts</span>
     <span class="k">return</span> <span class="k">if</span> <span class="no">ENV</span><span class="o">[</span><span class="s1">&#39;RACK_ENV&#39;</span><span class="o">]</span> <span class="o">==</span> <span class="s1">&#39;development&#39;</span>
-    <span class="k">if</span> <span class="n">author</span><span class="o">.</span><span class="n">user</span>
-      <span class="k">if</span> <span class="nb">self</span><span class="o">.</span><span class="n">twitter?</span> <span class="o">&amp;&amp;</span> <span class="n">author</span><span class="o">.</span><span class="n">user</span><span class="o">.</span><span class="n">twitter?</span>
+    </pre></div>
+      </td>
+    </tr>
+    <tr id='section-6'>
+      <td class=docs>
+        <div class="pilwrap">
+          <a class="pilcrow" href="#section-6">&#182;</a>
+        </div>
+        <p>If there is no user we can&rsquo;t get to the oauth tokens, abort!</p>
+      </td>
+      <td class=code>
+        <div class='highlight'><pre>    <span class="k">if</span> <span class="n">author</span><span class="o">.</span><span class="n">user</span></pre></div>
+      </td>
+    </tr>
+    <tr id='section-7'>
+      <td class=docs>
+        <div class="pilwrap">
+          <a class="pilcrow" href="#section-7">&#182;</a>
+        </div>
+        <p>If the twitter flag is true and the user has a twitter account linked
+send the update</p>
+      </td>
+      <td class=code>
+        <div class='highlight'><pre>      <span class="k">if</span> <span class="nb">self</span><span class="o">.</span><span class="n">twitter?</span> <span class="o">&amp;&amp;</span> <span class="n">author</span><span class="o">.</span><span class="n">user</span><span class="o">.</span><span class="n">twitter?</span>
         <span class="k">begin</span>
           <span class="no">Twitter</span><span class="o">.</span><span class="n">configure</span> <span class="k">do</span> <span class="o">|</span><span class="n">config</span><span class="o">|</span>
             <span class="n">config</span><span class="o">.</span><span class="n">consumer_key</span> <span class="o">=</span> <span class="no">ENV</span><span class="o">[</span><span class="s2">&quot;CONSUMER_KEY&quot;</span><span class="o">]</span>
@@ -167,28 +213,39 @@ XXX: the <em>correct</em> solution will be to use an email validator</p>
         <span class="k">rescue</span> <span class="no">Exception</span> <span class="o">=&gt;</span> <span class="n">e</span></pre></div>
       </td>
     </tr>
-    <tr id='section-4'>
+    <tr id='section-8'>
       <td class=docs>
         <div class="pilwrap">
-          <a class="pilcrow" href="#section-4">&#182;</a>
+          <a class="pilcrow" href="#section-8">&#182;</a>
         </div>
         <p>I should be shot for doing this.</p>
       </td>
       <td class=code>
         <div class='highlight'><pre>        <span class="k">end</span>
       <span class="k">end</span>
-
-      <span class="k">if</span> <span class="nb">self</span><span class="o">.</span><span class="n">facebook?</span> <span class="o">&amp;&amp;</span> <span class="n">author</span><span class="o">.</span><span class="n">user</span><span class="o">.</span><span class="n">facebook?</span>
+      </pre></div>
+      </td>
+    </tr>
+    <tr id='section-9'>
+      <td class=docs>
+        <div class="pilwrap">
+          <a class="pilcrow" href="#section-9">&#182;</a>
+        </div>
+        <p>If the facebook flag is true and the user has a facebook account linked
+send the update</p>
+      </td>
+      <td class=code>
+        <div class='highlight'><pre>      <span class="k">if</span> <span class="nb">self</span><span class="o">.</span><span class="n">facebook?</span> <span class="o">&amp;&amp;</span> <span class="n">author</span><span class="o">.</span><span class="n">user</span><span class="o">.</span><span class="n">facebook?</span>
         <span class="k">begin</span>
           <span class="n">user</span> <span class="o">=</span> <span class="no">FbGraph</span><span class="o">::</span><span class="no">User</span><span class="o">.</span><span class="n">me</span><span class="p">(</span><span class="n">author</span><span class="o">.</span><span class="n">user</span><span class="o">.</span><span class="n">facebook</span><span class="o">.</span><span class="n">oauth_token</span><span class="p">)</span>
           <span class="n">user</span><span class="o">.</span><span class="n">feed!</span><span class="p">(</span><span class="ss">:message</span> <span class="o">=&gt;</span> <span class="n">text</span><span class="p">)</span>
         <span class="k">rescue</span> <span class="no">Exception</span> <span class="o">=&gt;</span> <span class="n">e</span></pre></div>
       </td>
     </tr>
-    <tr id='section-5'>
+    <tr id='section-10'>
       <td class=docs>
         <div class="pilwrap">
-          <a class="pilcrow" href="#section-5">&#182;</a>
+          <a class="pilcrow" href="#section-10">&#182;</a>
         </div>
         <p>I should be shot for doing this.</p>
 

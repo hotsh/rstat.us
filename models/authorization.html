@@ -13,6 +13,8 @@
     <div id="jump_wrapper">
       <div id="jump_page">
           <a class="source" href="../Rakefile.html">Rakefile</a>
+          <a class="source" href="../config.html">config.rb</a>
+          <a class="source" href="../helpers.html">helpers.rb</a>
           <a class="source" href="all.html">all.rb</a>
           <a class="source" href="author.html">author.rb</a>
           <a class="source" href="authorization.html">authorization.rb</a>
@@ -38,7 +40,6 @@
           <a class="pilcrow" href="#section-1">&#182;</a>
         </div>
         
-
       </td>
       <td class=code>
         <div class='highlight'><pre><span class="k">class</span> <span class="nc">Authorization</span>
@@ -53,12 +54,32 @@
   <span class="n">key</span> <span class="ss">:nickname</span>
 
   <span class="n">validates_uniqueness_of</span> <span class="ss">:uid</span><span class="p">,</span> <span class="ss">:scope</span> <span class="o">=&gt;</span> <span class="ss">:provider</span>
-
-  <span class="k">def</span> <span class="nc">self</span><span class="o">.</span><span class="nf">find_from_hash</span><span class="p">(</span><span class="n">hsh</span><span class="p">)</span>
+  </pre></div>
+      </td>
+    </tr>
+    <tr id='section-2'>
+      <td class=docs>
+        <div class="pilwrap">
+          <a class="pilcrow" href="#section-2">&#182;</a>
+        </div>
+        <p>Locates an authorization from data provided from a successful omniauth
+authentication response</p>
+      </td>
+      <td class=code>
+        <div class='highlight'><pre>  <span class="k">def</span> <span class="nc">self</span><span class="o">.</span><span class="nf">find_from_hash</span><span class="p">(</span><span class="n">hsh</span><span class="p">)</span>
     <span class="n">first</span> <span class="ss">:provider</span> <span class="o">=&gt;</span> <span class="n">hsh</span><span class="o">[</span><span class="s1">&#39;provider&#39;</span><span class="o">]</span><span class="p">,</span> <span class="ss">:uid</span> <span class="o">=&gt;</span> <span class="n">hsh</span><span class="o">[</span><span class="s1">&#39;uid&#39;</span><span class="o">].</span><span class="n">to_i</span>
-  <span class="k">end</span>
-
-  <span class="k">def</span> <span class="nc">self</span><span class="o">.</span><span class="nf">create_from_hash</span><span class="p">(</span><span class="n">hsh</span><span class="p">,</span> <span class="n">base_uri</span><span class="p">,</span> <span class="n">user</span> <span class="o">=</span> <span class="kp">nil</span><span class="p">)</span>
+  <span class="k">end</span></pre></div>
+      </td>
+    </tr>
+    <tr id='section-3'>
+      <td class=docs>
+        <div class="pilwrap">
+          <a class="pilcrow" href="#section-3">&#182;</a>
+        </div>
+        <p>Creates an authorization from a sucessful omniauth authentication response</p>
+      </td>
+      <td class=code>
+        <div class='highlight'><pre>  <span class="k">def</span> <span class="nc">self</span><span class="o">.</span><span class="nf">create_from_hash</span><span class="p">(</span><span class="n">hsh</span><span class="p">,</span> <span class="n">base_uri</span><span class="p">,</span> <span class="n">user</span> <span class="o">=</span> <span class="kp">nil</span><span class="p">)</span>
     <span class="k">if</span> <span class="n">user</span><span class="o">.</span><span class="n">nil?</span>
       <span class="n">author</span> <span class="o">=</span> <span class="no">Author</span><span class="o">.</span><span class="n">create_from_hash!</span><span class="p">(</span><span class="n">hsh</span><span class="p">)</span>
       <span class="n">user</span> <span class="o">=</span> <span class="no">User</span><span class="o">.</span><span class="n">create</span><span class="p">(</span><span class="ss">:author</span> <span class="o">=&gt;</span> <span class="n">author</span><span class="p">,</span>
@@ -74,9 +95,19 @@
             <span class="ss">:oauth_secret</span> <span class="o">=&gt;</span> <span class="n">hsh</span><span class="o">[</span><span class="s1">&#39;credentials&#39;</span><span class="o">][</span><span class="s1">&#39;secret&#39;</span><span class="o">]</span>
            <span class="p">)</span>
 
-    <span class="n">a</span><span class="o">.</span><span class="n">save</span>
-    <span class="n">a</span><span class="o">.</span><span class="n">errors</span><span class="o">.</span><span class="n">each</span><span class="p">{</span><span class="o">|</span><span class="n">e</span><span class="o">|</span> <span class="nb">puts</span> <span class="n">e</span><span class="o">.</span><span class="n">inspect</span> <span class="p">}</span>
-    <span class="n">a</span>
+    <span class="n">a</span><span class="o">.</span><span class="n">save</span></pre></div>
+      </td>
+    </tr>
+    <tr id='section-4'>
+      <td class=docs>
+        <div class="pilwrap">
+          <a class="pilcrow" href="#section-4">&#182;</a>
+        </div>
+        <p>a.errors.each{|e| puts e.inspect }</p>
+
+      </td>
+      <td class=code>
+        <div class='highlight'><pre>    <span class="n">a</span>
   <span class="k">end</span>
 
   <span class="n">timestamps!</span>

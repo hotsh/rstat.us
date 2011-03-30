@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="content-type" content="text/html;charset=utf-8">
+  <title>config.rb</title>
+  <link rel="stylesheet" href="http://github.com/jashkenas/docco/raw/0.3.0/resources/docco.css">
+</head>
+<body>
+<div id='container'>
+  <div id="background"></div>
+  <div id="jump_to">
+    Jump To &hellip;
+    <div id="jump_wrapper">
+      <div id="jump_page">
+          <a class="source" href="Rakefile.html">Rakefile</a>
+          <a class="source" href="config.html">config.rb</a>
+          <a class="source" href="helpers.html">helpers.rb</a>
+          <a class="source" href="models/all.html">all.rb</a>
+          <a class="source" href="models/author.html">author.rb</a>
+          <a class="source" href="models/authorization.html">authorization.rb</a>
+          <a class="source" href="models/feed.html">feed.rb</a>
+          <a class="source" href="models/notifier.html">notifier.rb</a>
+          <a class="source" href="models/update.html">update.rb</a>
+          <a class="source" href="models/user.html">user.rb</a>
+          <a class="source" href="rstatus.html">rstatus.rb</a>
+      </div>
+    </div>
+  </div>
+  <table cellspacing=0 cellpadding=0>
+  <thead>
+    <tr>
+      <th class=docs><h1>config.rb</h1></th>
+      <th class=code></th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr id='section-1'>
+      <td class=docs>
+        <div class="pilwrap">
+          <a class="pilcrow" href="#section-1">&#182;</a>
+        </div>
+        
+      </td>
+      <td class=code>
+        <div class='highlight'><pre><span class="k">class</span> <span class="nc">Rstatus</span></pre></div>
+      </td>
+    </tr>
+    <tr id='section-2'>
+      <td class=docs>
+        <div class="pilwrap">
+          <a class="pilcrow" href="#section-2">&#182;</a>
+        </div>
+        <p>The <code>PONY_VIA_OPTIONS</code> hash is used to configure <code>pony</code>. Basically, we only
+want to actually send mail if we&rsquo;re in the production environment. So we set
+the hash to just be <code>{}</code>, except when we want to send mail.</p>
+      </td>
+      <td class=code>
+        <div class='highlight'><pre>  <span class="n">configure</span> <span class="ss">:test</span> <span class="k">do</span>
+    <span class="no">PONY_VIA_OPTIONS</span> <span class="o">=</span> <span class="p">{}</span>
+  <span class="k">end</span>
+
+  <span class="n">configure</span> <span class="ss">:development</span> <span class="k">do</span>
+    <span class="no">PONY_VIA_OPTIONS</span> <span class="o">=</span> <span class="p">{}</span>
+  <span class="k">end</span></pre></div>
+      </td>
+    </tr>
+    <tr id='section-3'>
+      <td class=docs>
+        <div class="pilwrap">
+          <a class="pilcrow" href="#section-3">&#182;</a>
+        </div>
+        <p>We&rsquo;re using <a href="http://sendgrid.com/">SendGrid</a> to send our emails. It&rsquo;s really
+easy; the Heroku addon sets us up with environment variables with all of the
+configuration options that we need.</p>
+      </td>
+      <td class=code>
+        <div class='highlight'><pre>  <span class="n">configure</span> <span class="ss">:production</span> <span class="k">do</span>
+    <span class="no">PONY_VIA_OPTIONS</span> <span class="o">=</span>  <span class="p">{</span>
+      <span class="ss">:address</span>        <span class="o">=&gt;</span> <span class="s2">&quot;smtp.sendgrid.net&quot;</span><span class="p">,</span>
+      <span class="ss">:port</span>           <span class="o">=&gt;</span> <span class="s2">&quot;25&quot;</span><span class="p">,</span>
+      <span class="ss">:authentication</span> <span class="o">=&gt;</span> <span class="ss">:plain</span><span class="p">,</span>
+      <span class="ss">:user_name</span>      <span class="o">=&gt;</span> <span class="no">ENV</span><span class="o">[</span><span class="s1">&#39;SENDGRID_USERNAME&#39;</span><span class="o">]</span><span class="p">,</span>
+      <span class="ss">:password</span>       <span class="o">=&gt;</span> <span class="no">ENV</span><span class="o">[</span><span class="s1">&#39;SENDGRID_PASSWORD&#39;</span><span class="o">]</span><span class="p">,</span>
+      <span class="ss">:domain</span>         <span class="o">=&gt;</span> <span class="no">ENV</span><span class="o">[</span><span class="s1">&#39;SENDGRID_DOMAIN&#39;</span><span class="o">]</span>
+    <span class="p">}</span>
+  <span class="k">end</span></pre></div>
+      </td>
+    </tr>
+    <tr id='section-4'>
+      <td class=docs>
+        <div class="pilwrap">
+          <a class="pilcrow" href="#section-4">&#182;</a>
+        </div>
+        <p>We need a secret for our sessions. This is set via an environment variable so
+that we don&rsquo;t have to give it away in the source code. Heroku makes it really
+easy to keep environment variables set up, so this ends up being pretty nice.
+This also has to be included before rack-flash, or it blows up.</p>
+      </td>
+      <td class=code>
+        <div class='highlight'><pre>  <span class="n">use</span> <span class="no">Rack</span><span class="o">::</span><span class="no">Session</span><span class="o">::</span><span class="no">Cookie</span><span class="p">,</span> <span class="ss">:secret</span> <span class="o">=&gt;</span> <span class="no">ENV</span><span class="o">[</span><span class="s1">&#39;COOKIE_SECRET&#39;</span><span class="o">]</span></pre></div>
+      </td>
+    </tr>
+    <tr id='section-5'>
+      <td class=docs>
+        <div class="pilwrap">
+          <a class="pilcrow" href="#section-5">&#182;</a>
+        </div>
+        <p>We&rsquo;re using rack-timeout to ensure that our dynos don&rsquo;t get starved by renegade
+processes.</p>
+      </td>
+      <td class=code>
+        <div class='highlight'><pre>  <span class="n">use</span> <span class="no">Rack</span><span class="o">::</span><span class="no">Timeout</span>
+  <span class="no">Rack</span><span class="o">::</span><span class="no">Timeout</span><span class="o">.</span><span class="n">timeout</span> <span class="o">=</span> <span class="mi">10</span>
+
+  <span class="n">set</span> <span class="ss">:root</span><span class="p">,</span> <span class="no">File</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="bp">__FILE__</span><span class="p">)</span>
+  <span class="n">set</span> <span class="ss">:haml</span><span class="p">,</span> <span class="ss">:escape_html</span> <span class="o">=&gt;</span> <span class="kp">true</span></pre></div>
+      </td>
+    </tr>
+    <tr id='section-6'>
+      <td class=docs>
+        <div class="pilwrap">
+          <a class="pilcrow" href="#section-6">&#182;</a>
+        </div>
+        <p>This method enables the ability for our forms to use the _method hack for
+actual RESTful stuff.</p>
+      </td>
+      <td class=code>
+        <div class='highlight'><pre>  <span class="n">set</span> <span class="ss">:method_override</span><span class="p">,</span> <span class="kp">true</span></pre></div>
+      </td>
+    </tr>
+    <tr id='section-7'>
+      <td class=docs>
+        <div class="pilwrap">
+          <a class="pilcrow" href="#section-7">&#182;</a>
+        </div>
+        <p>If you&rsquo;ve used Rails' flash messages, you know how convenient they are.
+rack-flash lets us use them.</p>
+      </td>
+      <td class=code>
+        <div class='highlight'><pre>  <span class="n">use</span> <span class="no">Rack</span><span class="o">::</span><span class="no">Flash</span>
+
+  <span class="n">configure</span> <span class="k">do</span>
+    <span class="k">if</span> <span class="no">ENV</span><span class="o">[</span><span class="s1">&#39;MONGOHQ_URL&#39;</span><span class="o">]</span>
+      <span class="no">MongoMapper</span><span class="o">.</span><span class="n">config</span> <span class="o">=</span> <span class="p">{</span><span class="no">ENV</span><span class="o">[</span><span class="s1">&#39;RACK_ENV&#39;</span><span class="o">]</span> <span class="o">=&gt;</span> <span class="p">{</span><span class="s1">&#39;uri&#39;</span> <span class="o">=&gt;</span> <span class="no">ENV</span><span class="o">[</span><span class="s1">&#39;MONGOHQ_URL&#39;</span><span class="o">]</span><span class="p">}}</span>
+      <span class="no">MongoMapper</span><span class="o">.</span><span class="n">database</span> <span class="o">=</span> <span class="no">ENV</span><span class="o">[</span><span class="s1">&#39;MONGOHQ_DATABASE&#39;</span><span class="o">]</span>
+      <span class="no">MongoMapper</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="s2">&quot;production&quot;</span><span class="p">)</span>
+    <span class="k">else</span>
+      <span class="no">MongoMapper</span><span class="o">.</span><span class="n">connection</span> <span class="o">=</span> <span class="no">Mongo</span><span class="o">::</span><span class="no">Connection</span><span class="o">.</span><span class="n">new</span><span class="p">(</span><span class="s1">&#39;localhost&#39;</span><span class="p">)</span>
+      <span class="no">MongoMapper</span><span class="o">.</span><span class="n">database</span> <span class="o">=</span> <span class="s2">&quot;rstatus-</span><span class="si">#{</span><span class="n">settings</span><span class="o">.</span><span class="n">environment</span><span class="si">}</span><span class="s2">&quot;</span>
+    <span class="k">end</span>
+
+    <span class="no">Compass</span><span class="o">.</span><span class="n">add_project_configuration</span><span class="p">(</span><span class="no">File</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="no">File</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="bp">__FILE__</span><span class="p">),</span> <span class="s1">&#39;config&#39;</span><span class="p">,</span> <span class="s1">&#39;compass.config&#39;</span><span class="p">))</span>        
+    <span class="no">MongoMapperExt</span><span class="o">.</span><span class="n">init</span></pre></div>
+      </td>
+    </tr>
+    <tr id='section-8'>
+      <td class=docs>
+        <div class="pilwrap">
+          <a class="pilcrow" href="#section-8">&#182;</a>
+        </div>
+        <p>now that we&rsquo;ve connected to the db, let&rsquo;s load our models.</p>
+
+      </td>
+      <td class=code>
+        <div class='highlight'><pre>    <span class="n">require_relative</span> <span class="s1">&#39;models/all&#39;</span>
+  <span class="k">end</span>
+
+  <span class="n">helpers</span> <span class="no">Sinatra</span><span class="o">::</span><span class="no">UserHelper</span>
+  <span class="n">helpers</span> <span class="no">Sinatra</span><span class="o">::</span><span class="no">ContentFor</span>
+
+  <span class="n">helpers</span> <span class="k">do</span>
+    <span class="o">[</span><span class="ss">:development</span><span class="p">,</span> <span class="ss">:production</span><span class="p">,</span> <span class="ss">:test</span><span class="o">].</span><span class="n">each</span> <span class="k">do</span> <span class="o">|</span><span class="n">environment</span><span class="o">|</span>
+      <span class="n">define_method</span> <span class="s2">&quot;</span><span class="si">#{</span><span class="n">environment</span><span class="o">.</span><span class="n">to_s</span><span class="si">}</span><span class="s2">?&quot;</span> <span class="k">do</span>
+        <span class="k">return</span> <span class="n">settings</span><span class="o">.</span><span class="n">environment</span> <span class="o">==</span> <span class="n">environment</span>
+      <span class="k">end</span>
+    <span class="k">end</span>
+  <span class="k">end</span>
+
+  <span class="n">use</span> <span class="no">OmniAuth</span><span class="o">::</span><span class="no">Builder</span> <span class="k">do</span>
+    <span class="n">provider</span> <span class="ss">:twitter</span><span class="p">,</span> <span class="no">ENV</span><span class="o">[</span><span class="s2">&quot;CONSUMER_KEY&quot;</span><span class="o">]</span><span class="p">,</span> <span class="no">ENV</span><span class="o">[</span><span class="s2">&quot;CONSUMER_SECRET&quot;</span><span class="o">]</span>
+    <span class="n">provider</span> <span class="ss">:facebook</span><span class="p">,</span> <span class="no">ENV</span><span class="o">[</span><span class="s2">&quot;APP_ID&quot;</span><span class="o">]</span><span class="p">,</span> <span class="no">ENV</span><span class="o">[</span><span class="s2">&quot;APP_SECRET&quot;</span><span class="o">]</span><span class="p">,</span> <span class="p">{</span><span class="ss">:scope</span> <span class="o">=&gt;</span> <span class="s1">&#39;publish_stream,offline_access,email&#39;</span><span class="p">}</span>
+  <span class="k">end</span>
+<span class="k">end</span></pre></div>
+      </td>
+    </tr>
+  </table>
+</div>
+</body>

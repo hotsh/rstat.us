@@ -13,6 +13,8 @@
     <div id="jump_wrapper">
       <div id="jump_page">
           <a class="source" href="../Rakefile.html">Rakefile</a>
+          <a class="source" href="../config.html">config.rb</a>
+          <a class="source" href="../helpers.html">helpers.rb</a>
           <a class="source" href="all.html">all.rb</a>
           <a class="source" href="author.html">author.rb</a>
           <a class="source" href="authorization.html">authorization.rb</a>
@@ -42,22 +44,41 @@ here, that way it&rsquo;s just as easy as
 <code>Notifier.send_message_notification(me, you)</code> to send a message.</p>
       </td>
       <td class=code>
-        <div class='highlight'><pre><span class="k">class</span> <span class="nc">Notifier</span> 
-  <span class="k">def</span> <span class="nc">self</span><span class="o">.</span><span class="nf">send_signup_notification</span><span class="p">(</span><span class="n">recipient</span><span class="p">,</span> <span class="n">token</span><span class="p">)</span>
-    <span class="no">Pony</span><span class="o">.</span><span class="n">mail</span><span class="p">(</span><span class="ss">:to</span> <span class="o">=&gt;</span> <span class="n">recipient</span><span class="p">,</span> 
-              <span class="ss">:subject</span> <span class="o">=&gt;</span> <span class="s2">&quot;Thanks for signing up for rstat.us!&quot;</span><span class="p">,</span>
-              <span class="ss">:from</span> <span class="o">=&gt;</span> <span class="s2">&quot;steve+rstatus@steveklabnik.com&quot;</span><span class="p">,</span>
-              <span class="ss">:body</span> <span class="o">=&gt;</span> <span class="n">render_haml_template</span><span class="p">(</span><span class="s2">&quot;signup&quot;</span><span class="p">,</span> <span class="p">{</span><span class="ss">:token</span> <span class="o">=&gt;</span> <span class="n">token</span><span class="p">}),</span>
-              <span class="ss">:via</span> <span class="o">=&gt;</span> <span class="ss">:smtp</span><span class="p">,</span> <span class="ss">:via_options</span> <span class="o">=&gt;</span> <span class="no">Rstatus</span><span class="o">::</span><span class="no">PONY_VIA_OPTIONS</span><span class="p">)</span>
-  <span class="k">end</span>
-
-  <span class="kp">private</span></pre></div>
+        <div class='highlight'><pre><span class="k">class</span> <span class="nc">Notifier</span> </pre></div>
       </td>
     </tr>
     <tr id='section-2'>
       <td class=docs>
         <div class="pilwrap">
           <a class="pilcrow" href="#section-2">&#182;</a>
+        </div>
+        <p>this isn&rsquo;t used anymore, but I&rsquo;m keeping it around so that it&rsquo;s easy to
+write the new confirmation code that will happen soon.</p>
+      </td>
+      <td class=code>
+        <div class='highlight'><pre>  <span class="k">def</span> <span class="nc">self</span><span class="o">.</span><span class="nf">send_signup_notification</span><span class="p">(</span><span class="n">recipient</span><span class="p">,</span> <span class="n">token</span><span class="p">)</span>
+    <span class="no">Pony</span><span class="o">.</span><span class="n">mail</span><span class="p">(</span><span class="ss">:to</span> <span class="o">=&gt;</span> <span class="n">recipient</span><span class="p">,</span> 
+              <span class="ss">:subject</span> <span class="o">=&gt;</span> <span class="s2">&quot;Thanks for signing up for rstat.us!&quot;</span><span class="p">,</span>
+              <span class="ss">:from</span> <span class="o">=&gt;</span> <span class="s2">&quot;steve+rstatus@steveklabnik.com&quot;</span><span class="p">,</span>
+              <span class="ss">:body</span> <span class="o">=&gt;</span> <span class="n">render_haml_template</span><span class="p">(</span><span class="s2">&quot;signup&quot;</span><span class="p">,</span> <span class="p">{</span><span class="ss">:token</span> <span class="o">=&gt;</span> <span class="n">token</span><span class="p">}),</span>
+              <span class="ss">:via</span> <span class="o">=&gt;</span> <span class="ss">:smtp</span><span class="p">,</span> <span class="ss">:via_options</span> <span class="o">=&gt;</span> <span class="no">Rstatus</span><span class="o">::</span><span class="no">PONY_VIA_OPTIONS</span><span class="p">)</span>
+  <span class="k">end</span>
+  
+  <span class="k">def</span> <span class="nc">self</span><span class="o">.</span><span class="nf">send_forgot_password_notification</span><span class="p">(</span><span class="n">recipient</span><span class="p">,</span> <span class="n">token</span><span class="p">)</span>
+    <span class="no">Pony</span><span class="o">.</span><span class="n">mail</span><span class="p">(</span><span class="ss">:to</span> <span class="o">=&gt;</span> <span class="n">recipient</span><span class="p">,</span> 
+              <span class="ss">:subject</span> <span class="o">=&gt;</span> <span class="s2">&quot;Reset your rstat.us password&quot;</span><span class="p">,</span>
+              <span class="ss">:from</span> <span class="o">=&gt;</span> <span class="s2">&quot;steve+rstatus@steveklabnik.com&quot;</span><span class="p">,</span>
+              <span class="ss">:body</span> <span class="o">=&gt;</span> <span class="n">render_haml_template</span><span class="p">(</span><span class="s2">&quot;forgot_password&quot;</span><span class="p">,</span> <span class="p">{</span><span class="ss">:token</span> <span class="o">=&gt;</span> <span class="n">token</span><span class="p">}),</span>
+              <span class="ss">:via</span> <span class="o">=&gt;</span> <span class="ss">:smtp</span><span class="p">,</span> <span class="ss">:via_options</span> <span class="o">=&gt;</span> <span class="no">Rstatus</span><span class="o">::</span><span class="no">PONY_VIA_OPTIONS</span><span class="p">)</span>
+  <span class="k">end</span>
+
+  <span class="kp">private</span></pre></div>
+      </td>
+    </tr>
+    <tr id='section-3'>
+      <td class=docs>
+        <div class="pilwrap">
+          <a class="pilcrow" href="#section-3">&#182;</a>
         </div>
         <p>This was kinda crazy to figure out. We have to make our own instantiation
 of the Engine, and then set local variables. Crazy.</p>

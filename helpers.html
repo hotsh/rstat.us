@@ -13,6 +13,7 @@
     <div id="jump_wrapper">
       <div id="jump_page">
           <a class="source" href="Rakefile.html">Rakefile</a>
+          <a class="source" href="config.html">config.rb</a>
           <a class="source" href="helpers.html">helpers.rb</a>
           <a class="source" href="models/all.html">all.rb</a>
           <a class="source" href="models/author.html">author.rb</a>
@@ -100,7 +101,6 @@ specified when we called it.</p>
         </div>
         <p>Similar to <code>admin_only!</code>, <code>require_login!</code> only lets logged in users access
 a particular page, and redirects them if they&rsquo;re not.</p>
-
       </td>
       <td class=code>
         <div class='highlight'><pre>    <span class="k">def</span> <span class="nf">require_login!</span><span class="p">(</span><span class="n">opts</span> <span class="o">=</span> <span class="p">{</span><span class="ss">:return</span> <span class="o">=&gt;</span> <span class="s2">&quot;/&quot;</span><span class="p">})</span>
@@ -109,15 +109,39 @@ a particular page, and redirects them if they&rsquo;re not.</p>
         <span class="n">redirect</span> <span class="n">opts</span><span class="o">[</span><span class="ss">:return</span><span class="o">]</span>
       <span class="k">end</span>
     <span class="k">end</span>
-
-    <span class="k">def</span> <span class="nf">set_params_page</span>
+    </pre></div>
+      </td>
+    </tr>
+    <tr id='section-6'>
+      <td class=docs>
+        <div class="pilwrap">
+          <a class="pilcrow" href="#section-6">&#182;</a>
+        </div>
+        <p>Many pages on rstatus are paginated. To keep track of it in all the
+different routes we have this handy helper that either picks up
+the previous setting or resets it to a default value.</p>
+      </td>
+      <td class=code>
+        <div class='highlight'><pre>    <span class="k">def</span> <span class="nf">set_params_page</span>
       <span class="n">params</span><span class="o">[</span><span class="ss">:page</span><span class="o">]</span> <span class="o">||=</span> <span class="mi">1</span>
       <span class="n">params</span><span class="o">[</span><span class="ss">:per_page</span><span class="o">]</span> <span class="o">||=</span> <span class="mi">25</span>
       <span class="n">params</span><span class="o">[</span><span class="ss">:page</span><span class="o">]</span> <span class="o">=</span> <span class="n">params</span><span class="o">[</span><span class="ss">:page</span><span class="o">].</span><span class="n">to_i</span>
       <span class="n">params</span><span class="o">[</span><span class="ss">:per_page</span><span class="o">]</span> <span class="o">=</span> <span class="n">params</span><span class="o">[</span><span class="ss">:per_page</span><span class="o">].</span><span class="n">to_i</span>
-    <span class="k">end</span>
+    <span class="k">end</span></pre></div>
+      </td>
+    </tr>
+    <tr id='section-7'>
+      <td class=docs>
+        <div class="pilwrap">
+          <a class="pilcrow" href="#section-7">&#182;</a>
+        </div>
+        <p>Similar to the set_params_page helper this one creates the links
+for the previous and the next page on all routes that display
+stuff on more than one page.</p>
 
-    <span class="k">def</span> <span class="nf">set_next_prev_page</span>
+      </td>
+      <td class=code>
+        <div class='highlight'><pre>    <span class="k">def</span> <span class="nf">set_next_prev_page</span>
       <span class="vi">@next_page</span> <span class="o">=</span> <span class="s2">&quot;?</span><span class="si">#{</span><span class="no">Rack</span><span class="o">::</span><span class="no">Utils</span><span class="o">.</span><span class="n">build_query</span> <span class="ss">:page</span> <span class="o">=&gt;</span> <span class="n">params</span><span class="o">[</span><span class="ss">:page</span><span class="o">]</span> <span class="o">+</span> <span class="mi">1</span><span class="si">}</span><span class="s2">&quot;</span>
 
       <span class="k">if</span> <span class="n">params</span><span class="o">[</span><span class="ss">:page</span><span class="o">]</span> <span class="o">&gt;</span> <span class="mi">1</span>
