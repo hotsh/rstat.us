@@ -386,6 +386,15 @@ form#update-form {
       .published, .in-reply {
         float: left;
       }
+      .avatar {
+        float: none;
+        width: 18px;
+        padding: 0 2px;
+        img {
+          width: 18px;
+          margin-bottom: -4px;
+        }
+      }
       .in-reply  {
         margin-left: 0.5em;
       }
