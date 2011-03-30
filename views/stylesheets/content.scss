@@ -41,7 +41,7 @@
         }
       }
     }
-    
+
     .links, .logout {
       width: 200px;
       padding-top: 1em;
@@ -64,6 +64,16 @@
 
   h1 {
     margin-top: -0.35em;
+  }
+
+  input[type="text"] {
+    border: 1px solid #ddd;
+	margin: 0.2em;
+  }
+
+  label {
+    display: inline-block;
+    width: 6em;
   }
 }
 
@@ -359,43 +369,30 @@ form#update-form {
 
   	clear: both;
   	overflow: auto;
-  	
-    .content {
-      float: left;
-      width: 450px;
-      .name {
-      	font-weight: bold;
-      }
-      .text {
-        word-wrap: break-word;
-        font-size: 1.1em;
-      }
-      .date, .in-reply {
-        float: left
-      }
 
+    .fn, .nickname {
+      font-weight: bold;
+    }
+
+    .entry-content {
+      word-wrap: break-word;
+      font-size: 1.1em;
+      margin-left: 45px;
+    }
+    
+    .entry-info {
+      margin-left: 45px;
+    
+      .published, .in-reply {
+        float: left;
+      }
       .in-reply  {
-        .avatar, .name, .links {
-         display: inline;
-        }
-
-        .avatar {
-          float: none;
-          width: 18px;
-          padding: 0 2px;
-          img {
-            width: 18px;
-            margin-bottom: -4px;
-          }
-        }
-      }
-
-      .in-reply {
         margin-left: 0.5em;
       }
     }
+
   }
-  
+
   .mention {
     background: $mention;
   }
@@ -412,13 +409,13 @@ form#update-form {
 }
 
 .avatar {
-	float: left;
+  float: left;
   width: 35px;
   height: 35px;
-	padding-right: 1em;
-	img {
-	  width: 35px;
-	}
+  padding-right: 10px;
+  img {
+    width: 35px;
+  }
 }
 
 #fourohfour, #update {
