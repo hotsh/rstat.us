@@ -141,10 +141,6 @@ class User
       :per_page => params[:per_page]
     }
 
-    if self.following? self.feed.url
-      self.unfollow! self.feed
-    end
-
     following_plus_me = following.clone
     following_plus_me << self.feed
     Update.where(:author_id => following_plus_me.map(&:author_id)).order(['created_at', 'descending']).paginate(popts)
