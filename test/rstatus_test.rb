@@ -408,7 +408,7 @@ class RstatusTest < MiniTest::Unit::TestCase
     alpha = Factory(:user, :username => "alpha")
     a = Factory(:authorization, :user => alpha)
 
-    ["apple", "beta", "BANANAS"].each do |u|
+    ["aardvark", "beta", "BANANAS"].each do |u|
       u2 = Factory(:user, :username => u)
     end
 
@@ -419,7 +419,7 @@ class RstatusTest < MiniTest::Unit::TestCase
 
     assert has_link? "(beta)"
     assert has_link? "(BANANAS)"
-    refute_match "(apple)", page.body
+    refute_match "(aardvark)", page.body
   end
 
   def test_users_browse_by_non_letter
