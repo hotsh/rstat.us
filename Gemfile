@@ -30,7 +30,6 @@ gem "whatlanguage"
 gem "ruby-stemmer"
 gem "sass"
 gem "compass"
-gem "whatlanguage"
 gem "tzinfo"
 
 group :development, :test do

@@ -43,8 +43,8 @@ class Update
     self.html || generate_html
   end
 
-  def mentioned? search
-    matches = text.match(/^@#{search}\b/)
+  def mentioned?(username)
+    matches = text.match(/@#{username}\b/)
     matches.nil? ? false : matches.length > 0
   end
 

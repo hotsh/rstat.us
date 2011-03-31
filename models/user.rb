@@ -14,7 +14,7 @@ class User
   validates_uniqueness_of :username, :allow_nil => :true 
 
   # validate users don't have @ in their usernames
-  validate :no_at
+  validate :no_special_chars
 
   belongs_to :author
   belongs_to :feed
@@ -220,9 +220,9 @@ class User
   end
 
   # validation that checks @s in usernames
-  def no_at
-    unless (username =~ /@/).nil?
-      errors.add(:username, "can't have @.") 
+  def no_special_chars
+    unless (username =~ /[@!"#$\%&'()*,^~{}|`=:;\\\/\[\]?]/).nil? && (username =~ /^[.]/).nil? && (username =~ /[.]$/).nil? && (username =~ /[.]{2,}/).nil?
+      errors.add(:username, "contains restricted characters.")
     end
   end
 end
