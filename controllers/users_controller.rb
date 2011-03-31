@@ -189,7 +189,7 @@ class Rstatus
 
     #build title
     title = ""
-    title << "#{@user.username}'s Following"
+    title << "#{@user.username} is following"
     
     haml :"users/list", :locals => {:title => title}
   end
@@ -215,7 +215,7 @@ class Rstatus
 
     #build title
     title = ""
-    title << "#{@user.username}'s Followers"
+    title << "#{@user.username}'s followers"
 
     haml :"users/list", :locals => {:title => title}
   end
