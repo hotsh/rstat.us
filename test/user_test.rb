@@ -87,14 +87,4 @@ class UserTest < MiniTest::Unit::TestCase
     refute u.save, "nil username"
   end
 
-  def test_username_cant_be_empty
-    u = User.new :username => ""
-    refute u.save, "blank username"
-  end
-
-  def test_username_cant_be_nil
-    u = User.new :username => nil
-    refute u.save, "nil username"
-  end
-
 end
