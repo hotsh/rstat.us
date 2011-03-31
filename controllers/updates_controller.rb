@@ -38,8 +38,12 @@ class Rstatus
     else
       flash[:notice] = "Update created."
     end
-
-    redirect "/"
+    
+    if request.referrer
+      redirect request.referrer
+    else
+      redirect "/"
+    end
   end
 
   get '/updates/:id' do
