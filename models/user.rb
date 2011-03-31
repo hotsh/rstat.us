@@ -89,6 +89,11 @@ class User
       f = Feed.first(:id => feed_id)
     end
 
+    # can't follow yourself
+    if f == self.feed
+      return
+    end
+
     if f.nil?
       f = Feed.create(:remote_url => feed_url)
       f.populate

@@ -53,14 +53,15 @@ class RstatusTest < MiniTest::Unit::TestCase
     assert_equal url, page.current_url
   end
 
-  def test_user_follows_themselves_upon_create
+  def test_user_does_not_follow_self_upon_create
     u = Factory(:user)
-    a = Factory(:authorization, :user => u)
+    refute u.following? u.feed.url
+  end
 
-    log_in(u, a.uid)
-
-    visit "/users/#{u.username}/following"
-    assert_match u.username, page.body
+  def test_user_cannot_follow_self
+    u = Factory(:user)
+    u.follow! u.feed.url
+    refute u.following? u.feed.url
   end
 
   def test_user_makes_updates
