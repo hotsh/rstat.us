@@ -5,6 +5,39 @@ class RstatusAuthTest < MiniTest::Unit::TestCase
 
   include TestHelper
 
+  # -- Extra assertions and helper methods:
+
+  # publish an update and verify that the app responds successfully
+  def assert_publish_succeeds update_text
+    VCR.use_cassette('publish_to_hub') do
+      fill_in "text", :with => update_text
+      click_button "Share"
+    end
+
+    assert_match /Update created/, page.body
+  end
+
+  def log_in_new_twitter_user
+    @u = Factory(:user)
+    a = Factory(:authorization, :user => @u)
+
+    log_in(@u, a.uid)
+  end
+
+  def log_in_new_fb_user
+    @u = Factory(:user)
+    a = Factory(:authorization, :user => @u, :provider => "facebook")
+
+    log_in_fb(@u, a.uid)
+  end
+
+  def log_in_new_email_user
+    @u = Factory(:user)
+    log_in_email(@u)
+  end
+
+  # -- The real tests begin here:
+
   def test_add_twitter_to_account
     u = Factory(:user)
     omni_mock(u.username, {:uid => 78654, :token => "1111", :secret => "2222"})
@@ -20,16 +53,14 @@ class RstatusAuthTest < MiniTest::Unit::TestCase
   end
 
   def test_twitter_remove
-    u = Factory(:user)
-    a = Factory(:authorization, :user => u)
-    log_in(u, a.uid)
+    log_in_new_twitter_user
   
-    visit "/users/#{u.username}/edit"
+    visit "/users/#{@u.username}/edit"
   
     assert_match /edit/, page.current_url
     click_button "Remove"
   
-    a = Authorization.first(:provider => "twitter", :user_id => u.id)
+    a = Authorization.first(:provider => "twitter", :user_id => @u.id)
     assert a.nil?
   end
 
@@ -48,31 +79,27 @@ class RstatusAuthTest < MiniTest::Unit::TestCase
   end
 
   def test_facebook_remove
-    u = Factory(:user)
-    a = Factory(:authorization, :user => u, :provider => "facebook")
-    log_in_fb(u, a.uid)
+    log_in_new_fb_user
   
-    visit "/users/#{u.username}/edit"
+    visit "/users/#{@u.username}/edit"
   
     assert_match /edit/, page.current_url
     click_button "Remove"
   
-    a = Authorization.first(:provider => "facebook", :user_id => u.id)
+    a = Authorization.first(:provider => "facebook", :user_id => @u.id)
     assert a.nil?
   end
 
   def test_user_update_profile_twitter_button
-    u = Factory(:user)
-    log_in_email(u)
-    visit "/users/#{u.username}/edit"
+    log_in_new_email_user
+    visit "/users/#{@u.username}/edit"
 
     assert_match page.body, /Add Twitter Account/
   end
 
   def test_user_update_profile_facebook_button
-    u = Factory(:user)
-    log_in_email(u)
-    visit "/users/#{u.username}/edit"
+    log_in_new_email_user
+    visit "/users/#{@u.username}/edit"
 
     assert_match page.body, /Add Facebook Account/
   end
@@ -95,143 +122,98 @@ class RstatusAuthTest < MiniTest::Unit::TestCase
     assert_match page.body, /Awesomeo the Great/
   end
 
+  # this test isn't actually being run because it's misnamed.
+  # it fails if it's named properly.
   def no_twitter_login
-    u = Factory(:user)
-    log_in_email(u)
+    log_in_new_email_user
+
     assert_match /Login successful/, page.body
-    assert_equal current_user, u
+    assert_equal current_user, @u
   end
 
   def test_twitter_send_checkbox_present
-    u = Factory(:user)
-    a = Factory(:authorization, :user => u)
-    log_in(u, a.uid)
+    log_in_new_twitter_user
 
     assert_match page.body, /Twitter/
     assert_equal find_field('tweet').checked?, true
   end
 
   def test_facebook_send_checkbox_present
-    u = Factory(:user)
-    a = Factory(:authorization, :user => u, :provider => "facebook")
-    log_in_fb(u, a.uid)
+    log_in_new_fb_user
 
     assert_match page.body, /Facebook/
     assert_equal find_field('facebook').checked?, true
   end
 
   def test_twitter_send
-    update_text = "Test Twitter Text"
     Twitter.expects(:update)
-    u = Factory(:user)
-    a = Factory(:authorization, :user => u)
-    log_in(u, a.uid)
 
-    VCR.use_cassette('publish_to_hub') do
-      fill_in "text", :with => update_text
-      check("tweet")
-      click_button "Share"
-    end
+    log_in_new_twitter_user
 
-    assert_match /Update created/, page.body
+    assert_publish_succeeds "Test Twitter Text"
   end
 
   def test_facebook_send
-    update_text = "Test Facebook Text"
-    u = Factory(:user)
-    a = Factory(:authorization, :user => u, :provider => "facebook")
     FbGraph::User.expects(:me).returns(mock(:feed! => nil))
 
-    log_in_fb(u, a.uid)
+    log_in_new_fb_user
 
-    VCR.use_cassette('publish_to_hub') do
-      fill_in "text", :with => update_text
-      check("facebook")
-      click_button "Share"
-    end
+    check("facebook")
 
-    assert_match /Update created/, page.body
+    assert_publish_succeeds "Test Facebook Text"
   end
 
   def test_twitter_and_facebook_send
-    update_text = "Test Facebook and Twitter Text"
-    FbGraph::User.expects(:me).returns(mock(:feed! => nil))    
+    FbGraph::User.expects(:me).returns(mock(:feed! => nil))
     Twitter.expects(:update)
 
+    # here we're creating a user that has both facebook and twitter authorization
     u = Factory(:user)
     Factory(:authorization, :user => u, :provider => "facebook")
     a = Factory(:authorization, :user => u)
 
     log_in(u, a.uid)
-    
-    VCR.use_cassette('publish_to_hub') do
-      fill_in "text", :with => update_text
-      check("facebook")
-      check("tweet")
-      click_button "Share"
-    end
 
-    assert_match /Update created/, page.body
+    check("facebook")
+    check("tweet")
+
+    assert_publish_succeeds "Test Facebook and Twitter Text"
   end
 
   def test_twitter_no_send
-    update_text = "Test Twitter Text"
     Twitter.expects(:update).never
-    u = Factory(:user)
-    a = Factory(:authorization, :user => u)
-    log_in(u, a.uid)
 
-    VCR.use_cassette('publish_to_hub') do
-      fill_in "text", :with => update_text
-      uncheck("tweet")
-      click_button "Share"
-    end
+    log_in_new_twitter_user
 
-    assert_match /Update created/, page.body
+    uncheck("tweet")
+
+    assert_publish_succeeds "Test Twitter Text"
   end
 
   def test_facebook_no_send
-    update_text = "Test Facebook Text"
     FbGraph::User.expects(:me).never
-    u = Factory(:user)
-    a = Factory(:authorization, :user => u, :provider => "facebook")
-    log_in_fb(u, a.uid)
 
-    VCR.use_cassette('publish_to_hub') do
-      fill_in "text", :with => update_text
-      uncheck("facebook")
-      click_button "Share"
-    end
+    log_in_new_fb_user
 
-    assert_match /Update created/, page.body
+    uncheck("facebook")
+
+    assert_publish_succeeds "Test Facebook Text"
   end
 
   def test_no_twitter_no_send
-    update_text = "Test Twitter Text"
     Twitter.expects(:update).never
-    u = Factory(:user)
-    log_in_email(u)
 
-    VCR.use_cassette('publish_to_hub') do
-      fill_in "text", :with => update_text
-      click_button "Share"
-    end
+    log_in_new_email_user
 
-    assert_match /Update created/, page.body
+    assert_publish_succeeds "Test Twitter Text"
   end
 
   def test_no_facebook_no_send
-    update_text = "Test Facebook Text"
     FbGraph::User.expects(:me).never
-    u = Factory(:user)
-    log_in_email(u)
 
-    VCR.use_cassette('publish_to_hub') do
-      fill_in "text", :with => update_text
-      click_button "Share"
-    end
+    log_in_new_email_user
 
-    assert_match /Update created/, page.body
+    assert_publish_succeeds "Test Facebook Text"
   end
 
   def test_facebook_username
