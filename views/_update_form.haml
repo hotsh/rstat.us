@@ -8,11 +8,11 @@
 
     #repost-services
       .info Post to:
-      - if current_user.twitter?
+      - if true #current_user.twitter?
         .input-checkbox
           %input{:type => "checkbox", :name => "tweet", :id => "tweet", :checked => "checked", :value => "1"}
           %label{:for => "tweet"} Twitter
-      - if current_user.facebook?
+      - if true #current_user.facebook?
         .input-checkbox
           %input{:type => "checkbox", :name => "facebook", :id => "facebook", :checked => "checked", :value => "1"}
           %label{:for => "facebook"} Facebook
