@@ -4,7 +4,7 @@
   %h3 No one yet!
   Well, that's kind of boring.  Why not check out the links on the left to browse users or search rstat.us updates?
 
-- if not @users.empty?
+- else
   != haml :"users/_list", :locals => {:users => @users}
 
 - unless @prev_page.nil?
