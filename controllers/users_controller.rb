@@ -75,7 +75,7 @@ class Rstatus
 
     # Sort users alphabetically when filtering by letter
     if params[:letter]
-      @users = @users.sort(:username.desc)
+      @users = @users.sort(:username)
     else
       @users = @users.sort(:created_at.desc)
     end
