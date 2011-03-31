@@ -83,7 +83,19 @@ class Rstatus
     @users = @users.paginate(:page => params[:page], :per_page => params[:per_page])
 
     @next_page = nil
-    set_next_prev_page
+    
+    # If this would just accept params as is I wouldn't have to do this
+    if params[:letter]
+      @next_page = "?#{Rack::Utils.build_query :page => params[:page] + 1, :letter => params[:letter]}"
+      
+      if params[:page] > 1
+        @prev_page = "?#{Rack::Utils.build_query :page => params[:page] + 1, :letter => params[:letter]}"
+      else
+        @prev_page = nil
+      end
+    else
+      set_next_prev_page
+    end
 
     haml :"users/index"
   end
