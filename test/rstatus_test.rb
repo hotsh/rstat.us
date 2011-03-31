@@ -403,9 +403,9 @@ class RstatusTest < MiniTest::Unit::TestCase
     visit "/users"
     click_link "B"
 
-    assert has_link? "beta"
-    assert has_link? "BANANAS"
-    refute_match "apple", page.body
+    assert has_link? "(beta)"
+    assert has_link? "(BANANAS)"
+    refute_match "(apple)", page.body
   end
 
   def test_users_browse_by_non_letter
