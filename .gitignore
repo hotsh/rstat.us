@@ -4,3 +4,4 @@ config.yml
 .sass-cache
 tmp
 public/assets/src
+test/data
