@@ -2,7 +2,11 @@
   %meta{:charset => "utf-8"}
   %title= locals[:title].nil? ? "rstat.us": "rstat.us - #{locals[:title]}"
   %script{:src=>"https://ajax.googleapis.com/ajax/libs/jquery/1.5.1/jquery.min.js"}
-  
+
+  -if @author
+    %link{:rel => "alternate", :type => "application/atom+xml",
+          :title => "OStatus Feed for #{@author.username}", :href => "/users/#{@author.username}/feed"}
+
   - if development?
     %script{:src => "/js/lib/jquery.equalHeights.js"}
     %script{:src => "/js/lib/dev/coffee-script.js"}
