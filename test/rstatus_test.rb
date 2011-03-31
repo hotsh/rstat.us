@@ -379,6 +379,20 @@ class RstatusTest < MiniTest::Unit::TestCase
     assert_match "Next", page.body
   end
 
+  def test_users_browse_by_letter_paginates
+    visit "/users"
+   
+    49.times do
+      u2 = Factory(:user)
+    end
+    u2 = Factory(:user, :username => "uzzzzz")
+
+    click_link "U"
+    click_link "next_button"
+  
+    assert_match u2.username, page.body
+  end
+
   def test_users_browse_shows_latest_users
     aardvark = Factory(:user, :username => "aardvark", :created_at => Date.new(2010, 10, 23))
     zebra    = Factory(:user, :username => "zebra", :created_at => Date.new(2011, 10, 24))
@@ -403,9 +417,9 @@ class RstatusTest < MiniTest::Unit::TestCase
     visit "/users"
     click_link "B"
 
-    assert has_link? "beta"
-    assert has_link? "BANANAS"
-    refute_match "aardvark", page.body
+    assert has_link? "(beta)"
+    assert has_link? "(BANANAS)"
+    refute_match "(aardvark)", page.body
   end
 
   def test_users_browse_by_non_letter
