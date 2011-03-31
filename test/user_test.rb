@@ -70,9 +70,11 @@ class UserTest < MiniTest::Unit::TestCase
     assert u.hashed_password != prev_pass
   end
 
-  def test_no_at_in_usernames
-    u = User.new :username => "someone@something.com"
-    refute u.save, "@ in username"
+  def test_no_special_chars_in_usernames
+    ["something@something.com", "another'quirk", ".boundary_case.", "another..case", "another/random\\test", "yet]another"].each do |i|
+      u = User.new :username => i
+      refute u.save, "contains restricted characters."
+    end
   end
 
   def test_username_cant_be_empty

@@ -231,7 +231,9 @@ class RstatusAuthTest < MiniTest::Unit::TestCase
   end
 
   def test_existing_profile_php_rename_user
+    User.expects(:no_special_chars).returns(true)
     existing_user = Factory(:user, :username => 'profile.php?id=12345')
+    u.expects(:no_special_chars).at_least_once.returns(true)
     a = Factory(:authorization, :user => existing_user)
     log_in(existing_user, a.uid)
     click_link "reset_username"
