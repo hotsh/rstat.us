@@ -7,7 +7,8 @@
     %input#update-button.button{:type => "submit", :value => "Share"}
 
     #repost-services
-      .info Post to:
+      - if current_user.twitter? || current_user.facebook?
+        .info Post to:
       - if current_user.twitter?
         .input-checkbox
           %input{:type => "checkbox", :name => "tweet", :id => "tweet", :checked => "checked", :value => "1"}
