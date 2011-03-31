@@ -382,10 +382,10 @@ class RstatusTest < MiniTest::Unit::TestCase
   def test_users_browse_by_letter_paginates
     visit "/users"
    
-    u2 = Factory(:user)
     49.times do
       u2 = Factory(:user)
     end
+    u2 = Factory(:user, :username => "uzzzzz")
 
     click_link "U"
     click_link "next_button"
