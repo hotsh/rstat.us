@@ -5,17 +5,16 @@
   .update-date
     = @update.created_at.ago_in_words  
     by
-  %a{:href => "/users/#{@update.author.username}"}
+  %a.author{:href => "/users/#{@update.author.username}"}
     .avatar
       %img{:alt => "avatar", :src => @update.author.avatar_url}/
-    .name= @update.author.username
+    = @update.author.username
   -unless @referral.nil?
-    %a{:href => "/updates/#{@referral.id}"}
+    %a.source{:href => "/updates/#{@referral.id}"}
       in reply to
       .avatar
         %img{:alt => "avatar", :src => @referral.author.avatar_url}/
-      .name
-        = @referral.author.username
+      = @referral.author.username
   .end-links
     -unless current_user.nil? or (current_user.author.id == @update.author.id)
       %a.share{:href => "/?share=#{@update.id}"} share
