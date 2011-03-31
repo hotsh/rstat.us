@@ -39,10 +39,10 @@ body#home {
     @include clearfix;
   
     h2#logo {
-      @include column(17);
+      @include column(16);
     }
     #login {    
-      @include column(7);
+      @include column(8);
       @include last;
     }  
   }

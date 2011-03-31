@@ -8,7 +8,7 @@ begin
     task :compile do
 
       sh "compass compile views/screen.scss --output-style compressed --css-dir ../public/assets/src"
-      source = "#{File.dirname(__FILE__)}/../src/"
+      source = "#{File.dirname(__FILE__)}/../public/js/"
       javascripts = "#{File.dirname(__FILE__)}/../public/assets/src/"
 
       Dir.foreach(source) do |cf|

@@ -8,9 +8,5 @@ stylesheets:
     
 javascripts:
   app:
-    - public/js/jquery.equalHeights.js
-    - public/assets/src/home.js
-    - public/assets/src/app.js
-    - public/assets/src/update.js
-    - public/assets/src/updates.show.js
-    - public/assets/src/users.js
+    - public/js/lib/jquery.equalHeights.js
+    - public/assets/src/main.js

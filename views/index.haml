@@ -18,14 +18,10 @@
               %a.button{:href=>'/auth/facebook'}
                 %span.icon.facebook
                 Facebook
-            .email
+            .username
               %a.button{:href=>'/login'}
-                %span.icon.mail
-                Email
-            / %form{:action => "/signup", :method => "POST"}
-            /   Email
-            / %input{:name => "email"}
-            /   %input{:type => "Submit", :value => "Sign up"}
+                %span.icon.comment
+                Username
 
       .content
         - if flash[:notice] || flash[:error]
