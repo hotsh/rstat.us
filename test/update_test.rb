@@ -111,7 +111,10 @@ class UpdateTest < MiniTest::Unit::TestCase
   def test_hashtag_search
     u1 = Update.create(:text => "this has #lots #of #hash #tags")
     u2 = Update.create(:text => "this has #lots #of #hash #tags #also")
-    assert_equal Update.hashtag_search("lots", {:page => 1, :per_page => 2}), [u1, u2]
+    search_results = Update.hashtag_search("lots", {:page => 1, :per_page => 2}).map do |update|
+      update.id.to_s
+    end
+    assert_equal search_results.sort(), [u1.id.to_s, u2.id.to_s].sort()
   end
 
   def test_tweeted_flag_default
