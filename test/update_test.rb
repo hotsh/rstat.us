@@ -177,5 +177,29 @@ class UpdateTest < MiniTest::Unit::TestCase
     u.feed.updates << Update.new(:text => "This is a message", :facebook => false, :twitter => false, :author => at)
   end
 
+  def test_twitter_user_sees_Post_to_message
+    u = Factory(:user)
+    a = Factory(:authorization, :user => u, :provider => "twitter")
+    log_in(u, a.uid)
+    visit "/updates"
 
+    assert_match page.body, /Post to/
+  end
+
+  def test_facebook_user_sees_Post_to_message
+    u = Factory(:user)
+    a = Factory(:authorization, :user => u, :provider => "facebook")
+    log_in_fb(u, a.uid)
+    visit "/updates"
+
+    assert_match page.body, /Post to/
+  end
+  
+  def test_email_user_sees_no_Post_to_message
+    u = Factory(:user)
+    log_in_email(u)
+    visit "/updates"
+
+    refute_match page.body, /Post to/
+  end  
 end
