@@ -1,7 +1,6 @@
 %head
   %meta{:charset => "utf-8"}
   %title= locals[:title].nil? ? "rstat.us": "rstat.us - #{locals[:title]}"
-  %script{:src=>"https://ajax.googleapis.com/ajax/libs/jquery/1.5.1/jquery.min.js"}
 
   -if @author
     %link{:rel => "alternate", :type => "application/atom+xml",
@@ -10,10 +9,12 @@
   - if development?
     %script{:src => "/js/lib/jquery.equalHeights.js"}
     %script{:src => "/js/lib/dev/coffee-script.js"}
+    %script{:src => "/js/lib/dev/jquery-1.5.2.min.js"}
     %script{:type => "text/coffeescript", :src => "/js/main.coffee"}
     %link{:href => "/dev/screen.css", :media => "screen", :rel => "stylesheet"}
   
   - else  
+    %script{:src=>"//ajax.googleapis.com/ajax/libs/jquery/1.5/jquery.min.js"}
     %script{:src => "/assets/app.js"}
     <!--[if (!IE)|(gte IE 8)]><!-->
     %link{:href => "/assets/screen-datauri.css", :media => "screen", :rel => "stylesheet"}
