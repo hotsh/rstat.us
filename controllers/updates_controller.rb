@@ -23,7 +23,7 @@ class Rstatus
                    :twitter => do_tweet,
                    :facebook => do_facebook)
 
-    # and entry to user's feed
+    # add entry to user's feed
     current_user.feed.updates << u
     current_user.feed.save
     current_user.save
