@@ -21,11 +21,9 @@ class User
 
   after_create :finalize
 
-  # After a user is created create the feed, add yourself as a follower and
-  # reset the token
+  # After a user is created, create the feed and reset the token
   def finalize
     create_feed
-    follow_yo_self
     reset_perishable_token
   end
 
@@ -91,6 +89,11 @@ class User
       f = Feed.first(:id => feed_id)
     end
 
+    # can't follow yourself
+    if f == self.feed
+      return
+    end
+
     if f.nil?
       f = Feed.create(:remote_url => feed_url)
       f.populate
@@ -142,7 +145,10 @@ class User
       :page => params[:page],
       :per_page => params[:per_page]
     }
-    Update.where(:author_id => following.map(&:author_id)).order(['created_at', 'descending']).paginate(popts)
+
+    following_plus_me = following.clone
+    following_plus_me << self.feed
+    Update.where(:author_id => following_plus_me.map(&:author_id)).order(['created_at', 'descending']).paginate(popts)
   end
 
   def at_replies(params)
@@ -211,12 +217,6 @@ class User
     )
 
     self.feed = f
-    save
-  end
-
-  def follow_yo_self
-    following << feed
-    followers << feed
     save
   end
 

@@ -53,14 +53,15 @@ class RstatusTest < MiniTest::Unit::TestCase
     assert_equal url, page.current_url
   end
 
-  def test_user_follows_themselves_upon_create
+  def test_user_does_not_follow_self_upon_create
     u = Factory(:user)
-    a = Factory(:authorization, :user => u)
+    refute u.following? u.feed.url
+  end
 
-    log_in(u, a.uid)
-
-    visit "/users/#{u.username}/following"
-    assert_match u.username, page.body
+  def test_user_cannot_follow_self
+    u = Factory(:user)
+    u.follow! u.feed.url
+    refute u.following? u.feed.url
   end
 
   def test_user_makes_updates
@@ -212,7 +213,7 @@ class RstatusTest < MiniTest::Unit::TestCase
     log_in(u, a.uid)
     u.follow! u2.feed.url
 
-    visit "/users/#{u2.username}/following"
+    visit "/users/#{u.username}/following"
     click_button "unfollow-#{u2.feed.id}"
 
     assert_match "No longer following #{u2.username}", page.body
@@ -227,14 +228,14 @@ class RstatusTest < MiniTest::Unit::TestCase
 
     log_in(aardvark, a.uid)
 
-    visit "/users/#{leopard.username}"
-    click_button "follow-#{leopard.feed.id}"
-
     visit "/users/#{zebra.username}"
     click_button "follow-#{zebra.feed.id}"
 
+    visit "/users/#{leopard.username}"
+    click_button "follow-#{leopard.feed.id}"
+
     visit "/users/#{aardvark.username}/following"
-    assert_match /zebra.*aardvark/m, page.body
+    assert_match /leopard.*zebra/m, page.body
   end
 
   def test_user_following_paginates
@@ -662,7 +663,7 @@ class RstatusTest < MiniTest::Unit::TestCase
     log_in(u, a.uid)
 
     visit "/users/#{u.username}/following"
-    assert_match "#{u.username}'s Following", page.body
+    assert_match "#{u.username} is following", page.body
 
   end
 
@@ -670,7 +671,7 @@ class RstatusTest < MiniTest::Unit::TestCase
     u = Factory(:user, :username => "dfnkt")
 
     visit "/users/#{u.username}/following"
-    assert_match "#{u.username}'s Following", page.body
+    assert_match "#{u.username} is following", page.body
   end
 
   def test_user_password_reset

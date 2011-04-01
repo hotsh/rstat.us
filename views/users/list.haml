@@ -1,6 +1,11 @@
 %h1 #{title}
 
-!= haml :"users/_list", :locals => {:users => @users}
+- if @users.empty?
+  %h3 No one yet!
+  Well, that's kind of boring.  Why not check out the links on the left to browse users or search rstat.us updates?
+
+- else
+  != haml :"users/_list", :locals => {:users => @users}
 
 - unless @prev_page.nil?
   %a.button{:href => @prev_page, :id => "prev_button"}
