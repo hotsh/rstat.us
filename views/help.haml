@@ -6,22 +6,22 @@
   You can use the username reset to change your username
   %a{:href => "/reset-username"} http://rstat.us/reset-username
   %br
-  Note: This is only for users that have a blank username or a Facebook url. 
+  Note: This is only for users that have a blank username or a Facebook url.
   Username resets will be added at a later date.
-  
+
 %h3 My username is blank
 
-%p 
+%p
   You can use the username reset to change your username
   %a{:href => "/reset-username"} http://rstat.us/reset-username
   %br
-  Note: This is only for users that have a blank username or a Facebook url. 
+  Note: This is only for users that have a blank username or a Facebook url.
   Username resets will be added at a later date.
-  
+
 %h3 I signed in with Twitter or Facebook, but I want use the rstat.us login
 
 %p
-  You can enable username/password logins by setting your password in the 
+  You can enable username/password logins by setting your password in the
   - if logged_in?
     %a{:href => "/users/#{current_user.username}/edit"} edit profile screen
   - else
@@ -36,11 +36,11 @@
     %a{:href => "/users/#{current_user.username}/edit"} edit profile screen
   - else
     edit profile screen.
-    
+
 %h3 Do you have an api?
 
 %p
-  We currently do not have an api, but we hope to add one soon. If you would 
+  We currently do not have an api, but we hope to add one soon. If you would
   like to help please
   %a{:href => "https://github.com/hotsh/rstat.us"} check out the repo
 
@@ -49,19 +49,19 @@
 %p
   There is but it's still hidden behind this address
   %a{:href => "/search"} http://rstat.us/search
-  
+
 %h3 What about the hash tags?
 
 %p
   They can be found under 
   %a{:href => "/hashtags/rstatus"} http://rstat.us/hashtags/some_tag
-  where 
+  where
   %i some_tag
-  can be something like 
+  can be something like
   %a{:href => "/hashtags/rstatus"} rstatus
-  or 
+  or
   %a{:href => "/hashtags/berlin"} berlin
-    
+
 %h3 I would really like the site to do &lt;something&gt;
 
 %p
@@ -70,6 +70,6 @@
 
 %hr
 
-%p 
+%p
   If you did not find answers to your questions log a ticket at 
   %a{:href => "http://rstatus.lighthouseapp.com/projects/73488-rstatus/overview"} Lighthouse

@@ -1,5 +1,5 @@
 %ul.user-list
-  - users.each_with_index do |user, i|    
+  - users.each_with_index do |user, i|
     - next if user.nil? || user.author.nil?
     - author = user.author
     - user_url = author.feed.local? ? "/users/#{author.username}" : author.feed.url

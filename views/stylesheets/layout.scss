@@ -37,14 +37,14 @@ body {
 body#home {
   #header {
     @include clearfix;
-  
+
     h2#logo {
       @include column(16);
     }
-    #login {    
+    #login {
       @include column(8);
       @include last;
-    }  
+    }
   }
 
   #pitch {
@@ -72,9 +72,9 @@ body#home {
 #main {
   #left {
     @include prepend(1);
-    @include column(6);     
+    @include column(6);
   }
-  
+
   #right {
     @include column(14);
     @include last;
@@ -93,11 +93,11 @@ body#home {
   }
   @include container();
   border-top: 1px solid #ccc;
-  
+
   #logo {
     float: left;
     a {
-      @include image-replaced("/images/embed/logo-xs.png", 71px, 20px)      
+      @include image-replaced("/images/embed/logo-xs.png", 71px, 20px)
     }
   }
   ul {

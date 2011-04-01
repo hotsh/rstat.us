@@ -17,14 +17,13 @@
 
       %input#update-button.button{:type => "submit", :value => "Save"}
 
-  .gravatar 
-    Signed up with email? Create a 
-    %a{:href => "http://gravatar.com"}
-      Gravatar
+  .gravatar
+    Signed up with email? Create a
+    %a{:href => "http://gravatar.com"} Gravatar
     account to set and update your avatar.
   %br
-  
-  .reset-password 
+
+  .reset-password
     %a{:href => "/users/password_reset"}
       - if current_user.hashed_password.nil?
         Set Password
@@ -33,7 +32,7 @@
   %br
 
   %h4 Linked Accounts
-  
+
   %div{:style => "height: 35px;"}
     - if @user.twitter?
       %img{:src => "/images/twitter_newbird_blue.png", :style => "height: 35px; width: 35px; vertical-align:middle; margin-top: -5px;", :alt => "Twitter Account"}
@@ -44,7 +43,7 @@
     - else
       %form#profile-update{:action => "/auth/twitter", :method => "GET", :name => "profile_update_form"}
         %input#update-button.button{:type => "submit", :value => "Add Twitter Account"}
-  
+
   %div{:style => "height: 35px;"}
     - if @user.facebook?
       %img{:src => "/images/f_logo.png", :style => "height: 25px; width: 25px; vertical-align:middle; margin-top: -5px;", :alt => "Facebook Account"}
@@ -55,5 +54,3 @@
     - else
       %form#profile-update{:action => "/auth/facebook", :method => "GET", :name => "profile_update_form"}
         %input#update-button.button{:type => "submit", :value => "Add Facebook Account"}
-  
-

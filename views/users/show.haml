@@ -3,8 +3,8 @@
   .nickname
     @#{@author.username}
   .following
-    Following: 
-    %a{:href => "/users/#{@author.username}/following"} 
+    Following:
+    %a{:href => "/users/#{@author.username}/following"}
       #{@author.user.following.length}
   .followers
     Followers:

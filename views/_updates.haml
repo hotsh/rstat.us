@@ -21,7 +21,7 @@
         .in-reply
           %a{:href => "/updates/#{update.referral.id}"}
             in reply to
-            %span.name= update.referral.author.username 
+            %span.name= update.referral.author.username
 
     .end-links
       -# when @timeline is true, this is a list on the user's page
@@ -34,7 +34,7 @@
         %form{:method => "post", :action => "/updates/#{update.id}"}
           %input{:type => "hidden", :name => "_method", :value => "delete"}
           %input.remove-update{:type => "submit", :value => "I Regret This"}
-    
+
 - if updates.empty?
   .empty
     There are no updates here yet

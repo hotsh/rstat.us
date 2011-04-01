@@ -1,14 +1,14 @@
 body#home {
   #header {
-  
+
     h2#logo {
       a {
         margin-left: 1em;
         display: block;
-        @include image-replaced("/images/embed/logo.png", 348px, 100px); 
+        @include image-replaced("/images/embed/logo.png", 348px, 100px);
       }
     }
-    #login {    
+    #login {
       padding-top: 2.25em;
 
       .options {
@@ -19,7 +19,7 @@ body#home {
           padding-right: 0.25em;
         }
       }
-    }  
+    }
   }
 
   #pitch {
@@ -28,7 +28,7 @@ body#home {
       margin: 1em 0;
       border-right: 1px solid #ddd;
       text-align: center;
-    
+
       .title {
         font-size: 2.4em;
         color: $link_color;
@@ -40,12 +40,12 @@ body#home {
         @include title-face;
         font-size: 1.3em;
         color: #c9c9c9;
-      
+
       }
-  
+
       padding-bottom: 178px;
     }
-  
+
     #col-1 {
       background: url('/images/slide1.png') center bottom no-repeat;
       &:hover {
@@ -74,11 +74,11 @@ body#home {
       .updates {
         padding-top: 2em;
         padding-left: 1em;
-      
+
         h4 {
           padding-top: 1em;
         }
-        .world-link {	
+        .world-link {
           text-align: right;
         }
       }

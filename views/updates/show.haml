@@ -3,7 +3,7 @@
     != @update.to_html
 .byline
   .update-date
-    = @update.created_at.ago_in_words  
+    = @update.created_at.ago_in_words
     by
   %a.author{:href => "/users/#{@update.author.username}"}
     .avatar
@@ -18,7 +18,7 @@
   .end-links
     -unless current_user.nil? or (current_user.author.id == @update.author.id)
       %a.share{:href => "/?share=#{@update.id}"} share
-      |                                                                                                                 
+      |
       %a.reply{:href => "/?reply=#{@update.id}"} reply
 
     - if current_user and @update.author.id == current_user.author.id

@@ -1,5 +1,5 @@
 !!! 5
-%html.no-js
+%html.no-js{:lang => "en"}
   != haml :_head, :locals => {:css => ['update'], :title => @update.text}
   %body#update
     - if flash[:notice] || flash[:error]

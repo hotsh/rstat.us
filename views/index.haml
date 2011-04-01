@@ -1,5 +1,5 @@
 !!! 5
-%html.no-js
+%html.no-js{:lang => "en"}
   != haml :_head
   %body#home
     #main
@@ -29,7 +29,7 @@
             = flash[:notice]
 
         #pitch
-          %a#col-1.col{:href=>'/login'} 
+          %a#col-1.col{:href=>'/login'}
             %h2.title
               Sign Up
             .content
@@ -56,7 +56,7 @@
 
                 There are two things that make rstat.us special: _simplicity_ and _openness_.
 
-                **Simplicity** is a core 'feature' of rstat.us. We pride ourselves on saying 'no' to lots of features. Our interface is clean, and easy to understand. We give you just enough features to be interesting, but not enough to be complicated and confusing. 
+                **Simplicity** is a core 'feature' of rstat.us. We pride ourselves on saying 'no' to lots of features. Our interface is clean, and easy to understand. We give you just enough features to be interesting, but not enough to be complicated and confusing.
 
                 If you're a software developer, you'll probably want to check out our [Open Source page](/open_source). If that's greek to you, here's the deal on **Openness**: the programming code that makes up rstat.us is available for anyone to download, free of charge. Programmers can use that code to run their own websites just like rstat.us, and you can subscribe to your friends on any site that supports the [OStatus protocol](http://ostatus.org/about), like [identi.ca](http://identi.ca/). This also means that you can own your data, we'll never stop you from having full access to everything you've put into rstat.us.
 
@@ -68,7 +68,7 @@
               .world-link
                 %a{:href => "/updates"}
                   more...
-              %h4 
+              %h4
                 %a{:href => "/login"}
                   Join the conversation
 
