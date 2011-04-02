@@ -2,28 +2,32 @@ class User
   require 'digest/md5'
 
   include MongoMapper::Document
+
+  # Associations
   many :authorizations, :dependant => :destroy
-
-  key :username, String, :required => true
-  key :perishable_token, String
-
-  key :email, String #, :unique => true, :allow_nil => true
-
-  # eff you mongo_mapper.
-  
-  validates_uniqueness_of :email, :allow_nil => :true 
-  validates_uniqueness_of :username, :allow_nil => :true 
-  
-  #why should the username be longer than the update?
-  #Twitter has 15, let's be different
-  validates_length_of :username, :minimum => 1, :maximum => 16
-  
-  # validate users don't have @ in their usernames
-  validate :no_special_chars
-  
   belongs_to :author
   belongs_to :feed
 
+  # Users MUST have a username
+  key :username, String, :required => true
+
+  # Users MIGHT have an email
+  key :email, String
+
+  # Required for confirmation
+  key :perishable_token, String
+
+  # We cannot put a :unique tag above because of a MongoMapper bug
+  validates_uniqueness_of :email, :allow_nil => :true 
+  validates_uniqueness_of :username, :allow_nil => :true 
+  
+  # The maximum is arbitrary
+  validates_length_of :username, :minimum => 1, :maximum => 16
+  
+  # Validate users don't have special characters in their username
+  validate :username_wellformed
+  
+  # This will establish other entities related to the User
   after_create :finalize
 
   # After a user is created, create the feed and reset the token
@@ -44,28 +48,32 @@ class User
     save
   end
 
+  # Determines a url that leads to the profile of this user
   def url
-    feed.local? ? "/users/#{feed.author.username}" : feed.author.url
+    "/users/#{feed.author.username}"
   end
-  
 
+  # Returns true when this user has a twitter authorization
   def twitter?
     has_authorization?(:twitter)
   end
   
+  # Returns the twitter authorization
   def twitter
     get_authorization(:twitter)
   end
   
+  # Returns true when this user has a facebook authorization
   def facebook?
     has_authorization?(:facebook)
   end
   
+  # Returns the facebook authorization
   def facebook
     get_authorization(:facebook)
   end
   
-  # Check if a a user has a certain authorization by providing the assoaciated
+  # Check if a user has a certain authorization by providing the associated
   # provider
   def has_authorization?(auth)
     a = Authorization.first(:provider => auth.to_s, :user_id => self.id)
@@ -78,13 +86,15 @@ class User
     Authorization.first(:provider => auth.to_s, :user_id => self.id)
   end
 
+  # Users follow many feeds
   key :following_ids, Array
   many :following, :in => :following_ids, :class_name => 'Feed'
 
+  # Users have feeds that follow them
   key :followers_ids, Array
   many :followers, :in => :followers_ids, :class_name => 'Feed'
 
-  # follow takes a url
+  # Follow a particular feed
   def follow! feed_url
     f = Feed.first(:url => feed_url)
 
@@ -145,6 +155,7 @@ class User
 
   timestamps!
 
+  # Retrieve the list of Updates in the user's timeline
   def timeline(params)
     popts = {
       :page => params[:page],
@@ -156,6 +167,7 @@ class User
     Update.where(:author_id => following_plus_me.map(&:author_id)).order(['created_at', 'descending']).paginate(popts)
   end
 
+  # Retrieve the list of Updates that are replies to this user
   def at_replies(params)
     popts = {
       :page => params[:page],
@@ -164,15 +176,16 @@ class User
     Update.where(:text => /^@#{username}\b/).order(['created_at', 'descending']).paginate(popts)
   end
 
+  # User MUST be confirmed
   key :status
 
-  attr_accessor :password
+  # Users have a passwork
   key :hashed_password, String
   key :password_reset_sent, DateTime, :default => nil
 
+  # Store the hash of the password
   def password=(pass)
-    @password = pass
-    self.hashed_password = BCrypt::Password.create(@password, :cost => 10)
+    self.hashed_password = BCrypt::Password.create(pass, :cost => 10)
   end
   
   # Create a new perishable token and set the date the password reset token was
@@ -191,6 +204,7 @@ class User
     reset_perishable_token
   end
 
+  # Authenticate the user by checking their credentials
   def self.authenticate(username, pass)
     user = User.first(:username => username)
     return nil if user.nil?
@@ -198,6 +212,7 @@ class User
     nil
   end
 
+  # Reset the username to one given
   def reset_username(params)
     self.username = params[:username]
     author.username = params[:username]
@@ -205,6 +220,7 @@ class User
     author.save
   end
 
+  # Edit profile information
   def edit_user_profile(params)
     author.name    = params[:name]
     author.email   = params[:email]
@@ -225,8 +241,8 @@ class User
     save
   end
 
-  # validation that checks @s in usernames
-  def no_special_chars
+  # Validation that checks for invalid usernames
+  def username_wellformed
     unless (username =~ /[@!"#$\%&'()*,^~{}|`=:;\\\/\[\]?]/).nil? && (username =~ /^[.]/).nil? && (username =~ /[.]$/).nil? && (username =~ /[.]{2,}/).nil?
       errors.add(:username, "contains restricted characters.")
     end
