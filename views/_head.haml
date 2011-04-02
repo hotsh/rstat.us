@@ -1,7 +1,7 @@
 %head
   %meta{:charset => "utf-8"}
   %title= locals[:title].nil? ? "rstat.us": "rstat.us - #{locals[:title]}"
-  %script{:src=>"https://ajax.googleapis.com/ajax/libs/jquery/1.5.1/jquery.min.js"}
+  %script{:src => "/js/lib/jquery-1.5.2.min.js"}
 
   -if @author
     %link{:rel => "alternate", :type => "application/atom+xml",
