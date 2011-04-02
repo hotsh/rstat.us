@@ -217,7 +217,7 @@ class RstatusAuthTest < MiniTest::Unit::TestCase
   end
 
   def test_facebook_username
-    new_user = Factory.build(:user, :username => 'profile.php?id=12345')
+    new_user = Factory.build(:user, :username => 'profile.php?id=1')
     log_in_fb(new_user)
     assert_match /users\/new/, page.current_url, "not on the new user page."
 
@@ -232,7 +232,7 @@ class RstatusAuthTest < MiniTest::Unit::TestCase
 
   def test_existing_profile_php_rename_user
     #stubbed to allow testing with new username validation
-    existing_user = Factory.build(:user, :username => 'profile.php?id=12345')
+    existing_user = Factory.build(:user, :username => 'profile.php?id=1')
     existing_user.expects(:no_special_chars).at_least_once.returns(true)
     existing_user.save
     a = Factory(:authorization, :user => existing_user)

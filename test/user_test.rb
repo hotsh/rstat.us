@@ -28,6 +28,11 @@ class UserTest < MiniTest::Unit::TestCase
     u = Factory.build(:user, :username => "steve")
     refute u.save
   end
+
+  def test_username_is_too_long
+    u = User.new :username => "burningTyger_will_fail_with_this_username"
+    refute u.save
+  end
   
   def test_user_has_twitter
     u = Factory.create(:user)
