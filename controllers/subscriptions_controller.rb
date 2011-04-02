@@ -22,6 +22,18 @@ class Rstatus
     redirect request.referrer
   end
 
+  # subscriber receives updates
+  # should be 'put', PuSH sucks at REST
+  post "/subscribers/:id.atom" do
+    feed = Feed.first :id => params[:id]
+    if feed.nil?
+      status 404
+      return
+    end
+    feed.update_entries(request.body.read, request.url, url(feed.url), request.env['HTTP_X_HUB_SIGNATURE'])
+  end
+
+  # Will subscribe the current user to a particular feed
   post "/subscriptions" do
     require_login! :return => request.referrer
 

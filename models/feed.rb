@@ -19,6 +19,8 @@ class Feed
   belongs_to :author
   many :updates
   one :user
+  
+  timestamps!
 
   after_create :default_hubs
 
@@ -58,13 +60,14 @@ class Feed
                           :url => entry.url,
                           :updated_at => entry.updated)
         self.updates << u
-        save
       end
 
       # Strip HTML
       u.text = Nokogiri::HTML::Document.parse(entry.content).text
       u.save
     end
+
+    save
   end
 
   # Pings hub
@@ -100,44 +103,8 @@ class Feed
 
   # Set default hubs
   def default_hubs
-    self.hubs << "http://pubsubhubbub.appspot.com/publish"
+    self.hubs << "http://pubsubhubbub.appspot.com/"
     save
   end
 
-  # create atom feed
-  # need base_uri since urls outgoing should be absolute
-  def atom(base_uri)
-    # Create the OStatus::PortableContacts object
-    poco = OStatus::PortableContacts.new(:id => author.id,
-                                         :display_name => author.name,
-                                         :preferred_username => author.username)
-
-    # Create the OStatus::Author object
-    os_auth = OStatus::Author.new(:name => author.username,
-                                 :email => author.email,
-                                 :uri => author.website,
-                                 :portable_contacts => poco)
-
-    # Gather entries as OStatus::Entry objects
-    entries = updates.to_a.sort{|a, b| b.created_at <=> a.created_at}.map do |update|
-      OStatus::Entry.new(:title => update.text,
-                         :content => update.text,
-                         :updated => update.updated_at,
-                         :published => update.created_at,
-                         :id => update.id,
-                         :link => { :href => ("#{base_uri}updates/#{update.id.to_s}")})
-    end
-
-    # Create a Feed representation which we can generate
-    # the Atom feed and send out.
-    feed = OStatus::Feed.from_data("#{base_uri}feeds/#{id}.atom",
-                                   :title => "#{author.username}'s Updates",
-                                   :id => "#{base_uri}feeds/#{id}.atom",
-                                   :author => os_auth,
-                                   :entries => entries,
-                                   :links => {
-                                     :hub => [{:href => hubs.first}]
-                                   })
-    feed.atom
-  end
 end
