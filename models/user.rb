@@ -1,5 +1,6 @@
 class User
   require 'digest/md5'
+  require 'openssl'
 
   include MongoMapper::Document
 
@@ -13,6 +14,9 @@ class User
 
   # Users MIGHT have an email
   key :email, String
+
+  # RSA for salmon usage
+  key :private_key, String
 
   # Required for confirmation
   key :perishable_token, String
@@ -28,7 +32,14 @@ class User
   validate :username_wellformed
   
   # This will establish other entities related to the User
+  before_create :generate_rsa_pair
   after_create :finalize
+
+  # Before a user is created, we will generate some RSA keys
+  def generate_rsa_pair
+    key = OpenSSL::PKey::RSA.new(2048)
+    self.private_key = key.to_pem
+  end
 
   # After a user is created, create the feed and reset the token
   def finalize
