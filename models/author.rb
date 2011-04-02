@@ -1,11 +1,15 @@
+# The Author model represents someone who creates information that's 
+# shared via a feed. It is decoupled from a User, since we can also have
+# remote authors, from feeds that originate from outside of our site.
+
 class Author
   DEFAULT_AVATAR = "http://rstat.us/images/avatar.png"
   ENCODED_DEFAULT_AVATAR = URI.encode_www_form_component(DEFAULT_AVATAR)
 
   GRAVATAR_HOST  = "gravatar.com"
-  
+
   include MongoMapper::Document
-  
+
   key :username, String
   key :name, String
   key :email, String
@@ -15,10 +19,10 @@ class Author
 
   one :feed
   one :user
-  
+
  # The url of their profile page
   key :remote_url, String
-  
+
   # This takes results from an omniauth reponse and generates an author
   def self.create_from_hash!(hsh)
     create!(

@@ -1,3 +1,5 @@
+# An Update is a particular status message sent by one of our users.
+
 class Update
   require 'cgi'
   include MongoMapper::Document
@@ -101,7 +103,7 @@ class Update
   # facebook or twitter. 
   def send_to_external_accounts
     return if ENV['RACK_ENV'] == 'development'
-    
+
     # If there is no user we can't get to the oauth tokens, abort!
     if author.user
       # If the twitter flag is true and the user has a twitter account linked
@@ -120,7 +122,7 @@ class Update
           #I should be shot for doing this.
         end
       end
-      
+
       # If the facebook flag is true and the user has a facebook account linked
       # send the update
       if self.facebook? && author.user.facebook?

@@ -1,3 +1,8 @@
+# The User model contains all of the information that a particular user of our
+# site needs: their username/password, etc. It all comes from here. Even users
+# that sign up via Twitter get a User model, though it's a bit empty in that
+# particular case.
+
 class User
   require 'digest/md5'
 

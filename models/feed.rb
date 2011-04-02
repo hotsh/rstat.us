@@ -1,3 +1,8 @@
+# Feeds are pretty central to everything. They're a representation of a PuSH
+# enabled Atom feed. Every user has a feed of their updates, we keep feeds
+# for remote users that our users are subscribed to, and maybe even other
+# things in the future, like hashtags.
+
 class Feed
   require 'osub'
   require 'opub'

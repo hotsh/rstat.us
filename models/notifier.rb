@@ -1,6 +1,7 @@
 # This class handles sending emails. Everything related to it should go in
 # here, that way it's just as easy as
 # `Notifier.send_message_notification(me, you)` to send a message.
+
 class Notifier 
 
   #this isn't used anymore, but I'm keeping it around so that it's easy to 

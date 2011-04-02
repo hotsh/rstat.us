@@ -1,3 +1,7 @@
+# An Authorization represents a connection to someone's social media profile.
+# For example, a User might have two Authorizations, one for their Twitter
+# and one for their Facebook.
+
 class Authorization
   include MongoMapper::Document
 
