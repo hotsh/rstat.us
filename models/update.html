@@ -39,7 +39,7 @@
         <div class="pilwrap">
           <a class="pilcrow" href="#section-1">&#182;</a>
         </div>
-        
+        <p>An Update is a particular status message sent by one of our users.</p>
       </td>
       <td class=code>
         <div class='highlight'><pre><span class="k">class</span> <span class="nc">Update</span>
@@ -94,8 +94,8 @@ attr_accessor :oauth_token, :oauth_secret</p>
     <span class="nb">self</span><span class="o">.</span><span class="n">html</span> <span class="o">||</span> <span class="n">generate_html</span>
   <span class="k">end</span>
 
-  <span class="k">def</span> <span class="nf">mentioned?</span> <span class="n">search</span>
-    <span class="n">matches</span> <span class="o">=</span> <span class="n">text</span><span class="o">.</span><span class="n">match</span><span class="p">(</span><span class="sr">/^@</span><span class="si">#{</span><span class="n">search</span><span class="si">}</span><span class="sr">\b/</span><span class="p">)</span>
+  <span class="k">def</span> <span class="nf">mentioned?</span><span class="p">(</span><span class="n">username</span><span class="p">)</span>
+    <span class="n">matches</span> <span class="o">=</span> <span class="n">text</span><span class="o">.</span><span class="n">match</span><span class="p">(</span><span class="sr">/@</span><span class="si">#{</span><span class="n">username</span><span class="si">}</span><span class="sr">\b/</span><span class="p">)</span>
     <span class="n">matches</span><span class="o">.</span><span class="n">nil?</span> <span class="p">?</span> <span class="kp">false</span> <span class="p">:</span> <span class="n">matches</span><span class="o">.</span><span class="n">length</span> <span class="o">&gt;</span> <span class="mi">0</span>
   <span class="k">end</span>
 
@@ -176,8 +176,7 @@ facebook or twitter.</p>
       </td>
       <td class=code>
         <div class='highlight'><pre>  <span class="k">def</span> <span class="nf">send_to_external_accounts</span>
-    <span class="k">return</span> <span class="k">if</span> <span class="no">ENV</span><span class="o">[</span><span class="s1">&#39;RACK_ENV&#39;</span><span class="o">]</span> <span class="o">==</span> <span class="s1">&#39;development&#39;</span>
-    </pre></div>
+    <span class="k">return</span> <span class="k">if</span> <span class="no">ENV</span><span class="o">[</span><span class="s1">&#39;RACK_ENV&#39;</span><span class="o">]</span> <span class="o">==</span> <span class="s1">&#39;development&#39;</span></pre></div>
       </td>
     </tr>
     <tr id='section-6'>
@@ -222,8 +221,7 @@ send the update</p>
       </td>
       <td class=code>
         <div class='highlight'><pre>        <span class="k">end</span>
-      <span class="k">end</span>
-      </pre></div>
+      <span class="k">end</span></pre></div>
       </td>
     </tr>
     <tr id='section-9'>

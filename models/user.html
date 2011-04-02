@@ -39,14 +39,22 @@
         <div class="pilwrap">
           <a class="pilcrow" href="#section-1">&#182;</a>
         </div>
-        
+        <p>The User model contains all of the information that a particular user of our
+site needs: their username/password, etc. It all comes from here. Even users
+that sign up via Twitter get a User model, though it&rsquo;s a bit empty in that
+particular case.</p>
       </td>
       <td class=code>
         <div class='highlight'><pre><span class="k">class</span> <span class="nc">User</span>
   <span class="nb">require</span> <span class="s1">&#39;digest/md5&#39;</span>
 
   <span class="kp">include</span> <span class="no">MongoMapper</span><span class="o">::</span><span class="no">Document</span>
-  <span class="n">many</span> <span class="ss">:authorizations</span><span class="p">,</span> <span class="ss">:dependant</span> <span class="o">=&gt;</span> <span class="ss">:destroy</span></pre></div>
+  <span class="n">many</span> <span class="ss">:authorizations</span><span class="p">,</span> <span class="ss">:dependant</span> <span class="o">=&gt;</span> <span class="ss">:destroy</span>
+
+  <span class="n">key</span> <span class="ss">:username</span><span class="p">,</span> <span class="nb">String</span><span class="p">,</span> <span class="ss">:required</span> <span class="o">=&gt;</span> <span class="kp">true</span>
+  <span class="n">key</span> <span class="ss">:perishable_token</span><span class="p">,</span> <span class="nb">String</span>
+
+  <span class="n">key</span> <span class="ss">:email</span><span class="p">,</span> <span class="nb">String</span> <span class="c1">#, :unique =&gt; true, :allow_nil =&gt; true</span></pre></div>
       </td>
     </tr>
     <tr id='section-2'>
@@ -54,14 +62,13 @@
         <div class="pilwrap">
           <a class="pilcrow" href="#section-2">&#182;</a>
         </div>
-        <p>Make the username required
-However, this will break it when email authorization is used</p>
+        <p>eff you mongo_mapper.</p>
       </td>
       <td class=code>
-        <div class='highlight'><pre>  <span class="n">key</span> <span class="ss">:username</span><span class="p">,</span> <span class="nb">String</span> <span class="c1">#:unique =&gt; true</span>
-  <span class="n">key</span> <span class="ss">:perishable_token</span><span class="p">,</span> <span class="nb">String</span>
-
-  <span class="n">key</span> <span class="ss">:email</span><span class="p">,</span> <span class="nb">String</span> <span class="c1">#, :unique =&gt; true, :allow_nil =&gt; true</span></pre></div>
+        <div class='highlight'><pre>  
+  <span class="n">validates_uniqueness_of</span> <span class="ss">:email</span><span class="p">,</span> <span class="ss">:allow_nil</span> <span class="o">=&gt;</span> <span class="ss">:true</span> 
+  <span class="n">validates_uniqueness_of</span> <span class="ss">:username</span><span class="p">,</span> <span class="ss">:allow_nil</span> <span class="o">=&gt;</span> <span class="ss">:true</span> 
+  </pre></div>
       </td>
     </tr>
     <tr id='section-3'>
@@ -69,11 +76,12 @@ However, this will break it when email authorization is used</p>
         <div class="pilwrap">
           <a class="pilcrow" href="#section-3">&#182;</a>
         </div>
-        <p>eff you mongo_mapper.</p>
+        <p>why should the username be longer than the update?
+Twitter has 15, let&rsquo;s be different</p>
       </td>
       <td class=code>
-        <div class='highlight'><pre>  <span class="n">validates_uniqueness_of</span> <span class="ss">:email</span><span class="p">,</span> <span class="ss">:allow_nil</span> <span class="o">=&gt;</span> <span class="ss">:true</span> 
-  <span class="n">validates_uniqueness_of</span> <span class="ss">:username</span><span class="p">,</span> <span class="ss">:allow_nil</span> <span class="o">=&gt;</span> <span class="ss">:true</span> </pre></div>
+        <div class='highlight'><pre>  <span class="n">validates_length_of</span> <span class="ss">:username</span><span class="p">,</span> <span class="ss">:minimum</span> <span class="o">=&gt;</span> <span class="mi">1</span><span class="p">,</span> <span class="ss">:maximum</span> <span class="o">=&gt;</span> <span class="mi">16</span>
+  </pre></div>
       </td>
     </tr>
     <tr id='section-4'>
@@ -84,8 +92,8 @@ However, this will break it when email authorization is used</p>
         <p>validate users don&rsquo;t have @ in their usernames</p>
       </td>
       <td class=code>
-        <div class='highlight'><pre>  <span class="n">validate</span> <span class="ss">:no_at</span>
-
+        <div class='highlight'><pre>  <span class="n">validate</span> <span class="ss">:no_special_chars</span>
+  
   <span class="n">belongs_to</span> <span class="ss">:author</span>
   <span class="n">belongs_to</span> <span class="ss">:feed</span>
 
@@ -97,13 +105,11 @@ However, this will break it when email authorization is used</p>
         <div class="pilwrap">
           <a class="pilcrow" href="#section-5">&#182;</a>
         </div>
-        <p>After a user is created create the feed, add yourself as a follower and
-reset the token</p>
+        <p>After a user is created, create the feed and reset the token</p>
       </td>
       <td class=code>
         <div class='highlight'><pre>  <span class="k">def</span> <span class="nf">finalize</span>
     <span class="n">create_feed</span>
-    <span class="n">follow_yo_self</span>
     <span class="n">reset_perishable_token</span>
   <span class="k">end</span></pre></div>
       </td>
@@ -226,6 +232,19 @@ provider</p>
         <div class='highlight'><pre>    <span class="k">if</span> <span class="n">f</span><span class="o">.</span><span class="n">nil?</span> <span class="ow">and</span> <span class="n">feed_url</span><span class="o">.</span><span class="n">start_with?</span><span class="p">(</span><span class="s2">&quot;/&quot;</span><span class="p">)</span>
       <span class="n">feed_id</span> <span class="o">=</span> <span class="n">feed_url</span><span class="o">[/^</span><span class="p">\</span><span class="o">/</span><span class="n">feeds</span><span class="p">\</span><span class="o">/</span><span class="p">(</span><span class="o">.</span><span class="n">+</span><span class="p">)</span><span class="vg">$/</span><span class="p">,</span><span class="mi">1</span><span class="o">]</span>
       <span class="n">f</span> <span class="o">=</span> <span class="no">Feed</span><span class="o">.</span><span class="n">first</span><span class="p">(</span><span class="ss">:id</span> <span class="o">=&gt;</span> <span class="n">feed_id</span><span class="p">)</span>
+    <span class="k">end</span></pre></div>
+      </td>
+    </tr>
+    <tr id='section-13'>
+      <td class=docs>
+        <div class="pilwrap">
+          <a class="pilcrow" href="#section-13">&#182;</a>
+        </div>
+        <p>can&rsquo;t follow yourself</p>
+      </td>
+      <td class=code>
+        <div class='highlight'><pre>    <span class="k">if</span> <span class="n">f</span> <span class="o">==</span> <span class="nb">self</span><span class="o">.</span><span class="n">feed</span>
+      <span class="k">return</span>
     <span class="k">end</span>
 
     <span class="k">if</span> <span class="n">f</span><span class="o">.</span><span class="n">nil?</span>
@@ -246,10 +265,10 @@ provider</p>
   <span class="k">end</span></pre></div>
       </td>
     </tr>
-    <tr id='section-13'>
+    <tr id='section-14'>
       <td class=docs>
         <div class="pilwrap">
-          <a class="pilcrow" href="#section-13">&#182;</a>
+          <a class="pilcrow" href="#section-14">&#182;</a>
         </div>
         <p>unfollow takes a feed (since it is guaranteed to exist)</p>
       </td>
@@ -268,10 +287,10 @@ provider</p>
     <span class="n">f</span> <span class="o">=</span> <span class="no">Feed</span><span class="o">.</span><span class="n">first</span><span class="p">(</span><span class="ss">:remote_url</span> <span class="o">=&gt;</span> <span class="n">feed_url</span><span class="p">)</span></pre></div>
       </td>
     </tr>
-    <tr id='section-14'>
+    <tr id='section-15'>
       <td class=docs>
         <div class="pilwrap">
-          <a class="pilcrow" href="#section-14">&#182;</a>
+          <a class="pilcrow" href="#section-15">&#182;</a>
         </div>
         <p>local feed?</p>
       </td>
@@ -295,7 +314,10 @@ provider</p>
       <span class="ss">:page</span> <span class="o">=&gt;</span> <span class="n">params</span><span class="o">[</span><span class="ss">:page</span><span class="o">]</span><span class="p">,</span>
       <span class="ss">:per_page</span> <span class="o">=&gt;</span> <span class="n">params</span><span class="o">[</span><span class="ss">:per_page</span><span class="o">]</span>
     <span class="p">}</span>
-    <span class="no">Update</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="ss">:author_id</span> <span class="o">=&gt;</span> <span class="n">following</span><span class="o">.</span><span class="n">map</span><span class="p">(</span><span class="o">&amp;</span><span class="ss">:author_id</span><span class="p">))</span><span class="o">.</span><span class="n">order</span><span class="p">(</span><span class="o">[</span><span class="s1">&#39;created_at&#39;</span><span class="p">,</span> <span class="s1">&#39;descending&#39;</span><span class="o">]</span><span class="p">)</span><span class="o">.</span><span class="n">paginate</span><span class="p">(</span><span class="n">popts</span><span class="p">)</span>
+
+    <span class="n">following_plus_me</span> <span class="o">=</span> <span class="n">following</span><span class="o">.</span><span class="n">clone</span>
+    <span class="n">following_plus_me</span> <span class="o">&lt;&lt;</span> <span class="nb">self</span><span class="o">.</span><span class="n">feed</span>
+    <span class="no">Update</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="ss">:author_id</span> <span class="o">=&gt;</span> <span class="n">following_plus_me</span><span class="o">.</span><span class="n">map</span><span class="p">(</span><span class="o">&amp;</span><span class="ss">:author_id</span><span class="p">))</span><span class="o">.</span><span class="n">order</span><span class="p">(</span><span class="o">[</span><span class="s1">&#39;created_at&#39;</span><span class="p">,</span> <span class="s1">&#39;descending&#39;</span><span class="o">]</span><span class="p">)</span><span class="o">.</span><span class="n">paginate</span><span class="p">(</span><span class="n">popts</span><span class="p">)</span>
   <span class="k">end</span>
 
   <span class="k">def</span> <span class="nf">at_replies</span><span class="p">(</span><span class="n">params</span><span class="p">)</span>
@@ -319,10 +341,10 @@ provider</p>
   </pre></div>
       </td>
     </tr>
-    <tr id='section-15'>
+    <tr id='section-16'>
       <td class=docs>
         <div class="pilwrap">
-          <a class="pilcrow" href="#section-15">&#182;</a>
+          <a class="pilcrow" href="#section-16">&#182;</a>
         </div>
         <p>Create a new perishable token and set the date the password reset token was
 sent so tokens can be expired after 2 days</p>
@@ -336,10 +358,10 @@ sent so tokens can be expired after 2 days</p>
   </pre></div>
       </td>
     </tr>
-    <tr id='section-16'>
+    <tr id='section-17'>
       <td class=docs>
         <div class="pilwrap">
-          <a class="pilcrow" href="#section-16">&#182;</a>
+          <a class="pilcrow" href="#section-17">&#182;</a>
         </div>
         <p>Set a new password, clear the date the password reset token was sent and
 reset the perishable token</p>
@@ -383,27 +405,21 @@ reset the perishable token</p>
 
     <span class="nb">self</span><span class="o">.</span><span class="n">feed</span> <span class="o">=</span> <span class="n">f</span>
     <span class="n">save</span>
-  <span class="k">end</span>
-
-  <span class="k">def</span> <span class="nf">follow_yo_self</span>
-    <span class="n">following</span> <span class="o">&lt;&lt;</span> <span class="n">feed</span>
-    <span class="n">followers</span> <span class="o">&lt;&lt;</span> <span class="n">feed</span>
-    <span class="n">save</span>
   <span class="k">end</span></pre></div>
       </td>
     </tr>
-    <tr id='section-17'>
+    <tr id='section-18'>
       <td class=docs>
         <div class="pilwrap">
-          <a class="pilcrow" href="#section-17">&#182;</a>
+          <a class="pilcrow" href="#section-18">&#182;</a>
         </div>
         <p>validation that checks @s in usernames</p>
 
       </td>
       <td class=code>
-        <div class='highlight'><pre>  <span class="k">def</span> <span class="nf">no_at</span>
-    <span class="k">unless</span> <span class="p">(</span><span class="n">username</span> <span class="o">=~</span> <span class="sr">/@/</span><span class="p">)</span><span class="o">.</span><span class="n">nil?</span>
-      <span class="n">errors</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="ss">:username</span><span class="p">,</span> <span class="s2">&quot;can&#39;t have @.&quot;</span><span class="p">)</span> 
+        <div class='highlight'><pre>  <span class="k">def</span> <span class="nf">no_special_chars</span>
+    <span class="k">unless</span> <span class="p">(</span><span class="n">username</span> <span class="o">=~</span> <span class="sr">/[@!&quot;#$\%&amp;&#39;()*,^~{}|`=:;\\\/\[\]?]/</span><span class="p">)</span><span class="o">.</span><span class="n">nil?</span> <span class="o">&amp;&amp;</span> <span class="p">(</span><span class="n">username</span> <span class="o">=~</span> <span class="sr">/^[.]/</span><span class="p">)</span><span class="o">.</span><span class="n">nil?</span> <span class="o">&amp;&amp;</span> <span class="p">(</span><span class="n">username</span> <span class="o">=~</span> <span class="sr">/[.]$/</span><span class="p">)</span><span class="o">.</span><span class="n">nil?</span> <span class="o">&amp;&amp;</span> <span class="p">(</span><span class="n">username</span> <span class="o">=~</span> <span class="sr">/[.]{2,}/</span><span class="p">)</span><span class="o">.</span><span class="n">nil?</span>
+      <span class="n">errors</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="ss">:username</span><span class="p">,</span> <span class="s2">&quot;contains restricted characters.&quot;</span><span class="p">)</span>
     <span class="k">end</span>
   <span class="k">end</span>
 <span class="k">end</span></pre></div>

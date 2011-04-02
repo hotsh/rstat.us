@@ -39,7 +39,9 @@
         <div class="pilwrap">
           <a class="pilcrow" href="#section-1">&#182;</a>
         </div>
-        
+        <p>The Author model represents someone who creates information that&rsquo;s
+shared via a feed. It is decoupled from a User, since we can also have
+remote authors, from feeds that originate from outside of our site.</p>
       </td>
       <td class=code>
         <div class='highlight'><pre><span class="k">class</span> <span class="nc">Author</span>
@@ -47,9 +49,9 @@
   <span class="no">ENCODED_DEFAULT_AVATAR</span> <span class="o">=</span> <span class="no">URI</span><span class="o">.</span><span class="n">encode_www_form_component</span><span class="p">(</span><span class="no">DEFAULT_AVATAR</span><span class="p">)</span>
 
   <span class="no">GRAVATAR_HOST</span>  <span class="o">=</span> <span class="s2">&quot;gravatar.com&quot;</span>
-  
+
   <span class="kp">include</span> <span class="no">MongoMapper</span><span class="o">::</span><span class="no">Document</span>
-  
+
   <span class="n">key</span> <span class="ss">:username</span><span class="p">,</span> <span class="nb">String</span>
   <span class="n">key</span> <span class="ss">:name</span><span class="p">,</span> <span class="nb">String</span>
   <span class="n">key</span> <span class="ss">:email</span><span class="p">,</span> <span class="nb">String</span>
@@ -58,8 +60,7 @@
   <span class="n">key</span> <span class="ss">:image_url</span><span class="p">,</span> <span class="nb">String</span>
 
   <span class="n">one</span> <span class="ss">:feed</span>
-  <span class="n">one</span> <span class="ss">:user</span>
-  </pre></div>
+  <span class="n">one</span> <span class="ss">:user</span></pre></div>
       </td>
     </tr>
     <tr id='section-2'>
@@ -70,8 +71,7 @@
         <p>The url of their profile page</p>
       </td>
       <td class=code>
-        <div class='highlight'><pre>  <span class="n">key</span> <span class="ss">:remote_url</span><span class="p">,</span> <span class="nb">String</span>
-  </pre></div>
+        <div class='highlight'><pre>  <span class="n">key</span> <span class="ss">:remote_url</span><span class="p">,</span> <span class="nb">String</span></pre></div>
       </td>
     </tr>
     <tr id='section-3'>
