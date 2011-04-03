@@ -131,7 +131,7 @@ GEM
     ostatus (0.0.7)
       oauth
       ratom
-    osub (0.0.5)
+    osub (0.0.6)
       ostatus
       ruby-hmac
     plucky (0.3.7)
@@ -234,7 +234,7 @@ DEPENDENCIES
   omniauth
   opub
   ostatus (> 0.0.6)
-  osub
+  osub (> 0.0.5)
   pony
   pygmentize
   rack-flash
