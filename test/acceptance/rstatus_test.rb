@@ -1,9 +1,9 @@
 require 'require_relative' if RUBY_VERSION[0,3] == '1.8'
-require_relative 'test_helper'
+require_relative 'acceptance_helper'
 
 class RstatusTest < MiniTest::Unit::TestCase
 
-  include TestHelper
+  include AcceptanceHelper
 
   def test_hello_world
     visit '/'
@@ -125,10 +125,10 @@ class RstatusTest < MiniTest::Unit::TestCase
     log_in(u, a.uid)
     visit "/updates"
     assert_match "class='hentry mention update'", page.body
-    
+
     log_in(u2, a2.uid)
     visit "/updates"
-    assert_match "class='hentry mention update'", page.body    
+    assert_match "class='hentry mention update'", page.body
   end
 
   def test_user_stays_on_same_route_after_post_update
@@ -148,12 +148,12 @@ class RstatusTest < MiniTest::Unit::TestCase
     VCR.use_cassette('publish_to_hub') {click_button "Share"}
 
     assert_match "/replies", page.current_url
-    
+
     visit "/"
     fill_in "text", :with => "Buy a test string. Your name in this string for only 1 Euro/character"
     VCR.use_cassette('publish_to_hub') {click_button "Share"}
 
-    assert_match "/", page.current_url    
+    assert_match "/", page.current_url
   end
 
 
@@ -382,7 +382,7 @@ class RstatusTest < MiniTest::Unit::TestCase
 
   def test_users_browse_by_letter_paginates
     visit "/users"
-   
+
     49.times do
       u2 = Factory(:user)
     end
@@ -390,7 +390,7 @@ class RstatusTest < MiniTest::Unit::TestCase
 
     click_link "U"
     click_link "next_button"
-  
+
     assert_match u2.username, page.body
   end
 
@@ -466,92 +466,92 @@ class RstatusTest < MiniTest::Unit::TestCase
     refute u.nil?
     assert User.authenticate("new_user", "mypassword")
   end
-  
+
 
   def test_no_user_found_forgot_password
     visit "/forgot_password"
     fill_in "email", :with => "someone@somewhere.com"
     click_button "Send"
-    
+
     assert_match "Your account could not be found, please check your email and try again.", page.body
   end
-  
+
   def test_forgot_password_token_set
     u = Factory(:user, :email => "someone@somewhere.com")
     Notifier.expects(:send_forgot_password_notification)
     assert_nil u.perishable_token
-    
+
     visit "/forgot_password"
     fill_in "email", :with => "someone@somewhere.com"
     click_button "Send"
-    
+
     u = User.first(:email => "someone@somewhere.com")
     refute u.perishable_token.nil?
     assert_match "A link to reset your password has been sent to someone@somewhere.com.", page.body
   end
-  
+
   def test_correct_reset_password_link
     u = Factory(:user, :email => "someone@somewhere.com")
     token = u.set_password_reset_token
     visit "/reset_password/#{token}"
-    
+
     assert_match "Password Reset", page.body
     assert_match "/reset_password/#{token}", page.current_url
   end
-  
+
   def test_incorrect_reset_password_link
     visit "/reset_password/abcd"
-    
+
     assert_match "Your link is no longer valid, please request a new one.", page.body
     assert_match "/forgot_password", page.current_url
   end
-  
+
   def test_expired_reset_password_link
     u = Factory(:user, :email => "someone@somewhere.com")
     token = u.set_password_reset_token
     u.password_reset_sent = 5.days.ago
     u.save
-    
+
     visit "/reset_password/#{token}"
-    
+
     assert_match "Your link is no longer valid, please request a new one.", page.body
     assert_match "/forgot_password", page.current_url
   end
-  
+
   def test_reset_password_no_password_present
     u = Factory(:user, :email => "someone@somewhere.com")
     token = u.set_password_reset_token
     visit "/reset_password/#{token}"
-    
+
     fill_in "password", :with => ""
     click_button "Reset"
-    
+
     assert_match "Password must be present", page.body
     assert_match "/reset_password/#{token}", page.current_url
   end
-  
+
   def test_reset_password_passwords_dont_match
     u = Factory(:user, :email => "someone@somewhere.com")
     token = u.set_password_reset_token
     visit "/reset_password/#{token}"
-    
+
     fill_in "password", :with => "password"
     fill_in "password_confirm", :with => "passrd"
     click_button "Reset"
-    
+
     assert_match "Passwords do not match", page.body
     assert_match "/reset_password/#{token}", page.current_url
   end
-  
+
   def test_successful_password_reset
     u = Factory(:user, :email => "someone@somewhere.com")
     token = u.set_password_reset_token
     visit "/reset_password/#{token}"
-    
+
     fill_in "password", :with => "password"
     fill_in "password_confirm", :with => "password"
     click_button "Reset"
-    
+
     assert_match "Password successfully set", page.body
     assert_match "/", page.current_url
   end
@@ -565,11 +565,11 @@ class RstatusTest < MiniTest::Unit::TestCase
 
     visit "/users/password_reset"
     assert_match "Password Reset", page.body
-    
+
     fill_in "password", :with => "password"
     fill_in "password_confirm", :with => "password"
     click_button "Reset"
-    
+
     u = User.first(:email => "some@email.com")
     assert u.hashed_password != pass_hash
     assert_match "Password successfully set", page.body
@@ -578,84 +578,84 @@ class RstatusTest < MiniTest::Unit::TestCase
 
   def test_user_password_reset_not_logged_in
     visit "/users/password_reset"
-    
+
     assert_match "/forgot_password", page.current_url
   end
-  
+
   def test_user_password_reset_no_email
     user = Factory(:user, :email => nil)
     a = Factory(:authorization, :user => user)
     log_in(user, a.uid)
-    
+
     visit "/users/password_reset"
-    
+
     assert_match "Set Password", page.body
-    
+
     fill_in "email", :with => "some@email.com"
     fill_in "password", :with => "password"
     fill_in "password_confirm", :with => "password"
     click_button "Reset"
-    
+
     u = User.first(:id => user.id)
     refute u.hashed_password.nil?
     refute u.email.nil?
     assert_match "Password successfully set", page.body
     assert_match "/", page.current_url
   end
-  
+
   def test_user_password_reset_email_needed
     u = Factory(:user, :email => nil)
     a = Factory(:authorization, :user => u)
     log_in(u, a.uid)
-    
+
     visit "/users/password_reset"
-    
+
     assert_match "Set Password", page.body
-    
+
     fill_in "password", :with => "password"
     fill_in "password_confirm", :with => "password"
     click_button "Reset"
-    
+
     assert_match "Email must be provided", page.body
     assert_match "/users/password_reset", page.current_url
   end
-  
+
   def test_user_password_reset_email_does_not_show
     u = Factory(:user, :email => "something@something.com")
     a = Factory(:authorization, :user => u)
     log_in(u, a.uid)
-    
+
     visit "/users/password_reset"
-    
+
     assert_equal page.has_selector?("input[name=email]"), false
   end
-  
+
   def test_user_password_reset_passwords_dont_match
     u = Factory(:user, :email => "some@email.com")
     log_in_email(u)
-  
+
     visit "/users/password_reset"
-    
+
     fill_in "password", :with => "password"
     fill_in "password_confirm", :with => "pasord"
     click_button "Reset"
-    
+
     assert_match "Passwords do not match", page.body
     assert_match "/users/password_reset", page.current_url
   end
-  
+
   def test_user_password_reset_no_password_present
     u = Factory(:user, :email => "some@email.com")
     log_in_email(u)
-  
+
     visit "/users/password_reset"
-    
+
     click_button "Reset"
-    
+
     assert_match "Password must be present", page.body
     assert_match "/users/password_reset", page.current_url
   end
-  
+
   def test_following_displays_username_logged_in
     u = Factory(:user, :username => "dfnkt")
     a = Factory(:authorization, :user => u)
@@ -683,11 +683,11 @@ class RstatusTest < MiniTest::Unit::TestCase
 
     visit "/users/password_reset"
     assert_match "Password Reset", page.body
-    
+
     fill_in "password", :with => "password"
     fill_in "password_confirm", :with => "password"
     click_button "Reset"
-    
+
     u = User.first(:email => "some@email.com")
     assert u.hashed_password != pass_hash
     assert_match "Password successfully set", page.body
@@ -696,74 +696,74 @@ class RstatusTest < MiniTest::Unit::TestCase
 
   def test_user_password_reset_not_logged_in
     visit "/users/password_reset"
-    
+
     assert_match "/forgot_password", page.current_url
   end
-  
+
   def test_user_password_reset_no_email
     user = Factory(:user, :email => nil)
     a = Factory(:authorization, :user => user)
     log_in(user, a.uid)
-    
+
     visit "/users/password_reset"
-    
+
     assert_match "Set Password", page.body
-    
+
     fill_in "email", :with => "some@email.com"
     fill_in "password", :with => "password"
     fill_in "password_confirm", :with => "password"
     click_button "Reset"
-    
+
     u = User.first(:id => user.id)
     refute u.hashed_password.nil?
     refute u.email.nil?
     assert_match "Password successfully set", page.body
     assert_match "/", page.current_url
   end
-  
+
   def test_user_password_reset_email_needed
     u = Factory(:user, :email => nil)
     a = Factory(:authorization, :user => u)
     log_in(u, a.uid)
-    
+
     visit "/users/password_reset"
-    
+
     assert_match "Set Password", page.body
-    
+
     fill_in "password", :with => "password"
     fill_in "password_confirm", :with => "password"
     click_button "Reset"
-    
+
     assert_match "Email must be provided", page.body
     assert_match "/users/password_reset", page.current_url
   end
-  
+
   def test_user_password_reset_passwords_dont_match
     u = Factory(:user, :email => "some@email.com")
     log_in_email(u)
-  
+
     visit "/users/password_reset"
-    
+
     fill_in "password", :with => "password"
     fill_in "password_confirm", :with => "pasord"
     click_button "Reset"
-    
+
     assert_match "Passwords do not match", page.body
     assert_match "/users/password_reset", page.current_url
   end
-  
+
   def test_user_password_reset_no_password_present
     u = Factory(:user, :email => "some@email.com")
     log_in_email(u)
-  
+
     visit "/users/password_reset"
-    
+
     click_button "Reset"
-    
+
     assert_match "Password must be present", page.body
     assert_match "/users/password_reset", page.current_url
   end
-  
+
   def test_reset_password_link_for_profile_no_password
     u = Factory(:user, :email => "some@email.com")
     log_in_email(u)
@@ -772,7 +772,7 @@ class RstatusTest < MiniTest::Unit::TestCase
 
     assert_match "Set Password", page.body
   end
-  
+
   def test_reset_password_link_for_profile
     u = Factory(:user, :email => "some@email.com", :hashed_password => "blerg")
     log_in_email(u)
@@ -781,6 +781,31 @@ class RstatusTest < MiniTest::Unit::TestCase
 
     assert_match "Reset Password", page.body
   end
-  
+
+  def test_twitter_user_sees_Post_to_message
+    u = Factory(:user)
+    a = Factory(:authorization, :user => u, :provider => "twitter")
+    log_in(u, a.uid)
+    visit "/updates"
+
+    assert_match page.body, /Post to/
+  end
+
+  def test_facebook_user_sees_Post_to_message
+    u = Factory(:user)
+    a = Factory(:authorization, :user => u, :provider => "facebook")
+    log_in_fb(u, a.uid)
+    visit "/updates"
+
+    assert_match page.body, /Post to/
+  end
+
+  def test_email_user_sees_no_Post_to_message
+    u = Factory(:user)
+    log_in_email(u)
+    visit "/updates"
+
+    refute_match page.body, /Post to/
+  end
 end
 
