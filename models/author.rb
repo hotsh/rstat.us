@@ -58,4 +58,30 @@ class Author
   def gravatar_path
     "/avatar/#{Digest::MD5.hexdigest(email)}?s=48&r=r&d=#{ENCODED_DEFAULT_AVATAR}"
   end
+
+  # Returns an OStatus::Author instance describing this author model
+  # Must give it a base_url
+  def to_atom(base_url)
+
+    # Determine global url for this author
+    author_url = url
+    if author_url.start_with?("/")
+      author_url = base_url + author_url[1..-1]
+    end
+
+    # Set up PortableContacts
+    poco = OStatus::PortableContacts.new(:id => author_url,
+                                         :preferred_username => username)
+    p name
+    poco.display_name = name unless name.nil? || name.empty?
+
+    # Set up and return Author
+    author = OStatus::Author.new(:name => username,
+                        :uri => author_url,
+                        :portable_contacts => poco)
+
+    author.email = email unless email.nil?
+
+    author
+  end
 end

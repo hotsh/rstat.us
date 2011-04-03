@@ -2,6 +2,7 @@ class Feed
   require 'osub'
   require 'opub'
   require 'nokogiri'
+  require 'atom'
 
   include MongoMapper::Document
 
@@ -107,4 +108,28 @@ class Feed
     save
   end
 
+  # create atom feed
+  # need base_uri since urls outgoing should be absolute
+  def atom(base_uri)
+    # Create the OStatus::Author object
+    os_auth = author.to_atom(base_uri)
+
+    # Gather entries as OStatus::Entry objects
+    entries = updates.to_a.sort{|a, b| b.created_at <=> a.created_at}.map do |update|
+      update.to_atom(base_uri)
+    end
+
+    # Create a Feed representation which we can generate
+    # the Atom feed and send out.
+    feed = OStatus::Feed.from_data("#{base_uri}feeds/#{id}.atom",
+                                   :title => "#{author.username}'s Updates",
+                                   :id => "#{base_uri}feeds/#{id}.atom",
+                                   :author => os_auth,
+                                   :updated => updated_at,
+                                   :entries => entries,
+                                   :links => {
+                                     :hub => [{:href => hubs.first}]
+                                   })
+    feed.atom
+  end
 end

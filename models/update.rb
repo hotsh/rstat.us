@@ -72,8 +72,20 @@ class Update
     self[:language] = self.text.language
   end
 
+  # Return OStatus::Entry instance describing this Update
+  def to_atom(base_uri)
+    OStatus::Entry.new(:title => self.text,
+                       :content => Atom::Content::Text.new(self.text),
+                       :updated => self.updated_at,
+                       :published => self.created_at,
+                       :activity => OStatus::Activity.new(:object_type => :note),
+                       :author => self.author.to_atom(base_uri),
+                       :id => "#{base_uri}updates/#{self.id.to_s}",
+                       :link => { :href => ("#{base_uri}updates/#{self.id.to_s}")})
+  end
+
   protected
-  
+
   # Generate and store the html
   def generate_html
     out = CGI.escapeHTML(text)
@@ -101,7 +113,7 @@ class Update
   # facebook or twitter. 
   def send_to_external_accounts
     return if ENV['RACK_ENV'] == 'development'
-    
+
     # If there is no user we can't get to the oauth tokens, abort!
     if author.user
       # If the twitter flag is true and the user has a twitter account linked
@@ -120,7 +132,7 @@ class Update
           #I should be shot for doing this.
         end
       end
-      
+
       # If the facebook flag is true and the user has a facebook account linked
       # send the update
       if self.facebook? && author.user.facebook?
