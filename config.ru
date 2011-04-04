@@ -9,6 +9,9 @@ unless ENV['RACK_ENV'] == "production"
   config.each do |key, value|
     ENV[key] = value
   end
+
+  require 'exceptional'
+  use Rack::Exceptional, ENV['EXCEPTIONAL_KEY']
 end
 
 run Rstatus
