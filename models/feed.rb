@@ -56,7 +56,7 @@ class Feed
     os_entries.each do |entry|
       u = Update.first(:url => entry.url)
       if u.nil?
-        u = Update.create(:author => self.author,
+        u = Update.create(:author => author,
                           :created_at => entry.published,
                           :url => entry.url,
                           :updated_at => entry.updated)

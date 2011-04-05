@@ -22,8 +22,13 @@ class Update
   before_create :get_tags
   before_create :get_language
 
-  key :remote_url
+  key :remote_url, String
+
+  # Reply and restate identifiers
+  # Local Update id: (nil if remote)
   key :referral_id
+  # Remote Update url: (nil if local)
+  key :referral_url, String
 
   filterable_keys :text
 

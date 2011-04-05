@@ -48,7 +48,6 @@ class Rstatus
 
   get '/updates/:id' do
     @update = Update.first :id => params[:id]
-    @referral = @update.referral
     haml :"updates/show", :layout => :'updates/layout'
   end
 

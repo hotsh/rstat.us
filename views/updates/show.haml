@@ -9,12 +9,15 @@
     .avatar
       %img{:alt => "avatar", :src => @update.author.avatar_url}/
     = @update.author.username
-  -unless @referral.nil?
-    %a.source{:href => "/updates/#{@referral.id}"}
+  -if not @update.referral.nil?
+    %a.source{:href => "/updates/#{@update.referral.id}"}
       in reply to
       .avatar
-        %img{:alt => "avatar", :src => @referral.author.avatar_url}/
-      = @referral.author.username
+        %img{:alt => "avatar", :src => @update.referral.author.avatar_url}/
+      = @update.referral.author.username
+  -elsif not @update.referral_url.nil?
+    %a.source{:href => @update.referral_url}
+      in reply to
   .end-links
     -unless current_user.nil? or (current_user.author.id == @update.author.id)
       %a.share{:href => "/?share=#{@update.id}"} share

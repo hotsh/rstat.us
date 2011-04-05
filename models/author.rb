@@ -20,6 +20,9 @@ class Author
   # The url of their profile page
   key :remote_url, String
 
+  # We cannot put a :unique tag above because of a MongoMapper bug
+  validates_uniqueness_of :remote_url, :allow_nil => :true 
+
   # Associations
   one :feed
   one :user
