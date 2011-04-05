@@ -1,15 +1,14 @@
 %ul.user-list
-  - users.each_with_index do |user, i|
-    - next if user.nil? || user.author.nil?
-    - author = user.author
-    - user_url = author.feed.local? ? "/users/#{author.username}" : author.feed.url
+  - @authors.each_with_index do |author, i|
+    - next if author.nil?
+    - author_url = author.feed.local? ? "/users/#{author.username}" : author.feed.url
     %li.user{:class => i%2 == 0 ? "even" : "odd"}
       .avatar
-        %a{:href => user_url}
+        %a{:href => author_url}
           %img{:alt => "avatar", :src => author.avatar_url}/
 
       .name
-        %a{:href => user_url}
+        %a{:href => author_url}
           %b
             = author.display_name
           %br
