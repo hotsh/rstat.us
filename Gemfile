@@ -31,6 +31,7 @@ gem "ruby-stemmer"
 gem "sass"
 gem "compass"
 gem "tzinfo"
+gem "exceptional"
 
 group :development, :test do
   gem "minitest", :platforms => :ruby_18
