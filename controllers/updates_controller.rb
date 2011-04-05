@@ -29,7 +29,7 @@ class Rstatus
     current_user.save
 
     # tell hubs there is a new entry
-    current_user.feed.ping_hubs(url(current_user.feed.url))
+    current_user.feed.ping_hubs(url("#{current_user.feed.url}.atom"))
 
     if params[:text].length < 1
       flash[:notice] = "Your status is too short!"

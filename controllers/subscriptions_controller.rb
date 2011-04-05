@@ -1,4 +1,40 @@
 class Rstatus
+  
+  # subscribers will verify a subscription
+  get "/subscriptions/:id.atom" do
+    feed = Feed.first :id => params[:id]
+
+    if params['hub.challenge']
+      sub = OSub::Subscription.new(request.url, feed.url, nil, feed.verify_token)
+
+      # perform the hub's challenge
+      respond = sub.perform_challenge(params['hub.challenge'])
+
+      # verify that the random token is the same as when we
+      # subscribed with the hub initially and that the topic
+      # url matches what we expect
+      verified = params['hub.topic'] == feed.url
+      if verified and sub.verify_subscription(params['hub.verify_token'])
+        if development?
+          puts "Verified"
+          p respond
+        end
+        body respond[:body]
+        status respond[:status]
+      else
+        if development?
+          puts "Verification Failed"
+          p respond
+        end
+        # if the verification fails, the specification forces us to
+        # return a 404 status
+        status 404
+      end
+    else
+      status 404
+    end
+  end
+
 
   # unsubscribe from a feed
   delete '/subscriptions/:id' do
@@ -24,11 +60,14 @@ class Rstatus
 
   # subscriber receives updates
   # should be 'put', PuSH sucks at REST
-  post "/subscribers/:id.atom" do
+  post "/subscriptions/:id.atom" do
     feed = Feed.first :id => params[:id]
     if feed.nil?
       status 404
       return
+    end
+    if development?
+      puts "Hub post received for #{feed.author.username}."
     end
     feed.update_entries(request.body.read, request.url, url(feed.url), request.env['HTTP_X_HUB_SIGNATURE'])
   end
@@ -77,8 +116,8 @@ class Rstatus
       # remote feeds require some talking to a hub
       hub_url = f.hubs.first
 
-      sub = OSub::Subscription.new(url("/feeds/#{f.id}.atom"), f.url, f.secret)
-      sub.subscribe(hub_url, f.verify_token)
+      sub = OSub::Subscription.new(url("/subscriptions/#{f.id}.atom"), f.url, f.secret)
+      sub.subscribe(hub_url, false, f.verify_token)
 
       name = f.author.username
       flash[:notice] = "Now following #{name}."

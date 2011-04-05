@@ -191,10 +191,11 @@ class Rstatus
   get '/users/:username/following' do
     set_params_page
 
+    # XXX: case insensitive username
     feeds = User.first(:username => params[:username]).following
 
     @user = User.first(:username => params[:username])
-    @users = feeds.paginate(:page => params[:page], :per_page => params[:per_page], :order => :id.desc).map{|f| f.author.user}
+    @authors = feeds.paginate(:page => params[:page], :per_page => params[:per_page], :order => :id.desc).map{|f| f.author}
 
     set_next_prev_page
     @next_page = nil unless params[:page]*params[:per_page] < feeds.count
