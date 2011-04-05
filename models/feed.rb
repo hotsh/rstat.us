@@ -105,6 +105,7 @@ class Feed
   # Set default hubs
   def default_hubs
     self.hubs << "http://pubsubhubbub.appspot.com/"
+
     save
   end
 
@@ -119,17 +120,28 @@ class Feed
       update.to_atom(base_uri)
     end
 
+    avatar_url_abs = author.avatar_url
+    if avatar_url_abs.start_with?("/")
+      avatar_url_abs = "#{base_uri}#{author.avatar_url[1..-1]}"
+    end
+
     # Create a Feed representation which we can generate
     # the Atom feed and send out.
     feed = OStatus::Feed.from_data("#{base_uri}feeds/#{id}.atom",
-                                   :title => "#{author.username}'s Updates",
-                                   :id => "#{base_uri}feeds/#{id}.atom",
-                                   :author => os_auth,
-                                   :updated => updated_at,
-                                   :entries => entries,
-                                   :links => {
-                                     :hub => [{:href => hubs.first}]
-                                   })
+                             :title => "#{author.username}'s Updates",
+                             :logo => avatar_url_abs,
+                             :id => "#{base_uri}feeds/#{id}.atom",
+                             :author => os_auth,
+                             :updated => updated_at,
+                             :entries => entries,
+                             :links => {
+                               :hub => [{:href => hubs.first}],
+                               :salmon => [{:href => "#{base_uri}feeds/#{id}/salmon"}],
+                               :"http://salmon-protocol.org/ns/salmon-replies" =>
+                                 [{:href => "#{base_uri}feeds/#{id}/salmon"}],
+                               :"http://salmon-protocol.org/ns/salmon-mention" =>
+                                 [{:href => "#{base_uri}feeds/#{id}/salmon"}]
+                             })
     feed.atom
   end
 end
