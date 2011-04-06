@@ -9,7 +9,7 @@ unless ENV['RACK_ENV'] == "production"
   config.each do |key, value|
     ENV[key] = value
   end
-
+else
   require 'exceptional'
   use Rack::Exceptional, ENV['EXCEPTIONAL_KEY']
 end
