@@ -127,6 +127,7 @@ class User
     save
     if followed_feed.local?
       followee = User.first(:author_id => followed_feed.author.id)
+      return if followee.nil?
       followee.followers_ids.delete(self.feed.id)
       followee.save
     end
