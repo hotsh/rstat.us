@@ -30,6 +30,12 @@ class UserTest < MiniTest::Unit::TestCase
     refute u.save
   end
 
+  def test_username_is_unique_case_insensitive
+    Factory(:user, :username => "steve")
+    u = Factory.build(:user, :username => "Steve")
+    refute u.save
+  end
+  
   def test_username_is_too_long
     u = User.new :username => "burningTyger_will_fail_with_this_username"
     refute u.save
