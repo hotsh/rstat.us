@@ -84,7 +84,7 @@ class UserTest < MiniTest::Unit::TestCase
   end
 
   def test_no_special_chars_in_usernames
-    ["something@something.com", "another'quirk", ".boundary_case.", "another..case", "another/random\\test", "yet]another", ".Ὁμηρος"].each do |i|
+    ["something@something.com", "another'quirk", ".boundary_case.", "another..case", "another/random\\test", "yet]another", ".Ὁμηρος", "I have spaces"].each do |i|
       u = User.new :username => i
       refute u.save, "contains restricted characters."
     end
