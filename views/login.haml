@@ -11,6 +11,9 @@
         %label{:for => "password"} Password
         %input{:id => "password", :name => "password", :size => 30, :type => "password"}
       .form-item
+        %label{:for => "remember_me"} Remember me
+        %input{:id => "remember_me", :name => "remember_me", :type => "checkbox", :value => "1"}
+      .form-item
         %input{:value => "Log in", :type => "submit", :class => "button"}
 
       %a{:href => "/forgot_password"} Forgot Password
