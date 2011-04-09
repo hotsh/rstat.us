@@ -17,7 +17,7 @@ class User
   # eff you mongo_mapper.
   
   validates_uniqueness_of :email, :allow_nil => :true 
-  validates_uniqueness_of :username, :allow_nil => :true 
+  validates_uniqueness_of :username, :allow_nil => :true, :case_sensitive => false
   
   #why should the username be longer than the update?
   #Twitter has 15, let's be different
