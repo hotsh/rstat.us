@@ -52,7 +52,7 @@ And start the server:
     $ rackup
 
 Bam! Visit http://localhost:9292/ in your browser, and you'll be good.
-   
+
 [mongo-quickstart]: http://www.mongodb.org/display/DOCS/Quickstart
 
 Compiling CSS and Javascript
@@ -87,5 +87,10 @@ Running your own node
 ---------------------
 
 If you need help with this, then you're not ready to run one.
+Here's the deal: we're still finishing up our ostatus implementation,
+and until it's 100% compatible, these instructions are kept secret.
 Eventually, we plan on making this _super easy_, but until we feel that
 it's ready, we're keeping the instructions 'secret.' Sorry!
+
+If you do run your own node anyway, please keep current with upstream
+until we hit 1.0, and it should all be smooth sailing!
