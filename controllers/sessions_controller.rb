@@ -24,6 +24,7 @@ class Rstatus
       #login
       if user = User.authenticate(params[:username], params[:password])
         session[:user_id] = user.id
+        session[:remember_me] = (params[:remember_me])
         flash[:notice] = "Login successful."
         redirect "/"
       end

@@ -47,14 +47,24 @@ module AcceptanceHelper
     visit '/auth/facebook'
   end
   
-  def log_in_email(user)
+  def log_in_email(user, remember_me = false)
     User.stubs(:authenticate).returns(user)
     visit "/login"
     within("form") do
       fill_in "username", :with => user.username
       fill_in "password", :with => "anything"
+      check "remember_me" if remember_me
     end
     click_button "Log in"
+  end
+
+  def cookies
+    rack_test_driver = Capybara.current_session.driver
+    cookie_jar = rack_test_driver.current_session.instance_variable_get(:@rack_mock_session).cookie_jar
+  end
+
+  def session_expires
+    cookies.send(:hash_for)['rack.session'].expires
   end
   
   Capybara.app = Rstatus

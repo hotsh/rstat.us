@@ -1,3 +1,5 @@
+require_relative 'lib/rstatus/session'
+
 class Rstatus
   # The `PONY_VIA_OPTIONS` hash is used to configure `pony`. Basically, we only
   # want to actually send mail if we're in the production environment. So we set
@@ -28,7 +30,7 @@ class Rstatus
   # that we don't have to give it away in the source code. Heroku makes it really
   # easy to keep environment variables set up, so this ends up being pretty nice.
   # This also has to be included before rack-flash, or it blows up.
-  use Rack::Session::Cookie, :secret => ENV['COOKIE_SECRET']
+  use Rstatus::Session, :secret => ENV['COOKIE_SECRET']
 
   # We're using rack-timeout to ensure that our dynos don't get starved by renegade
   # processes.
