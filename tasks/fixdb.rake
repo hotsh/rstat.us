@@ -31,6 +31,7 @@ namespace :fixdb do
   task :report_duplicate_usernames => :environment do
     duplicate_usernames = []
     User.find_each do |user|
+      next if user.username.nil?
       unless duplicate_usernames.include?(user.username.downcase)
         users = User.all(:username => /^#{user.username}$/i)
         if users.size > 1
