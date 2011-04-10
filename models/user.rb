@@ -15,17 +15,17 @@ class User
   key :email, String #, :unique => true, :allow_nil => true
 
   # eff you mongo_mapper.
-  
+
   validates_uniqueness_of :email, :allow_nil => :true 
   validates_uniqueness_of :username, :allow_nil => :true, :case_sensitive => false
-  
+
   #why should the username be longer than the update?
   #Twitter has 15, let's be different
-  validates_length_of :username, :minimum => 1, :maximum => 16
-  
+  validates_length_of :username, :minimum => 1, :maximum => 17
+
   # validate users don't have @ in their usernames
   validate :no_special_chars
-  
+
   belongs_to :author
   belongs_to :feed
 
