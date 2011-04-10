@@ -35,7 +35,6 @@ class Rstatus
     end
   end
 
-
   # unsubscribe from a feed
   delete '/subscriptions/:id' do
     require_login! :return => request.referrer
@@ -88,15 +87,31 @@ class Rstatus
       feed_url = acct.links.find { |l| l['rel'] == 'http://schemas.google.com/g/2010#updates-from' }
     else
       feed_url = params[:url]
+
+      # Determine if it is a remote feed that is locally addressed
+      # If it is, then lets get the remote url and use that instead
+      if feed_url.start_with?("/")
+        feed_id = feed_url[/^\/feeds\/(.+)$/,1]
+        feed = Feed.first(:id => feed_id)
+
+        if not feed.nil? and not feed.remote_url.nil?
+          # This is a remote feed that we already know about
+          feed_url = feed.remote_url
+        end
+      end
     end
 
     #make sure we're not following them already
     if current_user.following? feed_url
       # which means it exists
       feed = Feed.first(:remote_url => feed_url)
-      if feed.nil? and feed_url[0] == "/"
+      if feed.nil? and feed_url.start_with?("/")
         feed_id = feed_url[/^\/feeds\/(.+)$/,1]
         feed = Feed.first(:id => feed_id)
+        if feed.nil?
+          status 404
+          return
+        end
       end
 
       flash[:notice] = "You're already following #{feed.author.username}."
@@ -114,12 +129,15 @@ class Rstatus
     if not f.local?
 
       # remote feeds require some talking to a hub
-      hub_url = f.hubs.first
+      if not f.hubs.empty?
+        hub_url = f.hubs.first
 
-      sub = OSub::Subscription.new(url("/subscriptions/#{f.id}.atom"), f.url, f.secret)
-      sub.subscribe(hub_url, false, f.verify_token)
+        sub = OSub::Subscription.new(url("/subscriptions/#{f.id}.atom"), f.url, f.secret)
+        sub.subscribe(hub_url, false, f.verify_token)
+      end
 
       name = f.author.username
+
       flash[:notice] = "Now following #{name}."
       redirect request.referrer
     else

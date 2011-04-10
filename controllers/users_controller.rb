@@ -60,27 +60,27 @@ class Rstatus
 
     # Filter users by search params
     if params[:search] && !params[:search].empty?
-      @users = User.where(:username => /#{params[:search]}/i)
+      @authors = Author.where(:username => /#{params[:search]}/i)
 
     # Filter users by letter
     elsif params[:letter]
       if params[:letter] == "other"
-        @users = User.where(:username => /^[^a-z0-9]/i)
+        @authors = Author.where(:username => /^[^a-z0-9]/i)
       elsif
-        @users = User.where(:username => /^#{params[:letter][0].chr}/i)
+        @authors = Author.where(:username => /^#{params[:letter][0].chr}/i)
       end
     else
-      @users = User
+      @authors = Author
     end
 
     # Sort users alphabetically when filtering by letter
     if params[:letter]
-      @users = @users.sort(:username)
+      @authors = @authors.sort(:username)
     else
-      @users = @users.sort(:created_at.desc)
+      @authors = @authors.sort(:created_at.desc)
     end
 
-    @users = @users.paginate(:page => params[:page], :per_page => params[:per_page])
+    @authors = @authors.paginate(:page => params[:page], :per_page => params[:per_page])
 
     @next_page = nil
     

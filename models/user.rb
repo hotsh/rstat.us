@@ -1,6 +1,7 @@
 class User
   require 'digest/md5'
   require 'openssl'
+  require 'rsa'
 
   include MongoMapper::Document
 
@@ -37,7 +38,7 @@ class User
 
   # Before a user is created, we will generate some RSA keys
   def generate_rsa_pair
-    key = OpenSSL::PKey::RSA.new(2048)
+    key = RSA::KeyPair.generate(2048).to_openssl
     self.private_key = key.to_pem
   end
 

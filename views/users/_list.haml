@@ -1,22 +1,19 @@
 %ul.user-list
   - @authors.each_with_index do |author, i|
     - next if author.nil?
-    - author_url = author.feed.local? ? "/users/#{author.username}" : author.feed.url
     %li.user{:class => i%2 == 0 ? "even" : "odd"}
       .avatar
-        %a{:href => author_url}
+        %a{:href => author.url}
           %img{:alt => "avatar", :src => author.avatar_url}/
 
       .name
-        %a{:href => author_url}
+        %a{:href => author.url}
           %b
             = author.display_name
           %br
           (#{author.username})
 
       - if current_user && current_user.feed != author.feed
-        - unfollow_url = author.feed.local? ? "/users/#{author.username}/unfollow" : "/feeds/#{author.feed.id}/unsubscribe"
-
         - if current_user.following?(author.feed.url)
           .follow.negative
             %form{:method => "post", :action => "/subscriptions/#{author.feed.id}"}
@@ -24,5 +21,5 @@
               %input.button.unfollow{:type => "submit", :value => "Unfollow", :id => "unfollow-#{author.feed.id}"}
         - else
           %form{:method => "post", :action => "/subscriptions"}
-            %input{:type => "hidden", :name => "url", :value => "/feeds/#{author.feed.id}"}
+            %input{:type => "hidden", :name => "url", :value => author.feed.url}
             %input.button.follow{:type => "submit", :value => "Follow", :id => "follow-#{author.feed.id}"}

@@ -15,7 +15,7 @@
   %a{:href => "/users?#{Rack::Utils.build_query :letter => "other"}"}
     Other
 
-- if @users.empty?
+- if @authors.empty?
   .empty
     Sorry, no users that match.
 - else

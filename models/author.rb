@@ -16,6 +16,11 @@ class Author
 
   # Authors MIGHT have a salmon endpoint
   key :salmon_url, String
+
+  # Authors have a public key that they sign salmon responses with
+  # The public key is identified using a key
+  key :public_key_id, String
+  key :public_key, String
   
   # The url of their profile page
   key :remote_url, String
@@ -56,7 +61,7 @@ class Author
 
   # Returns a url useful for gravatar support
   def gravatar_url
-    "http://#{GRAVATAR_HOST}#{self.gravatar_path}"
+    "http://#{GRAVATAR_HOST}#{gravatar_path}"
   end
 
   # these query parameters are described at:

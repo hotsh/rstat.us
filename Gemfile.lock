@@ -165,6 +165,7 @@ GEM
     rocco (0.6)
       mustache
       rdiscount
+    rsa (0.1.4)
     ruby-hmac (0.4.0)
     ruby-openid (2.1.8)
     ruby-openid-apps-discovery (1.2.0)
@@ -244,6 +245,7 @@ DEPENDENCIES
   redfinger
   require_relative!
   rocco
+  rsa
   ruby-stemmer
   sass
   sinatra
