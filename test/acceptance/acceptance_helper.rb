@@ -1,7 +1,6 @@
 require 'rack/test'
 require 'vcr'
 
-require_relative '../../rstatus'
 require_relative '../test_helper'
 
 VCR.config do |c|
