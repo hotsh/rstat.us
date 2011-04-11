@@ -20,7 +20,7 @@ module TestHelper
   def teardown
     DatabaseCleaner.clean
   end
-  
+
   def auth_response(username, options={})
     hsh = {
       "provider" => options[:provider] || "twitter",
@@ -34,7 +34,7 @@ module TestHelper
         "image" => "/images/something.png"
       },
       "credentials" => {
-        "token" => options[:token] || "1234", 
+        "token" => options[:token] || "1234",
         "secret" => options[:secret] || "4567"
       }
     }

@@ -1,5 +1,5 @@
 class Rstatus
-  
+
   # publisher will feed the atom to a hub
   # subscribers will verify a subscription
   get "/feeds/:id.atom" do

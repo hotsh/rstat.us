@@ -1,7 +1,7 @@
 class Rstatus
   # Omniauth callback after a successful oauth session has been established.
   # New users and existing users adding linked accounts both use this callback
-  # to obtain oauth credentials. 
+  # to obtain oauth credentials.
   # If an authorization is not present then that request is assumed to be for a
   # new account. If a request comes from a user that is logged in, it is assumed
   # to originate from the edit profile page and the request is to add a linked

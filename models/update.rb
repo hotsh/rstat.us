@@ -75,7 +75,7 @@ class Update
   end
 
   protected
-  
+
   # Generate and store the html
   def generate_html
     out = CGI.escapeHTML(text)
@@ -100,7 +100,7 @@ class Update
 
   # If a user has twitter or facebook enabled on their account and they checked
   # either twitter, facebook or both on update form, repost the update to
-  # facebook or twitter. 
+  # facebook or twitter.
   def send_to_external_accounts
     return if ENV['RACK_ENV'] == 'development'
 

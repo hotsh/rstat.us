@@ -10,7 +10,7 @@ class Rstatus
   get "/contact" do
     haml :contact
   end
-  
+
   get "/help" do
     haml :help
   end

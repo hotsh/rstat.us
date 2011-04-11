@@ -40,7 +40,7 @@ class Rstatus
   set :root, File.dirname(__FILE__)
   set :haml, :escape_html => true
 
-  # This method enables the ability for our forms to use the _method hack for 
+  # This method enables the ability for our forms to use the _method hack for
   # actual RESTful stuff.
   set :method_override, true
 
@@ -58,7 +58,7 @@ class Rstatus
       MongoMapper.database = "rstatus-#{settings.environment}"
     end
 
-    Compass.add_project_configuration(File.join(File.dirname(__FILE__), 'config', 'compass.config'))        
+    Compass.add_project_configuration(File.join(File.dirname(__FILE__), 'config', 'compass.config'))
     MongoMapperExt.init
 
     # now that we've connected to the db, let's load our models.

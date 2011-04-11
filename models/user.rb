@@ -16,7 +16,7 @@ class User
 
   # eff you mongo_mapper.
 
-  validates_uniqueness_of :email, :allow_nil => :true 
+  validates_uniqueness_of :email, :allow_nil => :true
   validates_uniqueness_of :username, :allow_nil => :true, :case_sensitive => false
 
   #why should the username be longer than the update?
@@ -52,24 +52,24 @@ class User
   def url
     feed.local? ? "/users/#{feed.author.username}" : feed.author.url
   end
-  
+
 
   def twitter?
     has_authorization?(:twitter)
   end
-  
+
   def twitter
     get_authorization(:twitter)
   end
-  
+
   def facebook?
     has_authorization?(:facebook)
   end
-  
+
   def facebook
     get_authorization(:facebook)
   end
-  
+
   # Check if a a user has a certain authorization by providing the assoaciated
   # provider
   def has_authorization?(auth)
@@ -77,7 +77,7 @@ class User
     #return false if not authenticated and true otherwise.
     !a.nil?
   end
-  
+
   # Get an authorization by providing the assoaciated provider
   def get_authorization(auth)
     Authorization.first(:provider => auth.to_s, :user_id => self.id)
@@ -180,7 +180,7 @@ class User
     @password = pass
     self.hashed_password = BCrypt::Password.create(@password, :cost => 10)
   end
-  
+
   # Create a new perishable token and set the date the password reset token was
   # sent so tokens can be expired after 2 days
   def set_password_reset_token
@@ -188,7 +188,7 @@ class User
     set_perishable_token
     self.perishable_token
   end
-  
+
   # Set a new password, clear the date the password reset token was sent and
   # reset the perishable token
   def reset_password(pass)

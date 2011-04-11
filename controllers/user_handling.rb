@@ -6,7 +6,7 @@ class Rstatus
       @error_bar = haml :_username_error, :layout => false
     end
   end
-  
+
   # Allows a user to reset their username. Currently only allows users that
   # are not registered, users without a username and facebook users with the
   # screwed up username
@@ -32,13 +32,13 @@ class Rstatus
       haml :reset_username
     end
   end
-  
+
   # Passwords can be reset by unauthenticated users by navigating to the forgot
   # password and page and submitting the email address they provided.
   get '/forgot_password' do
     haml :"forgot_password"
   end
-  
+
   # The email address is looked up, if no user is found an error is provided. If
   # a user is found a token is generated and an email is sent to the user with a
   # url to reset their password. Users are then redirected to the confirmation
@@ -55,14 +55,14 @@ class Rstatus
       redirect '/forgot_password_confirm'
     end
   end
-  
+
   # Forgot password confirmation screen, displays email address that the email
   # was sent to
   get '/forgot_password_confirm' do
     @email = session.delete(:fp_email)
     haml :"forgot_password_confirm"
   end
-  
+
   # Public reset password page, accessible via a valid token. Tokens are only
   # valid for 2 days and are unique to that user. The user is found using the
   # token and the reset password page is rendered
@@ -76,7 +76,7 @@ class Rstatus
       haml :"reset_password"
     end
   end
-  
+
   # The reset token is sent on the url along with the post to ensure
   # authentication is preserved. The password is checked for length and
   # confirmation and the token is rechecked for authenticity. If all checks pass
@@ -94,7 +94,7 @@ class Rstatus
         flash[:notice] = "Passwords do not match"
         redirect "/reset_password/#{params[:token]}"
       end
-      # end 
+      # end
       user = User.first(:perishable_token => params[:token])
       if user.nil? || user.password_reset_sent.to_time < 2.days.ago
         flash[:notice] = "Your link is no longer valid, please request another one."

@@ -38,7 +38,7 @@ class Rstatus
     else
       flash[:notice] = "Update created."
     end
-    
+
     if request.referrer
       redirect request.referrer
     else

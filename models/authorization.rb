@@ -14,7 +14,7 @@ class Authorization
   key :nickname
 
   validates_uniqueness_of :uid, :scope => :provider
-  
+
   # Locates an authorization from data provided from a successful omniauth
   # authentication response
   def self.find_from_hash(hsh)
@@ -30,8 +30,8 @@ class Authorization
                         )
     end
 
-    a = new(:user => user, 
-            :uid => hsh['uid'], 
+    a = new(:user => user,
+            :uid => hsh['uid'],
             :provider => hsh['provider'],
             :nickname => hsh["user_info"]["nickname"],
             :oauth_token => hsh['credentials']['token'],

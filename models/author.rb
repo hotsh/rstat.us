@@ -1,4 +1,4 @@
-# The Author model represents someone who creates information that's 
+# The Author model represents someone who creates information that's
 # shared via a feed. It is decoupled from a User, since we can also have
 # remote authors, from feeds that originate from outside of our site.
 
