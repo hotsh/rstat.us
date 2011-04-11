@@ -41,7 +41,7 @@ Then do:
 Copy the config file; if you have actual Twitter API keys, you can add yours,
 but this file just needs to exist for the server to work.
 
-    $ cp config.yml.sample config.yml
+    $ cp config/config.yml.sample config/config.yml
 
 Then update your gemset:
 

@@ -1,4 +1,4 @@
-require_relative 'lib/rstatus/session'
+require_relative '../lib/rstatus/session'
 
 class Rstatus
   # The `PONY_VIA_OPTIONS` hash is used to configure `pony`. Basically, we only
@@ -37,7 +37,7 @@ class Rstatus
   use Rack::Timeout
   Rack::Timeout.timeout = 10
 
-  set :root, File.dirname(__FILE__)
+  set :root, File.join(File.dirname(__FILE__), "..")
   set :haml, :escape_html => true
 
   # This method enables the ability for our forms to use the _method hack for
@@ -58,11 +58,11 @@ class Rstatus
       MongoMapper.database = "rstatus-#{settings.environment}"
     end
 
-    Compass.add_project_configuration(File.join(File.dirname(__FILE__), 'config', 'compass.config'))
+    Compass.add_project_configuration(File.join(File.dirname(__FILE__), 'compass.config'))
     MongoMapperExt.init
 
     # now that we've connected to the db, let's load our models.
-    require_relative 'models/all'
+    require_relative '../models/all'
   end
 
   helpers Sinatra::UserHelper
