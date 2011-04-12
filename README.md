@@ -11,8 +11,7 @@ If you'd like to contribute, here are some details:
 - The stack: ruby/sinatra/mongodb
 - [The code][code]
 - [The documentation][docs] (need lots of improvement here!)
-- [The Issues list][issues], currently being moved to lighthouse from
-  github.
+- [The Issues list][issues]
 - Please fork the project and make a pull request
   - Pull requests will not be merged without tests/documentation
     - We use [minitest][minitest]/[capybara][capy] for tests
@@ -21,7 +20,7 @@ If you'd like to contribute, here are some details:
 
 [code]: http://github.com/hotsh/rstat.us
 [docs]: http://hotsh.github.com/rstat.us/
-[issues]: http://rstatus.lighthouseapp.com/
+[issues]: http://github.com/hotsh/rstat.us/issues
 [minitest]: https://github.com/seattlerb/minitest
 [capy]: https://github.com/jnicklas/capybara
 [docco]: https://github.com/jashkenas/docco
