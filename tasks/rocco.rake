@@ -1,8 +1,6 @@
-# Bring in Rocco tasks
-
 begin
   require 'rocco/tasks'
-  Rocco::make 'docs/', ["*.rb", "models/*.rb", "Rakefile"]
+  Rocco::make 'docs/', ["*.rb", "models/*.rb", "controllers/*.rb", "Rakefile"]
 
   desc 'Build rocco docs'
   task :docs => :rocco

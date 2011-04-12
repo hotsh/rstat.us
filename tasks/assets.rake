@@ -16,11 +16,11 @@ begin
           js = CoffeeScript.compile File.read("#{source}#{cf}") 
           open "#{javascripts}#{cf.gsub('.coffee', '.js')}", 'w' do |f|
             f.puts js
-          end 
-        end 
-      end      
-      
-      Jammit.package!    
+          end
+        end
+      end
+
+      Jammit.package!
     end
   end
 rescue LoadError

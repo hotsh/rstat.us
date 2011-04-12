@@ -1,10 +1,10 @@
+# This is all the standard CRUD stuff for Users, with a light garnish of
+# forgotten password logic.
+
 class Rstatus
+  # XXX: This shouldn't even be used any more.
   get '/users/confirm' do
     haml :"users/confirm"
-  end
-
-  get '/users/new' do
-    haml :"users/new"
   end
 
   # Password reset for users that are currently logged in. If a user does not
@@ -25,6 +25,7 @@ class Rstatus
     if logged_in?
       # Repeated in user_handler /reset_password/:token, make sure any changes
       # are in sync
+      # XXX: yes, this is a code smell
       if params[:password].size == 0
         flash[:notice] = "Password must be present"
         redirect "/users/password_reset"
@@ -100,10 +101,16 @@ class Rstatus
     haml :"users/index"
   end
 
+  # Just a sign up page, nothing to see here.
+  get '/users/new' do
+    haml :"users/new"
+  end
+
+  # The signup page posts here.
   post '/users' do
     user = User.new params
     if user.save
-      #this is really stupid.
+      # this is really stupid.
       auth = {}
       auth['uid'] = session[:uid]
       auth['provider'] = session[:provider]
@@ -130,7 +137,7 @@ class Rstatus
     end
   end
 
-  # show user profile
+  # This route lets you view someone's profile page.
   get "/users/:username" do
     set_params_page
 
@@ -146,10 +153,6 @@ class Rstatus
       end
     end
     @author = user.author
-    #XXX: the following doesn't work for some reasond
-    # @updates = user.feed.updates.sort{|a, b| b.created_at <=> a.created_at}.paginate(:page => params[:page], :per_page => params[:per_page])
-
-    #XXX: this is not webscale
     @updates = Update.where(:feed_id => user.feed.id).order(['created_at', 'descending']).paginate(:page => params[:page], :per_page => params[:per_page])
 
     @next_page = nil
@@ -158,9 +161,12 @@ class Rstatus
     haml :"users/show"
   end
 
-  # user edits own profile
+  # When you want to edit your own profile, this is where you go.
   get "/users/:username/edit" do
     @user = User.first :username => params[:username]
+
+    # While it might be cool to edit other people's profiles, we probably
+    # shouldn't let you do that. We're no fun.
     if @user == current_user
       haml :"users/edit"
     else
@@ -168,7 +174,7 @@ class Rstatus
     end
   end
 
-  # user updates own profile
+  # This actually does the updating. Sweet.
   put "/users/:username" do
     @user = User.first :username => params[:username]
     if @user == current_user
@@ -181,13 +187,17 @@ class Rstatus
     redirect "/users/#{params[:username]}"
   end
 
-  # an alias for the route of the feed
+  # This is pretty much the same thing as /feeds/your_feed_id, but we
+  # wanted to have a really nice URL for it, and not just the ugly one.
+  # Since it's only two lines, we don't bother to do a redirect, and
+  # it's arguably better to display them as two different resources.
+  # Whatevs.
   get "/users/:username/feed" do
     feed = User.first(:username => params[:username]).feed
     redirect "/feeds/#{feed.id}.atom"
   end
-
-  # This lets us see who is following.
+  # Who do you think is a really neat person? This page will show it to the
+  # world, so pick wisely!
   get '/users/:username/following' do
     set_params_page
 
@@ -199,13 +209,13 @@ class Rstatus
     set_next_prev_page
     @next_page = nil unless params[:page]*params[:per_page] < feeds.count
 
-    #build title
     title = ""
     title << "#{@user.username} is following"
 
     haml :"users/list", :locals => {:title => title}
   end
 
+  # This should really be a part of the above route.
   get '/users/:username/following.json' do
     set_params_page
 
@@ -214,6 +224,8 @@ class Rstatus
     authors.to_a.to_json
   end
 
+  # This shows off how cool you are: I hope you've got the biggest number of
+  # followers. Only one way to find out...
   get '/users/:username/followers' do
     set_params_page
 
@@ -230,15 +242,6 @@ class Rstatus
     title << "#{@user.username}'s followers"
 
     haml :"users/list", :locals => {:title => title}
-  end
-
-  delete '/users/:username/auth/:provider' do
-    user = User.first(:username => params[:username])
-    if user
-      auth = Authorization.first(:provider => params[:provider], :user_id => user.id)
-      auth.destroy if auth
-    end
-    redirect "/users/#{params[:username]}/edit"
   end
 
 end

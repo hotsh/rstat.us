@@ -4,16 +4,6 @@
 
 class Notifier
 
-  #this isn't used anymore, but I'm keeping it around so that it's easy to
-  #write the new confirmation code that will happen soon.
-  def self.send_signup_notification(recipient, token)
-    Pony.mail(:to => recipient,
-              :subject => "Thanks for signing up for rstat.us!",
-              :from => "steve+rstatus@steveklabnik.com",
-              :body => render_haml_template("signup", {:token => token}),
-              :via => :smtp, :via_options => Rstatus::PONY_VIA_OPTIONS)
-  end
-
   def self.send_forgot_password_notification(recipient, token)
     Pony.mail(:to => recipient,
               :subject => "Reset your rstat.us password",

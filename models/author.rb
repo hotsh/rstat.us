@@ -3,13 +3,15 @@
 # remote authors, from feeds that originate from outside of our site.
 
 class Author
+  include MongoMapper::Document
+
   DEFAULT_AVATAR = "http://rstat.us/images/avatar.png"
   ENCODED_DEFAULT_AVATAR = URI.encode_www_form_component(DEFAULT_AVATAR)
 
   GRAVATAR_HOST  = "gravatar.com"
 
-  include MongoMapper::Document
-
+  # We've got a bunch of data that gets stored in Author. And basically none
+  # of it is validated right now. Fun. Then again, not all of it is neccesary.
   key :username, String
   key :name, String
   key :email, String
@@ -17,10 +19,12 @@ class Author
   key :bio, String
   key :image_url, String
 
+  # as we said, an Author has a Feed that they're the... author of. And if
+  # they're local, they also have a User, too.
   one :feed
   one :user
 
- # The url of their profile page
+  # The url of their profile page
   key :remote_url, String
 
   # This takes results from an omniauth reponse and generates an author
@@ -40,11 +44,13 @@ class Author
     "/users/#{username}"
   end
 
+  # We've got a couple of options here. If they have some sort of image from
+  # Facebook or Twitter, we use that, and if they don't, we go with Gravatar.
+  # If none of that is around, then we show the DEFAULT_AVATAR
   def avatar_url
     return image_url      if image_url
     return DEFAULT_AVATAR if email.nil?
 
-    # if the gravatar doesn't exist, gravatar will use a default that we provide
     gravatar_url
   end
 
@@ -57,8 +63,7 @@ class Author
     "http://#{GRAVATAR_HOST}#{gravatar_path}"
   end
 
-  # these query parameters are described at:
-  #   <http://en.gravatar.com/site/implement/images/#default-image>
+  # these query parameters are described [here](http://en.gravatar.com/site/implement/images/#default-image).
   def gravatar_path
     "/avatar/#{Digest::MD5.hexdigest(email)}?s=48&r=r&d=#{ENCODED_DEFAULT_AVATAR}"
   end

@@ -5,6 +5,8 @@
 class Authorization
   include MongoMapper::Document
 
+  # If you don't hook up an Authorization to a User... you're not making much
+  # sense.
   belongs_to :user
 
   key :uid, Integer, :required => true
@@ -13,6 +15,9 @@ class Authorization
   key :oauth_secret, String
   key :nickname
 
+  # Super cool validations. We don't want to let two people sign up with the
+  # same external auth, but just in case there's a clash between providers,
+  # we scope it. So easy!
   validates_uniqueness_of :uid, :scope => :provider
 
   # Locates an authorization from data provided from a successful omniauth
@@ -39,7 +44,6 @@ class Authorization
            )
 
     a.save
-    #a.errors.each{|e| puts e.inspect }
     a
   end
 

@@ -1,3 +1,8 @@
+# Here's the story: Since Steve totally sucks at writing validations, we have a
+# bunch of users with screwed up usernames, so we also have a bunch of stuff
+# that handles those cases. In a few weeks we should be able to clean out this
+# entire file. Woohoo!
+
 class Rstatus
   # EMPTY USERNAME HANDLING - quick and dirty
   before do
@@ -39,10 +44,11 @@ class Rstatus
     haml :"forgot_password"
   end
 
-  # The email address is looked up, if no user is found an error is provided. If
-  # a user is found a token is generated and an email is sent to the user with a
-  # url to reset their password. Users are then redirected to the confirmation
-  # page to prevent repost issues
+  # We've got a pretty solid forgotten password implementation. It's simple:
+  # the email address is looked up, if no user is found an error is provided.
+  # If a user is found a token is generated and an email is sent to the user
+  # with the url to reset their password. Users are then redirected to the
+  # confirmation page to prevent repost issues
   post '/forgot_password' do
     user = User.first(:email => params[:email])
     if user.nil?
@@ -86,6 +92,7 @@ class Rstatus
     if params[:token]
       # Repeated in users_controller /users/password_reset, make sure any
       # changes are in sync
+      # XXX: Yes, this is a code smell.
       if params[:password].size == 0
         flash[:notice] = "Password must be present"
         redirect "/reset_password/#{params[:token]}"

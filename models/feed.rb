@@ -4,6 +4,7 @@
 # things in the future, like hashtags.
 
 class Feed
+  # XXX: Are these even needed? Bundler should be require-ing them.
   require 'osub'
   require 'opub'
   require 'nokogiri'
@@ -17,8 +18,8 @@ class Feed
   key :verify_token, String
   key :secret, String
 
-  # For both pubs and subs, it needs to know
-  # what hubs are communicating with it
+  # For both pubs and subs, it needs to know what hubs are communicating with
+  # it
   key :hubs, Array
 
   belongs_to :author
@@ -95,15 +96,12 @@ class Feed
 
     if sub.verify_content(atom_xml, signature)
       os_feed = OStatus::Feed.from_string(atom_xml)
-      # TODO:
-      # Update author if necessary
+      # XXX: Update author if necessary
 
-      # Update entries
       populate_entries(os_feed.entries)
     end
   end
 
-  # Set default hubs
   def default_hubs
     self.hubs << "http://pubsubhubbub.appspot.com/publish"
     save

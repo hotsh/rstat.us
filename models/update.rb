@@ -17,9 +17,6 @@ class Update
 
   before_save :generate_html
 
-  # store in authorization
-  #attr_accessor :oauth_token, :oauth_secret
-
   validates_length_of :text, :minimum => 1, :maximum => 140
   before_create :get_tags
   before_create :get_language
