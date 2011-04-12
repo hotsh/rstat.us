@@ -13,7 +13,15 @@
     <div id="jump_wrapper">
       <div id="jump_page">
           <a class="source" href="../Rakefile.html">Rakefile</a>
-          <a class="source" href="../config.html">config.rb</a>
+          <a class="source" href="../controllers/auth_controller.html">auth_controller.rb</a>
+          <a class="source" href="../controllers/dev_controller.html">dev_controller.rb</a>
+          <a class="source" href="../controllers/feeds_controller.html">feeds_controller.rb</a>
+          <a class="source" href="../controllers/sessions_controller.html">sessions_controller.rb</a>
+          <a class="source" href="../controllers/static_controller.html">static_controller.rb</a>
+          <a class="source" href="../controllers/subscriptions_controller.html">subscriptions_controller.rb</a>
+          <a class="source" href="../controllers/updates_controller.html">updates_controller.rb</a>
+          <a class="source" href="../controllers/user_handling.html">user_handling.rb</a>
+          <a class="source" href="../controllers/users_controller.html">users_controller.rb</a>
           <a class="source" href="../helpers.html">helpers.rb</a>
           <a class="source" href="all.html">all.rb</a>
           <a class="source" href="author.html">author.rb</a>
@@ -45,22 +53,12 @@ remote authors, from feeds that originate from outside of our site.</p>
       </td>
       <td class=code>
         <div class='highlight'><pre><span class="k">class</span> <span class="nc">Author</span>
+  <span class="kp">include</span> <span class="no">MongoMapper</span><span class="o">::</span><span class="no">Document</span>
+
   <span class="no">DEFAULT_AVATAR</span> <span class="o">=</span> <span class="s2">&quot;http://rstat.us/images/avatar.png&quot;</span>
   <span class="no">ENCODED_DEFAULT_AVATAR</span> <span class="o">=</span> <span class="no">URI</span><span class="o">.</span><span class="n">encode_www_form_component</span><span class="p">(</span><span class="no">DEFAULT_AVATAR</span><span class="p">)</span>
 
-  <span class="no">GRAVATAR_HOST</span>  <span class="o">=</span> <span class="s2">&quot;gravatar.com&quot;</span>
-
-  <span class="kp">include</span> <span class="no">MongoMapper</span><span class="o">::</span><span class="no">Document</span>
-
-  <span class="n">key</span> <span class="ss">:username</span><span class="p">,</span> <span class="nb">String</span>
-  <span class="n">key</span> <span class="ss">:name</span><span class="p">,</span> <span class="nb">String</span>
-  <span class="n">key</span> <span class="ss">:email</span><span class="p">,</span> <span class="nb">String</span>
-  <span class="n">key</span> <span class="ss">:website</span><span class="p">,</span> <span class="nb">String</span>
-  <span class="n">key</span> <span class="ss">:bio</span><span class="p">,</span> <span class="nb">String</span>
-  <span class="n">key</span> <span class="ss">:image_url</span><span class="p">,</span> <span class="nb">String</span>
-
-  <span class="n">one</span> <span class="ss">:feed</span>
-  <span class="n">one</span> <span class="ss">:user</span></pre></div>
+  <span class="no">GRAVATAR_HOST</span>  <span class="o">=</span> <span class="s2">&quot;gravatar.com&quot;</span></pre></div>
       </td>
     </tr>
     <tr id='section-2'>
@@ -68,16 +66,46 @@ remote authors, from feeds that originate from outside of our site.</p>
         <div class="pilwrap">
           <a class="pilcrow" href="#section-2">&#182;</a>
         </div>
-        <p>The url of their profile page</p>
+        <p>We&rsquo;ve got a bunch of data that gets stored in Author. And basically none
+of it is validated right now. Fun. Then again, not all of it is neccesary.</p>
       </td>
       <td class=code>
-        <div class='highlight'><pre>  <span class="n">key</span> <span class="ss">:remote_url</span><span class="p">,</span> <span class="nb">String</span></pre></div>
+        <div class='highlight'><pre>  <span class="n">key</span> <span class="ss">:username</span><span class="p">,</span> <span class="nb">String</span>
+  <span class="n">key</span> <span class="ss">:name</span><span class="p">,</span> <span class="nb">String</span>
+  <span class="n">key</span> <span class="ss">:email</span><span class="p">,</span> <span class="nb">String</span>
+  <span class="n">key</span> <span class="ss">:website</span><span class="p">,</span> <span class="nb">String</span>
+  <span class="n">key</span> <span class="ss">:bio</span><span class="p">,</span> <span class="nb">String</span>
+  <span class="n">key</span> <span class="ss">:image_url</span><span class="p">,</span> <span class="nb">String</span></pre></div>
       </td>
     </tr>
     <tr id='section-3'>
       <td class=docs>
         <div class="pilwrap">
           <a class="pilcrow" href="#section-3">&#182;</a>
+        </div>
+        <p>as we said, an Author has a Feed that they&rsquo;re the&hellip; author of. And if
+they&rsquo;re local, they also have a User, too.</p>
+      </td>
+      <td class=code>
+        <div class='highlight'><pre>  <span class="n">one</span> <span class="ss">:feed</span>
+  <span class="n">one</span> <span class="ss">:user</span></pre></div>
+      </td>
+    </tr>
+    <tr id='section-4'>
+      <td class=docs>
+        <div class="pilwrap">
+          <a class="pilcrow" href="#section-4">&#182;</a>
+        </div>
+        <p>The url of their profile page</p>
+      </td>
+      <td class=code>
+        <div class='highlight'><pre>  <span class="n">key</span> <span class="ss">:remote_url</span><span class="p">,</span> <span class="nb">String</span></pre></div>
+      </td>
+    </tr>
+    <tr id='section-5'>
+      <td class=docs>
+        <div class="pilwrap">
+          <a class="pilcrow" href="#section-5">&#182;</a>
         </div>
         <p>This takes results from an omniauth reponse and generates an author</p>
       </td>
@@ -96,22 +124,24 @@ remote authors, from feeds that originate from outside of our site.</p>
   <span class="k">def</span> <span class="nf">url</span>
     <span class="k">return</span> <span class="n">remote_url</span> <span class="k">if</span> <span class="n">remote_url</span>
     <span class="s2">&quot;/users/</span><span class="si">#{</span><span class="n">username</span><span class="si">}</span><span class="s2">&quot;</span>
-  <span class="k">end</span>
-
-  <span class="k">def</span> <span class="nf">avatar_url</span>
-    <span class="k">return</span> <span class="n">image_url</span>      <span class="k">if</span> <span class="n">image_url</span>
-    <span class="k">return</span> <span class="no">DEFAULT_AVATAR</span> <span class="k">if</span> <span class="n">email</span><span class="o">.</span><span class="n">nil?</span></pre></div>
+  <span class="k">end</span></pre></div>
       </td>
     </tr>
-    <tr id='section-4'>
+    <tr id='section-6'>
       <td class=docs>
         <div class="pilwrap">
-          <a class="pilcrow" href="#section-4">&#182;</a>
+          <a class="pilcrow" href="#section-6">&#182;</a>
         </div>
-        <p>if the gravatar doesn&rsquo;t exist, gravatar will use a default that we provide</p>
+        <p>We&rsquo;ve got a couple of options here. If they have some sort of image from
+Facebook or Twitter, we use that, and if they don&rsquo;t, we go with Gravatar.
+If none of that is around, then we show the DEFAULT_AVATAR</p>
       </td>
       <td class=code>
-        <div class='highlight'><pre>    <span class="n">gravatar_url</span>
+        <div class='highlight'><pre>  <span class="k">def</span> <span class="nf">avatar_url</span>
+    <span class="k">return</span> <span class="n">image_url</span>      <span class="k">if</span> <span class="n">image_url</span>
+    <span class="k">return</span> <span class="no">DEFAULT_AVATAR</span> <span class="k">if</span> <span class="n">email</span><span class="o">.</span><span class="n">nil?</span>
+
+    <span class="n">gravatar_url</span>
   <span class="k">end</span>
 
   <span class="k">def</span> <span class="nf">display_name</span>
@@ -124,13 +154,12 @@ remote authors, from feeds that originate from outside of our site.</p>
   <span class="k">end</span></pre></div>
       </td>
     </tr>
-    <tr id='section-5'>
+    <tr id='section-7'>
       <td class=docs>
         <div class="pilwrap">
-          <a class="pilcrow" href="#section-5">&#182;</a>
+          <a class="pilcrow" href="#section-7">&#182;</a>
         </div>
-        <p>these query parameters are described at:
-  <a href="http://en.gravatar.com/site/implement/images/#default-image">http://en.gravatar.com/site/implement/images/#default-image</a></p>
+        <p>these query parameters are described <a href="http://en.gravatar.com/site/implement/images/#default-image">here</a>.</p>
 
       </td>
       <td class=code>

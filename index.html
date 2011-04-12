@@ -13,7 +13,6 @@
     <div id="jump_wrapper">
       <div id="jump_page">
           <a class="source" href="Rakefile.html">Rakefile</a>
-          <a class="source" href="config.html">config.rb</a>
           <a class="source" href="helpers.html">helpers.rb</a>
           <a class="source" href="models/all.html">all.rb</a>
           <a class="source" href="models/author.html">author.rb</a>
@@ -164,7 +163,7 @@ methods and routes and such.</p>
       <td class=code>
         <div class='highlight'><pre><span class="k">class</span> <span class="nc">Rstatus</span> <span class="o">&lt;</span> <span class="no">Sinatra</span><span class="o">::</span><span class="no">Base</span><span class="p">;</span> <span class="k">end</span><span class="p">;</span>
 
-<span class="n">require_relative</span> <span class="s2">&quot;config&quot;</span>
+<span class="n">require_relative</span> <span class="s2">&quot;config/config&quot;</span>
 
 <span class="no">Dir</span><span class="o">.</span><span class="n">glob</span><span class="p">(</span><span class="s2">&quot;controllers/*.rb&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">each</span> <span class="p">{</span> <span class="o">|</span><span class="n">r</span><span class="o">|</span> <span class="n">require_relative</span> <span class="n">r</span> <span class="p">}</span>
 
