@@ -124,4 +124,22 @@ class UpdateTest < MiniTest::Unit::TestCase
 
     refute_match page.body, /Post to/
   end
+  
+  def test_update_render
+    update = Factory(:update)
+    
+    visit "/updates/#{update.id}"
+    assert_match page.body, /#{update.text}/
+  end
+  
+  def test_update_render_with_referral
+    update = Factory(:update)
+    update2 = Factory(:update)
+    update2.referral_id = update.id
+    update2.save
+    
+    visit "/updates/#{update2.id}"
+    assert_match page.body, /#{update2.text}/
+    assert_match page.body, /#{update.text}/
+  end
 end
