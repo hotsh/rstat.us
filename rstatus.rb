@@ -74,7 +74,7 @@ require_relative "helpers"
 #methods and routes and such.
 class Rstatus < Sinatra::Base; end;
 
-require_relative "config"
+require_relative "config/config"
 
 Dir.glob("controllers/*.rb").each { |r| require_relative r }
 

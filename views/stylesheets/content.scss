@@ -475,6 +475,20 @@ form#update-form {
       word-wrap: break-word;
       font-size: 2.5em;
     }
+
+    .reply-text {
+      word-wrap: break-word;
+    }
+  }
+
+  .reply-title {
+    border-top: 1px solid #ccc;
+    padding: 1em;
+    margin-top: 0.5em;
+  }
+  
+  .reply-title, .reply-text-wrap {
+    color: #aaa;
   }
 
   .byline {

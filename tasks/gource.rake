@@ -9,7 +9,7 @@ namespace :gource do
     system("cd #{root_path}; ffmpeg -y -b 3000k -r 30 -f image2pipe -vcodec ppm -i gource/rstatus.ppm -vcodec libx264 -vpre hq -vpre fastfirstpass gource/rstatus-video.mp4")
     system("cd #{root_path}; rm gource/rstatus.ppm")
   end
-  
+
   task :avatars do
     root_path = "#{File.dirname(__FILE__)}/../"
     system("cd #{root_path}; perl gource/get_avatars.pl")

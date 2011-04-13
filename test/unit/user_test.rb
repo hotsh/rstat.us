@@ -1,5 +1,6 @@
 # encoding: UTF-8
-require_relative "test_helper"
+require 'require_relative' if RUBY_VERSION[0,3] == '1.8'
+require_relative '../test_helper'
 
 class UserTest < MiniTest::Unit::TestCase
 
@@ -20,7 +21,7 @@ class UserTest < MiniTest::Unit::TestCase
     Update.create(:text => "just some other update")
 
     assert_equal 1, Update.hashtag_search("hashtags", {}).length
-    assert_equal update.id, Update.hashtag_search("hashtags", {}).first.id 
+    assert_equal update.id, Update.hashtag_search("hashtags", {}).first.id
   end
 
   def test_username_is_unique
@@ -29,35 +30,41 @@ class UserTest < MiniTest::Unit::TestCase
     refute u.save
   end
 
+  def test_username_is_unique_case_insensitive
+    Factory(:user, :username => "steve")
+    u = Factory.build(:user, :username => "Steve")
+    refute u.save
+  end
+
   def test_username_is_too_long
     u = User.new :username => "burningTyger_will_fail_with_this_username"
     refute u.save
   end
-  
+
   def test_user_has_twitter
     u = Factory.create(:user)
     a = Factory.create(:authorization, :user => u)
     assert u.twitter?
   end
-  
+
   def test_user_returns_twitter
     u = Factory.create(:user)
     a = Factory.create(:authorization, :user => u)
     assert_equal a, u.twitter
   end
-  
+
   def test_user_has_facebook
     u = Factory.create(:user)
     a = Factory.create(:authorization, :user => u, :provider => "facebook")
     assert u.facebook?
   end
-  
+
   def test_user_returns_facebook
     u = Factory.create(:user)
     a = Factory.create(:authorization, :user => u, :provider => "facebook")
     assert_equal a, u.facebook
   end
-  
+
   def test_set_reset_password_token
     u = Factory.create(:user)
     assert_nil u.perishable_token
@@ -66,7 +73,7 @@ class UserTest < MiniTest::Unit::TestCase
     refute u.perishable_token.nil?
     refute u.password_reset_sent.nil?
   end
-  
+
   def test_reset_password
     u = Factory.create(:user)
     u.password = "test_password"
@@ -77,7 +84,7 @@ class UserTest < MiniTest::Unit::TestCase
   end
 
   def test_no_special_chars_in_usernames
-    ["something@something.com", "another'quirk", ".boundary_case.", "another..case", "another/random\\test", "yet]another", ".Ὁμηρος"].each do |i|
+    ["something@something.com", "another'quirk", ".boundary_case.", "another..case", "another/random\\test", "yet]another", ".Ὁμηρος", "I have spaces"].each do |i|
       u = User.new :username => i
       refute u.save, "contains restricted characters."
     end
@@ -95,6 +102,15 @@ class UserTest < MiniTest::Unit::TestCase
   def test_username_cant_be_nil
     u = User.new :username => nil
     refute u.save, "nil username"
+  end
+
+  def test_reply_regexp
+    u = Factory.create(:user, :username => "hello.there")
+    u1 = Factory.create(:user, :username => "helloothere")
+    update = Update.create(:text => "@hello.there how _you_ doin'?")
+
+    assert_equal 1, u.at_replies({}).length
+    assert_equal 0, u1.at_replies({}).length
   end
 
 end

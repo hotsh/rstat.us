@@ -1,3 +1,5 @@
+require_relative '../lib/rstatus/session'
+
 class Rstatus
   # The `PONY_VIA_OPTIONS` hash is used to configure `pony`. Basically, we only
   # want to actually send mail if we're in the production environment. So we set
@@ -28,17 +30,17 @@ class Rstatus
   # that we don't have to give it away in the source code. Heroku makes it really
   # easy to keep environment variables set up, so this ends up being pretty nice.
   # This also has to be included before rack-flash, or it blows up.
-  use Rack::Session::Cookie, :secret => ENV['COOKIE_SECRET']
+  use Rstatus::Session, :secret => ENV['COOKIE_SECRET']
 
   # We're using rack-timeout to ensure that our dynos don't get starved by renegade
   # processes.
   use Rack::Timeout
-  Rack::Timeout.timeout = 10
+  Rack::Timeout.timeout = 20
 
-  set :root, File.dirname(__FILE__)
+  set :root, File.join(File.dirname(__FILE__), "..")
   set :haml, :escape_html => true
 
-  # This method enables the ability for our forms to use the _method hack for 
+  # This method enables the ability for our forms to use the _method hack for
   # actual RESTful stuff.
   set :method_override, true
 
@@ -56,11 +58,14 @@ class Rstatus
       MongoMapper.database = "rstatus-#{settings.environment}"
     end
 
-    Compass.add_project_configuration(File.join(File.dirname(__FILE__), 'config', 'compass.config'))        
+    Compass.add_project_configuration(File.join(File.dirname(__FILE__), 'compass.config'))
     MongoMapperExt.init
 
+    # We want to be able to profile things, so we're using the perftools middleware.
+#    use ::Rack::PerftoolsProfiler, :default_printer => 'text', :mode => :methods
+
     # now that we've connected to the db, let's load our models.
-    require_relative 'models/all'
+    require_relative '../models/all'
   end
 
   helpers Sinatra::UserHelper
@@ -78,4 +83,5 @@ class Rstatus
     provider :twitter, ENV["CONSUMER_KEY"], ENV["CONSUMER_SECRET"]
     provider :facebook, ENV["APP_ID"], ENV["APP_SECRET"], {:scope => 'publish_stream,offline_access,email'}
   end
+
 end

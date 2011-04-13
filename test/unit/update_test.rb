@@ -1,4 +1,5 @@
-require_relative "test_helper"
+require 'require_relative' if RUBY_VERSION[0,3] == '1.8'
+require_relative '../test_helper'
 
 class UpdateTest < MiniTest::Unit::TestCase
 
@@ -23,7 +24,7 @@ class UpdateTest < MiniTest::Unit::TestCase
     u = Update.new(:text => "This is a message mentioning @steveklabnik.")
     assert_match "This is a message mentioning @steveklabnik.", u.to_html
   end
-  
+
   def test_at_replies_with_not_existing_user_after_create
     u = Update.create(:text => "This is a message mentioning @steveklabnik.")
     assert_match "This is a message mentioning @steveklabnik.", u.html
@@ -34,7 +35,7 @@ class UpdateTest < MiniTest::Unit::TestCase
     u = Update.new(:text => "This is a message mentioning @SteveKlabnik.")
     assert_match /<a href='\/users\/steveklabnik'>@SteveKlabnik<\/a>/, u.to_html
   end
-  
+
   def test_at_replies_with_existing_user_after_create
     Factory(:user, :username => "steveklabnik")
     u = Update.create(:text => "This is a message mentioning @SteveKlabnik.")
@@ -47,7 +48,7 @@ class UpdateTest < MiniTest::Unit::TestCase
     u = Update.new(:text => "@SteveKlabnik @nobody foo@bar.wadus @SteveKlabnik")
     assert_match "<a href='\/users\/steveklabnik'>@SteveKlabnik<\/a> @nobody foo@bar.wadus <a href='\/users\/steveklabnik'>@SteveKlabnik<\/a>", u.to_html
   end
-  
+
   def test_at_replies_after_create
     Factory(:user, :username => "steveklabnik")
     Factory(:user, :username => "bar")
@@ -61,7 +62,7 @@ class UpdateTest < MiniTest::Unit::TestCase
     u = Update.new(:text => "https://github.com/hotsh/rstat.us/issues#issue/11")
     assert_equal "<a href='https://github.com/hotsh/rstat.us/issues#issue/11'>https://github.com/hotsh/rstat.us/issues#issue/11</a>", u.to_html
   end
-  
+
   def test_links_after_create
     u = Update.create(:text => "This is a message mentioning http://rstat.us/.")
     assert_match /<a href='http:\/\/rstat.us\/'>http:\/\/rstat.us\/<\/a>/, u.html
@@ -97,17 +98,17 @@ class UpdateTest < MiniTest::Unit::TestCase
     assert_match /<a href='\/hashtags\/hashtag'>#hashtag<\/a>/, u.html
     assert_match /<a href='http:\/\/rstat.us\/'>http:\/\/rstat.us\/<\/a>/, u.html
   end
-  
+
   def test_language_is_stored
     u = Update.create(:text => "Als hadden geweest is, is hebben te laat.")
     assert_equal "dutch", u.language
   end
-  
+
   def test_tags_are_extracted
     u = Update.create(:text => "#lots #of #hash #tags")
     assert_equal ["lots", "of", "hash", "tags"], u.tags
   end
-  
+
   def test_hashtag_search
     u1 = Update.create(:text => "this has #lots #of #hash #tags")
     u2 = Update.create(:text => "this has #lots #of #hash #tags #also")
@@ -126,7 +127,7 @@ class UpdateTest < MiniTest::Unit::TestCase
     u = Update.new(:text => "This is a message", :twitter => true)
     assert_equal true, u.twitter?
   end
-  
+
   def test_twitter_send
     f = Factory(:feed)
     at = Factory(:author, :feed => f)
@@ -136,7 +137,7 @@ class UpdateTest < MiniTest::Unit::TestCase
     u.feed.updates << Update.new(:text => "This is a message", :twitter => true, :facebook => false, :author => at)
     assert_equal u.twitter?, true
   end
-  
+
   def test_no_twitter_send
     f = Factory(:feed)
     at = Factory(:author, :feed => f)
@@ -145,7 +146,7 @@ class UpdateTest < MiniTest::Unit::TestCase
     Twitter.expects(:update).never
     u.feed.updates << Update.new(:text => "This is a message", :twitter => false, :facebook => false, :author => at)
   end
-  
+
   def test_twitter_send_no_twitter_auth
     f = Factory(:feed)
     at = Factory(:author, :feed => f)
@@ -153,7 +154,7 @@ class UpdateTest < MiniTest::Unit::TestCase
     Twitter.expects(:update).never
     u.feed.updates << Update.new(:text => "This is a message", :twitter => true, :facebook => false, :author => at)
   end
-  
+
   def test_facebook_send
     f = Factory(:feed)
     at = Factory(:author, :feed => f)
@@ -162,7 +163,7 @@ class UpdateTest < MiniTest::Unit::TestCase
     FbGraph::User.expects(:me).returns(mock(:feed! => nil))
     u.feed.updates << Update.new(:text => "This is a message", :facebook => true, :twitter => false, :author => at)
   end
-  
+
   def test_no_facebook_send
     f = Factory(:feed)
     at = Factory(:author, :feed => f)
@@ -171,7 +172,7 @@ class UpdateTest < MiniTest::Unit::TestCase
     FbGraph::User.expects(:me).never
     u.feed.updates << Update.new(:text => "This is a message", :facebook => false, :twitter => false, :author => at)
   end
-  
+
   def test_facebook_send_no_facebook_auth
     f = Factory(:feed)
     at = Factory(:author, :feed => f)
@@ -179,30 +180,4 @@ class UpdateTest < MiniTest::Unit::TestCase
     FbGraph::User.expects(:me).never
     u.feed.updates << Update.new(:text => "This is a message", :facebook => false, :twitter => false, :author => at)
   end
-
-  def test_twitter_user_sees_Post_to_message
-    u = Factory(:user)
-    a = Factory(:authorization, :user => u, :provider => "twitter")
-    log_in(u, a.uid)
-    visit "/updates"
-
-    assert_match page.body, /Post to/
-  end
-
-  def test_facebook_user_sees_Post_to_message
-    u = Factory(:user)
-    a = Factory(:authorization, :user => u, :provider => "facebook")
-    log_in_fb(u, a.uid)
-    visit "/updates"
-
-    assert_match page.body, /Post to/
-  end
-  
-  def test_email_user_sees_no_Post_to_message
-    u = Factory(:user)
-    log_in_email(u)
-    visit "/updates"
-
-    refute_match page.body, /Post to/
-  end  
 end

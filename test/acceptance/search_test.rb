@@ -1,8 +1,9 @@
-require_relative "test_helper"
+require 'require_relative' if RUBY_VERSION[0,3] == '1.8'
+require_relative 'acceptance_helper'
 
-class FeedTest < MiniTest::Unit::TestCase
+class SearchTest < MiniTest::Unit::TestCase
 
-  include TestHelper
+  include AcceptanceHelper
 
   def test_search_link_renders_while_logged_in
     u = Factory(:user, :email => "some@email.com", :hashed_password => "blerg")

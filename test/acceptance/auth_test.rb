@@ -1,9 +1,9 @@
 require 'require_relative' if RUBY_VERSION[0,3] == '1.8'
-require_relative 'test_helper'
+require_relative 'acceptance_helper'
 
 class RstatusAuthTest < MiniTest::Unit::TestCase
 
-  include TestHelper
+  include AcceptanceHelper
 
   # -- Extra assertions and helper methods:
 
@@ -54,12 +54,12 @@ class RstatusAuthTest < MiniTest::Unit::TestCase
 
   def test_twitter_remove
     log_in_new_twitter_user
-  
+
     visit "/users/#{@u.username}/edit"
-  
+
     assert_match /edit/, page.current_url
     click_button "Remove"
-  
+
     a = Authorization.first(:provider => "twitter", :user_id => @u.id)
     assert a.nil?
   end
@@ -80,12 +80,12 @@ class RstatusAuthTest < MiniTest::Unit::TestCase
 
   def test_facebook_remove
     log_in_new_fb_user
-  
+
     visit "/users/#{@u.username}/edit"
-  
+
     assert_match /edit/, page.current_url
     click_button "Remove"
-  
+
     a = Authorization.first(:provider => "facebook", :user_id => @u.id)
     assert a.nil?
   end
@@ -233,7 +233,7 @@ class RstatusAuthTest < MiniTest::Unit::TestCase
   def test_existing_profile_php_rename_user
     #stubbed to allow testing with new username validation
     existing_user = Factory.build(:user, :username => 'profile.php?id=1')
-    existing_user.expects(:username_wellformed).at_least_once.returns(true)
+    existing_user.expects(:no_malformed_username).at_least_once.returns(true)
     existing_user.save
     a = Factory(:authorization, :user => existing_user)
     log_in(existing_user, a.uid)
@@ -265,10 +265,35 @@ class RstatusAuthTest < MiniTest::Unit::TestCase
     u = Factory(:user)
     a = Factory(:authorization, :user => u, :oauth_token => nil, :oauth_secret => nil, :nickname => nil)
     log_in(u, a.uid)
-  
+
     assert_equal "1234", u.twitter.oauth_token
     assert_equal "4567", u.twitter.oauth_secret
     assert_equal u.username, u.twitter.nickname
   end
 
+  def test_log_in_username_remember_me
+    u = Factory(:user)
+    log_in_email(u, true)
+    assert_equal 30, ((session_expires - Time.now + 60).to_i / 1.day.to_i)
+  end
+
+  def test_log_out_username_no_longer_remember_me
+    u = Factory(:user)
+    log_in_email(u, true)
+    visit "/logout"
+    assert_equal session_expires, nil
+  end
+
+  def test_log_in_username_do_not_remember_me
+    u = Factory(:user)
+    log_in_email(u)
+    assert_equal 4, ((session_expires - Time.now + 60).to_i / 1.hour.to_i)
+  end
+
+  def test_log_out_username_do_not_remember_me_session_expiry
+    u = Factory(:user)
+    log_in_email(u)
+    visit "/logout"
+    assert_equal session_expires, nil
+  end
 end

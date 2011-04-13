@@ -1,6 +1,7 @@
 class Rstatus
-  
-  # publisher will feed the atom to a hub
+
+  # We do have to provide a rendered feed to the hub, and this controller does
+  # it. Publishers will also view a feed in order to verify their subscription.
   get "/feeds/:id.atom" do
     feed = Feed.first :id => params[:id]
 

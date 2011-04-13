@@ -1,3 +1,8 @@
+# The User model contains all of the information that a particular user of our
+# site needs: their username/password, etc. It all comes from here. Even users
+# that sign up via Twitter get a User model, though it's a bit empty in that
+# particular case.
+
 class User
   require 'digest/md5'
   require 'openssl'
@@ -24,16 +29,17 @@ class User
 
   # We cannot put a :unique tag above because of a MongoMapper bug
   validates_uniqueness_of :email, :allow_nil => :true 
-  validates_uniqueness_of :username, :allow_nil => :true 
+  validates_uniqueness_of :username, :allow_nil => :true, :case_sensitive => false
   
   # The maximum is arbitrary
-  validates_length_of :username, :minimum => 1, :maximum => 16
+  validates_length_of :username, :minimum => 1, :maximum => 17
   
   # Validate users don't have special characters in their username
-  validate :username_wellformed
+  validate :no_malformed_username
   
   # This will establish other entities related to the User
   before_create :generate_rsa_pair
+
   after_create :finalize
 
   # Before a user is created, we will generate some RSA keys
@@ -85,14 +91,14 @@ class User
     get_authorization(:facebook)
   end
   
-  # Check if a user has a certain authorization by providing the associated
+  # Check if a a user has a certain authorization by providing the associated
   # provider
   def has_authorization?(auth)
     a = Authorization.first(:provider => auth.to_s, :user_id => self.id)
     #return false if not authenticated and true otherwise.
     !a.nil?
   end
-  
+
   # Get an authorization by providing the assoaciated provider
   def get_authorization(auth)
     Authorization.first(:provider => auth.to_s, :user_id => self.id)
@@ -213,7 +219,7 @@ class User
       :page => params[:page],
       :per_page => params[:per_page]
     }
-    Update.where(:text => /^@#{username}\b/).order(['created_at', 'descending']).paginate(popts)
+    Update.where(:text => /^@#{Regexp.quote(username)}\b/).order(['created_at', 'descending']).paginate(popts)
   end
 
   # User MUST be confirmed
@@ -227,7 +233,7 @@ class User
   def password=(pass)
     self.hashed_password = BCrypt::Password.create(pass, :cost => 10)
   end
-  
+
   # Create a new perishable token and set the date the password reset token was
   # sent so tokens can be expired after 2 days
   def set_password_reset_token
@@ -235,7 +241,7 @@ class User
     set_perishable_token
     self.perishable_token
   end
-  
+
   # Set a new password, clear the date the password reset token was sent and
   # reset the perishable token
   def reset_password(pass)
@@ -281,9 +287,8 @@ class User
     save
   end
 
-  # Validation that checks for invalid usernames
-  def username_wellformed
-    unless (username =~ /[@!"#$\%&'()*,^~{}|`=:;\\\/\[\]?]/).nil? && (username =~ /^[.]/).nil? && (username =~ /[.]$/).nil? && (username =~ /[.]{2,}/).nil?
+  def no_malformed_username
+    unless (username =~ /[@!"#$\%&'()*,^~{}|`=:;\\\/\[\]\s?]/).nil? && (username =~ /^[.]/).nil? && (username =~ /[.]$/).nil? && (username =~ /[.]{2,}/).nil?
       errors.add(:username, "contains restricted characters.")
     end
   end

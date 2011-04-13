@@ -1,3 +1,7 @@
+# The Author model represents someone who creates information that's
+# shared via a feed. It is decoupled from a User, since we can also have
+# remote authors, from feeds that originate from outside of our site.
+
 class Author
   include MongoMapper::Document
 
@@ -5,8 +9,9 @@ class Author
   DEFAULT_AVATAR = "/images/avatar.png"
   ENCODED_DEFAULT_AVATAR = URI.encode_www_form_component(DEFAULT_AVATAR)
   GRAVATAR_HOST  = "gravatar.com"
-  
-  # Authors have some identifying information
+
+  # We've got a bunch of data that gets stored in Author. And basically none
+  # of it is validated right now. Fun. Then again, not all of it is neccesary.
   key :username, String
   key :name, String
   key :email, String
@@ -17,10 +22,12 @@ class Author
   # Authors MIGHT have a salmon endpoint
   key :salmon_url, String
 
-  # Authors have a public key that they sign salmon responses with
-  # The public key is identified using a key
-  key :public_key_id, String
+  # Authors have a public key that they use to sign salmon responses.
+  #  Leasing: To ensure that keys can only be compromised in a small window but
+  #  not require the server to retrieve a key per update, we store a lease.
+  #  When the lease expires, and a notification comes, we retrieve the key.
   key :public_key, String
+  key :public_key_lease, Date
   
   # The url of their profile page
   key :remote_url, String
@@ -29,6 +36,9 @@ class Author
   validates_uniqueness_of :remote_url, :allow_nil => :true 
 
   # Associations
+
+  # As we said, an Author has a Feed that they're the... author of. And if
+  # they're local, they also have a User, too.
   one :feed
   one :user
   
@@ -44,6 +54,13 @@ class Author
     )
   end
 
+  # Reset the public key lease, which will be called when the public key is
+  # retrieved from a trusted source.
+  def reset_key_lease
+    # public keys are good for 4 weeks
+    public_key_lease = (DateTime.now + 28).to_date
+  end
+
   # Returns a locally useful url for the Author
   def url
     return remote_url if remote_url
@@ -51,11 +68,14 @@ class Author
   end
 
   # Returns a locally useful url for the Author's avatar
+
+  # We've got a couple of options here. If they have some sort of image from
+  # Facebook or Twitter, we use that, and if they don't, we go with Gravatar.
+  # If none of that is around, then we show the DEFAULT_AVATAR
   def avatar_url
     return image_url      if image_url
     return DEFAULT_AVATAR if email.nil?
 
-    # if the gravatar doesn't exist, gravatar will use a default that we provide
     gravatar_url
   end
 
@@ -64,8 +84,7 @@ class Author
     "http://#{GRAVATAR_HOST}#{gravatar_path}"
   end
 
-  # these query parameters are described at:
-  #   <http://en.gravatar.com/site/implement/images/#default-image>
+  # these query parameters are described [here](http://en.gravatar.com/site/implement/images/#default-image).
   def gravatar_path
     "/avatar/#{Digest::MD5.hexdigest(email)}?s=48&r=r&d=#{ENCODED_DEFAULT_AVATAR}"
   end

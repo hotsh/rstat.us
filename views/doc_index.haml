@@ -1,0 +1,46 @@
+!!! 5
+%html.no-js{:lang => "en"}
+  %head
+    %meta{:charset => "utf-8"}
+    %title rstat.us
+
+    <!--[if (!IE)|(gte IE 8)]><!-->
+    %link{:href => "screen-datauri.css", :media => "screen", :rel => "stylesheet"}
+    <!--<![endif]-->
+    /[if lte IE 7]
+      %link{:href => "screen.css", :media => "screen", :rel => "stylesheet", :type => "text/css"}
+    :javascript
+      var _gaq = _gaq || [];
+      _gaq.push(['_setAccount', 'UA-22030550-1']);
+      _gaq.push(['_trackPageview']);
+
+      (function() {
+        var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+        ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(ga);
+      })();
+  %body#home
+    #main
+      #header
+        %h2#logo
+          %a{:href => "/"}
+            rstat.us
+
+      .content
+        #pitch
+          != RDiscount.new(File.read("README.md")).to_html
+  #footer
+    #footer-wrap
+      #logo
+        %a{:href=>"/"}
+          rstat.us
+      %ul
+        %li
+          %a{:href=>"/home"}
+            Home
+        %li
+          %a{:href=>"/contact"}
+            Contact
+        %li
+          %a{:href=>"/open_source"}
+            Open Source
