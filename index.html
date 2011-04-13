@@ -1,274 +1,160 @@
 <!DOCTYPE html>
-<html>
-<head>
-  <meta http-equiv="content-type" content="text/html;charset=utf-8">
-  <title>rstatus.rb</title>
-  <link rel="stylesheet" href="http://github.com/jashkenas/docco/raw/0.3.0/resources/docco.css">
-</head>
-<body>
-<div id='container'>
-  <div id="background"></div>
-  <div id="jump_to">
-    Jump To &hellip;
-    <div id="jump_wrapper">
-      <div id="jump_page">
-          <a class="source" href="Rakefile.html">Rakefile</a>
-          <a class="source" href="helpers.html">helpers.rb</a>
-          <a class="source" href="models/all.html">all.rb</a>
-          <a class="source" href="models/author.html">author.rb</a>
-          <a class="source" href="models/authorization.html">authorization.rb</a>
-          <a class="source" href="models/feed.html">feed.rb</a>
-          <a class="source" href="models/notifier.html">notifier.rb</a>
-          <a class="source" href="models/update.html">update.rb</a>
-          <a class="source" href="models/user.html">user.rb</a>
-          <a class="source" href="rstatus.html">rstatus.rb</a>
+<html class='no-js' lang='en'>
+  <head>
+    <meta charset='utf-8' />
+    <title>rstat.us</title>
+    <!--[if (!IE)|(gte IE 8)]><!-->
+    <link href='screen-datauri.css' media='screen' rel='stylesheet' />
+    <!--<![endif]-->
+    <!--[if lte IE 7]>
+      <link href='screen.css' media='screen' rel='stylesheet' type='text/css' />
+    <![endif]-->
+    <script type='text/javascript'>
+      //<![CDATA[
+        var _gaq = _gaq || [];
+        _gaq.push(['_setAccount', 'UA-22030550-1']);
+        _gaq.push(['_trackPageview']);
+        
+        (function() {
+          var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+          ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+          (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(ga);
+        })();
+      //]]>
+    </script>
+  </head>
+  <body id='home'>
+    <div id='main'>
+      <div id='header'>
+        <h2 id='logo'>
+          <a href='/'>
+            rstat.us
+          </a>
+        </h2>
+      </div>
+      <div class='content'>
+        <div id='pitch'>
+          <h1>rstat.us</h1>
+          
+          <p>rstat.us is a microblogging site built on top of the <a href="http://status.net/wiki/OStatus">ostatus
+          protocol</a>.</p>
+          
+          <h2>Helping out with rstat.us</h2>
+          
+          <p>If you'd like to contribute, here are some details:</p>
+          
+          <ul>
+          <li>The stack: ruby/sinatra/mongodb</li>
+          <li><a href="http://github.com/hotsh/rstat.us">The code</a></li>
+          <li><a href="http://hotsh.github.com/rstat.us/">The documentation</a> (need lots of improvement here!)</li>
+          <li><a href="http://github.com/hotsh/rstat.us/issues">The Issues list</a></li>
+          <li>Please fork the project and make a pull request
+          
+          <ul>
+          <li>Pull requests will not be merged without tests/documentation
+          
+          <ul>
+          <li>We use <a href="https://github.com/seattlerb/minitest">minitest</a>/<a href="https://github.com/jnicklas/capybara">capybara</a> for tests</li>
+          <li>We use <a href="https://github.com/jashkenas/docco">docco</a> (rocc) for documentation</li>
+          <li>If you think it doesn't need a test, make your case, I'm just saying.</li>
+          </ul>
+          </li>
+          </ul>
+          </li>
+          </ul>
+          
+          
+          <h2>Setting up a dev environment</h2>
+          
+          <p>First off: you will need MongoDB (www.mongodb.org).  They have a <a href="http://www.mongodb.org/display/DOCS/Quickstart">quickstart
+          guide</a> for getting it installed and running.</p>
+          
+          <p>Then do:</p>
+          
+          <pre><code>$ git clone https://github.com/$MY_GITHUB_USERNAME/rstat.us.git
+          $ cd rstat.us
+          </code></pre>
+          
+          <p>Copy the config file; if you have actual Twitter API keys, you can add yours,
+          but this file just needs to exist for the server to work.</p>
+          
+          <pre><code>$ cp config/config.yml.sample config/config.yml
+          </code></pre>
+          
+          <p>Then update your gemset:</p>
+          
+          <pre><code>$ gem install bundler &amp;&amp; bundle install
+          </code></pre>
+          
+          <p>And start the server:</p>
+          
+          <pre><code>$ rackup
+          </code></pre>
+          
+          <p>Bam! Visit http://localhost:9292/ in your browser, and you'll be good.</p>
+          
+          <h2>Compiling CSS and Javascript</h2>
+          
+          <p>We use Coffeescript (.coffee) or Sassy CSS (.scss) for javascript and CSS development
+          respectively. When running the site locally, these files will automatically be
+          compiled by the application when requested.</p>
+          
+          <p>When preparing for deployment, we compress our stylesheets and javascripts, as
+          well as embedding what images we can. To compile Coffeescript and SCSS,
+          use the following rake task:</p>
+          
+          <pre><code>$ rake assets:compile
+          </code></pre>
+          
+          <p>Note: This relies on some sort of coffee compiler being installed globally.  If
+          you get "undefined method 'compile' for nil:NilClass", that might be your
+          problem.  On Ubuntu, installing the nodejs package fixes this; for other
+          systems, check out <a href="http://nodejs.org">nodejs.org</a>.</p>
+          
+          <p>For coffee-script installation, <a href="http://jashkenas.github.com/coffee-script/#installation">check the docs</a>.</p>
+          
+          <p>You may also need the java runtime for asset compression, which is handled by
+          jammit using yui compressor and closure compiler. Installing a JDK, such as
+          <a href="http://openjdk.java.net/">OpenJDK</a> should do the trick.</p>
+          
+          <h2>Running your own node</h2>
+          
+          <p>If you need help with this, then you're not ready to run one.
+          Here's the deal: we're still finishing up our ostatus implementation,
+          and until it's 100% compatible, these instructions are kept secret.
+          Eventually, we plan on making this <em>super easy</em>, but until we feel that
+          it's ready, we're keeping the instructions 'secret.' Sorry!</p>
+          
+          <p>If you do run your own node anyway, please keep current with upstream
+          until we hit 1.0, and it should all be smooth sailing!</p>
+        </div>
       </div>
     </div>
+  </body>
+  <div id='footer'>
+    <div id='footer-wrap'>
+      <div id='logo'>
+        <a href='/'>
+          rstat.us
+        </a>
+      </div>
+      <ul>
+        <li>
+          <a href='/home'>
+            Home
+          </a>
+        </li>
+        <li>
+          <a href='/contact'>
+            Contact
+          </a>
+        </li>
+        <li>
+          <a href='/open_source'>
+            Open Source
+          </a>
+        </li>
+      </ul>
+    </div>
   </div>
-  <table cellspacing=0 cellpadding=0>
-  <thead>
-    <tr>
-      <th class=docs><h1>rstatus.rb</h1></th>
-      <th class=code></th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr id='section-1'>
-      <td class=docs>
-        <div class="pilwrap">
-          <a class="pilcrow" href="#section-1">&#182;</a>
-        </div>
-        <p>This is the source code for <a href="http://rstat.us/">rstat.us</a>, a microblogging
-website built on the ostatus protocol.</p>
-
-<p>To get started, you&rsquo;ll need to install some prerequisite software:</p>
-
-<p><strong>Ruby</strong> is used to power the site. We&rsquo;re currently using ruby 1.9.2p180. I
-highly recommend that you use <a href="http://rvm.beginrescueend.com/">rvm</a> to install and manage your Rubies.
-It&rsquo;s a fantastic tool. If you do decide to use <code>rvm</code>, you can install the
-appropriate Ruby and create a gemset by simply <code>cd</code>-ing into the root project
-directory; I have a magical <code>.rvmrc</code> file that&rsquo;ll set you up.</p>
-
-<p><strong>MongoDB</strong> is a really awesome document store. We use it to persist all of
-the data on the website. To get MongoDB, please visit their
-<a href="http://www.mongodb.org/downloads">downloads page</a> to find a package for your
-system.</p>
-
-<p>After installing Ruby and MongoDB, you need to acquire all of the Ruby gems
-that we use. This is pretty easy, since we&rsquo;re using <strong>bundler</strong>. Just do
-this:</p>
-
-<pre><code>$ gem install bundler
-$ bundle install
-</code></pre>
-
-<p>That&rsquo;ll set it all up! Then, you need to make sure you&rsquo;re running MongoDB.
-I have to open up another tab in my terminal and type</p>
-
-<pre><code>$ mongod
-</code></pre>
-
-<p>to get this to happen. When you&rsquo;re done hacking, you can hit ^-c to stop
-<code>mongod</code> from running.</p>
-
-<p>To actually start up the site, just</p>
-
-<pre><code>$ rackup
-</code></pre>
-
-<p>and then visit <a href="http://localhost:9292">http://localhost:9292/</a>. You&rsquo;re good
-to go!</p>
-
-<p>If you want to contribute to rstatus you will have to run the tests before you
-send a pull request. You can do so by calling</p>
-
-<p>   $ rake test</p>
-
-<p>in the rstat.us root directory. Once your changes pass all tests you may commit
-and send a pull request via Github.</p>
-      </td>
-      <td class=code>
-        <div class='highlight'><pre></pre></div>
-      </td>
-    </tr>
-    <tr id='section-About_rstatus.rb'>
-      <td class=docs>
-        <div class="pilwrap">
-          <a class="pilcrow" href="#section-About_rstatus.rb">&#182;</a>
-        </div>
-        <h3>About rstatus.rb</h3>
-
-<p>This file is the main entry point to the application. It has three main
-purposes:</p>
-
-<ol>
-<li>Include all relevant gems and library code.</li>
-<li>Configure all settings based on our environment.</li>
-<li>Set up a few basic routes.</li>
-</ol>
-
-
-<p>Everything else is handled by code that&rsquo;s included from this file.</p>
-      </td>
-      <td class=code>
-        <div class='highlight'><pre></pre></div>
-      </td>
-    </tr>
-    <tr id='section-Including_gems'>
-      <td class=docs>
-        <div class="pilwrap">
-          <a class="pilcrow" href="#section-Including_gems">&#182;</a>
-        </div>
-        <h3>Including gems</h3>
-      </td>
-      <td class=code>
-        <div class='highlight'><pre></pre></div>
-      </td>
-    </tr>
-    <tr id='section-4'>
-      <td class=docs>
-        <div class="pilwrap">
-          <a class="pilcrow" href="#section-4">&#182;</a>
-        </div>
-        <p>We need to require rubygems and bundler to get things going. Then we call
-<code>Bundler.setup</code> to get all of the magic started.</p>
-      </td>
-      <td class=code>
-        <div class='highlight'><pre><span class="nb">require</span> <span class="s1">&#39;bundler&#39;</span>
-<span class="no">Bundler</span><span class="o">.</span><span class="n">require</span></pre></div>
-      </td>
-    </tr>
-    <tr id='section-5'>
-      <td class=docs>
-        <div class="pilwrap">
-          <a class="pilcrow" href="#section-5">&#182;</a>
-        </div>
-        <p>We moved lots of helpers into a separate file. These are all things that are
-useful throughout the rest of the application.</p>
-      </td>
-      <td class=code>
-        <div class='highlight'><pre><span class="n">require_relative</span> <span class="s2">&quot;helpers&quot;</span></pre></div>
-      </td>
-    </tr>
-    <tr id='section-6'>
-      <td class=docs>
-        <div class="pilwrap">
-          <a class="pilcrow" href="#section-6">&#182;</a>
-        </div>
-        <p>It&rsquo;s good form to make your Sinatra applications be a subclass of
-Sinatra::Base. This way, we&rsquo;re not polluting the global namespace with our
-methods and routes and such.</p>
-
-      </td>
-      <td class=code>
-        <div class='highlight'><pre><span class="k">class</span> <span class="nc">Rstatus</span> <span class="o">&lt;</span> <span class="no">Sinatra</span><span class="o">::</span><span class="no">Base</span><span class="p">;</span> <span class="k">end</span><span class="p">;</span>
-
-<span class="n">require_relative</span> <span class="s2">&quot;config/config&quot;</span>
-
-<span class="no">Dir</span><span class="o">.</span><span class="n">glob</span><span class="p">(</span><span class="s2">&quot;controllers/*.rb&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">each</span> <span class="p">{</span> <span class="o">|</span><span class="n">r</span><span class="o">|</span> <span class="n">require_relative</span> <span class="n">r</span> <span class="p">}</span>
-
-<span class="k">class</span> <span class="nc">Rstatus</span>
-
-  <span class="n">get</span> <span class="s1">&#39;/&#39;</span> <span class="k">do</span>
-    <span class="k">if</span> <span class="n">logged_in?</span>
-      <span class="n">set_params_page</span>
-      <span class="vi">@updates</span> <span class="o">=</span> <span class="n">current_user</span><span class="o">.</span><span class="n">timeline</span><span class="p">(</span><span class="n">params</span><span class="p">)</span>
-      <span class="n">set_next_prev_page</span> <span class="k">if</span> <span class="vi">@updates</span><span class="o">.</span><span class="n">total_entries</span> <span class="o">&gt;</span> <span class="n">params</span><span class="o">[</span><span class="ss">:per_page</span><span class="o">]</span>
-
-      <span class="vi">@timeline</span> <span class="o">=</span> <span class="kp">true</span>
-
-      <span class="k">if</span> <span class="n">params</span><span class="o">[</span><span class="ss">:reply</span><span class="o">]</span>
-        <span class="n">u</span> <span class="o">=</span> <span class="no">Update</span><span class="o">.</span><span class="n">first</span><span class="p">(</span><span class="ss">:id</span> <span class="o">=&gt;</span> <span class="n">params</span><span class="o">[</span><span class="ss">:reply</span><span class="o">]</span><span class="p">)</span>
-        <span class="vi">@update_text</span> <span class="o">=</span> <span class="s2">&quot;@</span><span class="si">#{</span><span class="n">u</span><span class="o">.</span><span class="n">author</span><span class="o">.</span><span class="n">username</span><span class="si">}</span><span class="s2"> &quot;</span>
-        <span class="vi">@update_id</span> <span class="o">=</span> <span class="n">u</span><span class="o">.</span><span class="n">id</span>
-      <span class="k">elsif</span> <span class="n">params</span><span class="o">[</span><span class="ss">:share</span><span class="o">]</span>
-        <span class="n">u</span> <span class="o">=</span> <span class="no">Update</span><span class="o">.</span><span class="n">first</span><span class="p">(</span><span class="ss">:id</span> <span class="o">=&gt;</span> <span class="n">params</span><span class="o">[</span><span class="ss">:share</span><span class="o">]</span><span class="p">)</span>
-        <span class="vi">@update_text</span> <span class="o">=</span> <span class="s2">&quot;RS @</span><span class="si">#{</span><span class="n">u</span><span class="o">.</span><span class="n">author</span><span class="o">.</span><span class="n">username</span><span class="si">}</span><span class="s2">: </span><span class="si">#{</span><span class="n">u</span><span class="o">.</span><span class="n">text</span><span class="si">}</span><span class="s2">&quot;</span>
-        <span class="vi">@update_id</span> <span class="o">=</span> <span class="n">u</span><span class="o">.</span><span class="n">id</span>
-      <span class="k">else</span>
-        <span class="vi">@update_text</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
-        <span class="vi">@update_id</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
-      <span class="k">end</span>
-
-      <span class="k">if</span> <span class="n">params</span><span class="o">[</span><span class="ss">:status</span><span class="o">]</span>
-        <span class="vi">@update_text</span> <span class="o">=</span> <span class="vi">@update_text</span> <span class="o">+</span> <span class="n">params</span><span class="o">[</span><span class="ss">:status</span><span class="o">]</span>
-      <span class="k">end</span>
-
-      <span class="n">haml</span> <span class="ss">:dashboard</span>
-    <span class="k">else</span>
-      <span class="n">haml</span> <span class="ss">:index</span><span class="p">,</span> <span class="ss">:layout</span> <span class="o">=&gt;</span> <span class="kp">false</span>
-    <span class="k">end</span>
-  <span class="k">end</span>
-
-  <span class="n">get</span> <span class="s1">&#39;/home&#39;</span> <span class="k">do</span>
-    <span class="n">cache_control</span> <span class="ss">:public</span><span class="p">,</span> <span class="ss">:must_revalidate</span><span class="p">,</span> <span class="ss">:max_age</span> <span class="o">=&gt;</span> <span class="mi">60</span>
-    <span class="n">haml</span> <span class="ss">:index</span><span class="p">,</span> <span class="ss">:layout</span> <span class="o">=&gt;</span> <span class="kp">false</span>
-  <span class="k">end</span>
-
-  <span class="n">get</span> <span class="s1">&#39;/replies&#39;</span> <span class="k">do</span>
-    <span class="k">if</span> <span class="n">logged_in?</span>
-      <span class="n">set_params_page</span>
-      <span class="vi">@replies</span> <span class="o">=</span> <span class="n">current_user</span><span class="o">.</span><span class="n">at_replies</span><span class="p">(</span><span class="n">params</span><span class="p">)</span>
-      <span class="n">set_next_prev_page</span> <span class="k">if</span> <span class="vi">@replies</span><span class="o">.</span><span class="n">total_entries</span> <span class="o">&gt;</span> <span class="n">params</span><span class="o">[</span><span class="ss">:per_page</span><span class="o">]</span>
-      <span class="n">haml</span> <span class="ss">:replies</span>
-    <span class="k">else</span>
-      <span class="n">haml</span> <span class="ss">:index</span><span class="p">,</span> <span class="ss">:layout</span> <span class="o">=&gt;</span> <span class="kp">false</span>
-    <span class="k">end</span>
-  <span class="k">end</span>
-
-  <span class="n">post</span> <span class="s1">&#39;/signup&#39;</span> <span class="k">do</span>
-    <span class="n">u</span> <span class="o">=</span> <span class="no">User</span><span class="o">.</span><span class="n">create</span><span class="p">(</span><span class="ss">:email</span> <span class="o">=&gt;</span> <span class="n">params</span><span class="o">[</span><span class="ss">:email</span><span class="o">]</span><span class="p">,</span>
-                    <span class="ss">:status</span> <span class="o">=&gt;</span> <span class="s2">&quot;unconfirmed&quot;</span><span class="p">)</span>
-    <span class="n">u</span><span class="o">.</span><span class="n">set_perishable_token</span>
-
-    <span class="k">if</span> <span class="n">development?</span>
-      <span class="nb">puts</span> <span class="n">uri</span><span class="p">(</span><span class="s2">&quot;/&quot;</span><span class="p">)</span> <span class="o">+</span> <span class="s2">&quot;confirm/</span><span class="si">#{</span><span class="n">u</span><span class="o">.</span><span class="n">perishable_token</span><span class="si">}</span><span class="s2">&quot;</span>
-    <span class="k">else</span>
-      <span class="no">Notifier</span><span class="o">.</span><span class="n">send_signup_notification</span><span class="p">(</span><span class="n">params</span><span class="o">[</span><span class="ss">:email</span><span class="o">]</span><span class="p">,</span> <span class="n">u</span><span class="o">.</span><span class="n">perishable_token</span><span class="p">)</span>
-    <span class="k">end</span>
-
-    <span class="n">haml</span> <span class="ss">:&quot;signup/thanks&quot;</span>
-  <span class="k">end</span>
-
-  <span class="n">get</span> <span class="s2">&quot;/search&quot;</span> <span class="k">do</span>
-    <span class="vi">@updates</span> <span class="o">=</span> <span class="o">[]</span>
-    <span class="k">if</span> <span class="n">params</span><span class="o">[</span><span class="ss">:q</span><span class="o">]</span>
-      <span class="vi">@updates</span> <span class="o">=</span> <span class="no">Update</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="n">params</span><span class="o">[</span><span class="ss">:q</span><span class="o">]</span><span class="p">,</span> <span class="ss">:page</span> <span class="o">=&gt;</span> <span class="n">params</span><span class="o">[</span><span class="ss">:page</span><span class="o">]</span><span class="p">,</span> <span class="ss">:per_page</span> <span class="o">=&gt;</span> <span class="n">params</span><span class="o">[</span><span class="ss">:per_page</span><span class="o">]</span> <span class="o">||</span> <span class="mi">20</span><span class="p">,</span> <span class="ss">:order</span> <span class="o">=&gt;</span> <span class="ss">:created_at</span><span class="o">.</span><span class="n">desc</span><span class="p">)</span>
-    <span class="k">end</span>
-
-    <span class="vi">@next_page</span> <span class="o">=</span> <span class="kp">nil</span>
-    <span class="vi">@prev_page</span> <span class="o">=</span> <span class="kp">nil</span>
-
-    <span class="k">if</span> <span class="o">!</span><span class="vi">@updates</span><span class="o">.</span><span class="n">empty?</span> <span class="o">&amp;&amp;</span> <span class="vi">@updates</span><span class="o">.</span><span class="n">next_page</span>
-      <span class="vi">@next_page</span> <span class="o">=</span> <span class="s2">&quot;?</span><span class="si">#{</span><span class="no">Rack</span><span class="o">::</span><span class="no">Utils</span><span class="o">.</span><span class="n">build_query</span> <span class="ss">:page</span> <span class="o">=&gt;</span> <span class="vi">@updates</span><span class="o">.</span><span class="n">next_page</span><span class="si">}</span><span class="s2">&quot;</span>
-    <span class="k">end</span>
-    <span class="k">if</span> <span class="o">!</span><span class="vi">@updates</span><span class="o">.</span><span class="n">empty?</span> <span class="o">&amp;&amp;</span> <span class="vi">@updates</span><span class="o">.</span><span class="n">previous_page</span>
-      <span class="vi">@prev_page</span> <span class="o">=</span> <span class="s2">&quot;?</span><span class="si">#{</span><span class="no">Rack</span><span class="o">::</span><span class="no">Utils</span><span class="o">.</span><span class="n">build_query</span> <span class="ss">:page</span> <span class="o">=&gt;</span> <span class="vi">@updates</span><span class="o">.</span><span class="n">previous_page</span><span class="si">}</span><span class="s2">&quot;</span>
-    <span class="k">end</span>
-    <span class="n">haml</span> <span class="ss">:search</span>
-  <span class="k">end</span>
-
-  <span class="n">not_found</span> <span class="k">do</span>
-    <span class="n">haml</span> <span class="ss">:&#39;error&#39;</span><span class="p">,</span> <span class="ss">:layout</span> <span class="o">=&gt;</span> <span class="kp">false</span><span class="p">,</span> <span class="ss">:locals</span> <span class="o">=&gt;</span> <span class="p">{</span><span class="ss">:code</span> <span class="o">=&gt;</span> <span class="mi">404</span><span class="p">,</span> <span class="ss">:message</span> <span class="o">=&gt;</span> <span class="s2">&quot;We couldn&#39;t find the page you&#39;re looking for&quot;</span><span class="p">}</span>
-  <span class="k">end</span>
-
-  <span class="n">error</span> <span class="k">do</span>
-    <span class="n">haml</span> <span class="ss">:&#39;error&#39;</span><span class="p">,</span> <span class="ss">:layout</span> <span class="o">=&gt;</span> <span class="kp">false</span><span class="p">,</span> <span class="ss">:locals</span> <span class="o">=&gt;</span> <span class="p">{</span><span class="ss">:code</span> <span class="o">=&gt;</span> <span class="mi">500</span><span class="p">,</span> <span class="ss">:message</span> <span class="o">=&gt;</span> <span class="s2">&quot;Something went wrong&quot;</span><span class="p">}</span>
-  <span class="k">end</span>
-
-  <span class="n">get</span> <span class="s2">&quot;/hashtags/:tag&quot;</span> <span class="k">do</span>
-    <span class="vi">@hashtag</span> <span class="o">=</span> <span class="n">params</span><span class="o">[</span><span class="ss">:tag</span><span class="o">]</span>
-    <span class="n">set_params_page</span>
-    <span class="vi">@updates</span> <span class="o">=</span> <span class="no">Update</span><span class="o">.</span><span class="n">hashtag_search</span><span class="p">(</span><span class="vi">@hashtag</span><span class="p">,</span> <span class="n">params</span><span class="p">)</span>
-    <span class="n">set_next_prev_page</span> <span class="k">if</span> <span class="vi">@updates</span><span class="o">.</span><span class="n">total_entries</span> <span class="o">&gt;</span> <span class="n">params</span><span class="o">[</span><span class="ss">:per_page</span><span class="o">]</span>
-    <span class="vi">@timeline</span> <span class="o">=</span> <span class="kp">true</span>
-    <span class="vi">@update_text</span> <span class="o">=</span> <span class="n">params</span><span class="o">[</span><span class="ss">:status</span><span class="o">]</span>
-    <span class="n">haml</span> <span class="ss">:dashboard</span>
-  <span class="k">end</span>
-
-<span class="k">end</span></pre></div>
-      </td>
-    </tr>
-  </table>
-</div>
-</body>
+</html>
