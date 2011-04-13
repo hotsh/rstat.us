@@ -5,6 +5,7 @@ class Update
 
   belongs_to :feed
   belongs_to :author
+  validates_presence_of :author_id
 
   key :text, String, :default => ""
   key :html, String
