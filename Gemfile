@@ -32,7 +32,6 @@ gem "sass"
 gem "compass"
 gem "tzinfo"
 gem "exceptional"
-gem "rack-perftools_profiler", :require => 'rack/perftools_profiler'
 
 group :development, :test do
   gem "minitest", :platforms => :ruby_18
