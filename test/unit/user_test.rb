@@ -104,4 +104,13 @@ class UserTest < MiniTest::Unit::TestCase
     refute u.save, "nil username"
   end
 
+  def test_reply_regexp
+    u = Factory.create(:user, :username => "hello.there")
+    u1 = Factory.create(:user, :username => "helloothere")
+    update = Update.create(:text => "@hello.there how _you_ doin'?")
+
+    assert_equal 1, u.at_replies({}).length
+    assert_equal 0, u1.at_replies({}).length
+  end
+
 end

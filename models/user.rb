@@ -164,7 +164,7 @@ class User
       :page => params[:page],
       :per_page => params[:per_page]
     }
-    Update.where(:text => /^@#{username}\b/).order(['created_at', 'descending']).paginate(popts)
+    Update.where(:text => /^@#{Regexp.quote(username)}\b/).order(['created_at', 'descending']).paginate(popts)
   end
 
   key :status
