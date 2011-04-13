@@ -106,6 +106,17 @@ class User
   key :followers_ids, Array
   many :followers, :in => :followers_ids, :class_name => 'Feed'
 
+  # The User is being followed by this feed
+  def followed_by! feed
+    followers << feed
+    save
+  end
+
+  def unfollowed_by! feed
+    followers_ids.delete(feed.id)
+    save
+  end
+
   # Follow a particular feed
   def follow! feed_url
     f = Feed.first(:url => feed_url)
@@ -131,7 +142,7 @@ class User
 
     if f.local?
       followee = User.first(:author_id => f.author.id)
-      followee.followers << self.feed
+      followee.followed_by! self.feed
       followee.save
     end
 
@@ -144,8 +155,25 @@ class User
     save
     if followed_feed.local?
       followee = User.first(:author_id => followed_feed.author.id)
-      followee.followers_ids.delete(self.feed.id)
-      followee.save
+      followee.unfollowed_by!(self.feed)
+    end
+  end
+
+  def followed_by? feed_url
+    f = Feed.first(:remote_url => feed_url)
+    p "followed_by"
+    p f
+
+    # local feed?
+    if f.nil? and feed_url.start_with?("/")
+      feed_id = feed_url[/^\/feeds\/(.+)$/,1]
+      f = Feed.first(:id => feed_id)
+    end
+
+    if f.nil?
+      false
+    else
+      followers.include? f
     end
   end
 

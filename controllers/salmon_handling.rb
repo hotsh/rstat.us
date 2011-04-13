@@ -7,6 +7,7 @@ class Rstatus
 
   # Salmon input
   post '/feeds/:id/salmon' do
+    # XXX: change 'author' to a more suitable name (remote_author?)
     feed = Feed.first :id => params[:id]
 
     if feed.nil?
@@ -24,9 +25,9 @@ class Rstatus
       status 404
       return
     else
-      p body
       data = envelope.find('me:data', 
                            'me:http://salmon-protocol.org/ns/magic-env').first
+
       data_type = data.attributes["type"]
       if data_type.nil?
         data_type = 'application/atom+xml'
@@ -34,6 +35,7 @@ class Rstatus
       else
         armored_data_type = Base64::urlsafe_encode64(data_type)
       end
+
       encoding = envelope.find('me:encoding',
                                'me:http://salmon-protocol.org/ns/magic-env').first
       algorithm = envelope.find('me:alg',
@@ -48,10 +50,9 @@ class Rstatus
         status 404
         return
       else
-        p signature.attributes["key_id"]
+        # XXX: Handle key_id attribute
         signature = signature.content
         signature = Base64::urlsafe_decode64(signature)
-        p signature
       end
 
       if encoding.nil?
@@ -110,7 +111,7 @@ class Rstatus
 
       author = Author.first :remote_url => atom_entry.author.uri
       verify_author = false
-      if true || author.nil?
+      if author.nil?
         # This author is unknown to us, we should create a new author
 
         verify_author = true
@@ -150,38 +151,33 @@ class Rstatus
 
       end
 
-      # verify the feed
+      # Verify the feed
       verified = false
 
-      # RSA decrypt
+      # RSA encryption is needed to compare the signatures
+      # Create the public key from the key
       author.public_key.match /^RSA\.(.*?)\.(.*)$/
       modulus = $1
       modulus = Base64::urlsafe_decode64(modulus)
       exponent = $2
       exponent = Base64::urlsafe_decode64(exponent)
-      puts "Hmm"
-      p modulus
-      p exponent
+
       modulus_bytes = modulus.bytes.count
       modulus = modulus.bytes.inject(0) do |num, byte|
-        num <<= 8;
-        num |= byte;
+        (num << 8) | byte
       end
       exponent = exponent.bytes.inject(0) do |num, byte|
-        num <<= 8;
-        num |= byte;
+        (num << 8) | byte
       end
-      puts "Modulus: #{modulus} by #{exponent}"
+
       key = RSA::Key.new(modulus, exponent)
       keypair = RSA::KeyPair.new(nil, key)
-      p signature
-      p armored_data
-      p armored_data_type
-      p armored_encoding
-      p armored_algorithm
-      p plaintext = "#{armored_data}.#{armored_data_type}.#{armored_encoding}.#{armored_algorithm}"
-      p plaintext = Digest::SHA2.new(256).digest(plaintext)
+
+      plaintext = "#{armored_data}.#{armored_data_type}.#{armored_encoding}.#{armored_algorithm}"
+      plaintext = Digest::SHA2.new(256).digest(plaintext)
+
       prefix = "\x30\x31\x30\x0d\x06\x09\x60\x86\x48\x01\x65\x03\x04\x02\x01\x05\x00\x04\x20"
+
       padding_count = modulus_bytes - prefix.bytes.count - plaintext.bytes.count - 3
 
       padding = ""
@@ -189,58 +185,71 @@ class Rstatus
         padding = padding + "\xff"
       end
 
+      # Determine what the signature should be
       emsa = "\x00\x01#{padding}\x00#{prefix}#{plaintext}"
-      p emsa
-      p keypair.verify(signature, plaintext)
+
+      # Get signature in payload
       emsa_signature = keypair.encrypt(signature)
-      # Statusnet has a bug in its encryption where it drops the
-      # first null byte
+
+      # RSA gem drops leading 0s since it does math upon an Integer
       if emsa_signature.getbyte(0) == 1
         emsa_signature = "\x00#{emsa_signature}"
       end
-      p emsa_signature
+
+      # Does the signature match?
       if emsa_signature == emsa
-        puts "VERIFIED"
+        # Verified!
         verified = true
       else
-        puts "NO!"
+        # Verification has failed
+        status 404
+        return
       end
-
-      # Tear apart emsa
-      # 
 
       # Actually commit the new author
       if verified and verify_author
-        puts "Feed"
         # Create a feed for our author
         author.feed = Feed.create(:author => author, 
                                   :remote_url => feed_url)
         author.save
       end
 
-      if not verified
-        # Verification has failed
-        status 404
-        return
-      end
+      action = atom_entry.activity.verb
+      user = feed.author.user
+      
+      if action == :post
+        # populate the feed
+        author.feed.populate_entries [atom_entry]
 
-      # populate the feed
-      author.feed.populate_entries [atom_entry]
+        # Determine reply-to context (if possible)
+        if not thread.nil?
+          update_url = thread.attributes['href']
+          if update_url.start_with?(url("/"))
+            # Local update url
+            # Retrieve update id
+            update_id = update_url[/#{url("\/")}updates\/(.*)$/,1]
+            u = author.feed.updates.first :remote_url => atom_entry.url
+            u.referral_id = update_id
+            u.save
+          end
+        end
+
+      elsif action == :follow
+        if user
+          if not user.following? author.feed.remote_url
+            user.followed_by! author.feed
+          end
+        end
+      elsif action == "http://ostatus.org/schema/1.0/unfollow"
+        if user
+          if user.followed_by? author.feed.remote_url
+            user.unfollowed_by! author.feed
+          end
+        end
+      end
 
       if development?
         puts "Salmon notification"
-      end
-
-      if not thread.nil?
-        update_url = thread.attributes['href']
-        if update_url.start_with?(url("/"))
-          # Local update url
-          # Retrieve update id
-          update_id = update_url[/#{url("\/")}updates\/(.*)$/,1]
-          u = author.feed.updates.first :remote_url => atom_entry.url
-          u.referral_id = update_id
-          u.save
-        end
       end
     end
   end
