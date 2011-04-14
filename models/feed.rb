@@ -142,4 +142,8 @@ class Feed
                                    })
     feed.atom
   end
+
+  def last_update
+    Update.where(:feed_id => id).order(['created_at', 'descending']).first
+  end
 end

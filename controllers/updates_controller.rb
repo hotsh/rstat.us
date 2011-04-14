@@ -30,17 +30,14 @@ class Rstatus
 
     # add entry to user's feed
     current_user.feed.updates << u
-    current_user.feed.save
-    current_user.save
-
-    # tell hubs there is a new entry
-    current_user.feed.ping_hubs(url(current_user.feed.url))
-
-    if params[:text].length < 1
-      flash[:notice] = "Your status is too short!"
-    elsif params[:text].length > 140
-      flash[:notice] = "Your status is too long!"
+    unless u.valid?
+      flash[:notice] = u.errors.errors.values.join("\n") 
     else
+      current_user.feed.save
+      current_user.save
+      # tell hubs there is a new entry
+      current_user.feed.ping_hubs(url(current_user.feed.url))
+
       flash[:notice] = "Update created."
     end
 

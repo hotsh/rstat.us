@@ -18,6 +18,7 @@ class Update
   before_save :generate_html
 
   validates_length_of :text, :minimum => 1, :maximum => 140
+  validate :do_not_repeat_yourself, :on => :create
   before_create :get_tags
   before_create :get_language
 
@@ -134,4 +135,7 @@ class Update
 
   end
 
+  def do_not_repeat_yourself
+    errors.add(:text, "You already posted this update.") if feed.last_update && feed.last_update.id != id && feed.last_update.text == text && feed.last_update.author.id == author.id
+  end
 end
