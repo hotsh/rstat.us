@@ -180,4 +180,35 @@ class UpdateTest < MiniTest::Unit::TestCase
     FbGraph::User.expects(:me).never
     u.feed.updates << Update.new(:text => "This is a message", :facebook => false, :twitter => false, :author => at)
   end
+
+  def test_will_not_save_the_same_update_to_feed_twice_in_a_row
+    feed = Factory(:feed)
+    author = Factory(:author, :feed => feed)
+    user = Factory(:user, :author => author, :feed => feed)
+    update = Update.new(:text => "This is a message", :author => author, :twitter => false, :facebook => false)
+    user.feed.updates << update
+    user.feed.save
+    user.save
+    assert_equal 1, user.feed.updates.size
+    update = Update.new(:text => "This is a message", :author => author, :twitter => false, :facebook => false)
+    user.feed.updates << update
+    refute update.valid?, "You already posted this update"
+  end
+
+  def test_will_save_same_update_text_from_different_authors_to_feed_twice_in_a_row
+    feed1 = Factory(:feed)
+    author1 = Factory(:author, :feed => feed1)
+    user1 = Factory(:user, :author => author1, :feed => feed1)
+    feed2 = Factory(:feed)
+    author2 = Factory(:author, :feed => feed2)
+    user2 = Factory(:user, :author => author2, :feed => feed2)
+    update = Update.new(:text => "This is a message", :author => author1, :twitter => false, :facebook => false)
+    user1.feed.updates << update
+    user1.feed.save
+    user1.save
+    assert_equal 1, user1.feed.updates.size
+    update = Update.new(:text => "This is a message", :author => author2, :twitter => false, :facebook => false)
+    user1.feed.updates << update
+    assert update.valid?
+  end
 end
