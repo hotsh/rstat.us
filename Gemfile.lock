@@ -181,6 +181,9 @@ GEM
       json_pure
       rubyzip
     simple_oauth (0.1.4)
+    simplecov (0.4.2)
+      simplecov-html (~> 0.4.4)
+    simplecov-html (0.4.4)
     sinatra (1.2.1)
       rack (~> 1.1)
       tilt (< 2.0, >= 1.2.2)
@@ -252,6 +255,7 @@ DEPENDENCIES
   rocco
   ruby-stemmer
   sass
+  simplecov (~> 0.4.0)
   sinatra
   sinatra-content-for
   sinatra-redirect-with-flash
