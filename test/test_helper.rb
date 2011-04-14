@@ -1,11 +1,20 @@
-ENV['RACK_ENV'] = 'test'
-require 'minitest/autorun'
-require 'yaml'
-require 'database_cleaner'
-require 'factory_girl'
-require 'mocha'
-require_relative 'factories'
+require 'simplecov'
+SimpleCov.start do
+  add_filter "/models/all.rb"
+  add_filter "/config.rb"
+  add_filter "/test/"
+  add_group "Models", "/models"
+  add_group "Controllers", "/controllers"
+  coverage_dir "/test/coverage"
+end
 
+require 'minitest/autorun'
+ENV['RACK_ENV'] = 'test'
+require 'bundler'
+Bundler.setup
+Bundler.require(:default, :test)
+
+require_relative 'factories'
 require_relative '../rstatus'
 
 module TestHelper
