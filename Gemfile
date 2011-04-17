@@ -36,7 +36,6 @@ gem "rack-perftools_profiler", :require => 'rack/perftools_profiler'
 
 group :development, :test do
   gem "minitest", :platforms => :ruby_18
-  gem "minitest", :platforms => :ruby_18
   gem 'coffee-script'
   gem 'rack-test'
   gem "database_cleaner"
