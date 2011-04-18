@@ -117,9 +117,8 @@ class Feed
 
     # Create the OStatus::Author object
     os_auth = OStatus::Author.new(:name => author.username,
-                                 :email => author.email,
-                                 :uri => author.website,
-                                 :portable_contacts => poco)
+                                  :uri => author.website,
+                                  :portable_contacts => poco)
 
     # Gather entries as OStatus::Entry objects
     entries = updates.to_a.sort{|a, b| b.created_at <=> a.created_at}.map do |update|
