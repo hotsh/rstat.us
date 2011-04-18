@@ -137,7 +137,6 @@ GEM
     osub (0.0.4)
       ostatus
       ruby-hmac
-    perftools.rb (0.5.6)
     plucky (0.3.7)
       mongo (~> 1.1)
     polyglot (0.3.1)
@@ -152,10 +151,6 @@ GEM
     rack-openid (1.2.0)
       rack (>= 1.1.0)
       ruby-openid (>= 2.1.8)
-    rack-perftools_profiler (0.4.0)
-      open4 (~> 1.0)
-      perftools.rb (~> 0.5)
-      rack (~> 1.0)
     rack-test (0.5.7)
       rack (>= 1.0)
     rack-timeout (0.0.1)
@@ -249,7 +244,6 @@ DEPENDENCIES
   pony
   pygmentize
   rack-flash
-  rack-perftools_profiler
   rack-test
   rack-timeout
   rdiscount
