@@ -3,8 +3,10 @@ require 'bundler/setup'
 
 require File.dirname(__FILE__) + '/rstatus'
 
+ENV['RACK_ENV'] ||= "development"
+
 unless ENV['RACK_ENV'] == "production"
-  config = YAML.load_file('config/config.yml')[ENV['RACK_ENV']]
+  config = YAML.load_file(File.join(File.dirname(__FILE__) + '/config/config.yml'))[ENV['RACK_ENV']]
 
   config.each do |key, value|
     ENV[key] = value
