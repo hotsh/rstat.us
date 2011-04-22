@@ -47,13 +47,18 @@ module Sinatra
     # Similar to the set_params_page helper this one creates the links
     # for the previous and the next page on all routes that display
     # stuff on more than one page.
-    def set_next_prev_page
-      @next_page = "?#{Rack::Utils.build_query :page => params[:page] + 1}"
+    #If needed it can also take options for more parameters
+    def set_pagination_buttons(data, options = {})
+      return if data.nil?
+      
+      if data.next_page
+        params = {:page => data.next_page}.merge(options)
+        @next_page = "?#{Rack::Utils.build_query params}"
+      end
 
-      if params[:page] > 1
-        @prev_page = "?#{Rack::Utils.build_query :page => params[:page] - 1}"
-      else
-        @prev_page = nil
+      if data.previous_page
+        params = {:page => data.previous_page}.merge(options)
+        @prev_page = "?#{Rack::Utils.build_query params}"
       end
     end
   end
