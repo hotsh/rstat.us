@@ -110,7 +110,7 @@ class Update
     end
 
     OStatus::Entry.new(:title => self.text,
-                       :content => Atom::Content::Text.new(self.text),
+                       :content => Atom::Content::Html.new(self.to_html),
                        :updated => self.updated_at,
                        :published => self.created_at,
                        :activity => OStatus::Activity.new(:object_type => :note),
