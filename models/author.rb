@@ -137,8 +137,6 @@ class Author
                                         :type => "image/png",
                                         :href => avatar_url_abs)])
 
-    author.email = email unless email.nil?
-
     author
   end
 end
