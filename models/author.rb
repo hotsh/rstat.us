@@ -13,6 +13,14 @@ class Author
   # We've got a bunch of data that gets stored in Author. And basically none
   # of it is validated right now. Fun. Then again, not all of it is neccesary.
   key :username, String
+
+  # This contains the domain that the author's feed originates (nil for local)
+  key :domain, String
+
+  # We can get the domain from the remote_url
+  before_save :get_domain 
+
+  # The Author has a profile and with that various entries
   key :name, String
   key :email, String
   key :website, String
@@ -77,6 +85,12 @@ class Author
     return DEFAULT_AVATAR if email.nil?
 
     gravatar_url
+  end
+
+  def get_domain
+    if self.remote_url
+      self.domain = remote_url[/\:\/\/(.*?)\//, 1]
+    end
   end
 
   # Returns a url useful for gravatar support

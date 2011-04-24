@@ -5,23 +5,42 @@ class Update
   include MongoMapper::Document
   include MongoMapperExt::Filter
 
+  # Determines what constitutes a username inside an update text
+  USERNAME_REGULAR_EXPRESSION = /(^|[ \t\n\r\f"'\(\[{]+)@([^ \t\n\r\f&?=@%\/\#]*[^ \t\n\r\f&?=@%\/\#.!:;,"'\]}\)])(?:@([^ \t\n\r\f&?=@%\/\#]*[^ \t\n\r\f&?=@%\/\#.!:;,"'\]}\)]))?/
+
+  # Updates are aggregated in Feeds
   belongs_to :feed
+
+  # Updates are written by Authors
   belongs_to :author
   validates_presence_of :author_id
 
+  # The content of the update, unaltered, is stored here
   key :text, String, :default => ""
-  key :html, String
+  validates_length_of :text, :minimum => 1, :maximum => 140
+
+  # Mentions are stored in the following array
+  key :mention_ids, Array
+  many :mentions, :in => :mention_ids, :class_name => 'Author'
+  before_save :get_mentions
+
+  # The following are extra features and identifications for the update
   key :tags, Array, :default => []
   key :language, String
   key :twitter, Boolean
   key :facebook, Boolean
 
+  # For speed, we generate the html for the update upon saving
+  key :html, String
   before_save :generate_html
 
-  validates_length_of :text, :minimum => 1, :maximum => 140
-  before_create :get_tags
+  # We also generate the tags upon editing the update
+  before_save :get_tags
+
+  # We determine and store the language used within this update
   before_create :get_language
 
+  # Updates have a remote url that globally identifies them
   key :remote_url, String
 
   # Reply and restate identifiers
@@ -91,22 +110,44 @@ class Update
 
   protected
 
+  def get_mentions
+    self.mentions = []
+
+    out = CGI.escapeHTML(text)
+
+    out.gsub!(USERNAME_REGULAR_EXPRESSION) do |match|
+      if $3 and a = Author.first(:username => /^#{$2}$/i, :domain => /^#{$3}$/i)
+        self.mentions << a
+      elsif not $3 and a = Author.first(:username => /^#{$2}$/i)
+        self.mentions << a
+      end
+      match
+    end
+
+    self.mentions
+  end
+
   # Generate and store the html
   def generate_html
     out = CGI.escapeHTML(text)
+
+    # Replace any absolute addresses with a link
+    # Note: Do this first! Otherwise it will add anchors inside anchors!
+    out.gsub!(/(http[s]?:\/\/\S+[a-zA-Z0-9\/}])/, "<a href='\\1'>\\1</a>")
 
     # we let almost anything be in a username, except those that mess with urls.
     # but you can't end in a .:;, or !
     # also ignore container chars [] () "" '' {}
     # XXX: the _correct_ solution will be to use an email validator
-    out.gsub!(/(^|[ \t\n\r\f"'\(\[{]+)@([^ \t\n\r\f&?=@%\/\#]*[^ \t\n\r\f&?=@%\/\#.!:;,"'\]}\)])/) do |match|
-      if u = User.first(:username => /^#{$2}$/i)
-        "#{$1}<a href='/users/#{u.username}'>@#{$2}</a>"
+    out.gsub!(USERNAME_REGULAR_EXPRESSION) do |match|
+      if $3 and a = Author.first(:username => /^#{$2}$/i, :domain => /^#{$3}$/i)
+        "#{$1}<a href='#{a.url}'>@#{$2}@#{$3}</a>"
+      elsif not $3 and a = Author.first(:username => /^#{$2}$/i)
+        "#{$1}<a href='#{a.url}'>@#{$2}</a>"
       else
         match
       end
     end
-    out.gsub!(/(http[s]?:\/\/\S+[a-zA-Z0-9\/}])/, "<a href='\\1'>\\1</a>")
     out.gsub!(/(^|\s+)#(\w+)/) do |match|
       "#{$1}<a href='/hashtags/#{$2}'>##{$2}</a>"
     end

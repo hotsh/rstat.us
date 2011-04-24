@@ -42,6 +42,22 @@ class UpdateTest < MiniTest::Unit::TestCase
     assert_match /<a href='\/users\/steveklabnik'>@SteveKlabnik<\/a>/, u.html
   end
 
+  def test_at_replies_with_existing_user_with_domain
+    a = Factory(:author, :username => "steveklabnik", 
+                         :domain => "identi.ca", 
+                         :remote_url => 'http://identi.ca/steveklabnik')
+    u = Factory.build(:update, :text => "This is a message mentioning @SteveKlabnik@identi.ca.")
+    assert_match /<a href='#{a.url}'>@SteveKlabnik@identi.ca<\/a>/, u.to_html
+  end
+
+  def test_at_replies_with_existing_user_with_domain_after_create
+    a = Factory(:author, :username => "steveklabnik", 
+                         :domain => "identi.ca", 
+                         :remote_url => 'http://identi.ca/steveklabnik')
+    u = Factory(:update, :text => "This is a message mentioning @SteveKlabnik@identi.ca.")
+    assert_match /<a href='#{a.url}'>@SteveKlabnik@identi.ca<\/a>/, u.html
+  end
+
   def test_at_replies
     Factory(:user, :username => "steveklabnik")
     Factory(:user, :username => "bar")
