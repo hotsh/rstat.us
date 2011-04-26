@@ -33,13 +33,13 @@ class UpdateTest < MiniTest::Unit::TestCase
   def test_at_replies_with_existing_user
     Factory(:user, :username => "steveklabnik")
     u = Factory.build(:update, :text => "This is a message mentioning @SteveKlabnik.")
-    assert_match /<a href='\/users\/steveklabnik'>@SteveKlabnik<\/a>/, u.to_html
+    assert_match /\/users\/steveklabnik'>@SteveKlabnik<\/a>/, u.to_html
   end
 
   def test_at_replies_with_existing_user_after_create
     Factory(:user, :username => "steveklabnik")
     u = Factory(:update, :text => "This is a message mentioning @SteveKlabnik.")
-    assert_match /<a href='\/users\/steveklabnik'>@SteveKlabnik<\/a>/, u.html
+    assert_match /\/users\/steveklabnik'>@SteveKlabnik<\/a>/, u.html
   end
 
   def test_at_replies_with_existing_user_with_domain
@@ -62,14 +62,14 @@ class UpdateTest < MiniTest::Unit::TestCase
     Factory(:user, :username => "steveklabnik")
     Factory(:user, :username => "bar")
     u = Factory.build(:update, :text => "@SteveKlabnik @nobody foo@bar.wadus @SteveKlabnik")
-    assert_match "<a href='\/users\/steveklabnik'>@SteveKlabnik<\/a> @nobody foo@bar.wadus <a href='\/users\/steveklabnik'>@SteveKlabnik<\/a>", u.to_html
+    assert_match "\/users\/steveklabnik'>@SteveKlabnik<\/a> @nobody foo@bar.wadus <a href='http:\/\/\/users\/steveklabnik'>@SteveKlabnik<\/a>", u.to_html
   end
 
   def test_at_replies_after_create
     Factory(:user, :username => "steveklabnik")
     Factory(:user, :username => "bar")
     u = Factory(:update, :text => "@SteveKlabnik @nobody foo@bar.wadus @SteveKlabnik")
-    assert_match "<a href='\/users\/steveklabnik'>@SteveKlabnik<\/a> @nobody foo@bar.wadus <a href='\/users\/steveklabnik'>@SteveKlabnik<\/a>", u.html
+    assert_match "\/users\/steveklabnik'>@SteveKlabnik<\/a> @nobody foo@bar.wadus <a href='http:\/\/\/users\/steveklabnik'>@SteveKlabnik<\/a>", u.html
   end
 
   def test_links

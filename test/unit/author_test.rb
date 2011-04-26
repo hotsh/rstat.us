@@ -11,7 +11,7 @@ class AuthorTest < MiniTest::Unit::TestCase
 
   def test_create_from_hash
     hash = {"user_info" => {"name" => "james", "nickname" => "jim", "urls" => {}} }
-    assert Author.create_from_hash!(hash).is_a?(Author)
+    assert Author.create_from_hash!(hash, "rstat.us").is_a?(Author)
   end
 
   def test_url

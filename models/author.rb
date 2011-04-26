@@ -51,14 +51,15 @@ class Author
   one :user
   
   # This takes results from an omniauth reponse and generates an author
-  def self.create_from_hash!(hsh)
+  def self.create_from_hash!(hsh, domain)
     create!(
       :name => hsh['user_info']['name'],
       :username => hsh['user_info']['nickname'],
       :website => hsh['user_info']['urls']['Website'],
       :bio => hsh['user_info']['description'],
       :image_url => hsh['user_info']['image'],
-      :remote_url => hsh['user_info']['url']
+      :remote_url => hsh['user_info']['url'],
+      :domain => domain
     )
   end
 
@@ -85,12 +86,6 @@ class Author
     return DEFAULT_AVATAR if email.nil?
 
     gravatar_url
-  end
-
-  def get_domain
-    if self.remote_url
-      self.domain = remote_url[/\:\/\/(.*?)\//, 1]
-    end
   end
 
   # Returns a url useful for gravatar support
@@ -139,4 +134,11 @@ class Author
 
     author
   end
+
+  def get_domain
+    if self.remote_url
+      self.domain = remote_url[/\:\/\/(.*?)\//, 1]
+    end
+  end
+
 end

@@ -110,7 +110,7 @@ class Update
     end
 
     OStatus::Entry.new(:title => self.text,
-                       :content => Atom::Content::Html.new(self.to_html),
+                       :content => Atom::Content::Html.new(self.html),
                        :updated => self.updated_at,
                        :published => self.created_at,
                        :activity => OStatus::Activity.new(:object_type => :note),
@@ -177,9 +177,17 @@ class Update
     # XXX: the _correct_ solution will be to use an email validator
     out.gsub!(USERNAME_REGULAR_EXPRESSION) do |match|
       if $3 and a = Author.first(:username => /^#{$2}$/i, :domain => /^#{$3}$/i)
-        "#{$1}<a href='#{a.url}'>@#{$2}@#{$3}</a>"
+        author_url = a.url
+        if author_url.start_with?("/")
+          author_url = "http://#{author.domain}#{author_url}"
+        end
+        "#{$1}<a href='#{author_url}'>@#{$2}@#{$3}</a>"
       elsif not $3 and a = Author.first(:username => /^#{$2}$/i)
-        "#{$1}<a href='#{a.url}'>@#{$2}</a>"
+        author_url = a.url
+        if author_url.start_with?("/")
+          author_url = "http://#{author.domain}#{author_url}"
+        end
+        "#{$1}<a href='#{author_url}'>@#{$2}</a>"
       else
         match
       end

@@ -277,10 +277,9 @@ class User
 
   private
 
-  def create_feed()
-    self.author = Author.create :name => "", :username => username if author.nil?
+  def create_feed
     f = Feed.create(
-      :author => author
+      :author => self.author
     )
 
     self.feed = f
