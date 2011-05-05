@@ -110,13 +110,17 @@ class Update
     end
 
     OStatus::Entry.new(:title => self.text,
-                       :content => Atom::Content::Html.new(self.html),
+                       :content => Atom::Content::Html.new(self.to_html),
                        :updated => self.updated_at,
                        :published => self.created_at,
                        :activity => OStatus::Activity.new(:object_type => :note),
                        :author => self.author.to_atom(base_uri),
                        :id => "#{base_uri}updates/#{self.id.to_s}",
                        :links => links)
+  end
+
+  def to_xml(base_uri)
+    to_atom(base_uri).to_xml
   end
 
   protected

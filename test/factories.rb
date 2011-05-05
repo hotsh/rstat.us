@@ -44,6 +44,7 @@ Factory.define :author do |a|
   a.username "user"
   a.email { Factory.next(:emails) }
   a.website "http://example.com"
+  a.domain "foo.example.com"
   a.name "Something"
   a.bio "Hi, I do stuff."
 end
