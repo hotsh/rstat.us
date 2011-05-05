@@ -10,6 +10,9 @@ class Author
   ENCODED_DEFAULT_AVATAR = URI.encode_www_form_component(DEFAULT_AVATAR)
   GRAVATAR_HOST  = "gravatar.com"
 
+  # public keys are good for 4 weeks
+  PUBLIC_KEY_LEASE_DAYS = 28
+
   # We've got a bunch of data that gets stored in Author. And basically none
   # of it is validated right now. Fun. Then again, not all of it is neccesary.
   key :username, String
@@ -66,8 +69,24 @@ class Author
   # Reset the public key lease, which will be called when the public key is
   # retrieved from a trusted source.
   def reset_key_lease
-    # public keys are good for 4 weeks
-    public_key_lease = (DateTime.now + 28).to_date
+    public_key_lease = (DateTime.now + PUBLIC_KEY_LEASE_DAYS).to_date
+  end
+
+  # Retrieves a valid RSA::KeyPair for the Author's public key
+  def retrieve_public_key
+    # Create the public key from the key stored
+
+    # Retrieve the exponent and modulus from the key string
+    public_key.match /^RSA\.(.*?)\.(.*)$/
+    modulus = Base64::urlsafe_decode64($1)
+    exponent = Base64::urlsafe_decode64($2)
+
+    modulus = modulus.bytes.inject(0) {|num, byte| (num << 8) | byte }
+    exponent = exponent.bytes.inject(0) { |num, byte| (num << 8) | byte }
+
+    # Create the public key instance
+    key = RSA::Key.new(modulus, exponent)
+    keypair = RSA::KeyPair.new(nil, key)
   end
 
   # Returns a locally useful url for the Author

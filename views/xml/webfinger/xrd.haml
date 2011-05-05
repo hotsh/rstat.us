@@ -8,3 +8,4 @@
   -#%Link{:rel => "http://gmpg.org/xfn/11", :type => "text/html", :href => "#{@base_url}users/#{@user.username}"}
   %Link{:rel => "http://schemas.google.com/g/2010#updates-from", :href => "#{@base_url}feeds/#{@user.feed.id}.atom"}
   %Link{:rel => "http://ostatus.org/schema/1.0/subscribe", :href => "#{@base_url}subscriptions?url={uri}&_method=post"}
+  %Link{:rel => "magic-public-key", :href => "data:application/magic-public-key,#{@user.author.public_key}"}
