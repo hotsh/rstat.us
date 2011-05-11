@@ -14,6 +14,12 @@ require 'bundler'
 Bundler.setup
 Bundler.require(:default, :test)
 
+config = YAML.load_file('config/config.yml')[ENV['RACK_ENV']]
+
+config.each do |key, value|
+  ENV[key] = value
+end
+
 require_relative 'factories'
 require_relative '../rstatus'
 
