@@ -11,7 +11,7 @@ class UserTest < MiniTest::Unit::TestCase
     update = Update.create(:text => "@steve oh hai!")
     Update.create(:text => "just some other update")
 
-    assert_equal 1, u.at_replies({}).length
+    assert_equal 1, u.at_replies({}).count
     assert_equal update.id, u.at_replies({}).first.id
   end
 
@@ -109,8 +109,8 @@ class UserTest < MiniTest::Unit::TestCase
     u1 = Factory.create(:user, :username => "helloothere")
     update = Update.create(:text => "@hello.there how _you_ doin'?")
 
-    assert_equal 1, u.at_replies({}).length
-    assert_equal 0, u1.at_replies({}).length
+    assert_equal 1, u.at_replies({}).count
+    assert_equal 0, u1.at_replies({}).count
   end
 
 end

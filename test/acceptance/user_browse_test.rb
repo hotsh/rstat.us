@@ -17,12 +17,58 @@ class UserBrowseTest < MiniTest::Unit::TestCase
     assert has_link? "zebra"
   end
 
-  def test_users_browse_paginates
+  def test_users_browse_paginates_not
     u = Factory(:user)
     a = Factory(:authorization, :user => u)
 
     log_in(u, a.uid)
 
+    visit "/users"
+
+    refute_match "Previous", page.body
+    refute_match "Next", page.body
+  end
+
+  def test_users_browse_paginates_forward_only
+    u = Factory(:user)
+    a = Factory(:authorization, :user => u)
+
+    log_in(u, a.uid)
+
+    51.times do
+      u2 = Factory(:user)
+    end
+    
+    visit "/users"
+
+    refute_match "Previous", page.body
+    assert_match "Next", page.body
+  end
+
+  def test_users_browse_paginates_backward_only
+    u = Factory(:user)
+    a = Factory(:authorization, :user => u)
+
+    log_in(u, a.uid)
+
+    51.times do
+      u2 = Factory(:user)
+    end
+    
+    visit "/users"
+    click_link "next_button"
+    click_link "next_button"
+    
+    refute_match "Next", page.body
+    assert_match "Previous", page.body
+  end
+  
+  def test_users_browse_paginates
+    u = Factory(:user)
+    a = Factory(:authorization, :user => u)
+
+    log_in(u, a.uid)
+    
     51.times do
       u2 = Factory(:user)
     end
@@ -35,7 +81,7 @@ class UserBrowseTest < MiniTest::Unit::TestCase
     assert_match "Next", page.body
   end
 
-  def test_users_browse_by_letter_paginates
+  def test_users_browse_by_letter_paginates_back_only
     visit "/users"
 
     49.times do
@@ -47,8 +93,26 @@ class UserBrowseTest < MiniTest::Unit::TestCase
     click_link "next_button"
 
     assert_match u2.username, page.body
+    assert_match "Previous", page.body
+    refute_match "Next", page.body
   end
 
+  def test_users_browse_by_letter_paginates
+    visit "/users"
+
+    77.times do
+      u2 = Factory(:user)
+    end
+    u2 = Factory(:user, :username => "uzzzzz")
+
+    click_link "U"
+    click_link "next_button"
+    click_link "next_button"
+    
+    assert_match "Previous", page.body
+    assert_match "Next", page.body
+  end
+  
   def test_users_browse_shows_latest_users
     aardvark = Factory(:user, :username => "aardvark", :created_at => Date.new(2010, 10, 23))
     zebra    = Factory(:user, :username => "zebra", :created_at => Date.new(2011, 10, 24))

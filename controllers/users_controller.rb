@@ -58,46 +58,34 @@ class Rstatus
 
   get '/users' do
     set_params_page
-
     # Filter users by search params
     if params[:search] && !params[:search].empty?
       @users = User.where(:username => /#{params[:search]}/i)
 
-    # Filter users by letter
+    # Filter and sort users by letter
     elsif params[:letter]
       if params[:letter] == "other"
         @users = User.where(:username => /^[^a-z0-9]/i)
-      elsif
+      elsif params[:letter].empty?
+        break
+      else
         @users = User.where(:username => /^#{params[:letter][0].chr}/i)
       end
+      @users = @users.sort(:username)
+
+    #otherwise get all users and sort by creation date
     else
       @users = User
-    end
-
-    # Sort users alphabetically when filtering by letter
-    if params[:letter]
-      @users = @users.sort(:username)
-    else
       @users = @users.sort(:created_at.desc)
     end
 
     @users = @users.paginate(:page => params[:page], :per_page => params[:per_page])
 
-    @next_page = nil
-
-    # If this would just accept params as is I wouldn't have to do this
-    if params[:letter]
-      @next_page = "?#{Rack::Utils.build_query :page => params[:page] + 1, :letter => params[:letter]}"
-
-      if params[:page] > 1
-        @prev_page = "?#{Rack::Utils.build_query :page => params[:page] + 1, :letter => params[:letter]}"
-      else
-        @prev_page = nil
-      end
+    if params[:letter] && !params[:letter].empty?
+      set_pagination_buttons(@users, :letter => params[:letter])
     else
-      set_next_prev_page
+      set_pagination_buttons(@users)
     end
-
     haml :"users/index"
   end
 
@@ -153,10 +141,9 @@ class Rstatus
       end
     end
     @author = user.author
-    @updates = Update.where(:feed_id => user.feed.id).order(['created_at', 'descending']).paginate(:page => params[:page], :per_page => params[:per_page])
-
-    @next_page = nil
-    set_next_prev_page
+    @updates = Update.where(:feed_id => user.feed.id).order(['created_at', 'descending'])
+    @updates = @updates.paginate(:page => params[:page], :per_page => params[:per_page])
+    set_pagination_buttons(@updates)
 
     haml :"users/show"
   end
@@ -196,6 +183,7 @@ class Rstatus
     feed = User.first(:username => params[:username]).feed
     redirect "/feeds/#{feed.id}.atom"
   end
+
   # Who do you think is a really neat person? This page will show it to the
   # world, so pick wisely!
   get '/users/:username/following' do
@@ -204,11 +192,9 @@ class Rstatus
     feeds = User.first(:username => params[:username]).following
 
     @user = User.first(:username => params[:username])
-    @users = feeds.paginate(:page => params[:page], :per_page => params[:per_page], :order => :id.desc).map{|f| f.author.user}
-
-    set_next_prev_page
-    @next_page = nil unless params[:page]*params[:per_page] < feeds.count
-
+    @users = feeds.paginate(:page => params[:page], :per_page => params[:per_page], :order => :id.desc)
+    set_pagination_buttons(@users)
+    @users = @users.map{|f| f.author.user}
     title = ""
     title << "#{@user.username} is following"
 
@@ -232,10 +218,9 @@ class Rstatus
     feeds = User.first(:username => params[:username]).followers
 
     @user = User.first(:username => params[:username])
-    @users = feeds.paginate(:page => params[:page], :per_page => params[:per_page], :order => :id.desc).map{|f| f.author.user}
-
-    set_next_prev_page
-    @next_page = nil unless params[:page]*params[:per_page] < feeds.count
+    @users = feeds.paginate(:page => params[:page], :per_page => params[:per_page], :order => :id.desc)
+    set_pagination_buttons(@users)
+    @users = @users.map{|f| f.author.user}
 
     #build title
     title = ""

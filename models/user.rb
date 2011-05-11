@@ -148,23 +148,16 @@ class User
 
   timestamps!
 
+  #create a timeline for the current user, i.e. my updates and those I follow.
   def timeline(params)
-    popts = {
-      :page => params[:page],
-      :per_page => params[:per_page]
-    }
-
     following_plus_me = following.clone
     following_plus_me << self.feed
-    Update.where(:author_id => following_plus_me.map(&:author_id)).order(['created_at', 'descending']).paginate(popts)
+    Update.where(:author_id => following_plus_me.map(&:author_id)).order(['created_at', 'descending'])
   end
 
+  #Find all replies for this user.
   def at_replies(params)
-    popts = {
-      :page => params[:page],
-      :per_page => params[:per_page]
-    }
-    Update.where(:text => /^@#{Regexp.quote(username)}\b/).order(['created_at', 'descending']).paginate(popts)
+    Update.where(:text => /^@#{Regexp.quote(username)}\b/).order(['created_at', 'descending'])
   end
 
   key :status

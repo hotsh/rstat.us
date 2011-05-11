@@ -142,4 +142,46 @@ class UpdateTest < MiniTest::Unit::TestCase
     assert_match page.body, /#{update2.text}/
     assert_match page.body, /#{update.text}/
   end
+  
+  def test_updates_paginate_forward_only
+    30.times do
+      Factory(:update)
+    end
+
+    u = Factory(:user)
+    log_in_email(u)
+    visit "/updates"
+    
+    refute_match "Previous", page.body
+    assert_match "Next", page.body
+  end
+  
+  def test_updates_paginate_back_only
+    u = Factory(:user)
+    log_in_email(u)
+    
+    30.times do
+      Factory(:update)
+    end
+    
+    visit "/updates"
+    click_link "next_button"
+    
+    assert_match "Previous", page.body
+    refute_match "Next", page.body
+  end
+  
+  def test_updates_paginate
+    54.times do
+      Factory(:update)
+    end
+
+    u = Factory(:user)
+    log_in_email(u)
+    visit "/updates"
+    click_link "next_button"
+    
+    assert_match "Previous", page.body
+    assert_match "Next", page.body
+  end
 end

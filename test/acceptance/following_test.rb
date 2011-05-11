@@ -82,25 +82,6 @@ class FollowingTest < MiniTest::Unit::TestCase
     assert_match /leopard.*zebra/m, page.body
   end
 
-  def test_user_following_paginates
-    u = Factory(:user)
-    a = Factory(:authorization, :user => u)
-
-    log_in(u, a.uid)
-
-    51.times do
-      u2 = Factory(:user)
-      u.follow! u2.feed.url
-    end
-
-    visit "/users/#{u.username}/following"
-
-    click_link "next_button"
-
-    assert_match "Previous", page.body
-    assert_match "Next", page.body
-  end
-
   def test_user_following_outputs_json
     u = Factory(:user)
     a = Factory(:authorization, :user => u)
@@ -114,6 +95,23 @@ class FollowingTest < MiniTest::Unit::TestCase
 
     json = JSON.parse(page.body)
     assert_equal "user1", json.last["username"]
+  end
+
+  def test_user_followers_paginates_not
+    u = Factory(:user)
+    a = Factory(:authorization, :user => u)
+
+    log_in(u, a.uid)
+
+    5.times do
+      u2 = Factory(:user)
+      u2.follow! u.feed.url
+    end
+
+    visit "/users/#{u.username}/followers"
+
+    refute_match "Previous", page.body
+    refute_match "Next", page.body
   end
 
   def test_user_followers_paginates
@@ -135,7 +133,7 @@ class FollowingTest < MiniTest::Unit::TestCase
     assert_match "Next", page.body
   end
 
-  def test_following_displays_username_logged_in
+def test_following_displays_username_logged_in
     u = Factory(:user, :username => "dfnkt")
     a = Factory(:authorization, :user => u)
 

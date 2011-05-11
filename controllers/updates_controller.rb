@@ -3,14 +3,7 @@ class Rstatus
   # Ahh, the classic 'world' view.
   get '/updates' do
     @updates = Update.paginate( :page => params[:page], :per_page => params[:per_page] || 20, :order => :created_at.desc)
-
-    if @updates.next_page
-      @next_page = "?#{Rack::Utils.build_query :page => @updates.next_page}"
-    end
-
-    if @updates.previous_page
-      @prev_page = "?#{Rack::Utils.build_query :page => @updates.previous_page}"
-    end
+    set_pagination_buttons(@updates)
 
     haml :world
   end
@@ -18,7 +11,6 @@ class Rstatus
   # If you're POST-ing to /updates, it means you're making a new one. Woo-hoo!
   # This is what it's all built for.
   post '/updates' do
-
     # XXX: This should really be put into a model. Fat controller here!
     do_tweet = params[:tweet] == "1"
     do_facebook = params[:facebook] == "1"
@@ -31,7 +23,7 @@ class Rstatus
     # add entry to user's feed
     current_user.feed.updates << u
     unless u.valid?
-      flash[:notice] = u.errors.errors.values.join("\n") 
+      flash[:notice] = u.errors.errors.values.join("\n")
     else
       current_user.feed.save
       current_user.save
