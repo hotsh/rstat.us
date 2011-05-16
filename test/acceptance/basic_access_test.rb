@@ -1,34 +1,33 @@
 require 'require_relative' if RUBY_VERSION[0,3] == '1.8'
 require_relative 'acceptance_helper'
 
-class BasicAccessTest < MiniTest::Unit::TestCase
-
+describe "basic access" do
   include AcceptanceHelper
 
-  def test_hello_world
+  it "visits the root page" do
     visit '/'
     assert_equal 200, page.status_code
   end
 
-  def test_visit_feeds
+  it "visits feeds" do
     feed = Factory(:feed)
     visit "/feeds/#{feed.id}.atom"
     assert_equal 200, page.status_code
   end
 
-  def test_user_feed_render
+  it "visits my user feed" do
     u = Factory(:user)
     visit "/users/#{u.username}/feed"
     assert_equal 200, page.status_code
   end
 
-  def test_user_profile
+  it "visits my profile" do
     u = Factory(:user)
     visit "/users/#{u.username}"
     assert_equal 200, page.status_code
   end
 
-  def test_user_edit_profile
+  it "edits my profile" do
     u = Factory(:user)
     a = Factory(:authorization, :user => u)
     log_in(u, a.uid)
@@ -38,12 +37,12 @@ class BasicAccessTest < MiniTest::Unit::TestCase
     assert_equal 200, page.status_code
   end
 
-  def test_junk_username_gives_404
+  it "404s on junk username" do
     visit "/users/1n2i12399992sjdsa21293jj"
     assert_equal 404, page.status_code
   end
 
-  def test_unsupported_feed_type_gives_404
+  it "404s on invalid feed type" do
     u = Factory(:user, :username => "dfnkt")
     visit "/users/#{u.username}/feed.json"
 
