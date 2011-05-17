@@ -96,8 +96,8 @@ class Rstatus
 
   # The signup page posts here.
   post '/users' do
-    user = User.new params
-    if user.save
+    @user = User.new params
+    if @user.save
       # this is really stupid.
       auth = {}
       auth['uid'] = session[:uid]
@@ -114,14 +114,13 @@ class Rstatus
       auth['credentials']['token'] = session[:oauth_token]
       auth['credentials']['secret'] = session[:oauth_secret]
 
-      Authorization.create_from_hash(auth, uri("/"), user)
+      Authorization.create_from_hash(auth, uri("/"), @user)
 
-      flash[:notice] = "Thanks! You're all signed up with #{user.username} for your username."
-      session[:user_id] = user.id
+      flash[:notice] = "Thanks! You're all signed up with #{@user.username} for your username."
+      session[:user_id] = @user.id
       redirect '/'
     else
-      flash[:notice] = "Oops! That username was taken. Pick another?"
-      redirect '/users/new'
+      haml :"users/new"
     end
   end
 

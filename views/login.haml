@@ -1,4 +1,6 @@
 #login-forms
+  != haml :"users/_errors", :locals => {:user => @user}
+
   #login
     %form{:action => "/login", :method => "POST"}
       %h3 Log In or Sign up

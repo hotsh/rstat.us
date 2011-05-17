@@ -72,6 +72,7 @@ class Rstatus
   end
 
   helpers Sinatra::UserHelper
+  helpers Sinatra::ViewHelper
   helpers Sinatra::ContentFor
 
   helpers do

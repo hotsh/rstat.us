@@ -18,7 +18,7 @@ class User
   validates_uniqueness_of :username, :allow_nil => :true, :case_sensitive => false
 
   # Twitter has 15, let's be different
-  validates_length_of :username, :minimum => 1, :maximum => 17
+  validates_length_of :username, :maximum => 17, :message => "must be 17 characters or fewer."
 
   # validate users don't have @ in their usernames
   validate :no_special_chars
@@ -224,7 +224,7 @@ class User
   # validation that checks @s in usernames
   def no_special_chars
     unless (username =~ /[@!"#$\%&'()*,^~{}|`=:;\\\/\[\]\s?]/).nil? && (username =~ /^[.]/).nil? && (username =~ /[.]$/).nil? && (username =~ /[.]{2,}/).nil?
-      errors.add(:username, "contains restricted characters.")
+      errors.add(:username, "contains restricted characters. Try sticking to letters, numbers, hyphens and underscores.")
     end
   end
 end

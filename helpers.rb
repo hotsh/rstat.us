@@ -50,7 +50,7 @@ module Sinatra
     #If needed it can also take options for more parameters
     def set_pagination_buttons(data, options = {})
       return if data.nil?
-      
+
       if data.next_page
         params = {:page => data.next_page}.merge(options)
         @next_page = "?#{Rack::Utils.build_query params}"
@@ -90,7 +90,14 @@ module Sinatra
     end
   end
 
+  module ViewHelper
+    def pluralize(count, singular, plural = nil)
+      "#{count || 0} " + ((count == 1 || count =~ /^1(\.0+)?$/) ? singular : (plural || singular.pluralize))
+    end
+  end
+
   register Logging
   helpers UserHelper
+  helpers ViewHelper
 end
 
