@@ -17,14 +17,14 @@ class Rstatus
   post "/login" do
     u = User.first :username => params[:username]
     if u.nil?
-      user = User.new params
-      if user.save
-        session[:user_id] = user.id
+      @user = User.new params
+      if @user.save
+        session[:user_id] = @user.id
         flash[:notice] = "Thanks for signing up!"
         redirect "/"
+      else
+        haml :"login"
       end
-      flash[:notice] = "There was a problem... can you pick a different username?"
-      redirect "/login"
     else
       if user = User.authenticate(params[:username], params[:password])
         session[:user_id] = user.id
@@ -32,7 +32,7 @@ class Rstatus
         flash[:notice] = "Login successful."
         redirect "/"
       end
-      flash[:notice] = "The username or password you entered was incorrect"
+      flash[:error] = "The username exists; the password you entered was incorrect. If you are trying to create a new account, please choose a different username."
       redirect "/login"
     end
   end

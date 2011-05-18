@@ -39,8 +39,12 @@ class Rstatus
         # their registration information. If the username is unique and not facebook
         # screwery the user is sent to the confirmation page where they will confirm
         # their username and enter an email address.
-        if User.first :username => auth['user_info']['nickname'] or auth['user_info']['nickname'] =~ /profile[.]php[?]id=/
-          flash[:notice] = "Sorry, someone has that name."
+        if User.first :username => auth['user_info']['nickname']
+          flash[:error] = "Sorry, someone else has that username. Please pick another."
+          redirect '/users/new'
+          return
+        elsif auth['user_info']['nickname'] =~ /profile[.]php[?]id=/
+          flash[:error] = "Please choose a username."
           redirect '/users/new'
           return
         else
