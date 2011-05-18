@@ -1,11 +1,10 @@
 require 'require_relative' if RUBY_VERSION[0,3] == '1.8'
 require_relative 'acceptance_helper'
 
-class SignupTest < MiniTest::Unit::TestCase
-
+describe "signup" do
   include AcceptanceHelper
 
-  def test_user_signup
+  it "signs up successfully" do
     u = User.first(:username => "new_user")
     assert u.nil?
 
@@ -19,7 +18,7 @@ class SignupTest < MiniTest::Unit::TestCase
     assert User.authenticate("new_user", "mypassword")
   end
 
-  def test_username_clash
+  it "prompts for a new username if it clashes" do
     existing_user = Factory(:user, :username => "taken")
     new_user = Factory.build(:user, :username => 'taken')
 
