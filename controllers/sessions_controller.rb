@@ -18,13 +18,17 @@ class Rstatus
     u = User.first :username => params[:username]
     if u.nil?
       @user = User.new params
-      if @user.save
-        session[:user_id] = @user.id
-        flash[:notice] = "Thanks for signing up!"
-        redirect "/"
-      else
-        haml :"login"
+      if @user.valid?
+        if @user.password.length > 0
+          @user.save
+          session[:user_id] = @user.id
+          flash[:notice] = "Thanks for signing up!"
+          redirect "/"
+        else
+          @user.errors.add(:password, "can't be empty")
+        end
       end
+      haml :"login"
     else
       if user = User.authenticate(params[:username], params[:password])
         session[:user_id] = user.id
