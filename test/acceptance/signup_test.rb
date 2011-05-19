@@ -38,6 +38,30 @@ describe "signup" do
       assert_match /Username can't be empty/, page.body
     end
 
+    it "requires a password" do
+      visit '/login'
+      fill_in "username", :with => "baseball"
+      click_button "Log in"
+
+      assert_match /Password can't be empty/, page.body
+    end
+
+    it "does not save user to db if there wasn't a password" do
+      visit '/login'
+      fill_in "username", :with => "baseball"
+      click_button "Log in"
+
+      assert_match /Password can't be empty/, page.body
+
+      fill_in "username", :with => "baseball"
+      fill_in "password", :with => "baseball"
+      click_button "Log in"
+
+      refute_match /The username exists; the password you entered was incorrect\. If you are trying to create a new account, please choose a different username/, page.body
+      refute_match /prohibited your account from being created/, page.body
+      assert_match /\//, page.current_url
+    end
+
     it "shows an error if the username is too long" do
       visit '/login'
       fill_in "username", :with => "supercalifragilisticexpialidocious"
