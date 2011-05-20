@@ -124,13 +124,12 @@ class Author
   end
 
   # Returns an OStatus::Author instance describing this author model
-  # Must give it a base_uri
-  def to_atom(base_uri)
+  def to_atom
 
     # Determine global url for this author
     author_url = url
     if author_url.start_with?("/")
-      author_url = base_uri + author_url[1..-1]
+      author_url = "http://#{domain}#{author_url}"
     end
 
     # Set up PortableContacts
@@ -141,7 +140,7 @@ class Author
     # Set up and return Author
     avatar_url_abs = avatar_url
     if avatar_url_abs.start_with?("/")
-      avatar_url_abs = "#{base_uri}#{avatar_url[1..-1]}"
+      avatar_url_abs = "http://#{domain}#{avatar_url_abs}"
     end
 
     author = OStatus::Author.new(:name => username,
