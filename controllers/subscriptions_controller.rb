@@ -84,6 +84,10 @@ class Rstatus
 
     feed_url = nil
 
+    # We need to also pass along the Redfinger look up to follow!
+    # if it is retrieved for a remote user:
+    acct = nil
+
     # Allow for a variety of feed addresses
     case params[:url]
     when /^feed:\/\//
@@ -126,7 +130,7 @@ class Rstatus
       redirect request.referrer
     end
 
-    f = current_user.follow! feed_url
+    f = current_user.follow! feed_url, acct
 
     unless f
       flash[:notice] = "There was a problem following #{params[:url]}."
