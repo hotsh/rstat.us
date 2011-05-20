@@ -17,8 +17,9 @@ class Rstatus
   post "/login" do
     u = User.first :username => params[:username]
     if u.nil?
-      user = User.new params
-      if user.save
+      author = Author.new params
+      user = User.new params.merge({:author => author})
+      if author.save && user.save
         session[:user_id] = user.id
         flash[:notice] = "Thanks for signing up!"
         redirect "/"
