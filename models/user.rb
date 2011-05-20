@@ -38,8 +38,6 @@ class User
   validate :no_malformed_username
   
   # This will establish other entities related to the User
-  before_create :generate_rsa_pair
-
   after_create :finalize
 
   # Before a user is created, we will generate some RSA keys
@@ -112,6 +110,7 @@ class User
   # After a user is created, create the feed and reset the token
   def finalize
     create_feed
+    generate_rsa_pair
     reset_perishable_token
   end
 
@@ -185,7 +184,7 @@ class User
   end
 
   # Follow a particular feed
-  def follow! feed_url
+  def follow! feed_url, xrd = nil
     f = Feed.first(:url => feed_url)
 
     # local feed?
@@ -201,7 +200,10 @@ class User
 
     if f.nil?
       f = Feed.create(:remote_url => feed_url)
-      f.populate
+
+      # Populate the Feed with Updates and Author from the remote site
+      # Pass along the xrd information to build the Author if available
+      f.populate xrd
     end
 
     following << f
@@ -214,7 +216,17 @@ class User
     else
       # Send Salmon notification so that the remote user
       # knows this user is following them
-      OStatus::Salmon.new(entry)
+      salmon = OStatus::Salmon.from_follow(author.to_atom, f.author.to_atom)
+
+      envelope = salmon.to_xml retrieve_private_key
+
+      # Send envelope to Author's Salmon endpoint
+      #puts "Sending salmon slap to #{f.author.salmon_url}"
+      uri = URI.parse(f.author.salmon_url)
+      http = Net::HTTP.new(uri.host, uri.port)
+      res = http.post(uri.path, envelope, {"Content-Type" => "application/magic-envelope+xml"})
+      #puts res
+      #p res
     end
 
     f
@@ -227,6 +239,18 @@ class User
     if followed_feed.local?
       followee = User.first(:author_id => followed_feed.author.id)
       followee.unfollowed_by!(self.feed)
+    else
+      # Send Salmon notification so that the remote user
+      # knows this user has stopped following them
+      salmon = OStatus::Salmon.from_unfollow(author.to_atom, f.author.to_atom)
+
+      envelope = salmon.to_xml retrieve_private_key
+
+      # Send envelope to Author's Salmon endpoint
+      uri = URI.parse(f.author.salmon_url)
+      res = Net::HTTP.start(uri.host, uri.port) do |http|
+        http.post(uri.path, envelope)
+      end
     end
   end
 
