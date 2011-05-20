@@ -1,9 +1,9 @@
 class Rstatus
   require 'ostatus'
+  require 'rsa'
 
   # Salmon input
   post '/feeds/:id/salmon' do
-    # XXX: change 'author' to a more suitable name (remote_author?)
     feed = Feed.first :id => params[:id]
 
     if feed.nil?
@@ -56,10 +56,13 @@ class Rstatus
       feed_url = acct.links.find { |l| l['rel'] == 'http://schemas.google.com/g/2010#updates-from' }
 
       # Retrieve the public key
-      public_key = acct.links.find { |l| l['rel'] == 'magic-public-key' }
+      public_key = acct.links.find { |l| l['rel'].downcase == 'magic-public-key' }
       public_key = public_key.href[/^.*?,(.*)$/,1]
       author.public_key = public_key
       author.reset_key_lease
+
+      # Salmon URL
+      author.salmon_url = acct.links.find { |l| l['rel'].downcase == 'salmon' }
     end
 
     # Check if the lease has expired
@@ -83,7 +86,7 @@ class Rstatus
     end
 
     # Verify the feed
-    verified = salmon.verified? author.public_key
+    verified = salmon.verified? author.retrieve_public_key
 
     # When we verify, we know (with some confidence at least) that the salmon
     # notification came from this author.
