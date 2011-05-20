@@ -31,7 +31,7 @@ class Feed
 
   after_create :default_hubs
 
-  def populate
+  def populate xrd = nil
     # TODO: More entropy would be nice
     self.verify_token = Digest::MD5.hexdigest(rand.to_s)
     self.secret = Digest::MD5.hexdigest(rand.to_s)
@@ -49,7 +49,20 @@ class Feed
                                 :username => a.name,
                                 :email => a.email,
                                 :remote_url => a.uri,
+                                :bio => a.portable_contacts.note,
                                 :image_url => avatar_url)
+
+    if xrd
+      # Retrieve the public key
+      public_key = xrd.links.find { |l| l['rel'].downcase == 'magic-public-key' }
+      public_key = public_key.href[/^.*?,(.*)$/,1]
+      self.author.public_key = public_key
+      self.author.reset_key_lease
+
+      # Salmon URL
+      self.author.salmon_url = xrd.links.find { |l| l['rel'].downcase == 'salmon' }
+      self.author.save
+    end
 
     self.hubs = f.hubs
 
@@ -62,7 +75,7 @@ class Feed
     os_entries.each do |entry|
       u = Update.first(:url => entry.url)
       if u.nil?
-        u = Update.create(:author => author,
+        u = Update.create(:author => self.author,
                           :created_at => entry.published,
                           :url => entry.url,
                           :updated_at => entry.updated)
