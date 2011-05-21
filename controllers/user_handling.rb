@@ -8,7 +8,7 @@ class Rstatus
   before do
     @error_bar = ""
     if current_user && (current_user.username.nil? or current_user.username.empty? or !current_user.username.match(/profile.php/).nil?)
-      @error_bar = haml :"users/_username_error", :layout => false
+      @error_bar = haml :"login/_username_error", :layout => false
     end
   end
 
@@ -20,7 +20,7 @@ class Rstatus
       redirect "/"
     end
 
-    haml :"users/reset_username"
+    haml :"login/reset_username"
   end
 
   post '/reset-username' do
@@ -34,14 +34,14 @@ class Rstatus
       redirect "/"
     else
       flash[:notice] = "Sorry, that username has already been taken or is not valid. Please try again."
-      haml :"users/reset_username"
+      haml :"login/reset_username"
     end
   end
 
   # Passwords can be reset by unauthenticated users by navigating to the forgot
   # password and page and submitting the email address they provided.
   get '/forgot_password' do
-    haml :"users/forgot_password"
+    haml :"login/forgot_password"
   end
 
   # We've got a pretty solid forgotten password implementation. It's simple:
@@ -53,7 +53,7 @@ class Rstatus
     user = User.first(:email => params[:email])
     if user.nil?
       flash[:notice] = "Your account could not be found, please check your email and try again."
-      haml :"users/forgot_password"
+      haml :"login/forgot_password"
     else
       Notifier.send_forgot_password_notification(user.email, user.set_password_reset_token)
       # Redirect to try to avoid repost issues
@@ -66,7 +66,7 @@ class Rstatus
   # was sent to
   get '/forgot_password_confirm' do
     @email = session.delete(:fp_email)
-    haml :"users/forgot_password_confirm"
+    haml :"login/forgot_password_confirm"
   end
 
   # Public reset password page, accessible via a valid token. Tokens are only
@@ -79,7 +79,7 @@ class Rstatus
       redirect "/forgot_password"
     else
       @token = params[:token]
-      haml :"users/reset_password"
+      haml :"login/reset_password"
     end
   end
 
