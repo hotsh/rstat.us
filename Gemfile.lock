@@ -36,6 +36,7 @@ GEM
     coffee-script-source (1.0.1)
     compass (0.10.6)
       haml (>= 3.0.4)
+    configuration (1.2.0)
     crack (0.1.8)
     culerity (0.2.15)
     database_cleaner (0.6.6)
@@ -66,6 +67,9 @@ GEM
       activesupport (>= 2.3.4)
     json (1.5.1)
     json_pure (1.5.1)
+    launchy (0.4.0)
+      configuration (>= 0.0.5)
+      rake (>= 0.8.1)
     mail (2.2.15)
       activesupport (>= 2.3.6)
       i18n (>= 0.4.0)
@@ -234,6 +238,7 @@ DEPENDENCIES
   haml
   i18n
   jammit
+  launchy
   minitest
   mocha
   mongo_mapper
