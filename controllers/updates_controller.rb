@@ -24,7 +24,11 @@ class Rstatus
       @update_text = @update_text + params[:status]
     end
 
-    haml :"updates/index"
+    if pjax_request?
+      haml :"updates/_list", :locals => {:updates => @updates}, :layout => false
+    else
+      haml :"updates/index"
+    end
   end
 
   get '/replies' do
@@ -32,7 +36,11 @@ class Rstatus
       set_params_page
       @updates = current_user.at_replies(params).paginate( :page => params[:page], :per_page => params[:per_page] || 20, :order => :created_at.desc)
       set_pagination_buttons(@updates)
-      haml :"updates/index"
+      if pjax_request?
+        haml :"updates/_list", :locals => {:updates => @updates}, :layout => false
+      else
+        haml :"updates/index"
+      end
     else
       haml :"static/home", :layout => false
     end
@@ -43,7 +51,11 @@ class Rstatus
     @updates = Update.paginate( :page => params[:page], :per_page => params[:per_page] || 20, :order => :created_at.desc)
     set_pagination_buttons(@updates)
 
-    haml :"updates/index"
+    if pjax_request?
+      haml :"updates/_list", :locals => {:updates => @updates}, :layout => false
+    else
+      haml :"updates/index"
+    end
   end
   
   get "/search" do

@@ -8,5 +8,5 @@
   %ul
     - nav.each do |item|
       %li{:class => request.path_info == item[:url] ? "active" : ""}
-        %a{:href => item[:url]}
+        %a{:href => item[:url], :id => "tab-#{item[:name].downcase}" }
           = item[:name]
