@@ -1,12 +1,69 @@
 class Rstatus
 
-  # Ahh, the classic 'world' view.
   get '/updates' do
+    set_params_page
+    @updates = current_user.timeline(params).paginate( :page => params[:page], :per_page => params[:per_page] || 20, :order => :created_at.desc)
+    set_pagination_buttons(@updates)
+
+    @timeline = true
+
+    if params[:reply]
+      u = Update.first(:id => params[:reply])
+      @update_text = "@#{u.author.username} "
+      @update_id = u.id
+    elsif params[:share]
+      u = Update.first(:id => params[:share])
+      @update_text = "RS @#{u.author.username}: #{u.text}"
+      @update_id = u.id
+    else
+      @update_text = ""
+      @update_id = ""
+    end
+
+    if params[:status]
+      @update_text = @update_text + params[:status]
+    end
+
+    haml :"updates/index"
+  end
+
+  get '/replies' do
+    if logged_in?
+      set_params_page
+      @updates = current_user.at_replies(params).paginate( :page => params[:page], :per_page => params[:per_page] || 20, :order => :created_at.desc)
+      set_pagination_buttons(@updates)
+      haml :"updates/index"
+    else
+      haml :index, :layout => false
+    end
+  end
+
+  # Ahh, the classic 'world' view.
+  get '/world' do
     @updates = Update.paginate( :page => params[:page], :per_page => params[:per_page] || 20, :order => :created_at.desc)
     set_pagination_buttons(@updates)
 
-    haml :world
+    haml :"updates/index"
   end
+  
+  get "/search" do
+    @updates = []
+    if params[:q]
+      @updates = Update.filter(params[:q], :page => params[:page], :per_page => params[:per_page] || 20, :order => :created_at.desc)
+      set_pagination_buttons(@updates)
+    end
+    haml :"updates/search"
+  end
+  
+  # get "/hashtags/:tag" do
+  #   @hashtag = params[:tag]
+  #   set_params_page
+  #   @updates = Update.hashtag_search(@hashtag, params).paginate( :page => params[:page], :per_page => params[:per_page] || 20, :order => :created_at.desc)
+  #   set_pagination_buttons(@updates)
+  #   @timeline = true
+  #   @update_text = params[:status]
+  #   haml :"updates/hashtags"
+  # end
 
   # If you're POST-ing to /updates, it means you're making a new one. Woo-hoo!
   # This is what it's all built for.

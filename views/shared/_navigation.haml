@@ -1,7 +1,7 @@
 - if current_user.nil?
-  - nav = [{:url => "/updates", :name => "World"}]
+  - nav = [{:url => "/world", :name => "World"}]
 - else
-  - nav = [{:url => "/", :name => "Timeline"}, {:url => "/replies", :name => "Replies"}, {:url => "/updates", :name => "World"}]
+  - nav = [{:url => "/updates", :name => "Timeline"}, {:url => "/replies", :name => "Replies"}, {:url => "/world", :name => "World"}]
 - unless @hashtag.nil?
   - nav << {:url => "/hashtags/#{@hashtag}", :name => "##{@hashtag}"}
 #navigation
