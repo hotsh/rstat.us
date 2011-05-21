@@ -27,11 +27,11 @@ describe "replies" do
     u2.feed.updates << Factory(:update, :text => "@#{u.username} Hey man.")
     u.feed.updates << Factory(:update, :text => "some text @someone, @#{u2.username} Hey man.")
     log_in(u, a.uid)
-    visit "/updates"
+    visit "/world"
     assert_match "class='hentry mention update'", page.body
 
     log_in(u2, a2.uid)
-    visit "/updates"
+    visit "/world"
     assert_match "class='hentry mention update'", page.body
   end
 end
