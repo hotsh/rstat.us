@@ -84,13 +84,13 @@ class Rstatus
     if logged_in?
       call! env.merge("PATH_INFO" => '/timeline')
     else
-      haml :index, :layout => false
+      haml :"static/home", :layout => false
     end
   end
 
   get '/home' do
     cache_control :public, :must_revalidate, :max_age => 60
-    haml :index, :layout => false
+    haml :"static/home", :layout => false
   end
 
   post '/signup' do
@@ -118,11 +118,11 @@ class Rstatus
   end
 
   not_found do
-    haml :'error', :layout => false, :locals => {:code => 404, :message => "We couldn't find the page you're looking for"}
+    haml :"static/error", :layout => false, :locals => {:code => 404, :message => "We couldn't find the page you're looking for"}
   end
 
   error do
-    haml :'error', :layout => false, :locals => {:code => 500, :message => "Something went wrong"}
+    haml :"static/error", :layout => false, :locals => {:code => 500, :message => "Something went wrong"}
   end
 
 end

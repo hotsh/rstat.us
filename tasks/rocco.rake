@@ -19,8 +19,8 @@ begin
     CLEAN.include "docs/#{css}"
   end
 
-  file 'docs/index.html' => 'views/doc_index.haml' do |f|
-    system("haml -rrdiscount views/doc_index.haml docs/index.html")
+  file 'docs/index.html' => 'views/static/doc_index.haml' do |f|
+    system("haml -rrdiscount views/static/doc_index.haml docs/index.html")
   end
 
   task :docs => 'docs/index.html'

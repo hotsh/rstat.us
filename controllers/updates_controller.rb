@@ -34,7 +34,7 @@ class Rstatus
       set_pagination_buttons(@updates)
       haml :"updates/index"
     else
-      haml :index, :layout => false
+      haml :"static/home", :layout => false
     end
   end
 
@@ -101,7 +101,7 @@ class Rstatus
   get '/updates/:id' do
     @update = Update.first :id => params[:id]
     @referral = @update.referral
-    haml :"updates/show", :layout => :'updates/layout'
+    haml :"updates/show", :layout => :'layout/update'
   end
 
   # Hopefully people don't delete a whole bunch of their updates, but if they
