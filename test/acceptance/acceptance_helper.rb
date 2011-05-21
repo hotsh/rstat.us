@@ -1,7 +1,6 @@
-require 'rack/test'
-require 'vcr'
-
 require_relative '../test_helper'
+
+require 'rack/test'
 
 VCR.config do |c|
   c.cassette_library_dir = 'test/data/vcr_cassettes'

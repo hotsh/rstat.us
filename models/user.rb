@@ -28,17 +28,19 @@ class User
   key :perishable_token, String
 
   # We cannot put a :unique tag above because of a MongoMapper bug
-  validates_uniqueness_of :email, :allow_nil => :true 
+  validates_uniqueness_of :email, :allow_nil => :true
   validates_uniqueness_of :username, :allow_nil => :true, :case_sensitive => false
-  
+
   # The maximum is arbitrary
-  validates_length_of :username, :minimum => 1, :maximum => 17
-  
+  # Twitter has 15, let's be different
+  validates_length_of :username, :maximum => 17, :message => "must be 17 characters or fewer."
+
   # Validate users don't have special characters in their username
   validate :no_malformed_username
-  
+
   # This will establish other entities related to the User
   after_create :finalize
+
 
   # Before a user is created, we will generate some RSA keys
   def generate_rsa_pair
@@ -135,22 +137,22 @@ class User
   def twitter?
     has_authorization?(:twitter)
   end
-  
+
   # Returns the twitter authorization
   def twitter
     get_authorization(:twitter)
   end
-  
+
   # Returns true when this user has a facebook authorization
   def facebook?
     has_authorization?(:facebook)
   end
-  
+
   # Returns the facebook authorization
   def facebook
     get_authorization(:facebook)
   end
-  
+
   # Check if a a user has a certain authorization by providing the associated
   # provider
   def has_authorization?(auth)
@@ -292,23 +294,14 @@ class User
 
   # Retrieve the list of Updates in the user's timeline
   def timeline(params)
-    popts = {
-      :page => params[:page],
-      :per_page => params[:per_page]
-    }
-
     following_plus_me = following.clone
     following_plus_me << self.feed
-    Update.where(:author_id => following_plus_me.map(&:author_id)).order(['created_at', 'descending']).paginate(popts)
+    Update.where(:author_id => following_plus_me.map(&:author_id)).order(['created_at', 'descending'])
   end
 
   # Retrieve the list of Updates that are replies to this user
   def at_replies(params)
-    popts = {
-      :page => params[:page],
-      :per_page => params[:per_page]
-    }
-    Update.where(:text => /^@#{Regexp.quote(username)}\b/).order(['created_at', 'descending']).paginate(popts)
+    Update.where(:text => /^@#{Regexp.quote(username)}\b/).order(['created_at', 'descending'])
   end
 
   # User MUST be confirmed
@@ -377,7 +370,7 @@ class User
 
   def no_malformed_username
     unless (username =~ /[@!"#$\%&'()*,^~{}|`=:;\\\/\[\]\s?]/).nil? && (username =~ /^[.]/).nil? && (username =~ /[.]$/).nil? && (username =~ /[.]{2,}/).nil?
-      errors.add(:username, "contains restricted characters.")
+      errors.add(:username, "contains restricted characters. Try sticking to letters, numbers, hyphens and underscores.")
     end
   end
 end

@@ -1,22 +1,21 @@
 require 'require_relative' if RUBY_VERSION[0,3] == '1.8'
 require_relative 'acceptance_helper'
 
-class FollowingTest < MiniTest::Unit::TestCase
-
+describe "following" do
   include AcceptanceHelper
 
-  def test_user_does_not_follow_self_upon_create
+  it "doesn't make you follow yourself after signing up" do
     u = Factory(:user)
     refute u.following? u.feed.url
   end
 
-  def test_user_cannot_follow_self
+  it "disallows following yourself" do
     u = Factory(:user)
     u.follow! u.feed.url
     refute u.following? u.feed.url
   end
 
-  def test_subscribe_to_users_on_other_sites
+  it "follows users on other sites" do
     u = Factory(:user)
     a = Factory(:authorization, :user => u)
     log_in(u, a.uid)
@@ -33,7 +32,7 @@ class FollowingTest < MiniTest::Unit::TestCase
     assert "/", current_path
   end
 
-  def test_user_follow_another_user
+  it "follows another user" do
     u = Factory(:user)
     a = Factory(:authorization, :user => u)
 
@@ -47,7 +46,7 @@ class FollowingTest < MiniTest::Unit::TestCase
     assert_match "Now following #{u2.username}", page.body
   end
 
-  def test_user_unfollow_another_user
+  it "unfollows another user" do
     u = Factory(:user)
     a = Factory(:authorization, :user => u)
 
@@ -63,7 +62,7 @@ class FollowingTest < MiniTest::Unit::TestCase
     assert_match "No longer following #{u2.username}", page.body
   end
 
-  def test_users_followers_in_order
+  it "maintains the order in which you follow people" do
     aardvark = Factory(:user, :username => "aardvark", :created_at => Date.new(2010, 10, 23))
     zebra    = Factory(:user, :username => "zebra", :created_at => Date.new(2011, 10, 23))
     giraffe  = Factory(:user, :username => "giraffe", :created_at => Date.new(2011, 10, 23))
@@ -82,26 +81,7 @@ class FollowingTest < MiniTest::Unit::TestCase
     assert_match /leopard.*zebra/m, page.body
   end
 
-  def test_user_following_paginates
-    u = Factory(:user)
-    a = Factory(:authorization, :user => u)
-
-    log_in(u, a.uid)
-
-    51.times do
-      u2 = Factory(:user)
-      u.follow! u2.feed.url
-    end
-
-    visit "/users/#{u.username}/following"
-
-    click_link "next_button"
-
-    assert_match "Previous", page.body
-    assert_match "Next", page.body
-  end
-
-  def test_user_following_outputs_json
+  it "outputs json" do
     u = Factory(:user)
     a = Factory(:authorization, :user => u)
 
@@ -116,7 +96,24 @@ class FollowingTest < MiniTest::Unit::TestCase
     assert_equal "user1", json.last["username"]
   end
 
-  def test_user_followers_paginates
+  it "does not paginate followers when there are not enough" do
+    u = Factory(:user)
+    a = Factory(:authorization, :user => u)
+
+    log_in(u, a.uid)
+
+    5.times do
+      u2 = Factory(:user)
+      u2.follow! u.feed.url
+    end
+
+    visit "/users/#{u.username}/followers"
+
+    refute_match "Previous", page.body
+    refute_match "Next", page.body
+  end
+
+  it "paginates the users following you" do
     u = Factory(:user)
     a = Factory(:authorization, :user => u)
 
@@ -135,7 +132,7 @@ class FollowingTest < MiniTest::Unit::TestCase
     assert_match "Next", page.body
   end
 
-  def test_following_displays_username_logged_in
+  it "uses your username on your following page if logged in" do
     u = Factory(:user, :username => "dfnkt")
     a = Factory(:authorization, :user => u)
 
@@ -146,7 +143,7 @@ class FollowingTest < MiniTest::Unit::TestCase
 
   end
 
-  def test_following_displays_username_logged_out
+  it "uses your username on your following page if not logged in" do
     u = Factory(:user, :username => "dfnkt")
 
     visit "/users/#{u.username}/following"

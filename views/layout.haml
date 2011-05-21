@@ -56,9 +56,7 @@
         #content
           != yield_content :top
 
-          - if flash[:notice] || flash[:error]
-            #flash
-              = flash[:notice]
+          != haml :_flash
 
           != yield
 

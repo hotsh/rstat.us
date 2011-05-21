@@ -1,11 +1,10 @@
 require 'require_relative' if RUBY_VERSION[0,3] == '1.8'
 require_relative 'acceptance_helper'
 
-class ReplyTest < MiniTest::Unit::TestCase
-
+describe "replies" do
   include AcceptanceHelper
 
-  def test_user_can_see_replies
+  it "shows replies" do
     u = Factory(:user)
     a = Factory(:authorization, :user => u)
 
@@ -19,7 +18,7 @@ class ReplyTest < MiniTest::Unit::TestCase
     assert_match "@#{u.username}", page.body
   end
 
-  def test_user_can_see_replies_with_css_class_mentioned
+  it "shows replies with css class mention" do
     u = Factory(:user)
     a = Factory(:authorization, :user => u)
 

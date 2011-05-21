@@ -34,6 +34,9 @@ class Update
   key :html, String
   before_save :generate_html
 
+  validates_length_of :text, :minimum => 1, :maximum => 140
+  validate :do_not_repeat_yourself, :on => :create
+
   # We also generate the tags upon editing the update
   before_save :get_tags
 
@@ -241,4 +244,7 @@ class Update
 
   end
 
+  def do_not_repeat_yourself
+    errors.add(:text, "You already posted this update.") if feed.last_update && feed.last_update.id != id && feed.last_update.text == text && feed.last_update.author.id == author.id
+  end
 end

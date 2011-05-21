@@ -2,4 +2,24 @@ development:
   # Twitter API stuff (these fake keys work)
   CONSUMER_KEY: asdf
   CONSUMER_SECRET: asdf
+  # Logging settings
+  LOG_SHIFT_AGE: '10'
+  LOG_SHIFT_SIZE: '1048576'
+  LOG_LEVEL: DEBUG
 
+  #set this to the URL of a status blog or the like.
+  #if empty, the Blog footer link won't show.
+  BLOG_URL:
+
+test:
+  # Twitter API stuff (these fake keys work)
+  CONSUMER_KEY: asdf
+  CONSUMER_SECRET: asdf
+  # Logging settings
+  LOG_SHIFT_AGE: '10'
+  LOG_SHIFT_SIZE: '1048576'
+  LOG_LEVEL: DEBUG
+
+  #set this to the URL of a status blog or the like.
+  #if empty, the Blog footer link won't show.
+  BLOG_URL:

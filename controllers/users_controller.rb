@@ -58,16 +58,17 @@ class Rstatus
 
   get '/users' do
     set_params_page
-
     # Filter users by search params
     if params[:search] && !params[:search].empty?
       @authors = Author.where(:username => /#{params[:search]}/i)
 
-    # Filter users by letter
+    # Filter and sort users by letter
     elsif params[:letter]
       if params[:letter] == "other"
         @authors = Author.where(:username => /^[^a-z0-9]/i)
-      elsif
+      elsif params[:letter].empty?
+        break
+      else
         @authors = Author.where(:username => /^#{params[:letter][0].chr}/i)
       end
     else
@@ -83,21 +84,11 @@ class Rstatus
 
     @authors = @authors.paginate(:page => params[:page], :per_page => params[:per_page])
 
-    @next_page = nil
-
-    # If this would just accept params as is I wouldn't have to do this
-    if params[:letter]
-      @next_page = "?#{Rack::Utils.build_query :page => params[:page] + 1, :letter => params[:letter]}"
-
-      if params[:page] > 1
-        @prev_page = "?#{Rack::Utils.build_query :page => params[:page] + 1, :letter => params[:letter]}"
-      else
-        @prev_page = nil
-      end
+    if params[:letter] && !params[:letter].empty?
+      set_pagination_buttons(@users, :letter => params[:letter])
     else
-      set_next_prev_page
+      set_pagination_buttons(@users)
     end
-
     haml :"users/index"
   end
 
@@ -108,8 +99,8 @@ class Rstatus
 
   # The signup page posts here.
   post '/users' do
-    user = User.new params
-    if user.save
+    @user = User.new params
+    if @user.save
       # this is really stupid.
       auth = {}
       auth['uid'] = session[:uid]
@@ -126,14 +117,13 @@ class Rstatus
       auth['credentials']['token'] = session[:oauth_token]
       auth['credentials']['secret'] = session[:oauth_secret]
 
-      Authorization.create_from_hash(auth, uri("/"), user)
+      Authorization.create_from_hash(auth, uri("/"), @user)
 
-      flash[:notice] = "Thanks! You're all signed up with #{user.username} for your username."
-      session[:user_id] = user.id
+      flash[:notice] = "Thanks! You're all signed up with #{@user.username} for your username."
+      session[:user_id] = @user.id
       redirect '/'
     else
-      flash[:notice] = "Oops! That username was taken. Pick another?"
-      redirect '/users/new'
+      haml :"users/new"
     end
   end
 
@@ -153,10 +143,9 @@ class Rstatus
       end
     end
     @author = user.author
-    @updates = Update.where(:feed_id => user.feed.id).order(['created_at', 'descending']).paginate(:page => params[:page], :per_page => params[:per_page])
-
-    @next_page = nil
-    set_next_prev_page
+    @updates = Update.where(:feed_id => user.feed.id).order(['created_at', 'descending'])
+    @updates = @updates.paginate(:page => params[:page], :per_page => params[:per_page])
+    set_pagination_buttons(@updates)
 
     haml :"users/show"
   end
@@ -196,6 +185,7 @@ class Rstatus
     feed = User.first(:username => params[:username]).feed
     redirect "/feeds/#{feed.id}.atom"
   end
+
   # Who do you think is a really neat person? This page will show it to the
   # world, so pick wisely!
   get '/users/:username/following' do
@@ -207,8 +197,7 @@ class Rstatus
     @user = User.first(:username => params[:username])
     @authors = feeds.paginate(:page => params[:page], :per_page => params[:per_page], :order => :id.desc).map{|f| f.author}
 
-    set_next_prev_page
-    @next_page = nil unless params[:page]*params[:per_page] < feeds.count
+    set_pagination_buttons(@authors)
 
     title = ""
     title << "#{@user.username} is following"
@@ -235,8 +224,7 @@ class Rstatus
     @user = User.first(:username => params[:username])
     @authors = feeds.paginate(:page => params[:page], :per_page => params[:per_page], :order => :id.desc).map{|f| f.author}
 
-    set_next_prev_page
-    @next_page = nil unless params[:page]*params[:per_page] < feeds.count
+    set_pagination_buttons(@authors)
 
     #build title
     title = ""

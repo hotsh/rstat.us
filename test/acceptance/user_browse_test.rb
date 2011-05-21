@@ -1,11 +1,10 @@
 require 'require_relative' if RUBY_VERSION[0,3] == '1.8'
 require_relative 'acceptance_helper'
 
-class UserBrowseTest < MiniTest::Unit::TestCase
-
+describe "user browse" do
   include AcceptanceHelper
 
-  def test_users_browse
+  it "can browse users" do
     zebra    = Factory(:user, :username => "zebra")
     aardvark = Factory(:user, :username => "aardvark")
     a = Factory(:authorization, :user => aardvark)
@@ -17,93 +16,190 @@ class UserBrowseTest < MiniTest::Unit::TestCase
     assert has_link? "zebra"
   end
 
-  def test_users_browse_paginates
-    u = Factory(:user)
-    a = Factory(:authorization, :user => u)
+  describe "sorted by creation date (default)" do
+    it "sorts by latest users by default" do
+      aardvark = Factory(:user, :username => "aardvark", :created_at => Date.new(2010, 10, 23))
+      zebra    = Factory(:user, :username => "zebra", :created_at => Date.new(2011, 10, 24))
+      a = Factory(:authorization, :user => aardvark)
 
-    log_in(u, a.uid)
+      log_in(aardvark, a.uid)
 
-    51.times do
-      u2 = Factory(:user)
+      visit "/users"
+      assert_match /zebra.*aardvark/m, page.body
     end
 
-    visit "/users"
+    describe "pagination" do
+      it "does not paginate when there are too few" do
+        u = Factory(:user)
+        a = Factory(:authorization, :user => u)
 
-    click_link "next_button"
+        log_in(u, a.uid)
 
-    assert_match "Previous", page.body
-    assert_match "Next", page.body
-  end
+        visit "/users"
 
-  def test_users_browse_by_letter_paginates
-    visit "/users"
+        refute_match "Previous", page.body
+        refute_match "Next", page.body
+      end
 
-    49.times do
-      u2 = Factory(:user)
+      it "paginates forward only if on the first page" do
+        u = Factory(:user)
+        a = Factory(:authorization, :user => u)
+
+        log_in(u, a.uid)
+
+        51.times do
+          u2 = Factory(:user)
+        end
+
+        visit "/users"
+
+        refute_match "Previous", page.body
+        assert_match "Next", page.body
+      end
+
+      it "paginates backward only if on the last page" do
+        u = Factory(:user)
+        a = Factory(:authorization, :user => u)
+
+        log_in(u, a.uid)
+
+        51.times do
+          u2 = Factory(:user)
+        end
+
+        visit "/users"
+        click_link "next_button"
+        click_link "next_button"
+
+        refute_match "Next", page.body
+        assert_match "Previous", page.body
+      end
+
+      it "paginates forward and backward if on a middle page" do
+        u = Factory(:user)
+        a = Factory(:authorization, :user => u)
+
+        log_in(u, a.uid)
+
+        51.times do
+          u2 = Factory(:user)
+        end
+
+        visit "/users"
+
+        click_link "next_button"
+
+        assert_match "Previous", page.body
+        assert_match "Next", page.body
+      end
     end
-    u2 = Factory(:user, :username => "uzzzzz")
-
-    click_link "U"
-    click_link "next_button"
-
-    assert_match u2.username, page.body
   end
 
-  def test_users_browse_shows_latest_users
-    aardvark = Factory(:user, :username => "aardvark", :created_at => Date.new(2010, 10, 23))
-    zebra    = Factory(:user, :username => "zebra", :created_at => Date.new(2011, 10, 24))
-    a = Factory(:authorization, :user => aardvark)
+  describe "by letter" do
+    it "filters to usernames starting with that letter" do
+      alpha = Factory(:user, :username => "alpha")
+      a = Factory(:authorization, :user => alpha)
 
-    log_in(aardvark, a.uid)
+      ["aardvark", "beta", "BANANAS"].each do |u|
+        u2 = Factory(:user, :username => u)
+      end
 
-    visit "/users"
-    assert_match /zebra.*aardvark/m, page.body
-  end
+      log_in(alpha, a.uid)
 
-  def test_users_browse_by_letter
-    alpha = Factory(:user, :username => "alpha")
-    a = Factory(:authorization, :user => alpha)
+      visit "/users"
+      click_link "B"
 
-    ["aardvark", "beta", "BANANAS"].each do |u|
-      u2 = Factory(:user, :username => u)
+      assert has_link? "(beta)"
+      assert has_link? "(BANANAS)"
+      refute_match "(aardvark)", page.body
     end
 
-    log_in(alpha, a.uid)
+    it "filters usernames starting with nonletters into Other" do
+      alpha = Factory(:user, :username => "alpha")
+      a = Factory(:authorization, :user => alpha)
 
-    visit "/users"
-    click_link "B"
+      ["flop", "__FILE__"].each do |u|
+        u2 = Factory(:user, :username => u)
+      end
 
-    assert has_link? "(beta)"
-    assert has_link? "(BANANAS)"
-    refute_match "(aardvark)", page.body
-  end
+      log_in(alpha, a.uid)
 
-  def test_users_browse_by_non_letter
-    alpha = Factory(:user, :username => "alpha")
-    a = Factory(:authorization, :user => alpha)
+      visit "/users"
+      click_link "Other"
 
-    ["flop", "__FILE__"].each do |u|
-      u2 = Factory(:user, :username => u)
+      assert has_link? "__FILE__"
+      refute_match "flop", page.body
     end
 
-    log_in(alpha, a.uid)
+    it "displays a message if there are no users for that letter" do
+      alpha = Factory(:user, :username => "alpha")
+      a = Factory(:authorization, :user => alpha)
 
-    visit "/users"
-    click_link "Other"
+      log_in(alpha, a.uid)
 
-    assert has_link? "__FILE__"
-    refute_match "flop", page.body
-  end
+      visit "/users"
+      click_link "B"
 
-  def test_users_browse_no_results
-    alpha = Factory(:user, :username => "alpha")
-    a = Factory(:authorization, :user => alpha)
+      assert_match "Sorry, no users that match.", page.body
+    end
 
-    log_in(alpha, a.uid)
+    describe "pagination" do
+      it "does not paginate when there are too few" do
+        u = Factory(:user, :username => "alpha")
+        a = Factory(:authorization, :user => u)
 
-    visit "/users"
-    click_link "B"
+        log_in(u, a.uid)
 
-    assert_match "Sorry, no users that match.", page.body
+        visit "/users/a"
+
+        refute_match "Previous", page.body
+        refute_match "Next", page.body
+      end
+
+      it "paginates forward only if on the first page" do
+        visit "/users"
+
+        49.times do
+          u2 = Factory(:user)
+        end
+
+        click_link "U"
+
+        refute_match "Previous", page.body
+        assert_match "Next", page.body
+      end
+
+      it "paginates backward only if on the last page" do
+        visit "/users"
+
+        49.times do
+          u2 = Factory(:user)
+        end
+        u2 = Factory(:user, :username => "uzzzzz")
+
+        click_link "U"
+        click_link "next_button"
+
+        assert_match u2.username, page.body
+        assert_match "Previous", page.body
+        refute_match "Next", page.body
+      end
+
+      it "paginates forward and backward if on a middle page" do
+        visit "/users"
+
+        77.times do
+          u2 = Factory(:user)
+        end
+        u2 = Factory(:user, :username => "uzzzzz")
+
+        click_link "U"
+        click_link "next_button"
+        click_link "next_button"
+
+        assert_match "Previous", page.body
+        assert_match "Next", page.body
+      end
+    end
   end
 end
