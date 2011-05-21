@@ -26,7 +26,7 @@ class Feed
   belongs_to :author
   many :updates
   one :user
-  
+
   timestamps!
 
   after_create :default_hubs
@@ -159,5 +159,9 @@ class Feed
                                  [{:href => "#{base_uri}feeds/#{id}/salmon"}]
                              })
     feed.atom
+  end
+
+  def last_update
+    Update.where(:feed_id => id).order(['created_at', 'descending']).first
   end
 end

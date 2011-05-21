@@ -33,10 +33,8 @@ gem "compass"
 gem "tzinfo"
 gem "rsa"
 gem "exceptional"
-#gem "rack-perftools_profiler", :require => 'rack/perftools_profiler'
 
 group :development, :test do
-  gem "minitest", :platforms => :ruby_18
   gem "minitest", :platforms => :ruby_18
   gem 'coffee-script'
   gem 'rack-test'
@@ -49,4 +47,5 @@ group :development, :test do
   gem "jammit"
   gem "vcr"
   gem "webmock"
+  gem "simplecov", "~> 0.4.0", :require => false
 end

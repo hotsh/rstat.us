@@ -18,6 +18,7 @@ class Update
   # The content of the update, unaltered, is stored here
   key :text, String, :default => ""
   validates_length_of :text, :minimum => 1, :maximum => 140
+  validate :do_not_repeat_yourself, :on => :create
 
   # Mentions are stored in the following array
   key :mention_ids, Array
@@ -152,7 +153,7 @@ class Update
           # look at who they are following
           if a.nil? and user = self.author.user
             authors.each do |author|
-              if user.followings.contains author
+              if user.following?(author.remote_url)
                 a = author
               end
             end
@@ -241,4 +242,7 @@ class Update
 
   end
 
+  def do_not_repeat_yourself
+    errors.add(:text, "You already posted this update.") if feed.last_update && feed.last_update.id != id && feed.last_update.text == text && feed.last_update.author.id == author.id
+  end
 end

@@ -1,0 +1,7 @@
+- if user && user.errors.any?
+  %div{:id => "error"}
+    %div{:id => "error_explanation"}
+      %strong= "#{pluralize(user.errors.count, "error")} prohibited your account from being created:"
+      %ul
+        - user.errors.full_messages.each do |msg|
+          %li= msg

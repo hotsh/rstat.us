@@ -1,36 +1,162 @@
 require 'require_relative' if RUBY_VERSION[0,3] == '1.8'
 require_relative 'acceptance_helper'
 
-class SignupTest < MiniTest::Unit::TestCase
-
+describe "signup" do
   include AcceptanceHelper
 
-  def test_user_signup
-    u = User.first(:username => "new_user")
-    assert u.nil?
+  describe "username" do
+    it "signs up successfully" do
+      u = User.first(:username => "new_user")
+      assert u.nil?
 
-    visit '/login'
-    fill_in "username", :with => "new_user"
-    fill_in "password", :with => "mypassword"
-    click_button "Log in"
+      visit '/login'
+      fill_in "username", :with => "new_user"
+      fill_in "password", :with => "mypassword"
+      click_button "Log in"
 
-    u = User.first(:username => "new_user")
-    refute u.nil?
-    assert User.authenticate("new_user", "mypassword")
+      u = User.first(:username => "new_user")
+      refute u.nil?
+      assert User.authenticate("new_user", "mypassword")
+    end
+
+    it "prompts for a new username if it contains spaces" do
+      visit '/login'
+      fill_in "username", :with => "space something"
+      fill_in "password", :with => "baseball"
+      click_button "Log in"
+
+      assert_match /1 error prohibited your account from being created:/, page.body
+      assert_match /contains restricted characters\./, page.body
+    end
+
+    it "requires a username" do
+      visit '/login'
+      fill_in "password", :with => "baseball"
+      click_button "Log in"
+
+      assert_match /1 error prohibited your account from being created:/, page.body
+      assert_match /Username can't be empty/, page.body
+    end
+
+    it "requires a password" do
+      visit '/login'
+      fill_in "username", :with => "baseball"
+      click_button "Log in"
+
+      assert_match /Password can't be empty/, page.body
+    end
+
+    it "does not save user to db if there wasn't a password" do
+      visit '/login'
+      fill_in "username", :with => "baseball"
+      click_button "Log in"
+
+      assert_match /Password can't be empty/, page.body
+
+      fill_in "username", :with => "baseball"
+      fill_in "password", :with => "baseball"
+      click_button "Log in"
+
+      refute_match /The username exists; the password you entered was incorrect\. If you are trying to create a new account, please choose a different username/, page.body
+      refute_match /prohibited your account from being created/, page.body
+      assert_match /\//, page.current_url
+    end
+
+    it "shows an error if the username is too long" do
+      visit '/login'
+      fill_in "username", :with => "supercalifragilisticexpialidocious"
+      fill_in "password", :with => "baseball"
+      click_button "Log in"
+
+      assert_match /1 error prohibited your account from being created:/, page.body
+      assert_match /Username must be 17 characters or fewer\./, page.body
+    end
   end
 
-  def test_username_clash
-    existing_user = Factory(:user, :username => "taken")
-    new_user = Factory.build(:user, :username => 'taken')
+  describe "twitter" do
+    it "prompts for a new username if it clashes" do
+      existing_user = Factory(:user, :username => "taken")
+      new_user = Factory.build(:user, :username => 'taken')
 
-    old_count = User.count
-    log_in(new_user)
-    assert_match /users\/new/, page.current_url, "not on the new user page."
+      old_count = User.count
+      log_in(new_user)
+      assert_match /users\/new/, page.current_url, "not on the new user page."
 
-    fill_in "username", :with => "nottaken"
-    click_button "Finish Signup"
+      fill_in "username", :with => "taken"
+      click_button "Finish Signup"
 
-    assert_match /Thanks! You're all signed up with nottaken for your username./, page.body
-    assert_match /\//, page.current_url
+      assert_match /1 error prohibited your account from being created:/, page.body
+      assert_match /Username has already been taken/, page.body
+
+      fill_in "username", :with => "nottaken"
+      click_button "Finish Signup"
+
+      assert_match /Thanks! You're all signed up with nottaken for your username\./, page.body
+      refute_match /prohibited your account from being created/, page.body
+      assert_match /\//, page.current_url
+    end
+
+    it "prompts for a new username if it contains spaces" do
+      name = 'with spaces'
+      new_user = Factory.build(:user, :username => name)
+
+      log_in(new_user)
+
+      fill_in "username", :with => name
+      click_button "Finish Signup"
+
+      assert_match /1 error prohibited your account from being created:/, page.body
+      assert_match /contains restricted characters\./, page.body
+    end
+
+    it "will keep rejecting multiple bad username attempts" do
+      name =  "with spaces"
+      new_user = Factory.build(:user, :username => name)
+
+      log_in(new_user)
+
+      fill_in "username", :with => name
+      click_button "Finish Signup"
+
+      assert_match /contains restricted characters\./, page.body
+
+      fill_in "username", :with => "still #{name}"
+      click_button "Finish Signup"
+
+      assert_match /contains restricted characters\./, page.body
+
+      fill_in "username", :with => name.gsub(/ /, "")
+      click_button "Finish Signup"
+
+      assert_match /Thanks! You're all signed up with #{name.gsub(/ /, "")} for your username\./, page.body
+      refute_match /prohibited your account from being created/, page.body
+    end
+  end
+
+  describe "facebook" do
+    it "rejects bad usernames when trying to create an account from fb" do
+      existing_user = Factory(:user, :username => "taken")
+      new_user = Factory.build(:user, :username => 'profile.php?id=1')
+      log_in_fb(new_user)
+      assert_match /users\/new/, page.current_url, "not on the new user page."
+
+      fill_in "username", :with => "jane public"
+      click_button "Finish Signup"
+
+      assert_match /1 error prohibited your account from being created:/, page.body
+      assert_match /contains restricted characters\./, page.body
+
+      fill_in "username", :with => "taken"
+      click_button "Finish Signup"
+
+      assert_match /1 error prohibited your account from being created:/, page.body
+      assert_match /Username has already been taken/, page.body
+
+      fill_in "username", :with => "jane_public"
+      click_button "Finish Signup"
+
+      assert_match /Thanks! You're all signed up with jane_public for your username\./, page.body
+      refute_match /prohibited your account from being created/, page.body
+    end
   end
 end

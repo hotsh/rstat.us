@@ -83,8 +83,8 @@ class Rstatus
   get '/' do
     if logged_in?
       set_params_page
-      @updates = current_user.timeline(params)
-      set_next_prev_page if @updates.total_entries > params[:per_page]
+      @updates = current_user.timeline(params).paginate( :page => params[:page], :per_page => params[:per_page] || 20, :order => :created_at.desc)
+      set_pagination_buttons(@updates)
 
       @timeline = true
 
@@ -119,8 +119,8 @@ class Rstatus
   get '/replies' do
     if logged_in?
       set_params_page
-      @replies = current_user.at_replies(params)
-      set_next_prev_page if @replies.total_entries > params[:per_page]
+      @replies = current_user.at_replies(params).paginate( :page => params[:page], :per_page => params[:per_page] || 20, :order => :created_at.desc)
+      set_pagination_buttons(@replies)
       haml :replies
     else
       haml :index, :layout => false
@@ -145,16 +145,7 @@ class Rstatus
     @updates = []
     if params[:q]
       @updates = Update.filter(params[:q], :page => params[:page], :per_page => params[:per_page] || 20, :order => :created_at.desc)
-    end
-
-    @next_page = nil
-    @prev_page = nil
-
-    if !@updates.empty? && @updates.next_page
-      @next_page = "?#{Rack::Utils.build_query :page => @updates.next_page}"
-    end
-    if !@updates.empty? && @updates.previous_page
-      @prev_page = "?#{Rack::Utils.build_query :page => @updates.previous_page}"
+      set_pagination_buttons(@updates)
     end
     haml :search
   end
@@ -170,8 +161,8 @@ class Rstatus
   get "/hashtags/:tag" do
     @hashtag = params[:tag]
     set_params_page
-    @updates = Update.hashtag_search(@hashtag, params)
-    set_next_prev_page if @updates.total_entries > params[:per_page]
+    @updates = Update.hashtag_search(@hashtag, params).paginate( :page => params[:page], :per_page => params[:per_page] || 20, :order => :created_at.desc)
+    set_pagination_buttons(@updates)
     @timeline = true
     @update_text = params[:status]
     haml :dashboard

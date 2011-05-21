@@ -18,14 +18,19 @@ class Rstatus
     u = User.first :username => params[:username]
     if u.nil?
       author = Author.new params
-      user = User.new params.merge({:author => author})
-      if author.save && user.save
-        session[:user_id] = user.id
-        flash[:notice] = "Thanks for signing up!"
-        redirect "/"
+      @user = User.new params.merge({:author => author})
+      if @user.valid?
+        if params[:password].length > 0
+          author.save
+          @user.save
+          session[:user_id] = @user.id
+          flash[:notice] = "Thanks for signing up!"
+          redirect "/"
+        else
+          @user.errors.add(:password, "can't be empty")
+        end
       end
-      flash[:notice] = "There was a problem... can you pick a different username?"
-      redirect "/login"
+      haml :"login"
     else
       if user = User.authenticate(params[:username], params[:password])
         session[:user_id] = user.id
@@ -33,7 +38,7 @@ class Rstatus
         flash[:notice] = "Login successful."
         redirect "/"
       end
-      flash[:notice] = "The username or password you entered was incorrect"
+      flash[:error] = "The username exists; the password you entered was incorrect. If you are trying to create a new account, please choose a different username."
       redirect "/login"
     end
   end

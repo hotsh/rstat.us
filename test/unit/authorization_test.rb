@@ -1,21 +1,23 @@
 require 'require_relative' if RUBY_VERSION[0,3] == '1.8'
 require_relative '../test_helper'
 
-class AuthorizationTest < MiniTest::Unit::TestCase
+describe Authorization do
 
   include TestHelper
 
-  def test_find_from_hash
-    u = Factory(:user)
-    a = Factory(:authorization, :user => u)
-
-    assert_equal a, Authorization.find_from_hash(auth_response(u.username, {:uid => a.uid}))
+  before do
+    @u = Factory(:user)
   end
 
-  def test_create_from_hash
-    u = Factory(:user)
-    auth = auth_response(u.username)
-    a = Authorization.create_from_hash(auth, "/", u)
+  it "can be found from a hash" do
+    a = Factory(:authorization, :user => @u)
+
+    assert_equal a, Authorization.find_from_hash(auth_response(@u.username, {:uid => a.uid}))
+  end
+
+  it "can be created from a hash" do
+    auth = auth_response(@u.username)
+    a = Authorization.create_from_hash(auth, "/", @u)
 
     assert_equal auth["uid"], a.uid
     assert_equal auth["provider"], a.provider
@@ -24,15 +26,15 @@ class AuthorizationTest < MiniTest::Unit::TestCase
     assert_equal auth['credentials']['secret'], a.oauth_secret
   end
 
-  def test_create_from_hash_no_uid
+  it "is not valid without a uid" do
     a = Authorization.new(:uid => nil, :provider => "twitter")
     assert_equal a.save, false
-    assert_equal a.errors[:uid], ["can't be blank"]
+    assert_equal a.errors[:uid], ["can't be empty"]
   end
 
-  def test_create_from_hash_no_provider
+  it "is not valid without a provider" do
     a = Authorization.new(:uid => 12345, :provider => nil)
     assert_equal a.save, false
-    assert_equal a.errors[:provider], ["can't be blank"]
+    assert_equal a.errors[:provider], ["can't be empty"]
   end
 end

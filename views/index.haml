@@ -24,9 +24,7 @@
                 Username
 
       .content
-        - if flash[:notice] || flash[:error]
-          #flash
-            = flash[:notice]
+        != haml :_flash
 
         #pitch
           %a#col-1.col{:href=>'/login'}

@@ -35,7 +35,7 @@ class Rstatus
   # We're using rack-timeout to ensure that our dynos don't get starved by renegade
   # processes.
   use Rack::Timeout
-  Rack::Timeout.timeout = 20
+  Rack::Timeout.timeout = 10
 
   set :root, File.join(File.dirname(__FILE__), "..")
   set :haml, :escape_html => true
@@ -47,6 +47,12 @@ class Rstatus
   # If you've used Rails' flash messages, you know how convenient they are.
   # rack-flash lets us use them.
   use Rack::Flash
+
+  # This will add a logger method to class and instance level to enable logging throughout the application
+  register Sinatra::Logging
+
+  # Log all incoming requests
+  log_requests
 
   configure do
     if ENV['MONGOHQ_URL']
@@ -61,14 +67,12 @@ class Rstatus
     Compass.add_project_configuration(File.join(File.dirname(__FILE__), 'compass.config'))
     MongoMapperExt.init
 
-    # We want to be able to profile things, so we're using the perftools middleware.
-#    use ::Rack::PerftoolsProfiler, :default_printer => 'text', :mode => :methods
-
     # now that we've connected to the db, let's load our models.
     require_relative '../models/all'
   end
 
   helpers Sinatra::UserHelper
+  helpers Sinatra::ViewHelper
   helpers Sinatra::ContentFor
 
   helpers do
@@ -83,5 +87,4 @@ class Rstatus
     provider :twitter, ENV["CONSUMER_KEY"], ENV["CONSUMER_SECRET"]
     provider :facebook, ENV["APP_ID"], ENV["APP_SECRET"], {:scope => 'publish_stream,offline_access,email'}
   end
-
 end
