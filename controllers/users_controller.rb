@@ -82,9 +82,9 @@ class Rstatus
     @authors = @authors.paginate(:page => params[:page], :per_page => params[:per_page])
 
     if params[:letter] && !params[:letter].empty?
-      set_pagination_buttons(@users, :letter => params[:letter])
+      set_pagination_buttons(@authors, :letter => params[:letter])
     else
-      set_pagination_buttons(@users)
+      set_pagination_buttons(@authors)
     end
     haml :"users/index"
   end
