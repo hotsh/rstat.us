@@ -25,13 +25,6 @@
     %link{:rel => "apple-touch-icon-precomposed", :sizes => "72x72", :href => "images/mobile_icons/apple-touch-icon_72.png"}
     %link{:rel => "apple-touch-icon-precomposed", :href => "images/mobile_icons/apple-touch-icon.png"}
 
-  :javascript
-    $(document).ready(function(){
-      $('a#tab-replies').pjax('#timeline');
-      $('a#tab-timeline').pjax('#timeline');
-      $('a#tab-world').pjax('#timeline');
-    });
-
   != yield_content :css
 
   - if production?

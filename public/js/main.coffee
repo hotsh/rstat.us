@@ -14,6 +14,11 @@ $(document).ready ->
   
   # Set equal heights for 3-column area
   $("#pitch").equalHeights()
+
+  # PJAX-ify the tabs
+  $('a#tab-replies').pjax('#timeline')
+  $('a#tab-timeline').pjax('#timeline')
+  $('a#tab-world').pjax('#timeline')
   
   #########################################
   # Update Form
