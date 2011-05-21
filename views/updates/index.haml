@@ -2,9 +2,11 @@
   - content_for :top do
     != haml :_update_form
 
-!= haml :_navigation
-#timeline.updates.has-update-form
-  != haml :_updates, :locals => {:updates => @updates}
+!= haml :"shared/_navigation"
+
+-# Generate page id from url
+.updates.has-update-form{:id => request.path_info.gsub("/", "_")[1..-1]}
+  != haml :"updates/_list", :locals => {:updates => @updates}
   %nav.pagination
     - unless @prev_page.nil?
       %a.button{:href => @prev_page, :id => "prev_button"}
