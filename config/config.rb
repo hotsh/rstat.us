@@ -48,12 +48,6 @@ class Rstatus
   # rack-flash lets us use them.
   use Rack::Flash
 
-  # This will add a logger method to class and instance level to enable logging throughout the application
-  register Sinatra::Logging
-
-  # Log all incoming requests
-  log_requests
-
   configure do
     if ENV['MONGOHQ_URL']
       MongoMapper.config = {ENV['RACK_ENV'] => {'uri' => ENV['MONGOHQ_URL']}}
