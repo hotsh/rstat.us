@@ -1,6 +1,6 @@
 class Rstatus
 
-  get '/updates' do
+  get '/timeline' do
     set_params_page
     @updates = current_user.timeline(params).paginate( :page => params[:page], :per_page => params[:per_page] || 20, :order => :created_at.desc)
     set_pagination_buttons(@updates)
@@ -39,7 +39,7 @@ class Rstatus
   end
 
   # Ahh, the classic 'world' view.
-  get '/world' do
+  get '/updates' do
     @updates = Update.paginate( :page => params[:page], :per_page => params[:per_page] || 20, :order => :created_at.desc)
     set_pagination_buttons(@updates)
 
