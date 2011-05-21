@@ -82,7 +82,7 @@ class Rstatus
 
   get '/' do
     if logged_in?
-      call! env.merge("PATH_INFO" => '/updates')
+      call! env.merge("PATH_INFO" => '/timeline')
     else
       haml :index, :layout => false
     end
