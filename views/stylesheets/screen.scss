@@ -10,7 +10,7 @@ Do not edit screen.css manually!
 
 /* Blueprint */
 @import "blueprint/reset";
-@import "stylesheets/base";
+@import "base";
 @import "blueprint";
 @import "blueprint/scaffolding";
 @include blueprint-scaffolding("body");
@@ -20,11 +20,11 @@ body {
 }
 
 /* App styles */
-@import "stylesheets/lib/css3buttons";
-@import "stylesheets/lib/mixins";
-@import "stylesheets/typography";
-@import "stylesheets/layout";
+@import "lib/css3buttons";
+@import "lib/mixins";
+@import "typography";
+@import "layout";
 
 /* Content styles */
-@import "stylesheets/home";
-@import "stylesheets/content";
+@import "home";
+@import "content";
