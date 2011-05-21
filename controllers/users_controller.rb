@@ -71,14 +71,11 @@ class Rstatus
       else
         @authors = Author.where(:username => /^#{params[:letter][0].chr}/i)
       end
+      @authors = @authors.sort(:username)
+
+    # Otherwise get all users and sort by creation date
     else
       @authors = Author
-    end
-
-    # Sort users alphabetically when filtering by letter
-    if params[:letter]
-      @authors = @authors.sort(:username)
-    else
       @authors = @authors.sort(:created_at.desc)
     end
 

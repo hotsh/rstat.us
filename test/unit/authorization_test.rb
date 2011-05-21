@@ -29,12 +29,12 @@ describe Authorization do
   it "is not valid without a uid" do
     a = Authorization.new(:uid => nil, :provider => "twitter")
     assert_equal a.save, false
-    assert_equal a.errors[:uid], ["can't be blank"]
+    assert_equal a.errors[:uid], ["can't be empty"]
   end
 
   it "is not valid without a provider" do
     a = Authorization.new(:uid => 12345, :provider => nil)
     assert_equal a.save, false
-    assert_equal a.errors[:provider], ["can't be blank"]
+    assert_equal a.errors[:provider], ["can't be empty"]
   end
 end

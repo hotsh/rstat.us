@@ -18,6 +18,7 @@ class Update
   # The content of the update, unaltered, is stored here
   key :text, String, :default => ""
   validates_length_of :text, :minimum => 1, :maximum => 140
+  validate :do_not_repeat_yourself, :on => :create
 
   # Mentions are stored in the following array
   key :mention_ids, Array
@@ -33,9 +34,6 @@ class Update
   # For speed, we generate the html for the update upon saving
   key :html, String
   before_save :generate_html
-
-  validates_length_of :text, :minimum => 1, :maximum => 140
-  validate :do_not_repeat_yourself, :on => :create
 
   # We also generate the tags upon editing the update
   before_save :get_tags
@@ -155,7 +153,7 @@ class Update
           # look at who they are following
           if a.nil? and user = self.author.user
             authors.each do |author|
-              if user.followings.contains author
+              if user.following?(author.remote_url)
                 a = author
               end
             end

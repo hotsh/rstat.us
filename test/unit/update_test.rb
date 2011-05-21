@@ -42,12 +42,12 @@ describe Update do
 
       it "makes a link (before create)" do
         u = Factory.build(:update, :text => "This is a message mentioning @SteveKlabnik.")
-        assert_match /<a href='\/users\/steveklabnik'>@SteveKlabnik<\/a>/, u.to_html
+        assert_match /\/users\/steveklabnik'>@SteveKlabnik<\/a>/, u.to_html
       end
 
       it "makes a link (after create)" do
         u = Factory(:update, :text => "This is a message mentioning @SteveKlabnik.")
-        assert_match /<a href='\/users\/steveklabnik'>@SteveKlabnik<\/a>/, u.html
+        assert_match /\/users\/steveklabnik'>@SteveKlabnik<\/a>/, u.html
       end
     end
 
