@@ -1,6 +1,6 @@
 !!! 5
 %html.no-js{:lang => "en"}
-  != haml :_head
+  != haml :"shared/_head"
   %body#home
     #main
       #header
@@ -24,7 +24,7 @@
                 Username
 
       .content
-        != haml :_flash
+        != haml :"shared/_flash"
 
         #pitch
           %a#col-1.col{:href=>'/login'}
