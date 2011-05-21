@@ -22,7 +22,7 @@ end
 
 Factory.define :user do |u|
   u.username { Factory.next(:usernames) }
-  u.author {|a| Factory(:author, :username => a.username) }
+  u.author {|a| Factory(:author, :username => a.username, :created_at => a.created_at) }
   u.association :feed
 end
 

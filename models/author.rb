@@ -43,6 +43,9 @@ class Author
   # The url of their profile page
   key :remote_url, String
 
+  # For sorting by signup, Authors require timestamps
+  timestamps!
+
   # We cannot put a :unique tag above because of a MongoMapper bug
   validates_uniqueness_of :remote_url, :allow_nil => :true 
 
