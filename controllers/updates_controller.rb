@@ -1,81 +1,71 @@
 class Rstatus
 
-  get '/timeline' do
-    set_params_page
-    @updates = current_user.timeline(params).paginate( :page => params[:page], :per_page => params[:per_page] || 20, :order => :created_at.desc)
-    set_pagination_buttons(@updates)
-
-    @timeline = true
-
-    if params[:reply]
-      u = Update.first(:id => params[:reply])
-      @update_text = "@#{u.author.username} "
-      @update_id = u.id
-    elsif params[:share]
-      u = Update.first(:id => params[:share])
-      @update_text = "RS @#{u.author.username}: #{u.text}"
-      @update_id = u.id
-    else
-      @update_text = ""
-      @update_id = ""
+  helpers do
+    # Manage page state
+    def set_pagination
+      set_params_page
+      @updates = @updates.paginate( :page => params[:page], :per_page => params[:per_page], :order => :created_at.desc)
+      set_pagination_buttons(@updates)  
     end
-
-    if params[:status]
-      @update_text = @update_text + params[:status]
-    end
-
-    if pjax_request?
-      haml :"updates/_list", :locals => {:updates => @updates}, :layout => false
-    else
-      haml :"updates/index"
+    
+    
+    # Render correct haml depending on request type
+    def render_index(updates)
+      @updates = updates
+      set_pagination      
+      haml :"updates/index", :layout => show_layout?
     end
   end
 
-  get '/replies' do
-    if logged_in?
-      set_params_page
-      @updates = current_user.at_replies(params).paginate( :page => params[:page], :per_page => params[:per_page] || 20, :order => :created_at.desc)
-      set_pagination_buttons(@updates)
-      if pjax_request?
-        haml :"updates/_list", :locals => {:updates => @updates}, :layout => false
-      else
-        haml :"updates/index"
-      end
-    else
-      haml :"static/home", :layout => false
+  before do
+    @update_id, @update_text = "", ""
+    
+    # Set update form state correctly
+    id = params.fetch(:reply) { params[:share] }
+    if id
+      u = Update.first(:id => id)
+      @update_id = id
+      @update_text = "@#{u.author.username} " if params[:reply]
+      @update_text = "RS @#{u.author.username}: #{u.text}" if params[:share]        
+    elsif params[:status]
+      @update_text = params[:status]
     end
+  end
+  
+  # Redirect anonymous users
+  ['/timeline', '/replies'].each do |path|
+    before path do
+      redirect '/' unless current_user
+    end
+  end
+  
+  get '/timeline' do
+    render_index(current_user.timeline(params))
+  end
+
+  get '/replies' do
+    render_index(current_user.at_replies(params))
   end
 
   # Ahh, the classic 'world' view.
   get '/updates' do
-    @updates = Update.paginate( :page => params[:page], :per_page => params[:per_page] || 20, :order => :created_at.desc)
-    set_pagination_buttons(@updates)
-
-    if pjax_request?
-      haml :"updates/_list", :locals => {:updates => @updates}, :layout => false
-    else
-      haml :"updates/index"
-    end
+    render_index(Update)
+  end
+  
+  get "/hashtags/:tag" do
+    @hashtag = params[:tag]    
+    render_index(Update.hashtag_search(@hashtag, params))
   end
 
   get "/search" do
     @updates = []
     if params[:q]
-      @updates = Update.filter(params[:q], :page => params[:page], :per_page => params[:per_page] || 20, :order => :created_at.desc)
+      set_params_page
+      @updates = Update.filter(params[:q]).paginate(:page => params[:page], :per_page => params[:per_page] || 20, :order => :created_at.desc)
       set_pagination_buttons(@updates)
     end
     haml :"updates/search"
   end
-
-  # get "/hashtags/:tag" do
-  #   @hashtag = params[:tag]
-  #   set_params_page
-  #   @updates = Update.hashtag_search(@hashtag, params).paginate( :page => params[:page], :per_page => params[:per_page] || 20, :order => :created_at.desc)
-  #   set_pagination_buttons(@updates)
-  #   @timeline = true
-  #   @update_text = params[:status]
-  #   haml :"updates/hashtags"
-  # end
 
   # If you're POST-ing to /updates, it means you're making a new one. Woo-hoo!
   # This is what it's all built for.

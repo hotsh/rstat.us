@@ -9,3 +9,4 @@ test/coverage
 log/*.log*
 capybara*
 *.rbc
+.DS_Store
