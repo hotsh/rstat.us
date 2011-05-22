@@ -49,10 +49,24 @@ describe "following" do
       assert_match "No longer following steveklabnik", page.body
     end
 
+    it "only creates one Feed per remote_url" do
+      u2 = Factory(:user)
+      a2 = Factory(:authorization, :user => u2)
+      log_in(u2, a2.uid)
+      visit "/"
+      click_link "Would you like to follow someone not on rstat.us?"
 
+      assert_match "ostatus Sites", page.body
 
+      VCR.use_cassette('subscribe_remote') do
+        fill_in 'url', :with => "steveklabnik@identi.ca"
+        click_button "Follow"
+      end
 
+      visit "/users/#{u2.username}/following"
 
+      assert_match "Unfollow", page.body
+    end
   end
 
   describe "on rstat.us" do
