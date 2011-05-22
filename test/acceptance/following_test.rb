@@ -24,7 +24,7 @@ describe "following" do
     assert_match "ostatus Sites", page.body
 
     VCR.use_cassette('subscribe_remote') do
-      fill_in 'url', :with => "http://identi.ca/api/statuses/user_timeline/396889.atom"
+      fill_in 'url', :with => "steveklabnik@identi.ca"
       click_button "Follow"
     end
 
