@@ -171,7 +171,7 @@ describe Update do
       it "sends the update to twitter" do
         f = Factory(:feed)
         at = Factory(:author, :feed => f)
-        u = Factory(:user, :author => at, :feed => f)
+        u = Factory(:user, :author => at)
         a = Factory(:authorization, :user => u)
         Twitter.expects(:update)
         u.feed.updates << Factory.build(:update, :text => "This is a message", :twitter => true, :facebook => false, :author => at)
@@ -181,7 +181,7 @@ describe Update do
       it "does not send to twitter if there's no twitter auth" do
         f = Factory(:feed)
         at = Factory(:author, :feed => f)
-        u = Factory(:user, :author => at, :feed => f)
+        u = Factory(:user, :author => at)
         Twitter.expects(:update).never
         u.feed.updates << Factory.build(:update, :text => "This is a message", :twitter => true, :facebook => false, :author => at)
       end
@@ -196,7 +196,7 @@ describe Update do
       it "does not send the update to twitter" do
         f = Factory(:feed)
         at = Factory(:author, :feed => f)
-        u = Factory(:user, :author => at, :feed => f)
+        u = Factory(:user, :author => at)
         a = Factory(:authorization, :user => u)
         Twitter.expects(:update).never
         u.feed.updates << Factory.build(:update, :text => "This is a message", :twitter => false, :facebook => false, :author => at)
@@ -209,7 +209,7 @@ describe Update do
       it "sends the update to facebook" do
         f = Factory(:feed)
         at = Factory(:author, :feed => f)
-        u = Factory(:user, :author => at, :feed => f)
+        u = Factory(:user, :author => at)
         a = Factory(:authorization, :user => u, :provider => "facebook")
         FbGraph::User.expects(:me).returns(mock(:feed! => nil))
         u.feed.updates << Factory.build(:update, :text => "This is a message", :facebook => true, :twitter => false, :author => at)
@@ -218,7 +218,7 @@ describe Update do
       it "does not send the update to facebook if no facebook auth" do
         f = Factory(:feed)
         at = Factory(:author, :feed => f)
-        u = Factory(:user, :author => at, :feed => f)
+        u = Factory(:user, :author => at)
         FbGraph::User.expects(:me).never
         u.feed.updates << Factory.build(:update, :text => "This is a message", :facebook => true, :twitter => false, :author => at)
       end
@@ -228,7 +228,7 @@ describe Update do
       it "does not send the update to facebook" do
         f = Factory(:feed)
         at = Factory(:author, :feed => f)
-        u = Factory(:user, :author => at, :feed => f)
+        u = Factory(:user, :author => at)
         a = Factory(:authorization, :user => u, :provider => "facebook")
         FbGraph::User.expects(:me).never
         u.feed.updates << Factory.build(:update, :text => "This is a message", :facebook => false, :twitter => false, :author => at)
@@ -240,7 +240,7 @@ describe Update do
     it "will not save if both are from the same user" do
       feed = Factory(:feed)
       author = Factory(:author, :feed => feed)
-      user = Factory(:user, :author => author, :feed => feed)
+      user = Factory(:user, :author => author)
       update = Factory.build(:update, :text => "This is a message", :author => author, :twitter => false, :facebook => false)
       user.feed.updates << update
       user.feed.save
@@ -254,10 +254,10 @@ describe Update do
     it "will save if each are from different users" do
       feed1 = Factory(:feed)
       author1 = Factory(:author, :feed => feed1)
-      user1 = Factory(:user, :author => author1, :feed => feed1)
+      user1 = Factory(:user, :author => author1)
       feed2 = Factory(:feed)
       author2 = Factory(:author, :feed => feed2)
-      user2 = Factory(:user, :author => author2, :feed => feed2)
+      user2 = Factory(:user, :author => author2)
       update = Factory.build(:update, :text => "This is a message", :author => author1, :twitter => false, :facebook => false)
       user1.feed.updates << update
       user1.feed.save

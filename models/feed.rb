@@ -25,7 +25,6 @@ class Feed
 
   belongs_to :author
   many :updates
-  one :user
 
   timestamps!
 

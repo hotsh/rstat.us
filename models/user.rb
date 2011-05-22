@@ -13,7 +13,6 @@ class User
   # Associations
   many :authorizations, :dependant => :destroy
   belongs_to :author
-  belongs_to :feed
 
   # Users MUST have a username
   key :username, String, :required => true
@@ -41,6 +40,9 @@ class User
   # This will establish other entities related to the User
   after_create :finalize
 
+  def feed
+    author.feed
+  end
 
   # Before a user is created, we will generate some RSA keys
   def generate_rsa_pair
@@ -364,7 +366,6 @@ class User
       :author => self.author
     )
 
-    self.feed = f
     save
   end
 
