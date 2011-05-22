@@ -37,21 +37,23 @@ class Authorization
     if user.blank?
       author = Author.create_from_hash! hash
 
-      user = User.create(author => author,
-                         :username => author.username
-                        )
+      user = User.create! author: author, username: author.username
     end
 
-    a = new(:user => user,
-            :uid => hsh['uid'],
-            :provider => hsh['provider'],
-            :nickname => hsh["user_info"]["nickname"],
-            :oauth_token => hsh['credentials']['token'],
-            :oauth_secret => hsh['credentials']['secret']
-           )
+    uid = hash['uid']
+    provider = hash['provider']
+    nickname = hash['user_info']['nickname']
+    token = hash['credentials']['token']
+    secret = hash['credentials']['secret']
 
-    a.save
-    a
+    create!(
+        user:         user,
+        uid:          uid,
+        provider:     provider,
+        nickname:     nickname,
+        oauth_token:  token,
+        oauth_secret: secret
+      )
   end
 
   timestamps!
