@@ -96,7 +96,7 @@ class Rstatus
     when /@/
       # XXX: ensure caching of finger lookup.
       acct = Redfinger.finger(params[:url])
-      feed_url = acct.links.find { |l| l['rel'] == 'http://schemas.google.com/g/2010#updates-from' }
+      feed_url = acct.links.find { |l| l['rel'] == 'http://schemas.google.com/g/2010#updates-from' }.to_s
     else
       feed_url = params[:url]
 
