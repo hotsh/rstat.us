@@ -9,7 +9,7 @@ describe "following" do
       u = Factory(:user)
       refute u.following? u.feed.url
     end
-
+  
     it "disallows following yourself" do
       u = Factory(:user)
       u.follow! u.feed.url
@@ -25,9 +25,10 @@ describe "following" do
       visit "/"
       click_link "Would you like to follow someone not on rstat.us?"
 
-    VCR.use_cassette('subscribe_remote') do
-      fill_in 'url', :with => "steveklabnik@identi.ca"
-      click_button "Follow"
+      VCR.use_cassette('subscribe_remote') do
+        fill_in 'url', :with => "steveklabnik@identi.ca"
+        click_button "Follow"
+      end
     end
 
     it "follows users on other sites" do
@@ -44,7 +45,9 @@ describe "following" do
     it "unfollows users from other sites" do
       visit "/users/#{@u.username}/following"
 
-      click_button "Unfollow"
+      VCR.use_cassette('unsubscribe_remote') do
+        click_button "Unfollow"
+      end
 
       assert_match "No longer following steveklabnik", page.body
     end
