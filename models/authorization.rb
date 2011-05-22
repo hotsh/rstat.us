@@ -9,9 +9,9 @@ class Authorization
   # sense.
   belongs_to :user
 
-  key :uid, Integer, :required => true
-  key :provider, String, :required => true
-  key :oauth_token, String
+  key :uid,          Integer, :required => true
+  key :provider,     String,  :required => true
+  key :oauth_token,  String
   key :oauth_secret, String
   key :nickname
 
@@ -22,15 +22,22 @@ class Authorization
 
   # Locates an authorization from data provided from a successful omniauth
   # authentication response
-  def self.find_from_hash(hsh)
-    first :provider => hsh['provider'], :uid => hsh['uid'].to_i
+  def self.find_from_hash(hash)
+
+    # Pull out the details
+    uid      = hash['uid'].to_i
+    provider = hash['provider']
+
+    # Find the first record from the details
+    first provider: provider, uid: uid
   end
 
   # Creates an authorization from a sucessful omniauth authentication response
-  def self.create_from_hash(hsh, base_uri, user = nil)
-    if user.nil?
-      author = Author.create_from_hash!(hsh)
-      user = User.create(:author => author,
+  def self.create_from_hash(hash, base_uri, user = nil)
+    if user.blank?
+      author = Author.create_from_hash! hash
+
+      user = User.create(author => author,
                          :username => author.username
                         )
     end
