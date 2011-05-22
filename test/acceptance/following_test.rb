@@ -162,52 +162,34 @@ describe "following" do
     end
 
     describe "pagination" do
-      it "does not paginate when there are too few" do
-        u = Factory(:user)
-        a = Factory(:authorization, :user => u)
+      before do
+        @u = Factory(:user)
+        a = Factory(:authorization, :user => @u)
 
-        log_in(u, a.uid)
+        log_in(@u, a.uid)
 
         5.times do
           u2 = Factory(:user)
-          u.follow! u2.feed.url
+          @u.follow! u2.feed.url
         end
+      end
 
-        visit "/users/#{u.username}/following"
+      it "does not paginate when there are too few" do
+        visit "/users/#{@u.username}/following"
 
         refute_match "Previous", page.body
         refute_match "Next", page.body
       end
 
       it "paginates forward only if on the first page" do
-        u = Factory(:user)
-        a = Factory(:authorization, :user => u)
-
-        log_in(u, a.uid)
-
-        30.times do
-          u2 = Factory(:user)
-          u.follow! u2.feed.url
-        end
-
-        visit "/users/#{u.username}/following"
+        visit "/users/#{@u.username}/following?per_page=3"
 
         refute_match "Previous", page.body
         assert_match "Next", page.body
       end
 
       it "paginates backward only if on the last page" do
-        u = Factory(:user)
-        a = Factory(:authorization, :user => u)
-
-        log_in(u, a.uid)
-
-        30.times do
-          u2 = Factory(:user)
-          u.follow! u2.feed.url
-        end
-
-        visit "/users/#{u.username}/following"
+        visit "/users/#{@u.username}/following?per_page=3"
         click_link "next_button"
 
         assert_match "Previous", page.body
@@ -215,17 +197,7 @@ describe "following" do
       end
 
       it "paginates forward and backward if on a middle page" do
-        u = Factory(:user)
-        a = Factory(:authorization, :user => u)
-
-        log_in(u, a.uid)
-
-        51.times do
-          u2 = Factory(:user)
-          u.follow! u2.feed.url
-        end
-
-        visit "/users/#{u.username}/following"
+        visit "/users/#{@u.username}/following?per_page=2"
 
         click_link "next_button"
 
@@ -287,52 +259,34 @@ describe "following" do
     end
 
     describe "pagination" do
-      it "does not paginate when there are too few" do
-        u = Factory(:user)
-        a = Factory(:authorization, :user => u)
+      before do
+        @u = Factory(:user)
+        a = Factory(:authorization, :user => @u)
 
-        log_in(u, a.uid)
+        log_in(@u, a.uid)
 
         5.times do
           u2 = Factory(:user)
-          u2.follow! u.feed.url
+          u2.follow! @u.feed.url
         end
+      end
 
-        visit "/users/#{u.username}/followers"
+      it "does not paginate when there are too few" do
+        visit "/users/#{@u.username}/followers"
 
         refute_match "Previous", page.body
         refute_match "Next", page.body
       end
 
       it "paginates forward only if on the first page" do
-        u = Factory(:user)
-        a = Factory(:authorization, :user => u)
-
-        log_in(u, a.uid)
-
-        30.times do
-          u2 = Factory(:user)
-          u2.follow! u.feed.url
-        end
-
-        visit "/users/#{u.username}/followers"
+        visit "/users/#{@u.username}/followers?per_page=3"
 
         refute_match "Previous", page.body
         assert_match "Next", page.body
       end
 
       it "paginates backward only if on the last page" do
-        u = Factory(:user)
-        a = Factory(:authorization, :user => u)
-
-        log_in(u, a.uid)
-
-        30.times do
-          u2 = Factory(:user)
-          u2.follow! u.feed.url
-        end
-
-        visit "/users/#{u.username}/followers"
+        visit "/users/#{@u.username}/followers?per_page=3"
         click_link "next_button"
 
         assert_match "Previous", page.body
@@ -340,17 +294,7 @@ describe "following" do
       end
 
       it "paginates forward and backward if on a middle page" do
-        u = Factory(:user)
-        a = Factory(:authorization, :user => u)
-
-        log_in(u, a.uid)
-
-        51.times do
-          u2 = Factory(:user)
-          u2.follow! u.feed.url
-        end
-
-        visit "/users/#{u.username}/followers"
+        visit "/users/#{@u.username}/followers?per_page=2"
 
         click_link "next_button"
 
