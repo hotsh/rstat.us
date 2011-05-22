@@ -192,9 +192,11 @@ class Rstatus
     feeds = User.first(:username => params[:username]).following
 
     @user = User.first(:username => params[:username])
-    @authors = feeds.paginate(:page => params[:page], :per_page => params[:per_page], :order => :id.desc).map{|f| f.author}
+    @feeds = feeds.paginate(:page => params[:page], :per_page => params[:per_page], :order => :id.desc)
 
-    set_pagination_buttons(@authors)
+    set_pagination_buttons(@feeds)
+
+    @authors = @feeds.map{|f| f.author}
 
     title = ""
     title << "#{@user.username} is following"
@@ -219,9 +221,11 @@ class Rstatus
     feeds = User.first(:username => params[:username]).followers
 
     @user = User.first(:username => params[:username])
-    @authors = feeds.paginate(:page => params[:page], :per_page => params[:per_page], :order => :id.desc).map{|f| f.author}
+    @feeds = feeds.paginate(:page => params[:page], :per_page => params[:per_page], :order => :id.desc)
 
-    set_pagination_buttons(@authors)
+    set_pagination_buttons(@feeds)
+
+    @authors = @feeds.map{|f| f.author}
 
     #build title
     title = ""
