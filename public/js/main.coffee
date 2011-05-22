@@ -14,11 +14,22 @@ $(document).ready ->
   
   # Set equal heights for 3-column area
   $("#pitch").equalHeights()
-
+  
+  #########################################
+  # Updates
+  #########################################
+  
   # PJAX-ify the tabs
-  $('a#tab-replies').pjax('#timeline')
-  $('a#tab-timeline').pjax('#timeline')
-  $('a#tab-world').pjax('#timeline')
+  $('#navigation a').pjax('#content .updates').click ->
+    # Set clicked tab to be given active class when pjax returns
+    $('#navigation a').removeClass("next")
+    $(this).addClass("next");
+  
+  $("#content .updates").bind "end.pjax", pjaxSuccess = ->
+    # Set active class appropriately
+    $('#navigation li').removeClass("active")
+    $('#navigation a.next').parent().addClass("active")
+  
   
   #########################################
   # Update Form
