@@ -33,26 +33,37 @@ module AcceptanceHelper
     return OmniAuth.config.add_mock(provider, auth_response(username, options))
   end
 
-  def log_in(u, uid = 12345)
-    omni_mock(u.username, {:uid => uid})
+  def log_in(user, uid = 12345)
+    if user.is_a? User
+      user = user.username
+    end
+
+    omni_mock(user, {:uid => uid})
 
     visit '/auth/twitter'
   end
 
-  def log_in_fb(u, uid = 12345)
-    omni_mock(u.username, {:uid => uid, :provider => :facebook})
+  def log_in_fb(user, uid = 12345)
+    if user.is_a? User
+      user = user.username
+    end
+
+    omni_mock(user, {:uid => uid, :provider => :facebook})
 
     visit '/auth/facebook'
   end
 
   def log_in_email(user, remember_me = false)
     User.stubs(:authenticate).returns(user)
+
     visit "/login"
+
     within("form") do
       fill_in "username", :with => user.username
       fill_in "password", :with => "anything"
       check "remember_me" if remember_me
     end
+
     click_button "Log in"
   end
 

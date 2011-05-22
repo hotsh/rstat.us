@@ -41,7 +41,7 @@ class User
   after_create :finalize
 
   def feed
-    author.feed
+    self.author.feed
   end
 
   # Before a user is created, we will generate some RSA keys
@@ -296,9 +296,9 @@ class User
 
   # Retrieve the list of Updates in the user's timeline
   def timeline(params)
-    following_plus_me = following.clone
-    following_plus_me << self.feed
-    Update.where(:author_id => following_plus_me.map(&:author_id)).order(['created_at', 'descending'])
+    following_plus_me = following.map(&:author_id)
+    following_plus_me << self.author.id
+    Update.where(:author_id => following_plus_me).order(['created_at', 'descending'])
   end
 
   # Retrieve the list of Updates that are replies to this user
@@ -365,6 +365,8 @@ class User
     f = Feed.create(
       :author => self.author
     )
+
+    self.author.save
 
     save
   end

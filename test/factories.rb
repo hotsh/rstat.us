@@ -39,7 +39,7 @@ Factory.define :authorization do |a|
 end
 
 Factory.define :author do |a|
-  a.association :feed
+  a.feed { |author| Factory(:feed, :author => author) }
   a.username "user"
   a.email { Factory.next(:emails) }
   a.website "http://example.com"

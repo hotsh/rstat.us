@@ -10,7 +10,8 @@ describe "basic access" do
   end
 
   it "visits feeds" do
-    feed = Factory(:feed)
+    author = Factory(:author)
+    feed = author.feed
     visit "/feeds/#{feed.id}.atom"
     assert_equal 200, page.status_code
   end

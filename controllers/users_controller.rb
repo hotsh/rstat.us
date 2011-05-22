@@ -96,24 +96,26 @@ class Rstatus
 
   # The signup page posts here.
   post '/users' do
+    # this is really stupid.
+    auth = {}
+    auth['uid'] = session[:uid]
+    auth['provider'] = session[:provider]
+    auth['user_info'] = {}
+    auth['user_info']['name'] = session[:name]
+    auth['user_info']['nickname'] = session[:nickname]
+    auth['user_info']['urls'] = {}
+    auth['user_info']['urls']['Website'] = session[:website]
+    auth['user_info']['description'] = session[:description]
+    auth['user_info']['image'] = session[:image]
+    auth['user_info']['email'] = session[:email]
+    auth['credentials'] = {}
+    auth['credentials']['token'] = session[:oauth_token]
+    auth['credentials']['secret'] = session[:oauth_secret]
+
+    params[:author] = Author.create_from_hash! auth, uri("/")
+
     @user = User.new params
     if @user.save
-      # this is really stupid.
-      auth = {}
-      auth['uid'] = session[:uid]
-      auth['provider'] = session[:provider]
-      auth['user_info'] = {}
-      auth['user_info']['name'] = session[:name]
-      auth['user_info']['nickname'] = session[:nickname]
-      auth['user_info']['urls'] = {}
-      auth['user_info']['urls']['Website'] = session[:website]
-      auth['user_info']['description'] = session[:description]
-      auth['user_info']['image'] = session[:image]
-      auth['user_info']['email'] = session[:email]
-      auth['credentials'] = {}
-      auth['credentials']['token'] = session[:oauth_token]
-      auth['credentials']['secret'] = session[:oauth_secret]
-
       Authorization.create_from_hash(auth, uri("/"), @user)
 
       flash[:notice] = "Thanks! You're all signed up with #{@user.username} for your username."
