@@ -129,7 +129,7 @@ class Feed
   # need base_uri since urls outgoing should be absolute
   def atom(base_uri)
     # Create the OStatus::Author object
-    os_auth = author.to_atom(base_uri)
+    os_auth = author.to_atom
 
     # Gather entries as OStatus::Entry objects
     entries = updates.to_a.sort{|a, b| b.created_at <=> a.created_at}.map do |update|

@@ -115,7 +115,7 @@ class Update
                        :updated => self.updated_at,
                        :published => self.created_at,
                        :activity => OStatus::Activity.new(:object_type => :note),
-                       :author => self.author.to_atom(base_uri),
+                       :author => self.author.to_atom,
                        :id => "#{base_uri}updates/#{self.id.to_s}",
                        :links => links)
   end
