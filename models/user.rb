@@ -226,12 +226,9 @@ class User
       envelope = salmon.to_xml retrieve_private_key
 
       # Send envelope to Author's Salmon endpoint
-      #puts "Sending salmon slap to #{f.author.salmon_url}"
       uri = URI.parse(f.author.salmon_url)
       http = Net::HTTP.new(uri.host, uri.port)
       res = http.post(uri.path, envelope, {"Content-Type" => "application/magic-envelope+xml"})
-      #puts res
-      #p res
     end
 
     f
@@ -247,12 +244,12 @@ class User
     else
       # Send Salmon notification so that the remote user
       # knows this user has stopped following them
-      salmon = OStatus::Salmon.from_unfollow(author.to_atom, f.author.to_atom)
+      salmon = OStatus::Salmon.from_unfollow(author.to_atom, followed_feed.author.to_atom)
 
       envelope = salmon.to_xml retrieve_private_key
 
       # Send envelope to Author's Salmon endpoint
-      uri = URI.parse(f.author.salmon_url)
+      uri = URI.parse(followed_feed.author.salmon_url)
       res = Net::HTTP.start(uri.host, uri.port) do |http|
         http.post(uri.path, envelope)
       end

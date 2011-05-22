@@ -3,7 +3,7 @@
 # don't need to keep any data about the subscription itself.
 
 class Rstatus
-  
+
   # subscribers will verify a subscription
   get "/subscriptions/:id.atom" do
     feed = Feed.first :id => params[:id]
@@ -77,7 +77,7 @@ class Rstatus
     feed.update_entries(request.body.read, request.url, url(feed.url), request.env['HTTP_X_HUB_SIGNATURE'])
   end
 
-  # A POST is how you subscribe to someone's feed. We want to make sure 
+  # A POST is how you subscribe to someone's feed. We want to make sure
   # that you're logged in for this one, too.
   post "/subscriptions" do
     require_login! :return => request.referrer
@@ -101,7 +101,7 @@ class Rstatus
       feed_url = params[:url]
 
       # Determine if it is a remote feed that is locally addressed
-      # If it is, then lets get the remote url and use that instead
+      # If it is, then let's get the remote url and use that instead
       if feed_url.start_with?("/")
         feed_id = feed_url[/^\/feeds\/(.+)$/,1]
         feed = Feed.first(:id => feed_id)
