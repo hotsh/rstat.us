@@ -1,5 +1,5 @@
 %ul.user-list
-  - @authors.each_with_index do |author, i|
+  - authors.each_with_index do |author, i|
     - next if author.nil?
     %li.user{:class => i%2 == 0 ? "even" : "odd"}
       .avatar

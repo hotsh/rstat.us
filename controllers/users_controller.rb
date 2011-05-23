@@ -191,10 +191,10 @@ class Rstatus
     set_params_page
 
     # XXX: case insensitive username
-    feeds = User.first(:username => params[:username]).following
-
     @user = User.first(:username => params[:username])
-    @feeds = feeds.paginate(:page => params[:page], :per_page => params[:per_page], :order => :id.desc)
+    @feeds = @user.following
+
+    @feeds = @feeds.paginate(:page => params[:page], :per_page => params[:per_page], :order => :id.desc)
 
     set_pagination_buttons(@feeds)
 
@@ -210,8 +210,8 @@ class Rstatus
   get '/users/:username/following.json' do
     set_params_page
 
-    users = User.first(:username => params[:username]).following
-    authors = users.map { |user| user.author }
+    feeds = User.first(:username => params[:username]).following
+    authors = feeds.map { |feed| feed.author }
     authors.to_a.to_json
   end
 
@@ -220,10 +220,10 @@ class Rstatus
   get '/users/:username/followers' do
     set_params_page
 
-    feeds = User.first(:username => params[:username]).followers
-
     @user = User.first(:username => params[:username])
-    @feeds = feeds.paginate(:page => params[:page], :per_page => params[:per_page], :order => :id.desc)
+    @feeds = @user.followers
+
+    @feeds = @feeds.paginate(:page => params[:page], :per_page => params[:per_page], :order => :id.desc)
 
     set_pagination_buttons(@feeds)
 

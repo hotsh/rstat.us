@@ -52,12 +52,20 @@ module Sinatra
       return if data.nil?
 
       if data.next_page
-        params = {:page => data.next_page}.merge(options)
+        params = {
+                   :page     => data.next_page,
+                   :per_page => data.per_page
+                 }.merge(options)
+
         @next_page = "?#{Rack::Utils.build_query params}"
       end
 
       if data.previous_page
-        params = {:page => data.previous_page}.merge(options)
+        params = {
+                   :page     => data.previous_page,
+                   :per_page => data.per_page
+                 }.merge(options)
+
         @prev_page = "?#{Rack::Utils.build_query params}"
       end
     end

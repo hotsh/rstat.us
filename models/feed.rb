@@ -12,7 +12,7 @@ class Feed
 
   include MongoMapper::Document
 
-  # Feed url (and an indicator that it is local)
+  # Feed url (and an indicator that it is local if this is nil)
   key :remote_url, String
 
   # OStatus subscriber information
@@ -35,19 +35,20 @@ class Feed
     self.verify_token = Digest::MD5.hexdigest(rand.to_s)
     self.secret = Digest::MD5.hexdigest(rand.to_s)
 
-    f = OStatus::Feed.from_url(url)
+    ostatus_feed = OStatus::Feed.from_url(url)
 
-    avatar_url = f.icon
+    avatar_url = ostatus_feed.icon
     if avatar_url == nil
-      avatar_url = f.logo
+      avatar_url = ostatus_feed.logo
     end
 
-    a = f.author
+    a = ostatus_feed.author
 
     self.author = Author.create(:name => a.portable_contacts.display_name,
                                 :username => a.name,
                                 :email => a.email,
                                 :remote_url => a.uri,
+                                :salmon_url => ostatus_feed.salmon,
                                 :bio => a.portable_contacts.note,
                                 :image_url => avatar_url)
 
@@ -63,9 +64,9 @@ class Feed
       self.author.save
     end
 
-    self.hubs = f.hubs
+    self.hubs = ostatus_feed.hubs
 
-    populate_entries(f.entries)
+    populate_entries(ostatus_feed.entries)
 
     save
   end
