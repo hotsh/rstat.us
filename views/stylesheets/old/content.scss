@@ -1,0 +1,542 @@
+#main {
+  #left {
+    #logo {
+      h2 {
+        @include image-replaced("/images/embed/logo-sm.png", 159px, 45px)
+      }
+    }
+
+    #profile {
+      @include clearfix;
+      padding-top: 2em;
+      width: 200px;
+      h3 {
+        color: #888;
+        padding-bottom: 0.5em;
+        border-bottom: 1px solid #ddd;
+      }
+      .profile-wrap {
+        @include clearfix;
+        padding-top: 0.25em;
+      }
+      .avatar, .userinfo {
+        float: left;
+      }
+      .avatar {
+        width: 48px;
+        img {
+          width: 48px;
+        }
+      }
+      .userinfo {
+        .nickname {
+        	font-weight: bold;
+        	font-size: 1.25em;
+        }
+
+        .logout {
+          margin-top: 1em;
+          border-top: 1px solid #ddd;
+          padding-top: 1em;
+        }
+      }
+    }
+
+    .links, .logout {
+      width: 200px;
+      padding-top: 1em;
+      border-top: 1px solid #ddd;
+      margin-top: 1em;
+    }
+    .links {
+
+    }
+
+    .logout {
+
+    }
+  }
+}
+
+#content {
+  position: relative;
+  padding-top: 1.5em;
+
+  h1 {
+    margin-top: -0.35em;
+  }
+
+  input[type="text"] {
+    border: 1px solid #ddd;
+	margin: 0.2em;
+  }
+
+}
+
+/* Following
+**********************/
+#users-search {
+  position: absolute;
+  top: 1.2em;
+  right: 0;
+}
+
+#search-form {
+  padding: 0 0 2em 0;
+}
+
+.search {
+  input[type="text"] {
+    padding: 0.45em;
+  }
+}
+
+#users-nav {
+  padding: 1em 0.5em;
+  font-size: 1.1em;
+  .all {
+    padding-right: 0.75em;
+    border-right: 1px solid #ccc;
+    margin-right: 0.5em;
+  }
+}
+
+.user-list {
+  padding: 0;
+  margin: 0 0 1.5em 0;
+  .user {
+    position: relative;
+    padding: 0.5em;
+    list-style-type: none;
+    @include clearfix;
+
+    .follow {
+      position: absolute;
+      top: 0.75em;
+      right: 0.5em;
+    }
+  }
+  .even {
+    background: #e9e9e9;
+  }
+}
+
+#sites {
+  @include column(9);
+}
+
+#follow-form {
+  @include column(5);
+  @include last;
+}
+
+/* the textarea where the user types an update */
+form#update-form {
+  @include clearfix;
+  position: relative;
+  padding: 0 0 1em 0;
+  border-bottom: 1px solid #ddd;
+  margin-bottom: 1em;
+
+  #update-content {
+    textarea {
+      @include copy-face;
+      width: 538px;
+      padding: 5px;
+      height: 2.5em;
+      margin: 0;
+      border: solid 1px #CCCCCC;
+    }
+  }
+
+  #update-info {
+    @include clearfix;
+    #update-button {
+      float: left;
+    }
+    #update-count {
+      float: right;
+      font-size: 1.1em;
+      padding-right: 0.5em;
+      .update-count {
+        color: #666;
+        padding-right: 0.2em;
+      }
+      color: #aaa;
+      padding-top: 0.5em;
+      padding-left: 0.75em;
+    }
+  }
+  #update-info.negative #update-count .update-count {
+    color: red;
+  }
+  #repost-services {
+    font-size: 0.9em;
+    float: left;
+    width: 300px;
+    padding-left: 1em;
+    padding-top: 0.85em;
+    .info, .input-checkbox {
+      float: left;
+      padding-right: 0.8em;
+      label {
+        font-weight: normal;
+      }
+    }
+  }
+}
+
+.no-js #update-count {
+  display: none;
+}
+
+#update-form:focus {
+	-moz-box-shadow: 5px 3px 5px #efefef;
+	-wekbit-box-shadow: 5px 3px 5px #efefef;
+	box-shadow: 5px 3px 5px #efefef;
+}
+
+#navigation {
+  ul {
+    margin: 0;
+    padding: 0;
+
+    @include clearfix;
+    li {
+      background: #dadada;
+      padding: 0.5em 1em;
+      margin: 0 2px 2px 0;
+      list-style-type: none;
+      float: left;
+      @include title-face;
+      font-size: 1.25em;
+      a {
+        color: #8f8f8f;
+      }
+    }
+    li.active {
+      background: $link_color;
+      a {
+        color: white;
+      }
+    }
+  }
+}
+
+/* Pagination */
+.pagination {
+  margin-top: 0.5em;
+
+  .button {
+    margin: 0;
+  }
+
+  #next_button {
+    float: right;
+    margin-right: 0.5em;
+  }
+  #prev_button {
+    float: left;
+    margin-left: 0.5em;
+  }
+}
+
+/* Profile */
+#profile {
+  position: relative;
+  h3 {
+    margin-bottom: 0.25em;
+  }
+  .username {
+    padding-bottom: 1em;
+  }
+
+  #follow {
+    position: absolute;
+    top: 0;
+    right: 0;
+    text-align: right;
+    .follow-status {
+      font-size: 0.8em;
+      color: #999;
+    }
+  }
+
+  .bio {
+    margin: 0.5em 0em;
+  }
+
+  input[type="text"] {
+    border: solid 1px #CCCCCC;
+	margin: 0.2em;
+  }
+
+  textarea {
+    @include copy-face;
+    border: solid 1px #CCCCCC;
+	width: 30em;
+	height: 10em;
+  }
+
+  label {
+    display: inline-block;
+    width: 5em;
+  }
+
+  .gravatar {
+    padding-top: 1em;
+  }
+}
+
+/* Login and Forms */
+#login-forms {
+  @include clearfix;
+
+  #login, #signup {
+    float: left;
+    width: 220px;
+    @include clearfix;
+    label, input {
+      display: block;
+    }
+    label {
+      width: 100px;
+    }
+    input {
+      margin-bottom: 0.75em;
+    }
+  }
+
+  #confirm {
+    float: left;
+    width: 340px;
+    @include clearfix;
+    label, input {
+      display: block;
+    }
+    label {
+      width: 100px;
+    }
+    input {
+      margin-bottom: 0.75em;
+    }
+  }
+
+  #login {
+    padding-right: 30px;
+    border-right: 1px solid #ddd;
+    margin-right: 40px;
+    #username, #password {
+      width: 200px;
+    }
+  }
+
+  #confirm {
+    padding-right: 30px;
+    border-right: 1px solid #ddd;
+    margin-right: 40px;
+    #username, #password {
+      width: 200px;
+    }
+  }
+
+  input[type="text"], input[type="password"] {
+    width: 170px;
+    font-size: 1.15em;
+    padding: 0.25em;
+    border: 1px solid #ccc;
+    margin-bottom: 0.5em;
+  }
+}
+
+
+#login-other {
+  margin-top: 2em;
+  border-top: 1px solid #ddd;
+  padding-top: 2em;
+
+  .options div {
+    float: left;
+    padding-right: 0.25em;
+  }
+}
+
+/* Negative is red */
+.negative {
+  .button:hover, a.button:hover {
+    color: #FFFFFF;
+    background-position: 0 -121px;
+    background-color: #D84743;
+    border-color: #911D1B;
+  }
+  color: red;
+}
+
+
+/* update from a user followed by the current logged in user */
+.updates {
+  .update {
+    @include clearfix;
+    background: white;
+    padding: 1em;
+  	border-bottom: solid 1px #efefef;
+
+  	clear: both;
+  	overflow: auto;
+
+    .fn, .nickname {
+      font-weight: bold;
+    }
+
+    .entry-content {
+      word-wrap: break-word;
+      font-size: 1.1em;
+      margin-left: 45px;
+    }
+
+    .entry-info {
+      padding-top: 0.5em;
+      margin-left: 45px;
+
+      .published, .in-reply {
+        float: left;
+      }
+      .avatar {
+        float: none;
+        width: 18px;
+        padding: 0 2px;
+        img {
+          width: 18px;
+          margin-bottom: -4px;
+        }
+      }
+      .in-reply  {
+        margin-left: 0.5em;
+      }
+    }
+
+  }
+
+  .mention {
+    background: $mention;
+  }
+  .mine {
+    background: $highlight;
+  }
+
+  .empty {
+    background: white;
+    font-size: 1.2em;
+    padding: 1em;
+    color: #bbb;
+  }
+}
+
+.avatar {
+  float: left;
+  width: 35px;
+  height: 35px;
+  padding-right: 10px;
+  img {
+    width: 35px;
+  }
+}
+
+#fourohfour, #update {
+  background: #f3f3f3;
+  padding-top: 3em;
+  width: 520px;
+  margin: auto;
+
+  #footer {
+    padding: 1em;
+    border-top: 1px solid #ccc;
+    width: 498px;
+  }
+}
+
+#fourohfour {
+  .image404 {
+    text-align: center;
+    .credits {
+      font-size: 0.85em;
+      color: #aaa;
+    }
+  }
+}
+
+.single-update {
+  .update-text-wrap {
+    @include rounded(5px);
+    background: white;
+    padding: 1em;
+
+    .update-text {
+      word-wrap: break-word;
+      font-size: 2.5em;
+    }
+
+    .reply-text {
+      word-wrap: break-word;
+    }
+  }
+
+  .reply-title {
+    border-top: 1px solid #ccc;
+    padding: 1em;
+    margin-top: 0.5em;
+  }
+  
+  .reply-title, .reply-text-wrap {
+    color: #aaa;
+  }
+
+  .byline {
+    @include clearfix;
+    padding: 1em;
+    a {
+      padding: 0 0.3em;
+    }
+
+    .update-date, .author, .source {
+      float: left;
+    }
+
+    .avatar {
+      float: none;
+      display: inline;
+      padding: 0 2px;
+      width: 18px;
+      height: 18px;
+      img {
+        margin-bottom: -4px;
+/*        padding-top: 4px;*/
+        width: 18px;
+        height: 18px;
+      }
+    }
+
+
+		.links {
+      float: right;
+    }
+  }
+}
+
+.update {
+  .remove-update {
+    cursor: pointer;
+    float: right;
+    border: none;
+    @include image-replaced('/images/embed/trash.png', 13px, 16px)
+  }
+
+  .end-links {
+    float: right;
+  }
+  .end-links, .published, .in-reply {
+  	font-size: 0.9em;
+  	color: #aaa;
+    line-height: 2em;
+  }
+}

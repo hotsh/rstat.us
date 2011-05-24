@@ -79,6 +79,12 @@ module Sinatra
       !pjax_request?
     end
 
+    def menu_item(name, url)
+      classes = []
+      classes << (request.path_info == url ? "active" : "")
+      "<li class='#{classes.join(" ")}'><a href='#{url}'>#{name}</a></li>"
+    end
+
   end
 
   helpers UserHelper
