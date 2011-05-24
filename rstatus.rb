@@ -110,7 +110,7 @@ class Rstatus
   get "/hashtags/:tag" do
     @hashtag = params[:tag]
     set_params_page
-    @updates = Update.hashtag_search(@hashtag, params).paginate( :page => params[:page], :per_page => params[:per_page] || 20, :order => :created_at.desc)
+    @updates = Update.hashtag_search(@hashtag, params)
     set_pagination_buttons(@updates)
     @timeline = true
     @update_text = params[:status]
