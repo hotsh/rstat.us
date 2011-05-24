@@ -200,7 +200,7 @@ describe "update" do
       refute_match page.body, /Post to/
     end
 
-    it "renders tagline for timeline" do
+    it "renders tagline default for timeline" do
       u = Factory(:user)
       log_in_email(u)
       visit "/timeline"
@@ -208,12 +208,20 @@ describe "update" do
       assert_match page.body, /There are no updates here yet/
     end
 
-    it "renders tagline for replies" do
+    it "renders tagline default for replies" do
       u = Factory(:user)
       log_in_email(u)
       visit "/replies"
 
       assert_match page.body, /There are no updates here yet/
+    end
+
+    it "renders locals[:tagline] for search" do
+      u = Factory(:user)
+      log_in_email(u)
+      visit "/search"
+
+      assert_match page.body, /No statuses match your search/
     end
   end
 end
