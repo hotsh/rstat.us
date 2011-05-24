@@ -39,6 +39,7 @@ class Rstatus
 
   set :root, File.join(File.dirname(__FILE__), "..")
   set :haml, :escape_html => true
+  set :logging, true
 
   # This method enables the ability for our forms to use the _method hack for
   # actual RESTful stuff.
