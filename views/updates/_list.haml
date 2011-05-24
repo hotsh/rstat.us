@@ -30,9 +30,9 @@
     .end-links
       -# when @timeline is true, this is a list on the user's page
       -unless current_user.nil? or (current_user.author.id == update.author.id)
-        %a.share{:href => "/?share=#{update.id}"} share
+        %a.share{:href => "?share=#{update.id}"} share
         |
-        %a.reply{:href => "/?reply=#{update.id}"} reply
+        %a.reply{:href => "?reply=#{update.id}"} reply
 
       - if current_user and update.author.id == current_user.author.id
         %form{:method => "post", :action => "/updates/#{update.id}"}

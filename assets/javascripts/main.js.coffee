@@ -20,7 +20,7 @@ $(document).ready ->
   #########################################
   
   # PJAX-ify the tabs
-  $('#navigation a').pjax('#content .updates').click ->
+  $('#updates-menu a').pjax('#content .updates').click ->
     # Set clicked tab to be given active class when pjax returns
     $('#navigation a').removeClass("next")
     $(this).addClass("next");

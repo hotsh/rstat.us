@@ -12,18 +12,37 @@
   border-radius: $radius;
 }
 
+@mixin rounded($tl:5px, $tr:5px, $br:5px, $bl:5px) {
+  border-top-left-radius: $tl;
+  border-top-right-radius: $tr;
+  border-bottom-right-radius: $br;
+  border-bottom-left-radius: $bl;
+}
+
+/* Layout
+*******************************************/
+$gutter_width: 20px;
+
 /* Color
 *******************************************/
-$link_color: #65bfc2;
+$background_color: #d8d8d8;
+$header_color: #3a3a3a;
+$content_background: #ededed;
+
+$text_color: #505050;
+$de_emph_text_color: #7e7e7e;
+$link_color: #429ec3;
 $mention: #e4feff;
 $highlight: #fffeef;
 
 /* Typography
 *******************************************/
 @mixin title-face {
-  font-family: "Arial Black", Arial, sans-serif;
+  font-weight: bold;
+  font-family: Arial, sans-serif;
 }
 
 @mixin copy-face {
   font-family: Arial, sans-serif;
 }
+

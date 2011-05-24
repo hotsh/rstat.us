@@ -4,7 +4,9 @@
   - unless current_user.nil?
     != haml :"updates/_form"
 
-  != haml :"shared/_navigation"
+  #updates-menu-wrap
+    #updates-menu-background
+      != haml :"shared/menu/_updates"
 
 -# Generate page id from url
 .updates.has-update-form{:id => request.path_info.gsub("/", "_")[1..-1]}

@@ -1,43 +1,73 @@
 body {
-  background: #bbb;
+  background: $background_color;
+  color: $text_color;
 }
 
 #header, #page, #footer {
   @include container();
 }
 
+.menu {
+  @include clearfix;
+
+  li {
+    float: left;
+    list-style-type: none;
+    padding: 0 0.5em;
+  }
+}
+
 /* Header */
 #header-wrap {
   color: white;
-  background: black;
+  background: $header_color;
+  margin-bottom: 1.5em;
   @include clearfix;  
   
   #header {
+    @include clearfix;
     #logo {
       float: left;
+      padding: 1em $gutter_width;
       h1 {
-        @include image-replaced("/images/embed/logo-xs.png", 71px, 20px);
+        @include image-replaced("/images/embed/logo-sm.png", 96px, 33px);
         margin: 0;
       }      
+    }
+    .menu {
+      margin-top: 1.75em;
+      float: left;
+    }
+    
+    #profile {
+      float: right;
+      
+      a {
+        color: $de_emph_text_color;
+      }
     }
   }
 }
 
 /* Content Layout */
 #content {
-  @include column(16);
+  @include column(15);
 
   #wrap {
-    margin: 0.5em;
     @include rounded(4px);
-    padding: 0.5em;
-    background: #ddd;
-    
+    padding: $gutter_width;
+    background: $content_background;
+  }
+  
+  .updates {
+    background: white;
+    @include rounded(4px);
+    margin: 0 -10px;
   }
 }
 
 #sidebar {
-  @include column(8);
+  @include column(5);
   @include last;
 }
 
