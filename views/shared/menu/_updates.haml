@@ -1,4 +1,8 @@
-%ul.menu#updates
-  != menu_item("Timeline", "/timeline")
-  != menu_item("Replies", "/replies")
+%ul.menu#updates-menu
+  - if current_user
+    != menu_item("Timeline", "/timeline")
+    != menu_item("Replies", "/replies")
   != menu_item("World", "/updates")
+
+  - unless @hashtag.nil?
+    != menu_item("#@hashtag", "/hashtags/#{@hashtag}")
