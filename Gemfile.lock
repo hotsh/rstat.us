@@ -149,7 +149,7 @@ GEM
     public_suffix_service (0.8.2)
     pygmentize (0.0.2)
     pyu-ruby-sasl (0.0.3.2)
-    rack (1.2.1)
+    rack (1.2.2)
     rack-flash (0.1.1)
       rack
     rack-openid (1.2.0)
@@ -251,7 +251,7 @@ DEPENDENCIES
   osub
   pony
   pygmentize
-  rack (= 1.2.1)
+  rack (= 1.2.2)
   rack-flash
   rack-test
   rack-timeout
