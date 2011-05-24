@@ -37,7 +37,7 @@ class Rstatus
       @updates = current_user.at_replies(params).paginate( :page => params[:page], :per_page => params[:per_page] || 20, :order => :created_at.desc)
       set_pagination_buttons(@updates)
       if pjax_request?
-        haml :"updates/_list", :locals => {:updates => @updates}, :layout => false
+        haml :"updates/_list", :locals => {:updates => @updates, :tagline => "There are no updates here yet."}, :layout => false
       else
         haml :"updates/index"
       end
