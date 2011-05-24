@@ -230,7 +230,7 @@ class Rstatus
     if @user == current_user
       title << "Your followers"
     else
-      title << "#{@user.username} follows"
+      title << "#{@user.username}'s followers"
     end
 
     haml :"users/list", :locals => {:title => title}

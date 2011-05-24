@@ -174,7 +174,7 @@ describe "following" do
     u = Factory(:user, :username => "dfnkt")
 
     visit "/users/#{u.username}/followers"
-    assert_match "#{u.username} follows", page.body
+    assert_match "#{u.username}'s followers", page.body
   end
 
 end
