@@ -7,7 +7,7 @@
 
 -# Generate page id from url
 .updates.has-update-form{:id => request.path_info.gsub("/", "_")[1..-1]}
-  != haml :"updates/_list", :locals => {:updates => @updates}
+  != haml :"updates/_list", :locals => {:updates => @updates, :tagline => "There are no updates here yet."}
   %nav.pagination
     - unless @prev_page.nil?
       %a.button{:href => @prev_page, :id => "prev_button"}
