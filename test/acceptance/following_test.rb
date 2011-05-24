@@ -132,21 +132,49 @@ describe "following" do
     assert_match "Next", page.body
   end
 
-  it "uses your username on your following page if logged in" do
+  #it "uses your username on your following page if logged in" do
+    #u = Factory(:user, :username => "dfnkt")
+    #a = Factory(:authorization, :user => u)
+
+    #log_in(u, a.uid)
+
+    #visit "/users/#{u.username}/following"
+    #assert_match "#{u.username} is following", page.body
+
+  #end
+
+  it "properly displays title on your following page when logged in" do
     u = Factory(:user, :username => "dfnkt")
     a = Factory(:authorization, :user => u)
 
     log_in(u, a.uid)
 
     visit "/users/#{u.username}/following"
-    assert_match "#{u.username} is following", page.body
-
+    assert_match /You're following/, page.body
   end
 
-  it "uses your username on your following page if not logged in" do
+  it "uses a username on the following page if not logged in" do
     u = Factory(:user, :username => "dfnkt")
 
     visit "/users/#{u.username}/following"
     assert_match "#{u.username} is following", page.body
   end
+
+  it "properly displays title on your followers page when logged in" do
+    u = Factory(:user, :username => "dfnkt")
+    a = Factory(:authorization, :user => u)
+
+    log_in(u, a.uid)
+
+    visit "/users/#{u.username}/followers"
+    assert_match /Your followers/, page.body
+  end
+
+  it "uses a username on the followers page if not logged in" do
+    u = Factory(:user, :username => "dfnkt")
+
+    visit "/users/#{u.username}/followers"
+    assert_match "#{u.username} follows", page.body
+  end
+
 end
