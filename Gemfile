@@ -10,6 +10,8 @@ gem "mongomapper_ext"
 gem "bson_ext"
 gem "i18n"
 gem "haml"
+gem "rake", "=0.8.7"
+gem "rack", "=1.2.1"
 gem "rack-flash"
 gem "rack-timeout"
 gem "time-lord"
@@ -47,4 +49,5 @@ group :development, :test do
   gem "vcr"
   gem "webmock"
   gem "simplecov", "~> 0.4.0", :require => false
+  gem "launchy"
 end

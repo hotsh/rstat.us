@@ -4,7 +4,7 @@ class Rstatus
     if logged_in?
       redirect '/'
     else
-      haml :"login"
+      haml :"login/login"
     end
   end
 
@@ -28,7 +28,7 @@ class Rstatus
           @user.errors.add(:password, "can't be empty")
         end
       end
-      haml :"login"
+      haml :"login/login"
     else
       if user = User.authenticate(params[:username], params[:password])
         session[:user_id] = user.id

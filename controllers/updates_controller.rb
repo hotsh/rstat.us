@@ -1,12 +1,81 @@
 class Rstatus
 
+  get '/timeline' do
+    set_params_page
+    @updates = current_user.timeline(params).paginate( :page => params[:page], :per_page => params[:per_page] || 20, :order => :created_at.desc)
+    set_pagination_buttons(@updates)
+
+    @timeline = true
+
+    if params[:reply]
+      u = Update.first(:id => params[:reply])
+      @update_text = "@#{u.author.username} "
+      @update_id = u.id
+    elsif params[:share]
+      u = Update.first(:id => params[:share])
+      @update_text = "RS @#{u.author.username}: #{u.text}"
+      @update_id = u.id
+    else
+      @update_text = ""
+      @update_id = ""
+    end
+
+    if params[:status]
+      @update_text = @update_text + params[:status]
+    end
+
+    if pjax_request?
+      haml :"updates/_list", :locals => {:updates => @updates}, :layout => false
+    else
+      haml :"updates/index"
+    end
+  end
+
+  get '/replies' do
+    if logged_in?
+      set_params_page
+      @updates = current_user.at_replies(params).paginate( :page => params[:page], :per_page => params[:per_page] || 20, :order => :created_at.desc)
+      set_pagination_buttons(@updates)
+      if pjax_request?
+        haml :"updates/_list", :locals => {:updates => @updates}, :layout => false
+      else
+        haml :"updates/index"
+      end
+    else
+      haml :"static/home", :layout => false
+    end
+  end
+
   # Ahh, the classic 'world' view.
   get '/updates' do
     @updates = Update.paginate( :page => params[:page], :per_page => params[:per_page] || 20, :order => :created_at.desc)
     set_pagination_buttons(@updates)
 
-    haml :world
+    if pjax_request?
+      haml :"updates/_list", :locals => {:updates => @updates}, :layout => false
+    else
+      haml :"updates/index"
+    end
   end
+  
+  get "/search" do
+    @updates = []
+    if params[:q]
+      @updates = Update.filter(params[:q], :page => params[:page], :per_page => params[:per_page] || 20, :order => :created_at.desc)
+      set_pagination_buttons(@updates)
+    end
+    haml :"updates/search"
+  end
+  
+  # get "/hashtags/:tag" do
+  #   @hashtag = params[:tag]
+  #   set_params_page
+  #   @updates = Update.hashtag_search(@hashtag, params).paginate( :page => params[:page], :per_page => params[:per_page] || 20, :order => :created_at.desc)
+  #   set_pagination_buttons(@updates)
+  #   @timeline = true
+  #   @update_text = params[:status]
+  #   haml :"updates/hashtags"
+  # end
 
   # If you're POST-ing to /updates, it means you're making a new one. Woo-hoo!
   # This is what it's all built for.
@@ -44,7 +113,7 @@ class Rstatus
   get '/updates/:id' do
     @update = Update.first :id => params[:id]
     @referral = @update.referral
-    haml :"updates/show", :layout => :'updates/layout'
+    haml :"updates/show", :layout => :'layout/update'
   end
 
   # Hopefully people don't delete a whole bunch of their updates, but if they

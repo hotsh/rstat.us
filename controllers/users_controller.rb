@@ -4,14 +4,14 @@
 class Rstatus
   # XXX: This shouldn't even be used any more.
   get '/users/confirm' do
-    haml :"users/confirm"
+    haml :"login/confirm"
   end
 
   # Password reset for users that are currently logged in. If a user does not
   # have an email address they are prompted to enter one
   get '/users/password_reset' do
     if logged_in?
-      haml :"users/password_reset"
+      haml :"login/password_reset"
     else
       redirect "/forgot_password"
     end

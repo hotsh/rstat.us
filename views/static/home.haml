@@ -1,6 +1,6 @@
 !!! 5
 %html.no-js{:lang => "en"}
-  != haml :_head
+  != haml :"shared/_head"
   %body#home
     #main
       #header
@@ -24,7 +24,7 @@
                 Username
 
       .content
-        != haml :_flash
+        != haml :"shared/_flash"
 
         #pitch
           %a#col-1.col{:href=>'/login'}
@@ -62,7 +62,7 @@
           #recent
             .updates
               %h3 Recent updates
-              != haml :_updates, :locals => {:updates => Update.hot_updates}
+              != haml :"updates/_list", :locals => {:updates => Update.hot_updates}
               .world-link
                 %a{:href => "/updates"}
                   more...
@@ -70,4 +70,4 @@
                 %a{:href => "/login"}
                   Join the conversation
 
-    != haml :footer
+    != haml :"shared/_footer"

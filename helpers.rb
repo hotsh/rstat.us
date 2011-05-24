@@ -67,6 +67,20 @@ module Sinatra
     def pluralize(count, singular, plural = nil)
       "#{count || 0} " + ((count == 1 || count =~ /^1(\.0+)?$/) ? singular : (plural || singular.pluralize))
     end
+
+    def title(str)
+      @title = str
+      pjax_request? ? @title : nil
+    end
+
+    def pjax_request?
+      env['HTTP_X_PJAX']
+    end
+
+    def show_layout?
+      !pjax_request?
+    end
+
   end
 
   helpers UserHelper

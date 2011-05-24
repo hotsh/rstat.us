@@ -6,3 +6,5 @@ tmp
 public/assets/src
 test/data
 test/coverage
+log/*.log*
+capybara*

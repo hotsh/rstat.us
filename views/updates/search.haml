@@ -4,10 +4,10 @@
   %input#search-input{:name => "q", :type => "text"}
   %input#search-button.button{:type => "submit", :value => "Search"}
 
-!= haml :_navigation
+!= haml :"shared/_navigation"
 
 #search.updates
-  != haml :_updates, :locals => {:updates =>  @updates}
+  != haml :"updates/_list", :locals => {:updates =>  @updates}
   %nav.pagination
     - unless @prev_page.nil?
       %a.button{:href => @prev_page, :id => "prev_button"}

@@ -1,7 +1,12 @@
 desc "Run unit tests"
-task :test do
+task :test, :file do |task, args|
+  puts args.file
   test_task = Rake::TestTask.new("unittests") do |t|
-    t.pattern = "test/unit/*_test.rb"
+    if args.file
+      t.pattern = args.file
+    else
+      t.pattern = "test/unit/*_test.rb"
+    end
   end
   task("unittests").execute
 end
