@@ -2,62 +2,44 @@
 %html.no-js{:lang => "en"}
   != haml :"shared/_head"
   %body.internal
-    #main
-      #left
+    #header-wrap
+      #header
         #logo
           %a{:href=>"/"}
-            %h2
+            %h1
               rstat.us
-        - if current_user
-          #profile.vcard
-            %h3 Profile
-            .profile-wrap
-              .avatar
-                %a{:href=>"/users/#{current_user.username}"}
-                  %img.photo{:alt => "avatar", :src => (current_user.author.avatar_url ||= "asdfasdf")}/
-              .userinfo
-                .nickname
-                  %a.url{:href=>"/users/#{current_user.username}"}
-                    = current_user.username
-                .stats
-                  .following
-                    Following:
-                    %a{ :href => "/users/#{current_user.username}/following"}
-                      #{current_user.following.length}
-                  .followers
-                    Followers:
-                    %a{ :href => "/users/#{current_user.username}/followers"}
-                      #{current_user.followers.length}
-                  .updates
-                    Updates: #{current_user.feed.updates.count}
-                  .edit-profile
-                    %a{ :href => "/users/#{current_user.username}/edit"}
-                      Edit profile
-
-          .links
-            %a{:href => "/follow"} Would you like to follow someone not on rstat.us?
-
-          .links
-            %a{:href => "/search"} Search Updates
-
-          .links
-            %a{:href => "/users"} Browse rstat.us users
-
-          .links
-            %a{:href => "/feeds/#{current_user.feed.id}.atom"} Atom
-
-          .logout
-            %a{:href => "/logout"}
-              Logout
-
-      #right
-        != @error_bar
-
-        #content
+        != haml :"shared/menu/_main"
+        != haml :"shared/menu/_profile"
+          
+            
+    != @error_bar
+  
+    #page
+      #content
+        #wrap
           != yield_content :top
-
           != haml :"shared/_flash"
 
           != yield
+      
+      #sidebar
+        != haml :"shared/sidebar/_profile"
+
+        / .links
+        /   %a{:href => "/follow"} Would you like to follow someone not on rstat.us?
+        / 
+        / .links
+        /   %a{:href => "/search"} Search Updates
+        / 
+        / .links
+        /   %a{:href => "/users"} Browse rstat.us users
+        / 
+        / .links
+        /   %a{:href => "/feeds/#{current_user.feed.id}.atom"} Atom
+        / 
+        / .logout
+        /   %a{:href => "/logout"}
+        /     Logout
+
 
     != haml :"shared/_footer"
