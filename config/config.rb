@@ -49,6 +49,9 @@ class Rstatus
   # rack-flash lets us use them.
   use Rack::Flash
 
+  # Tilt likes it when things are explicitly required.
+  require "coffee-script"
+
   configure do
     if ENV['MONGOHQ_URL']
       MongoMapper.config = {ENV['RACK_ENV'] => {'uri' => ENV['MONGOHQ_URL']}}
