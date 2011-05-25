@@ -9,42 +9,48 @@ class Authorization
   # sense.
   belongs_to :user
 
-  key :uid, Integer, :required => true
-  key :provider, String, :required => true
-  key :oauth_token, String
+  key :uid,          Integer, required: true
+  key :provider,     String,  required: true
+  key :oauth_token,  String
   key :oauth_secret, String
   key :nickname
 
   # Super cool validations. We don't want to let two people sign up with the
   # same external auth, but just in case there's a clash between providers,
   # we scope it. So easy!
-  validates_uniqueness_of :uid, :scope => :provider
+  validates_uniqueness_of :uid, scope: :provider
 
   # Locates an authorization from data provided from a successful omniauth
   # authentication response
-  def self.find_from_hash(hsh)
-    first :provider => hsh['provider'], :uid => hsh['uid'].to_i
+  def self.find_from_hash(hash)
+
+    # Pull out the details
+    uid      = hash['uid'].to_i
+    provider = hash['provider']
+
+    # Find the first record from the details
+    first provider: provider, uid: uid
   end
 
   # Creates an authorization from a sucessful omniauth authentication response
-  def self.create_from_hash(hsh, base_uri, user = nil)
-    if user.nil?
-      author = Author.create_from_hash!(hsh)
-      user = User.create(:author => author,
-                         :username => author.username
-                        )
+  # TODO: Figure out why BASE_URI is here.
+  def self.create_from_hash(hash, base_uri, user = nil)
+
+    # If there isn't a user, create a user and author.
+    if user.blank?
+      author = Author.create_from_hash! hash
+      user = User.create! author: author, username: author.username
     end
 
-    a = new(:user => user,
-            :uid => hsh['uid'],
-            :provider => hsh['provider'],
-            :nickname => hsh["user_info"]["nickname"],
-            :oauth_token => hsh['credentials']['token'],
-            :oauth_secret => hsh['credentials']['secret']
-           )
+    # Grab the user information from the hash
+    uid, provider, nickname = hash['uid'], hash['provider'], hash['user_info']['nickname']
 
-    a.save
-    a
+    # Grab teh credentials, including token and secret, from the hash
+    credentials = hash['credentials']
+    token, secret = credentials['token'], credentials['secret']
+
+    # Create a new authorization with the provided details
+    create! user: user, uid: uid, provider: provider, nickname: nickname, oauth_token: token, oauth_secret: secret
   end
 
   timestamps!
