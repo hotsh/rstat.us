@@ -70,6 +70,8 @@ form#update-form {
 /* ****************************** */
 #updates-menu-wrap {
   @include clearfix;
+  z-index: 10;
+  margin-bottom: -1px;
 }
 
 #updates-menu-background {
@@ -85,6 +87,7 @@ form#update-form {
   float: left;
   padding: 0 1em 0 1em;
   overflow: visible;
+  border-bottom: 1px solid #ccc;
   
   li {
     padding: 0.35em 1em;
@@ -96,8 +99,8 @@ form#update-form {
     -webkit-box-shadow: 0px 0px 4px #bbb;
     @include rounded(3px, 3px, 0, 0);
     background: white;
-    z-index: 10;
     margin: -0.35em 0 -0.1em 0;
+    border-bottom: 1px solid white;
     
     padding: 0.5em 1em;
     a {
@@ -110,12 +113,14 @@ form#update-form {
 /* ****************************** */
 /* Updates List */
 /* ****************************** */
-.updates {
-  border: 1px solid #ccc;
-  padding: 1em;
-  .update {
-    
-  }
+#content {
+  .updates {
+    border: 1px solid #ccc;
+    padding: 1em;
+    .update {
+
+    }
+  }  
 }
 
 /* ****************************** */

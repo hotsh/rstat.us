@@ -20,15 +20,15 @@ $(document).ready ->
   #########################################
   
   # PJAX-ify the tabs
-  $('#updates-menu a').pjax('#content .updates').click ->
+  $('#updates-menu a').pjax('#content-main').click ->
     # Set clicked tab to be given active class when pjax returns
-    $('#navigation a').removeClass("next")
+    $('#updates-menu a').removeClass("next")
     $(this).addClass("next");
   
-  $("#content .updates").bind "end.pjax", pjaxSuccess = ->
+  $("#content-main").bind "end.pjax", pjaxSuccess = ->
     # Set active class appropriately
-    $('#navigation li').removeClass("active")
-    $('#navigation a.next').parent().addClass("active")
+    $('#updates-menu li').removeClass("active")
+    $('#updates-menu a.next').parent().addClass("active")
   
   
   #########################################
