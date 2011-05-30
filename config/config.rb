@@ -39,6 +39,7 @@ class Rstatus
 
   set :root, File.join(File.dirname(__FILE__), "..")
   set :haml, :escape_html => true
+  set :logging, true
 
   # This method enables the ability for our forms to use the _method hack for
   # actual RESTful stuff.
@@ -47,6 +48,9 @@ class Rstatus
   # If you've used Rails' flash messages, you know how convenient they are.
   # rack-flash lets us use them.
   use Rack::Flash
+
+  # Tilt likes it when things are explicitly required.
+  require "coffee-script"
 
   configure do
     if ENV['MONGOHQ_URL']

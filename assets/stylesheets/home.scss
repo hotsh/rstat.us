@@ -5,7 +5,7 @@ body#home {
       a {
         margin-left: 1em;
         display: block;
-        @include image-replaced("/images/embed/logo.png", 348px, 100px);
+        @include image-replaced("/assets/images/embed/logo.png", 348px, 100px);
       }
     }
     #login {
@@ -47,16 +47,16 @@ body#home {
     }
 
     #col-1 {
-      background: url('/images/slide1.png') center bottom no-repeat;
+      background: url('/assets/images/slide1.png') center bottom no-repeat;
       &:hover {
         text-decoration: none;
       }
     }
     #col-2 {
-      background: url('/images/slide2.png') center bottom no-repeat;
+      background: url('/assets/images/slide2.png') center bottom no-repeat;
     }
     #col-3 {
-      background: url('/images/slide3.png') center bottom no-repeat;
+      background: url('/assets/images/slide3.png') center bottom no-repeat;
     }
     .last-col {
       border: none;

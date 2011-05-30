@@ -34,6 +34,9 @@ gem "sass"
 gem "compass"
 gem "tzinfo"
 gem "exceptional"
+gem "sprockets", "2.0.0.beta8"
+gem "rack-mount", :require => "rack/mount"
+gem "uglifier"
 
 group :development, :test do
   gem "minitest", :platforms => :ruby_18
@@ -45,7 +48,6 @@ group :development, :test do
   gem "rocco"
   gem "pygmentize"
   gem "mocha"
-  gem "jammit"
   gem "vcr"
   gem "webmock"
   gem "simplecov", "~> 0.4.0", :require => false

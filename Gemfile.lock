@@ -7,10 +7,6 @@ GIT
 GEM
   remote: http://rubygems.org/
   specs:
-    POpen4 (0.1.4)
-      Platform (>= 0.4.0)
-      open4
-    Platform (0.4.0)
     activesupport (3.0.5)
     addressable (2.2.4)
     bcrypt-ruby (2.1.4)
@@ -29,7 +25,6 @@ GEM
     celerity (0.8.9)
     childprocess (0.1.8)
       ffi (~> 1.0.6)
-    closure-compiler (1.1.1)
     coffee-script (2.2.0)
       coffee-script-source
       execjs
@@ -59,10 +54,8 @@ GEM
       rake (>= 0.8.7)
     haml (3.0.25)
     hashie (1.0.0)
+    hike (1.0.0)
     i18n (0.5.0)
-    jammit (0.6.0)
-      closure-compiler (>= 0.1.0)
-      yui-compressor (>= 0.9.1)
     jnunemaker-validatable (1.8.4)
       activesupport (>= 2.3.4)
     json (1.5.1)
@@ -132,7 +125,6 @@ GEM
       oa-more (= 0.2.0)
       oa-oauth (= 0.2.0)
       oa-openid (= 0.2.0)
-    open4 (1.0.1)
     opub (0.0.1)
     ostatus (0.0.6)
       nokogiri
@@ -152,6 +144,8 @@ GEM
     rack (1.2.2)
     rack-flash (0.1.1)
       rack
+    rack-mount (0.8.1)
+      rack (>= 1.0.0)
     rack-openid (1.2.0)
       rack (>= 1.1.0)
       ruby-openid (>= 2.1.8)
@@ -196,6 +190,10 @@ GEM
     sinatra-redirect-with-flash (0.1.2)
       rack-flash (>= 0.1.1)
       sinatra (>= 0.9.1)
+    sprockets (2.0.0.beta.8)
+      hike (~> 1.0)
+      rack (~> 1.0)
+      tilt (!= 1.3.0, ~> 1.1)
     tilt (1.2.2)
     time-lord (0.1.5)
     tinyatom (0.3.4)
@@ -211,6 +209,9 @@ GEM
       multi_xml (~> 0.2.0)
       simple_oauth (~> 0.1.4)
     tzinfo (0.3.25)
+    uglifier (0.5.1)
+      execjs
+      json
     uuidtools (2.1.2)
     vcr (1.7.2)
     webmock (1.6.2)
@@ -219,8 +220,6 @@ GEM
     whatlanguage (1.0.0)
     xpath (0.1.3)
       nokogiri (~> 1.3)
-    yui-compressor (0.9.6)
-      POpen4 (>= 0.1.4)
 
 PLATFORMS
   ruby
@@ -237,7 +236,6 @@ DEPENDENCIES
   fb_graph
   haml
   i18n
-  jammit
   launchy
   minitest
   mocha
@@ -253,6 +251,7 @@ DEPENDENCIES
   pygmentize
   rack (= 1.2.2)
   rack-flash
+  rack-mount
   rack-test
   rack-timeout
   rake (= 0.8.7)
@@ -266,9 +265,11 @@ DEPENDENCIES
   sinatra
   sinatra-content-for
   sinatra-redirect-with-flash
+  sprockets (= 2.0.0.beta8)
   time-lord
   twitter
   tzinfo
+  uglifier
   vcr
   webmock
   whatlanguage
