@@ -24,10 +24,16 @@ Assets.static_root = File.join(Rstatus.root, "public", "assets")
 Assets.paths << "assets"
 Assets.logger = Rstatus.log
 Assets.js_compressor = Uglifier.new
+Sass::Engine::DEFAULT_OPTIONS[:load_paths].tap do |load_paths|
+  load_paths << "#{Rstatus.root}/assets/stylesheets"
+  load_paths << "#{Gem.loaded_specs['compass'].full_gem_path}/frameworks/compass/stylesheets"
+  load_paths << "#{Gem.loaded_specs['compass'].full_gem_path}/frameworks/blueprint/stylesheets"
+end
+
 compressor = Object.new
 def compressor.compress(source)
   Sass::Engine.new(source,
-                   :syntax => :sass, :style => :compressed
+                   :syntax => :scss, :style => :compressed
                   ).render
 end
 Assets.css_compressor = compressor
