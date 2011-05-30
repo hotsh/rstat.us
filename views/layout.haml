@@ -17,10 +17,12 @@
     #page
       #content
         #wrap
-          != yield_content :top
-          != haml :"shared/_flash"
+          #content-top
+            != yield_content :top
+            != haml :"shared/_flash"
 
-          != yield
+          #content-main
+            != yield
       
       #sidebar
         != haml :"shared/sidebar/_profile"
