@@ -57,10 +57,41 @@ body {
   background: $content_background;  
 }
 
-.updates {
+#content {
   background: white;
   @include rounded(4px);
+  border: 1px solid #ccc;
+  padding: 1em;
   margin: 0 -10px;
+  position: relative;
+  
+  .loading {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: #ddd;
+    opacity: 0.5;
+  }
+  
+  .pagination {
+    @include clearfix;
+    margin-top: 1.5em;
+
+    .button {
+      margin: 0;
+    }
+
+    #next_button {
+      float: right;
+      margin-right: 0.5em;
+    }
+    #prev_button {
+      float: left;
+      margin-left: 0.5em;
+    }
+  }
 }
 
 #sidebar {

@@ -3,7 +3,7 @@
     - mine = current_user.nil? ? false : (update.author.user == current_user)
   - mentioned = current_user.nil? ? false : update.mentioned?(current_user.username)
   - mine = current_user.nil? ? false : update.author.user == current_user
-  .update.hentry{:class => (mentioned ? "mention " : "") + (mine ? "mine " : ""), :id => "update-#{update.id}", "data-id" => update.id, "data-name" => update.author.username}
+  %li.update.hentry{:class => (mentioned ? "mention " : "") + (mine ? "mine " : ""), :id => "update-#{update.id}", "data-id" => update.id, "data-name" => update.author.username}
     .author.vcard
       .avatar
         %a.url{:href => update.author.url}
@@ -13,17 +13,17 @@
     .entry-content
       != update.to_html
 
-    .entry-info
+    .info
       %time.published{:pubdate => "pubdate", :datetime => update.created_at.iso8601}
         %a{:href => update.url, :rel => "bookmark"}= update.created_at.ago_in_words
 
       -unless update.referral.nil?
-        .in-reply
+        %span.in-reply
           %a{:href => "/updates/#{update.referral.id}"}
             in reply to
             %span.name= update.referral.author.username
 
-    .end-links
+    .actions
       -# when @timeline is true, this is a list on the user's page
       -unless current_user.nil? or (current_user.author.id == update.author.id)
         %a.share{:href => "?share=#{update.id}"} share

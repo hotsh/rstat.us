@@ -69,6 +69,7 @@ form#update-form {
 /* Updates Navigation */
 /* ****************************** */
 #updates-menu-wrap {
+  position: relative;
   @include clearfix;
   z-index: 10;
   margin-bottom: -1px;
@@ -96,7 +97,7 @@ form#update-form {
   }
   
   li.active {
-    -webkit-box-shadow: 0px 0px 4px #bbb;
+    -webkit-box-shadow: 0px 0px 10px #aaa;
     @include rounded(3px, 3px, 0, 0);
     background: white;
     margin: -0.35em 0 -0.1em 0;
@@ -114,10 +115,66 @@ form#update-form {
 /* Updates List */
 /* ****************************** */
 .updates {
-  border: 1px solid #ccc;
-  padding: 1em;
   .update {
+    @include clearfix;
+    position: relative;
+    padding: 1em 2em 0.75em 7em;
+  	border-bottom: solid 1px #efefef;
 
+    .author{
+      .avatar {
+        position: absolute;
+        top: 1em;
+        left: 2em;
+      }
+      .fn, .nickname {
+        font-weight: bold;
+      }      
+    }
+
+    .entry-content {
+      padding-bottom: 0.35em;
+      word-wrap: break-word;
+      font-size: 1.1em;
+    }
+      
+    .info {
+      float: left;
+    }
+    
+    .actions, .published, .in-reply {
+    	font-size: 0.9em;
+    	color: #aaa;
+      line-height: 2em;
+    }
+    
+    .actions {
+      display: none;
+      float: right;
+      
+      .remove-update {
+        cursor: pointer;
+        float: right;
+        border: none;
+        @include image-replaced('/images/embed/trash.png', 13px, 16px)
+      }
+    }
+
+    &:hover .actions {
+      display: block;
+    }
+  }
+
+  .mention {
+    background: $mention;
+  }
+  .mine {
+    background: $highlight;
+  }
+  .empty {
+    font-size: 1.2em;
+    padding: 1em;
+    color: #bbb;
   }
 }  
 
