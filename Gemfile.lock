@@ -194,7 +194,7 @@ GEM
       hike (~> 1.0)
       rack (~> 1.0)
       tilt (!= 1.3.0, ~> 1.1)
-    tilt (1.2.2)
+    tilt (1.3.2)
     time-lord (0.1.5)
     tinyatom (0.3.4)
       builder (~> 2.0)
@@ -265,7 +265,7 @@ DEPENDENCIES
   sinatra
   sinatra-content-for
   sinatra-redirect-with-flash
-  sprockets (= 2.0.0.beta8)
+  sprockets (= 2.0.0.beta.8)
   time-lord
   twitter
   tzinfo
