@@ -50,20 +50,17 @@ body {
 }
 
 /* Content Layout */
-#content {
-  @include column(15);
+#content-wrap {
+  @include column(14);
+  @include rounded(4px);
+  padding: $gutter_width;
+  background: $content_background;  
+}
 
-  #wrap {
-    @include rounded(4px);
-    padding: $gutter_width;
-    background: $content_background;
-  }
-  
-  .updates {
-    background: white;
-    @include rounded(4px);
-    margin: 0 -10px;
-  }
+.updates {
+  background: white;
+  @include rounded(4px);
+  margin: 0 -10px;
 }
 
 #sidebar {

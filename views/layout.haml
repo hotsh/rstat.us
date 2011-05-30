@@ -15,14 +15,13 @@
     != @error_bar
   
     #page
-      #content
-        #wrap
-          #content-top
-            != yield_content :top
-            != haml :"shared/_flash"
+      #content-wrap
+        #top
+          != yield_content :top
+          != haml :"shared/_flash"
 
-          #content-main
-            != yield
+        #content
+          != yield
       
       #sidebar
         != haml :"shared/sidebar/_profile"
