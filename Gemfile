@@ -37,10 +37,10 @@ gem "exceptional"
 gem "sprockets", "2.0.0.beta.8"
 gem "rack-mount", :require => "rack/mount"
 gem "uglifier"
+gem 'coffee-script'
 
 group :development, :test do
   gem "minitest", :platforms => :ruby_18
-  gem 'coffee-script'
   gem 'rack-test'
   gem "database_cleaner"
   gem "factory_girl"
