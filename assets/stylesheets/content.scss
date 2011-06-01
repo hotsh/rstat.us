@@ -92,23 +92,53 @@ form#update-form {
   border-bottom: 1px solid #ccc;
   
   li {
-    padding: 0.35em 1em;
+    @include clearfix;
+
+    padding: 0.35em 1em 0.35em 0.5em;
     border-left: 1px solid #e5e5e5;
     border-right: 1px solid #f7f7f7;
+    
+    .icon {
+      @include image_replaced('/images/icons_sprite.png', 24px, 16px);
+    }
+    .icon, a { 
+      float: left; 
+    }
+  }
+  
+  li.world .icon { background-position: 0 -48px;}
+  li.replies .icon { background-position: 0 -64px;}
+  li.timeline .icon { background-position: 0 -80px;}
+  li.active.replies .icon { background-position: -24px -64px;}
+  li.active.world .icon { background-position: -24px -48px;}
+  li.active.timeline .icon { background-position: -24px -80px;}
+  
+  li:hover {
+    background: #f9f9f9;
   }
   
   li.active {
+    position: relative;
     -webkit-box-shadow: 0px 0px 10px #aaa;
     @include rounded(3px, 3px, 0, 0);
     background: white;
     margin: -0.35em 0 -0.1em 0;
     border-bottom: 1px solid white;
+    z-index: 10;
     
-    padding: 0.5em 1em;
+    padding: 0.5em 1em 0.5em 0.5em;
     a {
       font-weight: bold;
       color: black;      
     }
+  }
+  
+  li.active a:hover {
+    text-decoration: none;
+  }
+  
+  li:last-child {
+    border-right: 1px solid #e5e5e5;
   }
 }
 
@@ -198,7 +228,6 @@ form#update-form {
   }
 
   .user-info {
-/*    font-weight: bold;*/
     .name {
       margin-bottom: 0;
     }
@@ -219,9 +248,24 @@ form#update-form {
           font-size: 1.3em;
           padding-right: 0.25em;
         }
+        
+        .icon {
+          float: left;
+          margin-top: 2px;
+          margin-right: 0.5em;
+          @include image_replaced('/images/icons_sprite.png', 24px, 16px);
+        }
+      }
+      
+      .following-count .icon { 
+        background-position: 0 -16px;
+      }
+      .follower-count .icon { 
+        background-position: 0 -32px;
       }
     }
   }
+  
 }
 
 

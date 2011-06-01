@@ -57,7 +57,6 @@ body {
 #content-wrap {
   @include column(14);
   @include rounded(4px);
-/*  padding: $gutter_width/2;*/
   padding: $gutter_width/2 0;
   background: $content_background;  
 }
@@ -112,7 +111,6 @@ body {
     padding: 1em;
   
   }
-  
 }
 
 /* *******************************/
