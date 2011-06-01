@@ -11,12 +11,15 @@
           @#{current_user.username}
       %ul.stats
         %li.update-count
+          .icon
           %a{ :href => "/users/#{current_user.username}"}= current_user.feed.updates.count
           Updates
         %li.following-count
+          .icon
           %a{ :href => "/users/#{current_user.username}/following"}= current_user.following.length
           Following
         %li.follower-count
+          .icon
           %a{ :href => "/users/#{current_user.username}/followers"}= current_user.followers.length
           Followers
       .actions

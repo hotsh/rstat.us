@@ -79,10 +79,18 @@ module Sinatra
       !pjax_request?
     end
 
-    def menu_item(name, url)
-      classes = []
-      classes << (request.path_info == url ? "active" : "")
-      "<li class='#{classes.join(" ")}'><a href='#{url}'>#{name}</a></li>"
+    def menu_item(name, url, options = {})
+      icon = options.fetch(:icon){ false }
+      classes = options.fetch(:classes){ [] }
+      
+      classes << name.downcase.gsub(" ", "_")
+      classes << (request.path_info == url ? "active" : "")  
+    
+      "<li class='#{classes.join(" ")}'>
+        <a href='#{url}'>" +
+        (icon ? "<div class='icon'></div>" : "") + 
+        "#{name}</a>
+      </li>"
     end
 
   end
