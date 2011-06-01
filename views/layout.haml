@@ -17,14 +17,15 @@
     #page
       #content-wrap
         #top
-          != yield_content :top
           != haml :"shared/_flash"
+          != yield_content :top
 
         #content
           != yield
       
       #sidebar
         != haml :"shared/sidebar/_profile"
+        != haml :"shared/sidebar/_help"
 
         / .links
         /   %a{:href => "/follow"} Would you like to follow someone not on rstat.us?
