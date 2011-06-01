@@ -4,7 +4,7 @@
 
 form#update-form {
   @include clearfix;
-  margin: 0 1em 1em 1em;
+  margin: 1em;
 
   #update-content {
     /* the textarea where the user types an update */
@@ -41,6 +41,7 @@ form#update-form {
     
     #update-button {
       float: right;
+      margin-right: 5px;
     }
     
     /* Character counter */
@@ -118,14 +119,14 @@ form#update-form {
   .update {
     @include clearfix;
     position: relative;
-    padding: 1em 2em 0.75em 7em;
+    padding: 1em 1em 0.75em 6em;
   	border-bottom: solid 1px #efefef;
 
     .author{
       .avatar {
         position: absolute;
         top: 1em;
-        left: 2em;
+        left: 1em;
       }
       .fn, .nickname {
         font-weight: bold;
@@ -133,6 +134,7 @@ form#update-form {
     }
 
     .entry-content {
+      padding-right: 3em;
       padding-bottom: 0.35em;
       word-wrap: break-word;
       font-size: 1.1em;
@@ -181,6 +183,46 @@ form#update-form {
 /* ****************************** */
 /* Sidebar */
 /* ****************************** */
+#current_user {
+  @include clearfix;
+  .avatar, .user-info {
+    float: left;
+  }
+  .avatar {
+    padding-right: 1em;
+    img {
+      width: 48px;
+      background: white;
+      padding: 0.35em;
+    }
+  }
+
+  .user-info {
+/*    font-weight: bold;*/
+    .name {
+      margin-bottom: 0;
+    }
+    
+    .stats {
+      color: $text_color + #222;
+      padding-top: 1em;
+      font-weight: bold;
+      
+      li {
+        list-style-type: none;
+        padding-bottom: 0.45em;
+        border-bottom: 1px solid #ccc;
+        margin-bottom: 0.45em;
+        font-size: 0.9em;
+        
+        a {
+          font-size: 1.3em;
+          padding-right: 0.25em;
+        }
+      }
+    }
+  }
+}
 
 
 /* ****************************** */
