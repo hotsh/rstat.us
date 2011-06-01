@@ -1,3 +1,4 @@
-%ul.menu#profile
-  != menu_item("Profile", "/users/#{current_user.username}")
-  != menu_item("Log Out", "/logout")
+- if current_user
+  %ul.menu#profile
+    != menu_item("Profile", "/users/#{current_user.username}")
+    != menu_item("Log Out", "/logout")
