@@ -34,6 +34,10 @@ gem "tzinfo"
 gem "rsa"
 gem "exceptional"
 
+# background job queue
+gem "navvy"
+gem "whenever"
+
 group :development, :test do
   gem "minitest", :platforms => :ruby_18
   gem 'coffee-script'
