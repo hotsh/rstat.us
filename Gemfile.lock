@@ -7,6 +7,10 @@ GIT
 GEM
   remote: http://rubygems.org/
   specs:
+    POpen4 (0.1.4)
+      Platform (>= 0.4.0)
+      open4
+    Platform (0.4.0)
     activesupport (3.0.5)
     addressable (2.2.4)
     bcrypt-ruby (2.1.4)
@@ -56,6 +60,8 @@ GEM
     hashie (1.0.0)
     hike (1.0.0)
     i18n (0.5.0)
+    jammit (0.6.3)
+      yui-compressor (>= 0.9.3)
     jnunemaker-validatable (1.8.4)
       activesupport (>= 2.3.4)
     json (1.5.1)
@@ -125,6 +131,7 @@ GEM
       oa-more (= 0.2.0)
       oa-oauth (= 0.2.0)
       oa-openid (= 0.2.0)
+    open4 (1.0.1)
     opub (0.0.1)
     ostatus (0.0.6)
       nokogiri
@@ -220,6 +227,8 @@ GEM
     whatlanguage (1.0.0)
     xpath (0.1.3)
       nokogiri (~> 1.3)
+    yui-compressor (0.9.6)
+      POpen4 (>= 0.1.4)
 
 PLATFORMS
   ruby
@@ -236,6 +245,7 @@ DEPENDENCIES
   fb_graph
   haml
   i18n
+  jammit
   launchy
   minitest
   mocha

@@ -52,4 +52,5 @@ group :development, :test do
   gem "webmock"
   gem "simplecov", "~> 0.4.0", :require => false
   gem "launchy"
+  gem "jammit"
 end
