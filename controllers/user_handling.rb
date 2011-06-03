@@ -83,6 +83,27 @@ class Rstatus
     end
   end
 
+  # The confirm email token is sent on the url along with the post to ensure
+  # authentication is preserved. If all checks pass
+  # the user's email is confirmed, the token removed from the user model, a
+  # session created for the user and they are redirected to /
+
+  get '/confirm_email/:token' do
+    user = User.first(:perishable_token => params[:token])
+    if user.nil?
+      flash[:notice] = "Can't find User Account for this link."
+      redirect "/"
+    else
+      user.email_confirmed = true
+      user.save
+      # Register a session for the user
+      session[:user_id] = user.id
+      flash[:notice] = "Email successfully confirmed."
+      redirect "/"
+    end
+  end
+
+
   # The reset token is sent on the url along with the post to ensure
   # authentication is preserved. The password is checked for length and
   # confirmation and the token is rechecked for authenticity. If all checks pass

@@ -12,6 +12,14 @@ class Notifier
               :via => :smtp, :via_options => Rstatus::PONY_VIA_OPTIONS)
   end
 
+  def self.send_confirm_email_notification(recipient, token)
+    Pony.mail(:to => recipient,
+              :subject => "Confirm your rstat.us email",
+              :from => "steve+rstatus@steveklabnik.com",
+              :body => render_haml_template("email_change", {:token => token}),
+              :via => :smtp, :via_options => Rstatus::PONY_VIA_OPTIONS)
+  end
+
   private
 
   # This was kinda crazy to figure out. We have to make our own instantiation
