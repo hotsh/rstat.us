@@ -24,7 +24,7 @@
           != yield
       
       #sidebar
-        != haml :"shared/sidebar/_profile"
+        != haml :"shared/sidebar/_profile" unless request.path_info == "/users/#{current_user.username}"
         != haml :"shared/sidebar/_help"
 
     != haml :"shared/_footer"
