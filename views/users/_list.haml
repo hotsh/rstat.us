@@ -10,7 +10,7 @@
         %a{:href => author.url}
           %b
             = author.display_name
-          %br
+          
           (#{author.username})
 
       - if current_user && current_user.feed != author.feed

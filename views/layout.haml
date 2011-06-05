@@ -1,4 +1,4 @@
-!!! 5
+!!!5
 %html.no-js{:lang => "en"}
   != haml :"shared/_head"
   %body
@@ -15,7 +15,8 @@
           != yield
       
       #sidebar
-        != haml :"shared/sidebar/_profile" unless request.path_info == "/users/#{current_user.username}"
+        != haml :"shared/sidebar/_profile" unless @profile_sidebar == false
         != haml :"shared/sidebar/_help"
+        != yield_content :sidebar
 
     != haml :"shared/_footer"

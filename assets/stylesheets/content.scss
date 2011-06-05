@@ -1,71 +1,3 @@
-/* *******************************/
-/* Update Form */
-/* *******************************/
-
-form#update-form {
-  @include clearfix;
-  margin: 1em;
-
-  #update-content {
-    /* the textarea where the user types an update */
-    textarea {
-      @include copy-face;
-      width: 97%;
-      padding: 1%;
-      font-size: 1.1em;
-
-      height: 2.5em;
-      border: solid 1px #CCCCCC;
-      @include rounded(3px);
-      outline: none;
-    }
-  }
-
-  #update-info {
-    @include clearfix;
-
-    /* Twitter and Facebook checkboxes */
-    #repost-services {
-      float: left;
-      font-size: 0.9em;
-      padding: 0.85em 1em;
-
-      .info, .input-checkbox {
-        float: left;
-        padding-right: 0.8em;
-        label {
-          font-weight: normal;
-        }
-      }
-    }
-    
-    #update-button {
-      float: right;
-      margin-right: 5px;
-    }
-    
-    /* Character counter */
-    #update-count {
-      float: right;
-      padding: 0.75em;
-
-      .update-count {
-        color: $de_emph_text_color;
-        padding-right: 0.2em;
-      }
-      color: #aaa;
-    }
-  }
-  
-  #update-info.negative #update-count .update-count {
-    color: red;
-  }
-}
-
-.no-js #update-count {
-  display: none;
-}
-
 /* ****************************** */
 /* Updates Navigation */
 /* ****************************** */
@@ -190,6 +122,9 @@ form#update-form {
       display: none;
       float: right;
       
+      form {
+        margin: 0;
+      }
       .remove-update {
         cursor: pointer;
         float: right;
@@ -286,6 +221,24 @@ form#update-form {
       border: none;
     }
   }
+}
+
+.linked-accounts {
+  .linked {
+    @include clearfix;
+    .linked-image {
+      float: left;
+    }
+    .linked-name {
+      float: left;
+      padding-top: 0.7em;
+      padding-left: 1em;
+    }
+    form {
+      float: right;
+      margin: 0;
+    }
+  }  
 }
 
 /* ****************************** */
