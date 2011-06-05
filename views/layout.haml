@@ -1,17 +1,8 @@
 !!! 5
 %html.no-js{:lang => "en"}
   != haml :"shared/_head"
-  %body.internal
-    #header-wrap
-      #header
-        #logo
-          %a{:href=>"/"}
-            %h1
-              rstat.us
-        != haml :"shared/menu/_main"
-        != haml :"shared/menu/_profile"
-          
-            
+  %body
+    != haml :"shared/_header"          
     != @error_bar
   
     #page
