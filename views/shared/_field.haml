@@ -1,0 +1,8 @@
+
+.profile_field{:class => attr}
+  %label{:for => attr}
+    - if defined?(label)
+      #{label}:
+    -else 
+      #{attr.to_s.capitalize}:
+  %input{:id => attr, :name => attr, :type => "text", :value => (defined?(obj) ? obj.send(attr) : "") }
