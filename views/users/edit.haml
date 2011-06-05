@@ -1,51 +1,49 @@
+- @profile_sidebar = false
+
+- content_for :sidebar do
+  != haml :"shared/sidebar/_gravatar"
+
 #profile
-  %h3= "Edit Profile"
+  %h3= "Edit Profile for @#{@user.username}"
 
   %form#profile-update{:action => "/users/#{current_user.author.username}", :method => "POST", :name => "profile_update_form"}
     
-    != haml :"shared/_field", :locals => {:obj => @user.author, :attr => :name}
-    != haml :"shared/_field", :locals => {:attr => :password, :password => true}
-    != haml :"shared/_field", :locals => {:attr => :password_confirm, :label => "Confirm Password", :password => true}
-    != haml :"shared/_field", :locals => {:obj => @user.author, :attr => :email}
-    != haml :"shared/_field", :locals => {:obj => @user.author, :attr => :website}
-    != haml :"shared/_field", :locals => {:attr => :bio, :as => :text}
+    .form-section
+      != haml :"shared/_field", :locals => {:obj => @user.author, :attr => :name}
+    
+    .form-section
+      != haml :"shared/_field", :locals => {:attr => :password, :password => true}
+      != haml :"shared/_field", :locals => {:attr => :password_confirm, :label => "Confirm Password", :password => true}
+    
+    .form-section
+      != haml :"shared/_field", :locals => {:obj => @user.author, :attr => :email}
+      != haml :"shared/_field", :locals => {:obj => @user.author, :attr => :website}
+      != haml :"shared/_field", :locals => {:attr => :bio, :as => :text}
 
-    %input#update-button.button{:type => "submit", :value => "Save"}
+    .form-submit
+      %input.button{:type => "submit", :value => "Save"}
 
-  .gravatar
-    Signed up with email? Create a
-    %a{:href => "http://gravatar.com"} Gravatar
-    account to set and update your avatar.
-  %br
+  .linked-accounts
+    %h4 Linked Accounts
 
-  .reset-password
-    %a{:href => "/users/password_reset"}
-      - if current_user.hashed_password.nil?
-        Set Password
+    .linked
+      - if @user.twitter?
+        %img.linked-image{:src => "/images/twitter_newbird_blue.png", :alt => "Twitter Account"}
+        .linked-name="@#{@user.twitter.nickname}"
+        %form.profile-update{:action => "/users/#{@user.username}/auth/twitter", :method => "POST", :name => "profile_update_form"}
+          %input{:type => "hidden", :name => "_method", :value => "delete"}
+          %input.button{:type => "submit", :value => "Remove"}
       - else
-        Reset Password
-  %br
+        %form.profile-update{:action => "/auth/twitter", :method => "GET", :name => "profile_update_form"}
+          %input.button{:type => "submit", :value => "Add Twitter Account"}
 
-  %h4 Linked Accounts
-
-  %div{:style => "height: 35px;"}
-    - if @user.twitter?
-      %img{:src => "/images/twitter_newbird_blue.png", :style => "height: 35px; width: 35px; vertical-align:middle; margin-top: -5px;", :alt => "Twitter Account"}
-      ="#{@user.twitter.nickname}"
-      %form#profile-update{:action => "/users/#{@user.username}/auth/twitter", :method => "POST", :name => "profile_update_form", :style => "float: right;"}
-        %input{:type => "hidden", :name => "_method", :value => "delete"}
-        %input#update-button.button{:type => "submit", :value => "Remove"}
-    - else
-      %form#profile-update{:action => "/auth/twitter", :method => "GET", :name => "profile_update_form"}
-        %input#update-button.button{:type => "submit", :value => "Add Twitter Account"}
-
-  %div{:style => "height: 35px;"}
-    - if @user.facebook?
-      %img{:src => "/images/f_logo.png", :style => "height: 25px; width: 25px; vertical-align:middle; margin-top: -5px;", :alt => "Facebook Account"}
-      ="#{@user.facebook.nickname}"
-      %form#profile-update{:action => "/users/#{@user.username}/auth/facebook", :method => "POST", :name => "profile_update_form", :style => "float: right;"}
-        %input{:type => "hidden", :name => "_method", :value => "delete"}
-        %input#update-button.button{:type => "submit", :value => "Remove"}
-    - else
-      %form#profile-update{:action => "/auth/facebook", :method => "GET", :name => "profile_update_form"}
-        %input#update-button.button{:type => "submit", :value => "Add Facebook Account"}
+    .linked
+      - if @user.facebook?
+        %img.linked-image{:src => "/images/f_logo.png", :alt => "Facebook Account"}
+        .linked-name="#{@user.facebook.nickname}"
+        %form.profile-update{:action => "/users/#{@user.username}/auth/facebook", :method => "POST", :name => "profile_update_form"}
+          %input{:type => "hidden", :name => "_method", :value => "delete"}
+          %input.button{:type => "submit", :value => "Remove"}
+      - else
+        %form.profile-update{:action => "/auth/facebook", :method => "GET", :name => "profile_update_form"}
+          %input.button{:type => "submit", :value => "Add Facebook Account"}

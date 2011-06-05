@@ -1,4 +1,10 @@
+- @profile_sidebar = false
 - title "@#{@author.username}'s Profile"
+
+- content_for :sidebar do
+  - if @author == @current_user
+  != haml :"shared/sidebar/_gravatar"
+
 - content_for :top do
   #profile.vcard
     

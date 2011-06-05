@@ -1,8 +1,15 @@
 
-.profile_field{:class => attr}
+.form-field{:class => attr}
   %label{:for => attr}
     - if defined?(label)
-      #{label}:
+      #{label}
     -else 
-      #{attr.to_s.capitalize}:
-  %input{:id => attr, :name => attr, :type => "text", :value => (defined?(obj) ? obj.send(attr) : "") }
+      #{attr.to_s.capitalize}
+  
+  .input
+    - if defined?(as)
+      - case as
+      - when :text
+        %textarea{:id => attr, :name => attr, :type => "text", :rows => 5, :value => (defined?(obj) ? obj.send(attr) : "") }
+    - else
+      %input{:id => attr, :name => attr, :type => "text", :value => (defined?(obj) ? obj.send(attr) : "") }
