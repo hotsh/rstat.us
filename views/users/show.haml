@@ -1,31 +1,43 @@
 - content_for :top do
   #profile.vcard
+    
     %h3.fn= @author.name
-    .nickname
-      @#{@author.username}
-    .following
-      Following:
-      %a{:href => "/users/#{@author.username}/following"}
-        #{@author.user.following.length}
-    .followers
-      Followers:
-      %a{:href => "/users/#{@author.username}/followers"}
-        #{@author.user.followers.length}
-    .updates
-      Updates: #{@author.user.feed.updates.count}
-    - unless @author.website.blank?
-      .website
-        Website:
-        - web_url = ""
-        - if @author.website[0,7] == "http://" or @author.website[0,8] == "https://"
-          - web_url = @author.website
-        - else
-          - web_url = "http://#{@author.website}"
-        %a.url{:rel => "me", :href => web_url}
-          = web_url
+    .nickname  @#{@author.username}
+    
+    .edit
+      %a{:href => "/users/#{@author.username}/edit"}Edit
 
-    %p.note= @author.bio
+    .info
+      - unless @author.website.blank?
+        .website
+          - web_url = ""
+          - if @author.website[0,7] == "http://" or @author.website[0,8] == "https://"
+            - web_url = @author.website
+          - else
+            - web_url = "http://#{@author.website}"
+          %a.url{:rel => "me", :href => web_url}
+            = web_url
 
+      %p.note= @author.bio
+
+    %ul.stats
+      %li.update-count
+        .icon
+        %a{ :href => "#profile_updates"}= current_user.feed.updates.count
+        Updates
+      %li.following-count
+        .icon
+        %a{ :href => "/users/#{current_user.username}/following"}= current_user.following.length
+        Following
+      %li.follower-count
+        .icon
+        %a{ :href => "/users/#{current_user.username}/followers"}= current_user.followers.length
+        Followers
+      %li.atom.last
+        .icon
+        %a{} Atom
+        Feed
+        
     - unless current_user and @author.user == current_user
       #follow
         - if current_user and current_user.following? @author.feed.url
@@ -40,13 +52,4 @@
               %input.button.follow{:type => "submit", :value => "Follow", :id => "follow-#{@author.feed.id}"}
           .follow-status You are not following #{@author.username}
 
-%ul#updates.updates
-  != haml :"updates/_list", :locals => {:updates => @updates, :no_highlight => true}
-%nav.pagination
-  - unless @prev_page.nil?
-    %a.button{:href => @prev_page, :id => "prev_button"}
-      &laquo; Previous
-
-  - unless @next_page.nil?
-    %a.button{:href => @next_page, :id => "next_button"}
-      Next &raquo;
+!= haml :"updates/_list", :locals => {:updates => @updates, :id => "profile_updates", :no_highlight => true}

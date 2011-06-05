@@ -30,7 +30,7 @@ body {
     @include clearfix;
     #logo {
       float: left;
-      padding: 1em $gutter_width;
+      padding: 1em $gutter_width/2;
       h1 {
         @include image-replaced("/images/embed/logo-sm.png", 96px, 33px);
         margin: 0;

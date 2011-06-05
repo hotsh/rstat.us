@@ -159,6 +159,12 @@ form#update-form {
         left: 1em;
       }
       .fn, .nickname {
+        a {
+          color: $text_color;
+        }
+        a:hover {
+          text-decoration: none;
+        }
         font-weight: bold;
       }      
     }
@@ -211,6 +217,78 @@ form#update-form {
 }  
 
 /* ****************************** */
+/* Profile */
+/* ****************************** */
+#profile {
+  padding: 1em;
+  @include clearfix;
+  position: relative;
+
+  h3.fn {
+    margin-bottom: 0.25em;
+  }
+
+  .edit {
+    position: absolute;
+    top: 1em;
+    right: 1em;
+  }
+  
+  .stats {
+    padding-top: 1em;
+    @include column(4);
+    @include last;
+  }
+  
+  .info {
+    @include column(8);
+    padding: 1em 0;
+    margin-right: $gutter_width * 2;
+    .website {
+      padding-bottom: 1em;
+    }
+  }
+}
+
+#current_user_block, #profile {
+  .stats {
+    color: $text_color + #222;
+    padding-top: 1em;
+    font-weight: bold;
+    
+    li {
+      list-style-type: none;
+      padding-bottom: 0.45em;
+      border-bottom: 1px solid #ccc;
+      margin-bottom: 0.45em;
+      font-size: 0.9em;
+      
+      a {
+        font-size: 1.3em;
+        padding-right: 0.25em;
+      }
+      
+      .icon {
+        float: left;
+        margin-top: 2px;
+        margin-right: 0.5em;
+        @include image_replaced('/images/icons_sprite.png', 24px, 16px);
+      }
+    }
+    
+    .following-count .icon { 
+      background-position: 0 -16px;
+    }
+    .follower-count .icon { 
+      background-position: 0 -32px;
+    }
+    .last {
+      border: none;
+    }
+  }
+}
+
+/* ****************************** */
 /* Sidebar */
 /* ****************************** */
 #current_user_block {
@@ -231,42 +309,6 @@ form#update-form {
   .user-info {
     .name {
       margin-bottom: 0;
-    }
-    
-    .stats {
-      color: $text_color + #222;
-      padding-top: 1em;
-      font-weight: bold;
-      
-      li {
-        list-style-type: none;
-        padding-bottom: 0.45em;
-        border-bottom: 1px solid #ccc;
-        margin-bottom: 0.45em;
-        font-size: 0.9em;
-        
-        a {
-          font-size: 1.3em;
-          padding-right: 0.25em;
-        }
-        
-        .icon {
-          float: left;
-          margin-top: 2px;
-          margin-right: 0.5em;
-          @include image_replaced('/images/icons_sprite.png', 24px, 16px);
-        }
-      }
-      
-      .following-count .icon { 
-        background-position: 0 -16px;
-      }
-      .follower-count .icon { 
-        background-position: 0 -32px;
-      }
-      .last {
-        border: none;
-      }
     }
   }
 }
