@@ -1,5 +1,5 @@
 - if current_user
-  #current_user.vcard.block
+  #current_user_block.vcard.block
     .avatar
       %a{:href=>"/users/#{current_user.username}"}
         %img.photo{:alt => "avatar", :src => current_user.author.avatar_url}/
@@ -18,10 +18,7 @@
           .icon
           %a{ :href => "/users/#{current_user.username}/following"}= current_user.following.length
           Following
-        %li.follower-count
+        %li.follower-count.last
           .icon
           %a{ :href => "/users/#{current_user.username}/followers"}= current_user.followers.length
           Followers
-      .actions
-        %a{ :href => "/users/#{current_user.username}/edit"}
-          Edit profile
