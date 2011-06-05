@@ -213,8 +213,9 @@ form#update-form {
 /* ****************************** */
 /* Sidebar */
 /* ****************************** */
-#current_user {
+#current_user_block {
   @include clearfix;
+  padding-bottom: 3em;
   .avatar, .user-info {
     float: left;
   }
@@ -263,11 +264,18 @@ form#update-form {
       .follower-count .icon { 
         background-position: 0 -32px;
       }
+      .last {
+        border: none;
+      }
     }
   }
-  
 }
 
+.block {
+  .title {
+    margin-bottom: 0.5em;
+  }
+}
 
 /* ****************************** */
 /* Footer */
