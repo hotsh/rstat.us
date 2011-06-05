@@ -1,21 +1,16 @@
 #profile
-  %h3= "Profile for #{@user.author.username}"
+  %h3= "Edit Profile"
 
   %form#profile-update{:action => "/users/#{current_user.author.username}", :method => "POST", :name => "profile_update_form"}
-    %input{:type => "hidden", :name => "_method", :value => "put"}
+    
+    != haml :"shared/_field", :locals => {:obj => @user.author, :attr => :name}
+    != haml :"shared/_field", :locals => {:attr => :password, :password => true}
+    != haml :"shared/_field", :locals => {:attr => :password_confirm, :label => "Confirm Password", :password => true}
+    != haml :"shared/_field", :locals => {:obj => @user.author, :attr => :email}
+    != haml :"shared/_field", :locals => {:obj => @user.author, :attr => :website}
+    != haml :"shared/_field", :locals => {:attr => :bio, :as => :text}
 
-    - [:name, :email, :website].each do |attr|
-      != haml :"users/_profile_field", :locals => {:attr => attr}
-
-    .bio
-      %div
-        %label{:for => "bio"}
-          Bio:
-      %div
-        %textarea#bio{:name  => "bio"}
-          #{@user.author.bio}
-
-      %input#update-button.button{:type => "submit", :value => "Save"}
+    %input#update-button.button{:type => "submit", :value => "Save"}
 
   .gravatar
     Signed up with email? Create a
