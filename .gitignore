@@ -7,3 +7,4 @@ public/assets/src
 test/data
 test/coverage
 log/*.log*
+*.rbc
