@@ -219,21 +219,29 @@ class User
       followee.followed_by! self.feed
       followee.save
     else
-      # Send Salmon notification so that the remote user
-      # knows this user is following them
-      salmon = OStatus::Salmon.from_follow(author.to_atom, f.author.to_atom)
-
-      envelope = salmon.to_xml retrieve_private_key
-
-      # Send envelope to Author's Salmon endpoint
-      uri = URI.parse(f.author.salmon_url)
-      http = Net::HTTP.new(uri.host, uri.port)
-      res = http.post(uri.path, envelope, {"Content-Type" => "application/magic-envelope+xml"})
+      # Queue a notification job
+      Navvy::Job.enqueue(User, :send_follow_notification, self.id, f.id)
     end
 
     f
   end
 
+  # Send Salmon notification so that the remote user
+  # knows this user is following them
+  def self.send_follow_notification user_id, to_feed_id
+    f = Feed.first :id => to_feed_id
+    author = User.first(:id => user_id).author
+
+    salmon = OStatus::Salmon.from_follow(author.to_atom, f.author.to_atom)
+
+    envelope = salmon.to_xml retrieve_private_key
+
+    # Send envelope to Author's Salmon endpoint
+    uri = URI.parse(f.author.salmon_url)
+    http = Net::HTTP.new(uri.host, uri.port)
+    res = http.post(uri.path, envelope, {"Content-Type" => "application/magic-envelope+xml"})
+  end
+  
   # unfollow takes a feed (since it is guaranteed to exist)
   def unfollow! followed_feed
     following_ids.delete(followed_feed.id)
@@ -242,18 +250,25 @@ class User
       followee = User.first(:author_id => followed_feed.author.id)
       followee.unfollowed_by!(self.feed)
     else
-      # Send Salmon notification so that the remote user
-      # knows this user has stopped following them
-      salmon = OStatus::Salmon.from_unfollow(author.to_atom, followed_feed.author.to_atom)
-
-      envelope = salmon.to_xml retrieve_private_key
-
-      # Send envelope to Author's Salmon endpoint
-      uri = URI.parse(followed_feed.author.salmon_url)
-      res = Net::HTTP.start(uri.host, uri.port) do |http|
-        http.post(uri.path, envelope)
-      end
+      # Queue a notification job
+      Navvy::Job.enqueue(User, :send_unfollow_notification, self.id, followed_feed.id)
     end
+  end
+
+  # Send Salmon notification so that the remote user
+  # knows this user has stopped following them
+  def self.send_unfollow_notification user_id, to_feed_id
+    f = Feed.first :id => to_feed_id
+    author = User.first(:id => user_id).author
+
+    salmon = OStatus::Salmon.from_unfollow(author.to_atom, f.author.to_atom)
+
+    envelope = salmon.to_xml retrieve_private_key
+
+    # Send envelope to Author's Salmon endpoint
+    uri = URI.parse(f.author.salmon_url)
+    http = Net::HTTP.new(uri.host, uri.port)
+    res = http.post(uri.path, envelope, {"Content-Type" => "application/magic-envelope+xml"})
   end
 
   def followed_by? feed_url
