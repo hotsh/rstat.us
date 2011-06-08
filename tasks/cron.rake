@@ -1,3 +1,3 @@
 task :cron do
-  puts "hello"
+  Rake::Task["jobs:work"].invoke
 end
