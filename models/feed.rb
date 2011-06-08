@@ -78,6 +78,7 @@ class Feed
         u = Update.create(:author => self.author,
                           :created_at => entry.published,
                           :url => entry.url,
+                          :feed => self,
                           :updated_at => entry.updated)
         self.updates << u
       end

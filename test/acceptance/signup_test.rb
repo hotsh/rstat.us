@@ -35,7 +35,7 @@ describe "signup" do
       click_button "Log in"
 
       assert_match /1 error prohibited your account from being created:/, page.body
-      assert_match /Username can't be empty/, page.body
+      assert_match /Username can't be blank/, page.body
     end
 
     it "requires a password" do

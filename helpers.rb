@@ -49,7 +49,7 @@ module Sinatra
     # stuff on more than one page.
     #If needed it can also take options for more parameters
     def set_pagination_buttons(data, options = {})
-      return if data.nil?
+      return if data.nil? || data.empty?
 
       if data.next_page
         params = {
