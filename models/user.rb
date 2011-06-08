@@ -12,9 +12,15 @@ class User
   key :username, String, :required => true
   key :perishable_token, String
 
+
   # eff you mongo_mapper.
   key :email, String #, :unique => true, :allow_nil => true
-  validates_uniqueness_of :email, :allow_nil => :true
+  key :email_confirmed, Boolean
+
+  #validates_uniqueness_of :email, :allow_nil => :true
+  validate :email_already_confirmed
+
+
   validates_uniqueness_of :username, :allow_nil => :true, :case_sensitive => false
 
   # Twitter has 15, let's be different
@@ -202,14 +208,24 @@ class User
   end
 
   def edit_user_profile(params)
+    self.email_confirmed = same_email?(params[:email])
+    self.email = params[:email]
+
+    self.save
+
     author.name    = params[:name]
     author.email   = params[:email]
     author.website = params[:website]
     author.bio     = params[:bio]
     author.save
+
   end
 
   private
+
+  def same_email?(email_param)
+    self.email == email_param
+  end
 
   def create_feed()
     self.author = Author.create :name => "", :username => username if author.nil?
@@ -227,4 +243,14 @@ class User
       errors.add(:username, "contains restricted characters. Try sticking to letters, numbers, hyphens and underscores.")
     end
   end
+
+  def email_already_confirmed
+    if User.where(:email => self.email,
+      :email_confirmed => true,
+      :username.ne => self.username).count > 0
+      errors.add(:email, "is already taken.")
+    end
+  end
+
+
 end

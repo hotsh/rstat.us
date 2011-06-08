@@ -165,7 +165,14 @@ class Rstatus
     @user = User.first :username => params[:username]
     if @user == current_user
       if @user.edit_user_profile(params)
-        flash[:notice] = "Profile saved!"
+
+        unless @user.email_confirmed
+          # Generate same token as password reset....
+          Notifier.send_confirm_email_notification(@user.email, @user.set_perishable_token)
+          flash[:notice] = "A link to confirm your updated email address has been sent to #{@user.email}."
+        else
+          flash[:notice] = "Profile saved!"
+        end
       else
         flash[:notice] = "Profile could not be saved!"
       end
