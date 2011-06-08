@@ -220,7 +220,7 @@ class User
       followee.save
     else
       # Queue a notification job
-      #Navvy::Job.enqueue(User, :send_follow_notification, self.id, f.id)
+      self.delay.send_follow_notification(self.id, f.id)
     end
 
     f
@@ -228,9 +228,8 @@ class User
 
   # Send Salmon notification so that the remote user
   # knows this user is following them
-  def self.send_follow_notification user_id, to_feed_id
+  def send_follow_notification to_feed_id
     f = Feed.first :id => to_feed_id
-    author = User.first(:id => user_id).author
 
     salmon = OStatus::Salmon.from_follow(author.to_atom, f.author.to_atom)
 
@@ -251,15 +250,14 @@ class User
       followee.unfollowed_by!(self.feed)
     else
       # Queue a notification job
-      #Navvy::Job.enqueue(User, :send_unfollow_notification, self.id, followed_feed.id)
+      self.delay.send_unfollow_notification(self.id, followed_feed.id)
     end
   end
 
   # Send Salmon notification so that the remote user
   # knows this user has stopped following them
-  def self.send_unfollow_notification user_id, to_feed_id
+  def send_unfollow_notification to_feed_id
     f = Feed.first :id => to_feed_id
-    author = User.first(:id => user_id).author
 
     salmon = OStatus::Salmon.from_unfollow(author.to_atom, f.author.to_atom)
 
