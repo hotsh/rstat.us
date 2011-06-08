@@ -37,7 +37,8 @@ gem "rsa"
 gem "exceptional"
 
 # background job queue
-gem "navvy"
+gem "delayed_job", :git => "git://github.com/collectiveidea/delayed_job.git", :tag => "v2.1.4"
+gem "delayed_job_mongo_mapper", :git => "git://github.com/earbits/delayed_job_mongo_mapper.git"
 gem "whenever"
 
 group :development, :test do
