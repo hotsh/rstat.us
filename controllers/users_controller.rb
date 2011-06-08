@@ -195,7 +195,11 @@ class Rstatus
     set_pagination_buttons(@users)
     @users = @users.map{|f| f.author.user}
     title = ""
-    title << "#{@user.username} is following"
+    if @user == current_user
+      title << "You're following"
+    else
+      title << "#{@user.username} is following"
+    end
 
     haml :"users/list", :locals => {:title => title}
   end
@@ -223,7 +227,11 @@ class Rstatus
 
     #build title
     title = ""
-    title << "#{@user.username}'s followers"
+    if @user == current_user
+      title << "Your followers"
+    else
+      title << "#{@user.username}'s followers"
+    end
 
     haml :"users/list", :locals => {:title => title}
   end
