@@ -26,6 +26,7 @@ module AcceptanceHelper
 
   def teardown
     DatabaseCleaner.clean
+    Capybara.reset_sessions!
   end
 
   def omni_mock(username, options={})
