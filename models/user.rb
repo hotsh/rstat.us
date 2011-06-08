@@ -220,7 +220,7 @@ class User
       followee.save
     else
       # Queue a notification job
-      Navvy::Job.enqueue(User, :send_follow_notification, self.id, f.id)
+      #Navvy::Job.enqueue(User, :send_follow_notification, self.id, f.id)
     end
 
     f
@@ -251,7 +251,7 @@ class User
       followee.unfollowed_by!(self.feed)
     else
       # Queue a notification job
-      Navvy::Job.enqueue(User, :send_unfollow_notification, self.id, followed_feed.id)
+      #Navvy::Job.enqueue(User, :send_unfollow_notification, self.id, followed_feed.id)
     end
   end
 

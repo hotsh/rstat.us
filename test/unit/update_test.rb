@@ -241,14 +241,14 @@ describe Update do
       feed = Factory(:feed)
       author = Factory(:author, :feed => feed)
       user = Factory(:user, :author => author)
-      update = Factory.build(:update, :text => "This is a message", :author => author, :twitter => false, :facebook => false)
+      update = Factory.build(:update, :text => "This is a message", :feed => author.feed, :author => author, :twitter => false, :facebook => false)
       user.feed.updates << update
       user.feed.save
       user.save
       assert_equal 1, user.feed.updates.size
-      update = Factory.build(:update, :text => "This is a message", :author => author, :twitter => false, :facebook => false)
+      update = Factory.build(:update, :text => "This is a message", :feed => author.feed, :author => author, :twitter => false, :facebook => false)
       user.feed.updates << update
-      refute update.valid?, "You already posted this update"
+      refute update.valid?
     end
 
     it "will save if each are from different users" do
@@ -258,12 +258,12 @@ describe Update do
       feed2 = Factory(:feed)
       author2 = Factory(:author, :feed => feed2)
       user2 = Factory(:user, :author => author2)
-      update = Factory.build(:update, :text => "This is a message", :author => author1, :twitter => false, :facebook => false)
+      update = Factory.build(:update, :text => "This is a message", :feed => author1.feed, :author => author1, :twitter => false, :facebook => false)
       user1.feed.updates << update
       user1.feed.save
       user1.save
       assert_equal 1, user1.feed.updates.size
-      update = Factory.build(:update, :text => "This is a message", :author => author2, :twitter => false, :facebook => false)
+      update = Factory.build(:update, :text => "This is a message", :feed => author2.feed, :author => author2, :twitter => false, :facebook => false)
       user1.feed.updates << update
       assert update.valid?
     end

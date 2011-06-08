@@ -10,6 +10,7 @@ Factory.define :update do |u|
   u.twitter false
   u.facebook false
   u.author { Factory(:author) }
+  u.feed { |update| Factory(:feed, :author => update.author) }
 end
 
 Factory.sequence :usernames do |i|
