@@ -1,6 +1,6 @@
 !!! XML
 %XRD{:xmlns => "http://docs.oasis-open.org/ns/xri/xrd-1.0"}
-  %Subject= "acct:#{@user.username}@#{@hostname}"
+  %Subject= "acct:#{@user.username}@#{@user.author.domain}"
   %Alias= "#{@base_url}feeds/#{@user.feed.id}"
   %Alias= "#{@base_url}users/#{@user.username}"
   %Link{:rel => "http://webfinger.net/rel/profile-page", :type => "text/html", :href => "#{@base_url}users/#{@user.username}"}
