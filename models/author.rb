@@ -132,7 +132,7 @@ class Author
     # Determine global url for this author
     author_url = url
     if author_url.start_with?("/")
-      author_url = "http://#{domain}#{author_url}"
+      author_url = "http://#{domain}/feeds/#{feed.id}"
     end
 
     # Set up PortableContacts
