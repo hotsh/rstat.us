@@ -4,7 +4,6 @@ require 'delayed_job_mongo_mapper'
 namespace :jobs do
   desc "Spawn a temporary worker for 2 minutes."
   task :work do
-
     require_relative '../rstatus.rb'
 
     worker = Delayed::Worker.new(:min_priority => ENV['MIN_PRIORITY'], :max_priority => ENV['MAX_PRIORITY'], :quiet => false)
@@ -15,6 +14,8 @@ namespace :jobs do
 
   desc "Clear all outstanding jobs."
   task :clear do
+    require_relative '../rstatus.rb'
+
     Delayed::Job.delete_all
   end
 end
