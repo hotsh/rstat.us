@@ -48,6 +48,7 @@ class Rstatus
       author.image_url = avatar_url
 
       # Retrieve the user xrd
+      # XXX: Use the author uri to determine location of xrd
       remote_host = author.remote_url[/^.*?:\/\/(.*?)\//,1]
       webfinger = "#{author.username}@#{remote_host}"
       acct = Redfinger.finger(webfinger)
