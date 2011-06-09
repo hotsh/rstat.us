@@ -5,7 +5,9 @@
 
   -if @author
     %link{:rel => "alternate", :type => "application/atom+xml",
-          :title => "OStatus Feed for #{@author.username}", :href => "/users/#{@author.username}/feed"}
+          :title => "OStatus Feed for #{@author.username}", :href => url("/users/#{@author.username}/feed")}
+    %link{:rel => "lrdd", :type => "application/xrd+xml",
+          :title => "XRD for #{@author.username}", :href => url("/users/#{@author.username}/xrd.xml")}
 
   - if development?
     %script{:src => "/js/lib/jquery.equalHeights.js"}
