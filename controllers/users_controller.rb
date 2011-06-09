@@ -146,6 +146,7 @@ class Rstatus
     @updates = @updates.paginate(:page => params[:page], :per_page => params[:per_page])
     set_pagination_buttons(@updates)
 
+    headers 'Link' => "<#{url("/users/#{user.author.username}/xrd.xml")}>; rel=\"lrdd\"; type=\"application/xrd+xml\""
     haml :"users/show"
   end
 
