@@ -220,7 +220,7 @@ class User
       followee.save
     else
       # Queue a notification job
-      self.delay.send_follow_notification(self.id, f.id)
+      self.delay.send_follow_notification(f.id)
     end
 
     f
@@ -250,7 +250,7 @@ class User
       followee.unfollowed_by!(self.feed)
     else
       # Queue a notification job
-      self.delay.send_unfollow_notification(self.id, followed_feed.id)
+      self.delay.send_unfollow_notification(followed_feed.id)
     end
   end
 
