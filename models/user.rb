@@ -271,8 +271,6 @@ class User
 
   def followed_by? feed_url
     f = Feed.first(:remote_url => feed_url)
-    p "followed_by"
-    p f
 
     # local feed?
     if f.nil? and feed_url.start_with?("/")
