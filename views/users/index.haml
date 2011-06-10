@@ -15,11 +15,11 @@
   %a{:href => "/users?#{Rack::Utils.build_query :letter => "other"}"}
     Other
 
-- if @users.empty?
+- if @authors.empty?
   .empty
     Sorry, no users that match.
 - else
-  != haml :"users/_list", :locals => {:users => @users}
+  != haml :"users/_list", :locals => {:authors => @authors}
 
 
 %nav.pagination

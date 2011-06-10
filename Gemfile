@@ -14,6 +14,7 @@ gem "rake", "=0.8.7"
 gem "rack", "=1.2.2"
 gem "rack-flash"
 gem "rack-timeout"
+gem "system_timer", :platforms => :ruby_18
 gem "time-lord"
 gem "sinatra-content-for", :require => "sinatra/content_for"
 gem "sinatra-redirect-with-flash", :require => "sinatra/redirect_with_flash"
@@ -22,8 +23,9 @@ gem "fb_graph"
 gem "pony"
 gem "bcrypt-ruby", :require => "bcrypt"
 gem "rdiscount"
-gem "ostatus"
-gem "osub"
+gem "backports", :platforms => :ruby_18
+gem "ostatus", "> 0.0.6"
+gem "osub", "> 0.0.5"
 gem "opub"
 gem "redfinger"
 gem "nokogiri", "= 1.4.4"
@@ -33,10 +35,16 @@ gem "ruby-stemmer"
 gem "sass"
 gem "compass"
 gem "tzinfo"
+gem "rsa"
 gem "exceptional"
 gem "sprockets", "2.0.0.beta8"
 gem "rack-mount", :require => "rack/mount"
 gem "uglifier"
+
+# background job queue
+gem "delayed_job", :git => "git://github.com/collectiveidea/delayed_job.git", :tag => "v2.1.4"
+gem "delayed_job_mongo_mapper", :git => "git://github.com/earbits/delayed_job_mongo_mapper.git"
+gem "whenever"
 
 group :development, :test do
   gem "minitest", :platforms => :ruby_18

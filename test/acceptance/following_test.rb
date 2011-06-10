@@ -4,177 +4,306 @@ require_relative 'acceptance_helper'
 describe "following" do
   include AcceptanceHelper
 
-  it "doesn't make you follow yourself after signing up" do
-    u = Factory(:user)
-    refute u.following? u.feed.url
-  end
-
-  it "disallows following yourself" do
-    u = Factory(:user)
-    u.follow! u.feed.url
-    refute u.following? u.feed.url
-  end
-
-  it "follows users on other sites" do
-    u = Factory(:user)
-    a = Factory(:authorization, :user => u)
-    log_in(u, a.uid)
-    visit "/"
-    click_link "Would you like to follow someone not on rstat.us?"
-    assert_match "ostatus Sites", page.body
-
-    VCR.use_cassette('subscribe_remote') do
-      fill_in 'url', :with => "http://identi.ca/api/statuses/user_timeline/396889.atom"
-      click_button "Follow"
+  describe "yourself" do
+    it "doesn't make you follow yourself after signing up" do
+      u = Factory(:user)
+      refute u.following? u.feed.url
     end
 
-    assert_match "Now following steveklabnik.", page.body
-    assert "/", current_path
+    it "disallows following yourself" do
+      u = Factory(:user)
+      u.follow! u.feed.url
+      refute u.following? u.feed.url
+    end
   end
 
-  it "follows another user" do
-    u = Factory(:user)
-    a = Factory(:authorization, :user => u)
+  describe "other sites" do
+    before do
+      @u = Factory(:user)
+      @a = Factory(:authorization, :user => @u)
+      log_in(@u, @a.uid)
+      visit "/"
+      click_link "Would you like to follow someone not on rstat.us?"
 
-    u2 = Factory(:user)
+      VCR.use_cassette('subscribe_remote') do
+        fill_in 'url', :with => "steveklabnik@identi.ca"
+        click_button "Follow"
+      end
+    end
 
-    log_in(u, a.uid)
+    it "follows users on other sites" do
+      assert_match "Now following steveklabnik.", page.body
+      assert "/", current_path
+    end
 
-    visit "/users/#{u2.username}"
+    it "has users on other sites on /following" do
+      visit "/users/#{@u.username}/following"
 
-    click_button "follow-#{u2.feed.id}"
-    assert_match "Now following #{u2.username}", page.body
-  end
+      assert_match "steveklabnik", page.body
+    end
 
-  it "unfollows another user" do
-    u = Factory(:user)
-    a = Factory(:authorization, :user => u)
+    it "unfollows users from other sites" do
+      visit "/users/#{@u.username}/following"
 
-    u2 = Factory(:user)
-    a2 = Factory(:authorization, :user => u2)
+      VCR.use_cassette('unsubscribe_remote') do
+        click_button "Unfollow"
+      end
 
-    log_in(u, a.uid)
-    u.follow! u2.feed.url
+      assert_match "No longer following steveklabnik", page.body
+    end
 
-    visit "/users/#{u.username}/following"
-    click_button "unfollow-#{u2.feed.id}"
-
-    assert_match "No longer following #{u2.username}", page.body
-  end
-
-  it "maintains the order in which you follow people" do
-    aardvark = Factory(:user, :username => "aardvark", :created_at => Date.new(2010, 10, 23))
-    zebra    = Factory(:user, :username => "zebra", :created_at => Date.new(2011, 10, 23))
-    giraffe  = Factory(:user, :username => "giraffe", :created_at => Date.new(2011, 10, 23))
-    leopard  = Factory(:user, :username => "leopard", :created_at => Date.new(2011, 10, 23))
-    a = Factory(:authorization, :user => aardvark)
-
-    log_in(aardvark, a.uid)
-
-    visit "/users/#{zebra.username}"
-    click_button "follow-#{zebra.feed.id}"
-
-    visit "/users/#{leopard.username}"
-    click_button "follow-#{leopard.feed.id}"
-
-    visit "/users/#{aardvark.username}/following"
-    assert_match /leopard.*zebra/m, page.body
-  end
-
-  it "outputs json" do
-    u = Factory(:user)
-    a = Factory(:authorization, :user => u)
-
-    log_in(u, a.uid)
-
-    u2 = Factory(:user, :username => "user1")
-    u.follow! u2.feed.url
-
-    visit "/users/#{u.username}/following.json"
-
-    json = JSON.parse(page.body)
-    assert_equal "user1", json.last["username"]
-  end
-
-  it "does not paginate followers when there are not enough" do
-    u = Factory(:user)
-    a = Factory(:authorization, :user => u)
-
-    log_in(u, a.uid)
-
-    5.times do
+    it "only creates one Feed per remote_url" do
       u2 = Factory(:user)
-      u2.follow! u.feed.url
+      a2 = Factory(:authorization, :user => u2)
+      log_in(u2, a2.uid)
+      visit "/"
+      click_link "Would you like to follow someone not on rstat.us?"
+
+      assert_match "ostatus Sites", page.body
+
+      VCR.use_cassette('subscribe_remote') do
+        fill_in 'url', :with => "steveklabnik@identi.ca"
+        click_button "Follow"
+      end
+
+      visit "/users/#{u2.username}/following"
+
+      assert_match "Unfollow", page.body
     end
-
-    visit "/users/#{u.username}/followers"
-
-    refute_match "Previous", page.body
-    refute_match "Next", page.body
   end
 
-  it "paginates the users following you" do
-    u = Factory(:user)
-    a = Factory(:authorization, :user => u)
+  describe "on rstat.us" do
+    it "follows another user" do
+      u = Factory(:user)
+      a = Factory(:authorization, :user => u)
 
-    log_in(u, a.uid)
-
-    51.times do
       u2 = Factory(:user)
-      u2.follow! u.feed.url
+
+      log_in(u, a.uid)
+
+      visit "/users/#{u2.username}"
+
+      click_button "follow-#{u2.feed.id}"
+      assert_match "Now following #{u2.username}", page.body
     end
 
-    visit "/users/#{u.username}/followers"
+    it "unfollows another user" do
+      u = Factory(:user)
+      a = Factory(:authorization, :user => u)
 
-    click_link "next_button"
+      u2 = Factory(:user)
+      a2 = Factory(:authorization, :user => u2)
 
-    assert_match "Previous", page.body
-    assert_match "Next", page.body
+      log_in(u, a.uid)
+      u.follow! u2.feed.url
+
+      visit "/users/#{u.username}/following"
+      click_button "unfollow-#{u2.feed.id}"
+
+      assert_match "No longer following #{u2.username}", page.body
+    end
   end
 
-  #it "uses your username on your following page if logged in" do
-    #u = Factory(:user, :username => "dfnkt")
-    #a = Factory(:authorization, :user => u)
+  describe "/following" do
+    it "maintains the order in which you follow people" do
+      aardvark = Factory(:user, :username => "aardvark", :created_at => Date.new(2010, 10, 23))
+      zebra    = Factory(:user, :username => "zebra", :created_at => Date.new(2011, 10, 23))
+      leopard  = Factory(:user, :username => "leopard", :created_at => Date.new(2011, 10, 23))
+      a = Factory(:authorization, :user => aardvark)
 
-    #log_in(u, a.uid)
+      log_in(aardvark, a.uid)
 
-    #visit "/users/#{u.username}/following"
-    #assert_match "#{u.username} is following", page.body
+      visit "/users/#{zebra.username}"
+      click_button "follow-#{zebra.feed.id}"
 
-  #end
+      visit "/users/#{leopard.username}"
+      click_button "follow-#{leopard.feed.id}"
 
-  it "properly displays title on your following page when logged in" do
-    u = Factory(:user, :username => "dfnkt")
-    a = Factory(:authorization, :user => u)
+      visit "/users/#{aardvark.username}/following"
+      assert_match /leopard.*zebra/m, page.body
+    end
 
-    log_in(u, a.uid)
+    it "outputs json" do
+      u = Factory(:user)
+      a = Factory(:authorization, :user => u)
 
-    visit "/users/#{u.username}/following"
-    assert_match /You're following/, page.body
+      log_in(u, a.uid)
+
+      u2 = Factory(:user, :username => "user1")
+      u.follow! u2.feed.url
+
+      visit "/users/#{u.username}/following.json"
+
+      json = JSON.parse(page.body)
+      assert_equal "user1", json.last["username"]
+    end
+
+    it "properly displays title on your following page when logged in" do
+      u = Factory(:user, :username => "dfnkt")
+      a = Factory(:authorization, :user => u)
+
+      log_in(u, a.uid)
+
+      visit "/users/#{u.username}/following"
+      assert_match /You're following/, page.body
+
+    end
+
+    it "uses your username if not logged in" do
+      u = Factory(:user, :username => "dfnkt")
+
+      visit "/users/#{u.username}/following"
+      assert_match "#{u.username} is following", page.body
+    end
+
+    it "has a nice message if not following anyone" do
+      u = Factory(:user, :username => "dfnkt")
+
+      visit "/users/#{u.username}/following"
+
+      assert_match "No one yet", page.body
+    end
+
+    describe "pagination" do
+      before do
+        @u = Factory(:user)
+        a = Factory(:authorization, :user => @u)
+
+        log_in(@u, a.uid)
+
+        5.times do
+          u2 = Factory(:user)
+          @u.follow! u2.feed.url
+        end
+      end
+
+      it "does not paginate when there are too few" do
+        visit "/users/#{@u.username}/following"
+
+        refute_match "Previous", page.body
+        refute_match "Next", page.body
+      end
+
+      it "paginates forward only if on the first page" do
+        visit "/users/#{@u.username}/following?per_page=3"
+
+        refute_match "Previous", page.body
+        assert_match "Next", page.body
+      end
+
+      it "paginates backward only if on the last page" do
+        visit "/users/#{@u.username}/following?per_page=3"
+        click_link "next_button"
+
+        assert_match "Previous", page.body
+        refute_match "Next", page.body
+      end
+
+      it "paginates forward and backward if on a middle page" do
+        visit "/users/#{@u.username}/following?per_page=2"
+
+        click_link "next_button"
+
+        assert_match "Previous", page.body
+        assert_match "Next", page.body
+      end
+    end
   end
 
-  it "uses a username on the following page if not logged in" do
-    u = Factory(:user, :username => "dfnkt")
+  describe "/followers" do
+    it "maintains the order in which people follow you" do
+      aardvark = Factory(:user, :username => "aardvark", :created_at => Date.new(2010, 10, 23))
+      zebra    = Factory(:user, :username => "zebra", :created_at => Date.new(2011, 10, 23))
+      leopard  = Factory(:user, :username => "leopard", :created_at => Date.new(2011, 10, 23))
 
-    visit "/users/#{u.username}/following"
-    assert_match "#{u.username} is following", page.body
+      aardvark_auth = Factory(:authorization, :user => aardvark)
+      zebra_auth = Factory(:authorization, :user => zebra)
+      leopard_auth = Factory(:authorization, :user => leopard)
+
+      log_in(zebra, zebra_auth.uid)
+
+      visit "/users/#{aardvark.username}"
+      click_button "follow-#{aardvark.feed.id}"
+
+      log_in(leopard, leopard_auth.uid)
+
+      visit "/users/#{aardvark.username}"
+      click_button "follow-#{aardvark.feed.id}"
+
+      log_in(aardvark, aardvark_auth.uid)
+      visit "/users/#{aardvark.username}/followers"
+      assert_match /leopard.*zebra/m, page.body
+    end
+
+    it "properly displays title on your followers page when logged in" do
+      u = Factory(:user, :username => "dfnkt")
+      a = Factory(:authorization, :user => u)
+
+      log_in(u, a.uid)
+
+      visit "/users/#{u.username}/followers"
+      assert_match /Your followers/, page.body
+
+    end
+
+    it "uses your username if not logged in" do
+      u = Factory(:user, :username => "dfnkt")
+
+      visit "/users/#{u.username}/followers"
+      assert_match "#{u.username}'s followers", page.body
+    end
+
+    it "has a nice message if not followed by anyone" do
+      u = Factory(:user, :username => "dfnkt")
+
+      visit "/users/#{u.username}/followers"
+
+      assert_match "No one yet", page.body
+    end
+
+    describe "pagination" do
+      before do
+        @u = Factory(:user)
+        a = Factory(:authorization, :user => @u)
+
+        log_in(@u, a.uid)
+
+        5.times do
+          u2 = Factory(:user)
+          u2.follow! @u.feed.url
+        end
+      end
+
+      it "does not paginate when there are too few" do
+        visit "/users/#{@u.username}/followers"
+
+        refute_match "Previous", page.body
+        refute_match "Next", page.body
+      end
+
+      it "paginates forward only if on the first page" do
+        visit "/users/#{@u.username}/followers?per_page=3"
+
+        refute_match "Previous", page.body
+        assert_match "Next", page.body
+      end
+
+      it "paginates backward only if on the last page" do
+        visit "/users/#{@u.username}/followers?per_page=3"
+        click_link "next_button"
+
+        assert_match "Previous", page.body
+        refute_match "Next", page.body
+      end
+
+      it "paginates forward and backward if on a middle page" do
+        visit "/users/#{@u.username}/followers?per_page=2"
+
+        click_link "next_button"
+
+        assert_match "Previous", page.body
+        assert_match "Next", page.body
+      end
+    end
   end
-
-  it "properly displays title on your followers page when logged in" do
-    u = Factory(:user, :username => "dfnkt")
-    a = Factory(:authorization, :user => u)
-
-    log_in(u, a.uid)
-
-    visit "/users/#{u.username}/followers"
-    assert_match /Your followers/, page.body
-  end
-
-  it "uses a username on the followers page if not logged in" do
-    u = Factory(:user, :username => "dfnkt")
-
-    visit "/users/#{u.username}/followers"
-    assert_match "#{u.username}'s followers", page.body
-  end
-
 end

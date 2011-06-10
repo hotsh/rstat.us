@@ -3,17 +3,27 @@ class Rstatus
   # We do have to provide a rendered feed to the hub, and this controller does
   # it. Publishers will also view a feed in order to verify their subscription.
   get "/feeds/:id.atom" do
-    content_type "application/atom+xml"
-
     feed = Feed.first :id => params[:id]
 
-    # XXX: wilkie needs to handle this.
-    # I'm baleeting his commented out code, because that's what `git` is for.
-    if params['hub.challenge']
-      status 404
+    content_type "application/atom+xml"
+
+    # TODO: Abide by headers that supply cache information
+    body feed.atom url("/")
+  end
+
+  # Since feed url is the URI for the user,
+  # redirect to the user's profile page
+  # This is also our view for a particular feed
+  get "/feeds/:id" do
+    feed = Feed.first :id => params[:id]
+    if feed.local?
+      # Redirect to the local profile page
+      redirect "/users/#{feed.author.username}"
     else
-      # XXX: Abide by headers that supply cache information
-      body feed.atom(uri("/"))
+      # Why not...
+      # While weird, to render the view for this model, one
+      # has to go to another site. This is the new age.
+      redirect feed.author.remote_url
     end
   end
 

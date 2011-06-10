@@ -60,31 +60,31 @@ class Rstatus
     set_params_page
     # Filter users by search params
     if params[:search] && !params[:search].empty?
-      @users = User.where(:username => /#{params[:search]}/i)
+      @authors = Author.where(:username => /#{params[:search]}/i)
 
     # Filter and sort users by letter
     elsif params[:letter]
       if params[:letter] == "other"
-        @users = User.where(:username => /^[^a-z0-9]/i)
+        @authors = Author.where(:username => /^[^a-z0-9]/i)
       elsif params[:letter].empty?
         break
       else
-        @users = User.where(:username => /^#{params[:letter][0].chr}/i)
+        @authors = Author.where(:username => /^#{params[:letter][0].chr}/i)
       end
-      @users = @users.sort(:username)
+      @authors = @authors.sort(:username)
 
-    #otherwise get all users and sort by creation date
+    # Otherwise get all users and sort by creation date
     else
-      @users = User
-      @users = @users.sort(:created_at.desc)
+      @authors = Author
+      @authors = @authors.sort(:created_at.desc)
     end
 
-    @users = @users.paginate(:page => params[:page], :per_page => params[:per_page])
+    @authors = @authors.paginate(:page => params[:page], :per_page => params[:per_page])
 
     if params[:letter] && !params[:letter].empty?
-      set_pagination_buttons(@users, :letter => params[:letter])
+      set_pagination_buttons(@authors, :letter => params[:letter])
     else
-      set_pagination_buttons(@users)
+      set_pagination_buttons(@authors)
     end
     haml :"users/index"
   end
@@ -96,24 +96,26 @@ class Rstatus
 
   # The signup page posts here.
   post '/users' do
+    # this is really stupid.
+    auth = {}
+    auth['uid'] = session[:uid]
+    auth['provider'] = session[:provider]
+    auth['user_info'] = {}
+    auth['user_info']['name'] = session[:name]
+    auth['user_info']['nickname'] = session[:nickname]
+    auth['user_info']['urls'] = {}
+    auth['user_info']['urls']['Website'] = session[:website]
+    auth['user_info']['description'] = session[:description]
+    auth['user_info']['image'] = session[:image]
+    auth['user_info']['email'] = session[:email]
+    auth['credentials'] = {}
+    auth['credentials']['token'] = session[:oauth_token]
+    auth['credentials']['secret'] = session[:oauth_secret]
+
+    params[:author] = Author.create_from_hash! auth, uri("/")
+
     @user = User.new params
     if @user.save
-      # this is really stupid.
-      auth = {}
-      auth['uid'] = session[:uid]
-      auth['provider'] = session[:provider]
-      auth['user_info'] = {}
-      auth['user_info']['name'] = session[:name]
-      auth['user_info']['nickname'] = session[:nickname]
-      auth['user_info']['urls'] = {}
-      auth['user_info']['urls']['Website'] = session[:website]
-      auth['user_info']['description'] = session[:description]
-      auth['user_info']['image'] = session[:image]
-      auth['user_info']['email'] = session[:email]
-      auth['credentials'] = {}
-      auth['credentials']['token'] = session[:oauth_token]
-      auth['credentials']['secret'] = session[:oauth_secret]
-
       Authorization.create_from_hash(auth, uri("/"), @user)
 
       flash[:notice] = "Thanks! You're all signed up with #{@user.username} for your username."
@@ -144,6 +146,7 @@ class Rstatus
     @updates = @updates.paginate(:page => params[:page], :per_page => params[:per_page])
     set_pagination_buttons(@updates)
 
+    headers 'Link' => "<#{url("/users/#{user.author.username}/xrd.xml")}>; rel=\"lrdd\"; type=\"application/xrd+xml\""
     haml :"users/show"
   end
 
@@ -195,12 +198,16 @@ class Rstatus
   get '/users/:username/following' do
     set_params_page
 
-    feeds = User.first(:username => params[:username]).following
-
+    # XXX: case insensitive username
     @user = User.first(:username => params[:username])
-    @users = feeds.paginate(:page => params[:page], :per_page => params[:per_page], :order => :id.desc)
-    set_pagination_buttons(@users)
-    @users = @users.map{|f| f.author.user}
+    @feeds = @user.following
+
+    @feeds = @feeds.paginate(:page => params[:page], :per_page => params[:per_page], :order => :id.desc)
+
+    set_pagination_buttons(@feeds)
+
+    @authors = @feeds.map{|f| f.author}
+
     title = ""
     if @user == current_user
       title << "You're following"
@@ -215,8 +222,8 @@ class Rstatus
   get '/users/:username/following.json' do
     set_params_page
 
-    users = User.first(:username => params[:username]).following
-    authors = users.map { |user| user.author }
+    feeds = User.first(:username => params[:username]).following
+    authors = feeds.map { |feed| feed.author }
     authors.to_a.to_json
   end
 
@@ -225,12 +232,14 @@ class Rstatus
   get '/users/:username/followers' do
     set_params_page
 
-    feeds = User.first(:username => params[:username]).followers
-
     @user = User.first(:username => params[:username])
-    @users = feeds.paginate(:page => params[:page], :per_page => params[:per_page], :order => :id.desc)
-    set_pagination_buttons(@users)
-    @users = @users.map{|f| f.author.user}
+    @feeds = @user.followers
+
+    @feeds = @feeds.paginate(:page => params[:page], :per_page => params[:per_page], :order => :id.desc)
+
+    set_pagination_buttons(@feeds)
+
+    @authors = @feeds.map{|f| f.author}
 
     #build title
     title = ""

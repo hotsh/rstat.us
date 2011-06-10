@@ -57,7 +57,7 @@ class Rstatus
       haml :"updates/index"
     end
   end
-  
+
   get "/search" do
     @updates = []
     if params[:q]
@@ -66,7 +66,7 @@ class Rstatus
     end
     haml :"updates/search"
   end
-  
+
   # get "/hashtags/:tag" do
   #   @hashtag = params[:tag]
   #   set_params_page
@@ -91,6 +91,7 @@ class Rstatus
 
     # add entry to user's feed
     current_user.feed.updates << u
+
     unless u.valid?
       flash[:notice] = u.errors.errors.values.join("\n")
     else
@@ -112,7 +113,6 @@ class Rstatus
   # Yay for REST-y CRUD! This just shows an update.
   get '/updates/:id' do
     @update = Update.first :id => params[:id]
-    @referral = @update.referral
     haml :"updates/show", :layout => :'layout/update'
   end
 

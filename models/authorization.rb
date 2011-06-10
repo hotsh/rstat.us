@@ -33,13 +33,16 @@ class Authorization
   end
 
   # Creates an authorization from a sucessful omniauth authentication response
-  # TODO: Figure out why BASE_URI is here.
   def self.create_from_hash(hash, base_uri, user = nil)
 
     # If there isn't a user, create a user and author.
-    if user.blank?
-      author = Author.create_from_hash! hash
-      user = User.create! author: author, username: author.username
+    if user.nil?
+      domain = base_uri[/\:\/\/(.*?)\//, 1]
+
+      author = Author.create_from_hash!(hsh, domain)
+      user = User.create(:author => author,
+                         :username => author.username
+                        )
     end
 
     # Grab the user information from the hash

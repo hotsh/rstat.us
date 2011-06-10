@@ -8,18 +8,18 @@ describe User do
 
   describe "#at_replies" do
     it "returns all at_replies for this user" do
-      u = User.create(:username => "steve")
-      update = Update.create(:text => "@steve oh hai!")
-      Update.create(:text => "just some other update")
+      u = Factory(:user, :username => "steve")
+      update = Factory.create(:update, :text => "@steve oh hai!")
+      Factory.create(:update, :text => "just some other update")
 
       assert_equal 1, u.at_replies({}).count
       assert_equal update.id, u.at_replies({}).first.id
     end
 
     it "returns all at_replies for a username containing ." do
-      u = Factory.create(:user, :username => "hello.there")
-      u1 = Factory.create(:user, :username => "helloothere")
-      update = Update.create(:text => "@hello.there how _you_ doin'?")
+      u = Factory(:user, :username => "hello.there")
+      u1 = Factory(:user, :username => "helloothere")
+      update = Factory.create(:update, :text => "@hello.there how _you_ doin'?")
 
       assert_equal 1, u.at_replies({}).count
       assert_equal 0, u1.at_replies({}).count
@@ -40,28 +40,28 @@ describe User do
     end
 
     it "must not be long" do
-      u = User.new :username => "burningTyger_will_fail_with_this_username"
+      u = Factory.build(:user, :username => "burningTyger_will_fail_with_this_username")
       refute u.save
     end
 
     it "must not contain special chars" do
       ["something@something.com", "another'quirk", ".boundary_case.", "another..case", "another/random\\test", "yet]another", ".Ὁμηρος", "I have spaces"].each do |i|
-        u = User.new :username => i
+        u = Factory.build(:user, :username => i)
         refute u.save, "contains restricted characters."
       end
       ["Ὁμηρος"].each do |i|
-        u = User.new :username => i
+        u = Factory.build(:user, :username => i)
         assert u.save, "characters being restricted unintentionally."
       end
     end
 
     it "must not be empty" do
-      u = User.new :username => ""
+      u = Factory.build(:user, :username => "")
       refute u.save, "blank username"
     end
 
     it "must not be nil" do
-      u = User.new :username => nil
+      u = Factory.build(:user, :username => nil)
       refute u.save, "nil username"
     end
   end
@@ -131,7 +131,7 @@ describe User do
     end
   end
 
-  describe "unconfirmed email duplicates" do
+  describe "email confirmation" do
     it "allows unconfirmed emails to be entered more than once" do
       u = Factory.create(:user)
       u.edit_user_profile(:email => 'team@jackhq.com')
@@ -141,7 +141,7 @@ describe User do
       assert u2.valid?
     end
 
-    it "allows unconfirmed emails to be entered more than once" do
+    it "does not allow confirmed emails to be entered more than once" do
       u = Factory.create(:user)
       u.edit_user_profile(:email => 'team@jackhq.com')
       u.email_confirmed = true
