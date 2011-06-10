@@ -192,15 +192,14 @@ class Rstatus
   get '/users/:username/following' do
     set_params_page
 
-    feeds = User.first(:username => params[:username]).following
-
     @user = User.first(:username => params[:username])
+    feeds = @user.following
+
     @users = feeds.paginate(:page => params[:page], :per_page => params[:per_page], :order => :id.desc)
     set_pagination_buttons(@users)
     @users = @users.map{|f| f.author.user}
-    title = ""
-    title << "#{@user.username} is following"
 
+    title = "@#{@user.username} is following"
     haml :"users/list", :locals => {:title => title}
   end
 
@@ -218,17 +217,15 @@ class Rstatus
   get '/users/:username/followers' do
     set_params_page
 
-    feeds = User.first(:username => params[:username]).followers
-
+    
     @user = User.first(:username => params[:username])
+    feeds = @user.followers
+
     @users = feeds.paginate(:page => params[:page], :per_page => params[:per_page], :order => :id.desc)
     set_pagination_buttons(@users)
     @users = @users.map{|f| f.author.user}
 
-    #build title
-    title = ""
-    title << "#{@user.username}'s followers"
-
+    title = "@#{@user.username}'s followers"
     haml :"users/list", :locals => {:title => title}
   end
 
