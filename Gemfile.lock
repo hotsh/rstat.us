@@ -179,9 +179,9 @@ GEM
       oa-openid (= 0.2.0)
     open4 (1.0.1)
     opub (0.0.1)
-    ostatus (0.0.9)
+    ostatus (0.0.10)
       ratom
-    osub (0.0.6)
+    osub (0.0.7)
       ostatus
       ruby-hmac
     plucky (0.3.8)
@@ -311,8 +311,8 @@ DEPENDENCIES
   nokogiri (= 1.4.4)
   omniauth
   opub
-  ostatus (> 0.0.6)
-  osub (> 0.0.5)
+  ostatus (> 0.0.9)
+  osub (> 0.0.6)
   pony
   pygmentize
   rack-flash
