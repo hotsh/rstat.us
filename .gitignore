@@ -8,3 +8,4 @@ test/data
 test/coverage
 log/*.log*
 capybara*
+*.rbc

@@ -5,7 +5,8 @@ describe "update" do
   include AcceptanceHelper
 
   it "renders your feed" do
-    feed = Factory(:feed)
+    author = Factory(:author)
+    feed = author.feed
 
     updates = []
     5.times do
