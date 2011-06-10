@@ -164,7 +164,7 @@ class Rstatus
   end
 
   # This actually does the updating. Sweet.
-  put "/users/:username" do
+  post "/users/:username" do
     @user = User.first :username => params[:username]
     if @user == current_user
       if @user.edit_user_profile(params)

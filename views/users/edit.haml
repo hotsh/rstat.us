@@ -12,8 +12,8 @@
       != haml :"shared/_field", :locals => {:obj => @user.author, :attr => :name}
     
     .form-section
-      != haml :"shared/_field", :locals => {:attr => :password, :password => true}
-      != haml :"shared/_field", :locals => {:attr => :password_confirm, :label => "Confirm Password", :password => true}
+      != haml :"shared/_field", :locals => {:attr => :password, :as => :password}
+      != haml :"shared/_field", :locals => {:attr => :password_confirm, :label => "Confirm Password", :as => :password}
     
     .form-section
       != haml :"shared/_field", :locals => {:obj => @user.author, :attr => :email}
