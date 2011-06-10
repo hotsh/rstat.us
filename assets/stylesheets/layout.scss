@@ -115,5 +115,14 @@ body {
 /* Footer */
 /* *******************************/
 #footer {
- 
+  #footer-wrap {
+    padding: $gutter_width $gutter_width/2;    
+    @include clearfix;
+  }
+  #footer-logo {
+    float: left;
+    padding-right: 1em;
+    border-right: 1px solid #ccc;
+    margin-right: 0.5em;
+  }
 }

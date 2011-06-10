@@ -163,12 +163,20 @@
     margin-bottom: 0.25em;
   }
 
-  .edit {
+  .follow-wrap {
     position: absolute;
     top: 1em;
-    right: 1em;
+    right: 1.5em;
+    div {
+      text-align: right;      
+    }
+    #follow {
+      form {
+        margin-bottom: 0;
+      }
+    }
   }
-  
+
   .stats {
     padding-top: 1em;
     @include column(4);
