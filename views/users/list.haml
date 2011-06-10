@@ -10,11 +10,4 @@
   != haml :"users/_list", :locals => {:users => @users}
 
 
-%nav.pagination
-  - unless @prev_page.nil?
-    %a.button{:href => @prev_page, :id => "prev_button"}
-      &laquo; Previous
-
-  - unless @next_page.nil?
-    %a.button{:href => @next_page, :id => "next_button"}
-      Next &raquo;
+!= haml :"shared/_pagination"
