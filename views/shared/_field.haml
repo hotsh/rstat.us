@@ -11,5 +11,7 @@
       - case as
       - when :text
         %textarea{:id => attr, :name => attr, :type => "text", :rows => 5, :value => (defined?(obj) ? obj.send(attr) : "") }
+      - when :password
+        %input{:id => attr, :name => attr, :type => "password" }
     - else
       %input{:id => attr, :name => attr, :type => "text", :value => (defined?(obj) ? obj.send(attr) : "") }
