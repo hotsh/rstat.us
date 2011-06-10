@@ -37,7 +37,7 @@ gem "compass"
 gem "tzinfo"
 gem "rsa"
 gem "exceptional"
-gem "sprockets", "2.0.0.beta8"
+gem "sprockets", "2.0.0.beta.8"
 gem "rack-mount", :require => "rack/mount"
 gem "uglifier"
 
