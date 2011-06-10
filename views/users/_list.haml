@@ -6,12 +6,14 @@
         %a{:href => author.url}
           %img{:alt => "avatar", :src => author.avatar_url}/
 
-      .name
+      .info
         %a{:href => author.url}
           %b
             = author.display_name
           
           (#{author.username})
+        .bio
+          = author.bio
 
       - if current_user && current_user.feed != author.feed
         - if current_user.following?(author.feed.url)

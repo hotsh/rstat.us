@@ -212,6 +212,7 @@ class Rstatus
       title << "#{@user.username} is following"
     end
 
+    title = "@#{@user.username} is following"
     haml :"users/list", :locals => {:title => title}
   end
 
@@ -229,6 +230,7 @@ class Rstatus
   get '/users/:username/followers' do
     set_params_page
 
+    # XXX: case insensitive username
     @user = User.first(:username => params[:username])
     @feeds = @user.followers
 
@@ -248,5 +250,4 @@ class Rstatus
 
     haml :"users/list", :locals => {:title => title}
   end
-
 end

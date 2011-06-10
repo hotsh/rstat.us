@@ -1,4 +1,6 @@
-%h1 #{title}
+- title(title)
+- content_for :title do
+  = title
 
 - if @authors.empty?
   %h3 No one yet!
@@ -7,10 +9,12 @@
 - else
   != haml :"users/_list", :locals => {:authors => @authors}
 
-- unless @prev_page.nil?
-  %a.button{:href => @prev_page, :id => "prev_button"}
-    &laquo; Previous
 
-- unless @next_page.nil?
-  %a.button{:href => @next_page, :id => "next_button"}
-    Next &raquo;
+%nav.pagination
+  - unless @prev_page.nil?
+    %a.button{:href => @prev_page, :id => "prev_button"}
+      &laquo; Previous
+
+  - unless @next_page.nil?
+    %a.button{:href => @next_page, :id => "next_button"}
+      Next &raquo;

@@ -283,6 +283,29 @@
 }
 
 /* ****************************** */
-/* Footer */
+/* Users List */
 /* ****************************** */
-
+.user-list {
+  margin-bottom: 1em;
+  li {
+    list-style-type: none;
+    @include clearfix;
+    
+    .avatar, .info {
+      float: left;
+    }
+    .info {
+      @include column(8);
+      padding: 0.5em 1em;
+      .bio {
+        color: $text_color + #333;
+        font-size: 0.9em;
+      }
+    }
+    .follow {
+      float: right;
+    }
+    border-bottom: 1px solid #ddd;
+    padding: 0.75em 1em 0.25em;
+  }
+}

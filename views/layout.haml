@@ -7,6 +7,9 @@
   
     #page
       #content-wrap
+        - title =  yield_content :title
+        - unless title.empty?
+          %h2.title #{title}
         #top
           != haml :"shared/_flash"
           != yield_content :top
