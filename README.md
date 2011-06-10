@@ -56,24 +56,32 @@ And start the server:
 
 Bam! Visit http://localhost:9292/ in your browser, and you'll be good.
 
+To run the tests you may want to make use of `bundle exec` so you don't get
+mixed up with different versions of gems that might or might not work with
+the current rstat.us branch.
+
+Run the tests:
+
+    $ bundle exec rake test
+
 [mongo-quickstart]: http://www.mongodb.org/display/DOCS/Quickstart
 
 Compiling CSS and Javascript
 ----------------------------
 
-We use Coffeescript (.coffee) or Sassy CSS (.scss) for javascript and CSS development 
-respectively. When running the site locally, these files will automatically be
-compiled by the application when requested.
+We use Coffeescript (.coffee) and Sassy CSS (.scss) for javascript and CSS
+development respectively. When running the site locally, these files will
+automatically be compiled by the application when requested.
 
-When preparing for deployment, we compress our stylesheets and javascripts, as 
+When preparing for deployment, we compress our stylesheets and javascripts, as
 well as embedding what images we can. To compile Coffeescript and SCSS,
 use the following rake task:
 
     $ rake assets:compile
 
-Note: This relies on some sort of coffee compiler being installed globally.  If
+Note: This relies on some sort of coffee compiler being installed globally. If
 you get "undefined method 'compile' for nil:NilClass", that might be your
-problem.  On Ubuntu, installing the nodejs package fixes this; for other
+problem. On Ubuntu, installing the nodejs package fixes this; for other
 systems, check out [nodejs.org][node].
 
 For coffee-script installation, [check the docs][coffee-install].

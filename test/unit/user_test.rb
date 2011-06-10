@@ -94,6 +94,22 @@ describe User do
     end
   end
 
+  describe "email" do
+    it "changes email" do
+      u = Factory.create(:user)
+      u.edit_user_profile(:email => 'team@jackhq.com')
+      u.save
+      assert_equal u.email_confirmed, false
+    end
+
+    it "does not change email" do
+      u = Factory.create(:user)
+      assert_equal u.email_confirmed.nil?, true
+    end
+
+  end
+
+
   describe "reset password" do
     it "sets the token" do
       u = Factory.create(:user)
@@ -104,6 +120,7 @@ describe User do
       refute u.password_reset_sent.nil?
     end
 
+
     it "changes the password" do
       u = Factory.create(:user)
       u.password = "test_password"
@@ -113,4 +130,28 @@ describe User do
       assert u.hashed_password != prev_pass
     end
   end
+
+  describe "email confirmation" do
+    it "allows unconfirmed emails to be entered more than once" do
+      u = Factory.create(:user)
+      u.edit_user_profile(:email => 'team@jackhq.com')
+
+      u2 = Factory.create(:user)
+      u2.email = 'team@jackhq.com'
+      assert u2.valid?
+    end
+
+    it "does not allow confirmed emails to be entered more than once" do
+      u = Factory.create(:user)
+      u.edit_user_profile(:email => 'team@jackhq.com')
+      u.email_confirmed = true
+      u.save
+      u2 = Factory.create(:user)
+      u2.edit_user_profile(:email => 'team@jackhq.com')
+
+      refute u2.valid?
+    end
+
+  end
+
 end

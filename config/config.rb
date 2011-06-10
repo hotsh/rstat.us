@@ -39,6 +39,7 @@ class Rstatus
 
   set :root, File.join(File.dirname(__FILE__), "..")
   set :haml, :escape_html => true
+  set :logging, true
 
   # This method enables the ability for our forms to use the _method hack for
   # actual RESTful stuff.
@@ -48,11 +49,8 @@ class Rstatus
   # rack-flash lets us use them.
   use Rack::Flash
 
-  # This will add a logger method to class and instance level to enable logging throughout the application
-  register Sinatra::Logging
-
-  # Log all incoming requests
-  log_requests
+  # Tilt likes it when things are explicitly required.
+  require "coffee-script"
 
   configure do
     if ENV['MONGOHQ_URL']

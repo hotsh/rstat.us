@@ -8,7 +8,7 @@ class Rstatus
   before do
     @error_bar = ""
     if current_user && (current_user.username.nil? or current_user.username.empty? or !current_user.username.match(/profile.php/).nil?)
-      @error_bar = haml :_username_error, :layout => false
+      @error_bar = haml :"login/_username_error", :layout => false
     end
   end
 
@@ -20,7 +20,7 @@ class Rstatus
       redirect "/"
     end
 
-    haml :reset_username
+    haml :"login/reset_username"
   end
 
   post '/reset-username' do
@@ -34,14 +34,14 @@ class Rstatus
       redirect "/"
     else
       flash[:notice] = "Sorry, that username has already been taken or is not valid. Please try again."
-      haml :reset_username
+      haml :"login/reset_username"
     end
   end
 
   # Passwords can be reset by unauthenticated users by navigating to the forgot
   # password and page and submitting the email address they provided.
   get '/forgot_password' do
-    haml :"forgot_password"
+    haml :"login/forgot_password"
   end
 
   # We've got a pretty solid forgotten password implementation. It's simple:
@@ -53,7 +53,7 @@ class Rstatus
     user = User.first(:email => params[:email])
     if user.nil?
       flash[:notice] = "Your account could not be found, please check your email and try again."
-      haml :"forgot_password"
+      haml :"login/forgot_password"
     else
       Notifier.send_forgot_password_notification(user.email, user.set_password_reset_token)
       # Redirect to try to avoid repost issues
@@ -66,7 +66,7 @@ class Rstatus
   # was sent to
   get '/forgot_password_confirm' do
     @email = session.delete(:fp_email)
-    haml :"forgot_password_confirm"
+    haml :"login/forgot_password_confirm"
   end
 
   # Public reset password page, accessible via a valid token. Tokens are only
@@ -79,9 +79,30 @@ class Rstatus
       redirect "/forgot_password"
     else
       @token = params[:token]
-      haml :"reset_password"
+      haml :"login/reset_password"
     end
   end
+
+  # The confirm email token is sent on the url along with the post to ensure
+  # authentication is preserved. If all checks pass
+  # the user's email is confirmed, the token removed from the user model, a
+  # session created for the user and they are redirected to /
+
+  get '/confirm_email/:token' do
+    user = User.first(:perishable_token => params[:token])
+    if user.nil?
+      flash[:notice] = "Can't find User Account for this link."
+      redirect "/"
+    else
+      user.email_confirmed = true
+      user.save
+      # Register a session for the user
+      session[:user_id] = user.id
+      flash[:notice] = "Email successfully confirmed."
+      redirect "/"
+    end
+  end
+
 
   # The reset token is sent on the url along with the post to ensure
   # authentication is preserved. The password is checked for length and

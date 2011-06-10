@@ -71,40 +71,26 @@ module Sinatra
     end
   end
 
-  module Logging
-    module Helpers
-      def logger
-        self.class.logger
-      end
-    end
-
-    @@logger = nil
-    def logger
-      ENV['LOG_SHIFT_AGE'] ||= '10'
-      unless @@logger
-        @@logger = Logger.new(File.join(File.dirname(__FILE__), "log", "#{settings.environment}.log"), ENV['LOG_SHIFT_AGE'].to_i, ENV['LOG_SHIFT_SIZE'] ? ENV['LOG_SHIFT_SIZE'].to_i : nil)
-        @@logger.level = Logger.const_get(ENV['LOG_LEVEL']) if ENV['LOG_LEVEL']
-        @@logger.formatter = proc {|severity, datetime, progname, msg| "[#{datetime}] #{severity}  #{msg}\n"}
-      end
-      @@logger
-    end
-
-    def log_requests
-      before { logger.info("#{request.request_method} #{request.route}") }
-    end
-
-    def self.registered(app)
-      app.helpers Sinatra::Logging::Helpers
-    end
-  end
-
   module ViewHelper
     def pluralize(count, singular, plural = nil)
       "#{count || 0} " + ((count == 1 || count =~ /^1(\.0+)?$/) ? singular : (plural || singular.pluralize))
     end
+
+    def title(str)
+      @title = str
+      pjax_request? ? @title : nil
+    end
+
+    def pjax_request?
+      env['HTTP_X_PJAX']
+    end
+
+    def show_layout?
+      !pjax_request?
+    end
+
   end
 
-  register Logging
   helpers UserHelper
   helpers ViewHelper
 end

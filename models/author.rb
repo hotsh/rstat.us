@@ -6,28 +6,28 @@ class Author
   include MongoMapper::Document
 
   # Constants that are useful for avatars using gravatar
-  DEFAULT_AVATAR = "/images/avatar.png"
+  GRAVATAR               = "gravatar.com"
+  DEFAULT_AVATAR         = "http://rstat.us/images/avatar.png"
   ENCODED_DEFAULT_AVATAR = URI.encode_www_form_component(DEFAULT_AVATAR)
-  GRAVATAR_HOST  = "gravatar.com"
 
   # public keys are good for 4 weeks
   PUBLIC_KEY_LEASE_DAYS = 28
 
   # We've got a bunch of data that gets stored in Author. And basically none
-  # of it is validated right now. Fun. Then again, not all of it is neccesary.
-  key :username, String
+  # of it is val*idated right now. Fun. Then again, not all of it is neccesary.
+  key :username,  String
 
   # This contains the domain that the author's feed originates (nil for local)
-  key :domain, String
+  key :domain,    String
 
   # We can get the domain from the remote_url
-  before_save :get_domain 
+  before_save :get_domain
 
   # The Author has a profile and with that various entries
-  key :name, String
-  key :email, String
-  key :website, String
-  key :bio, String
+  key :name,      String
+  key :email,     String
+  key :website,   String
+  key :bio,       String
   key :image_url, String
 
   # Authors MIGHT have a salmon endpoint
@@ -39,7 +39,7 @@ class Author
   #  When the lease expires, and a notification comes, we retrieve the key.
   key :public_key, String
   key :public_key_lease, Date
-  
+
   # The url of their profile page
   key :remote_url, String
 
@@ -47,7 +47,7 @@ class Author
   timestamps!
 
   # We cannot put a :unique tag above because of a MongoMapper bug
-  validates_uniqueness_of :remote_url, :allow_nil => :true 
+  validates_uniqueness_of :remote_url, :allow_nil => :true
 
   # Associations
 
@@ -55,17 +55,30 @@ class Author
   # they're local, they also have a User, too.
   one :feed
   one :user
-  
+
   # This takes results from an omniauth reponse and generates an author
-  def self.create_from_hash!(hsh, domain)
+  def self.create_from_hash!(hash, domain)
+
+    # Omniauth user information, as a hash
+    user  = hash['user_info']
+
+    # Grabs each of the important user details
+    name       = user['name']
+    username   = user['username']
+    website    = user['urls']['Website']
+    bio        = user['description']
+    image      = user['image']
+    remote     = user['url']
+
+    # Creates an Author object with the details
     create!(
-      :name => hsh['user_info']['name'],
-      :username => hsh['user_info']['nickname'],
-      :website => hsh['user_info']['urls']['Website'],
-      :bio => hsh['user_info']['description'],
-      :image_url => hsh['user_info']['image'],
-      :remote_url => hsh['user_info']['url'],
-      :domain => domain
+      name:       name,
+      username:   username,
+      website:    website,
+      bio:        bio,
+      image_url:  image,
+      remote_url: remote,
+      domain:     domain
     )
   end
 
@@ -94,8 +107,11 @@ class Author
 
   # Returns a locally useful url for the Author
   def url
-    return remote_url if remote_url
-    "/users/#{username}"
+    if remote_url.present?
+      remote_url
+    else
+      "/users/#{username}"
+    end
   end
 
   # Returns a locally useful url for the Author's avatar
@@ -104,26 +120,39 @@ class Author
   # Facebook or Twitter, we use that, and if they don't, we go with Gravatar.
   # If none of that is around, then we show the DEFAULT_AVATAR
   def avatar_url
-    return image_url      if image_url
-    return DEFAULT_AVATAR if email.nil?
 
-    gravatar_url
+    # If the user has a facebook or twitter image, return it
+    if image_url.present?
+      image_url
+
+    # If the user has an email (Don't they have to?), look for a gravatar url.
+    elsif email.present?
+      gravatar_url
+
+    # Otherwise return the default avatar
+    else
+      DEFAULT_AVATAR
+    end
   end
 
-  # Returns a url useful for gravatar support
-  def gravatar_url
-    "http://#{GRAVATAR_HOST}#{gravatar_path}"
-  end
-
-  # these query parameters are described [here](http://en.gravatar.com/site/implement/images/#default-image).
-  def gravatar_path
-    "/avatar/#{Digest::MD5.hexdigest(email)}?s=48&r=r&d=#{ENCODED_DEFAULT_AVATAR}"
-  end
-
-  # Returns the display name to be used for the Author.
+  # Determine the display name from the username or name
   def display_name
-    return username if name.nil? || name.empty?
-    name
+
+    # If the user has a name, return it
+    if name.present?
+      name
+
+    # Otherwise return the username
+    else
+      username
+    end
+  end
+
+  # Return the gravatar url
+  # Query described [here](http://en.gravatar.com/site/implement/images/#default-image).
+  def gravatar_url
+    email_digest = Digest::MD5.hexdigest email
+    "http://#{GRAVATAR}/avatar/#{email_digest}?s=48&r=r&d=#{ENCODED_DEFAULT_AVATAR}"
   end
 
   # Returns an OStatus::Author instance describing this author model

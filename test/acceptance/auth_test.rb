@@ -214,11 +214,10 @@ describe "Authorization" do
 
     describe "only email" do
       it "logs in with email and no twitter login" do
-        skip "This test is failing but this actually works... why?"
         log_in_new_email_user
 
         assert_match /Login successful/, page.body
-        assert_equal current_user, @u
+        assert_match @u.username, page.body
       end
 
       it "does not send updates to twitter" do

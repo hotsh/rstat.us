@@ -16,6 +16,22 @@ $(document).ready ->
   $("#pitch").equalHeights()
   
   #########################################
+  # Updates
+  #########################################
+  
+  # PJAX-ify the tabs
+  $('#navigation a').pjax('#content .updates').click ->
+    # Set clicked tab to be given active class when pjax returns
+    $('#navigation a').removeClass("next")
+    $(this).addClass("next");
+  
+  $("#content .updates").bind "end.pjax", pjaxSuccess = ->
+    # Set active class appropriately
+    $('#navigation li').removeClass("active")
+    $('#navigation a.next').parent().addClass("active")
+  
+  
+  #########################################
   # Update Form
   #########################################
   textarea = $("#update-form textarea")

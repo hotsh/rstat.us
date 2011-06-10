@@ -9,7 +9,7 @@ describe "following" do
       u = Factory(:user)
       refute u.following? u.feed.url
     end
-  
+
     it "disallows following yourself" do
       u = Factory(:user)
       u.follow! u.feed.url
@@ -138,14 +138,14 @@ describe "following" do
       assert_equal "user1", json.last["username"]
     end
 
-    it "uses your username if logged in" do
+    it "properly displays title on your following page when logged in" do
       u = Factory(:user, :username => "dfnkt")
       a = Factory(:authorization, :user => u)
 
       log_in(u, a.uid)
 
       visit "/users/#{u.username}/following"
-      assert_match "#{u.username} is following", page.body
+      assert_match /You're following/, page.body
 
     end
 
@@ -235,14 +235,14 @@ describe "following" do
       assert_match /leopard.*zebra/m, page.body
     end
 
-    it "uses your username if logged in" do
+    it "properly displays title on your followers page when logged in" do
       u = Factory(:user, :username => "dfnkt")
       a = Factory(:authorization, :user => u)
 
       log_in(u, a.uid)
 
       visit "/users/#{u.username}/followers"
-      assert_match "#{u.username}'s followers", page.body
+      assert_match /Your followers/, page.body
 
     end
 

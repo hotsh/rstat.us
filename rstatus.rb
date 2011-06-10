@@ -82,49 +82,15 @@ class Rstatus
 
   get '/' do
     if logged_in?
-      set_params_page
-      @updates = current_user.timeline(params).paginate( :page => params[:page], :per_page => params[:per_page] || 20, :order => :created_at.desc)
-      set_pagination_buttons(@updates)
-
-      @timeline = true
-
-      if params[:reply]
-        u = Update.first(:id => params[:reply])
-        @update_text = "@#{u.author.username} "
-        @update_id = u.id
-      elsif params[:share]
-        u = Update.first(:id => params[:share])
-        @update_text = "RS @#{u.author.username}: #{u.text}"
-        @update_id = u.id
-      else
-        @update_text = ""
-        @update_id = ""
-      end
-
-      if params[:status]
-        @update_text = @update_text + params[:status]
-      end
-
-      haml :dashboard
+      call! env.merge("PATH_INFO" => '/timeline')
     else
-      haml :index, :layout => false
+      haml :"static/home", :layout => false
     end
   end
 
   get '/home' do
     cache_control :public, :must_revalidate, :max_age => 60
-    haml :index, :layout => false
-  end
-
-  get '/replies' do
-    if logged_in?
-      set_params_page
-      @replies = current_user.at_replies(params).paginate( :page => params[:page], :per_page => params[:per_page] || 20, :order => :created_at.desc)
-      set_pagination_buttons(@replies)
-      haml :replies
-    else
-      haml :index, :layout => false
-    end
+    haml :"static/home", :layout => false
   end
 
   post '/signup' do
@@ -140,32 +106,23 @@ class Rstatus
 
     haml :"signup/thanks"
   end
-
-  get "/search" do
-    @updates = []
-    if params[:q]
-      @updates = Update.filter(params[:q], :page => params[:page], :per_page => params[:per_page] || 20, :order => :created_at.desc)
-      set_pagination_buttons(@updates)
-    end
-    haml :search
-  end
-
-  not_found do
-    haml :'error', :layout => false, :locals => {:code => 404, :message => "We couldn't find the page you're looking for"}
-  end
-
-  error do
-    haml :'error', :layout => false, :locals => {:code => 500, :message => "Something went wrong"}
-  end
-
+  
   get "/hashtags/:tag" do
     @hashtag = params[:tag]
     set_params_page
-    @updates = Update.hashtag_search(@hashtag, params).paginate( :page => params[:page], :per_page => params[:per_page] || 20, :order => :created_at.desc)
+    @updates = Update.hashtag_search(@hashtag, params)
     set_pagination_buttons(@updates)
     @timeline = true
     @update_text = params[:status]
-    haml :dashboard
+    haml :"updates/index"
+  end
+
+  not_found do
+    haml :"static/error", :layout => false, :locals => {:code => 404, :message => "We couldn't find the page you're looking for"}
+  end
+
+  error do
+    haml :"static/error", :layout => false, :locals => {:code => 500, :message => "Something went wrong"}
   end
 
 end

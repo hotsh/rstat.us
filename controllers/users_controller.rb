@@ -4,14 +4,14 @@
 class Rstatus
   # XXX: This shouldn't even be used any more.
   get '/users/confirm' do
-    haml :"users/confirm"
+    haml :"login/confirm"
   end
 
   # Password reset for users that are currently logged in. If a user does not
   # have an email address they are prompted to enter one
   get '/users/password_reset' do
     if logged_in?
-      haml :"users/password_reset"
+      haml :"login/password_reset"
     else
       redirect "/forgot_password"
     end
@@ -168,7 +168,14 @@ class Rstatus
     @user = User.first :username => params[:username]
     if @user == current_user
       if @user.edit_user_profile(params)
-        flash[:notice] = "Profile saved!"
+
+        unless @user.email_confirmed
+          # Generate same token as password reset....
+          Notifier.send_confirm_email_notification(@user.email, @user.set_perishable_token)
+          flash[:notice] = "A link to confirm your updated email address has been sent to #{@user.email}."
+        else
+          flash[:notice] = "Profile saved!"
+        end
       else
         flash[:notice] = "Profile could not be saved!"
       end
@@ -202,7 +209,11 @@ class Rstatus
     @authors = @feeds.map{|f| f.author}
 
     title = ""
-    title << "#{@user.username} is following"
+    if @user == current_user
+      title << "You're following"
+    else
+      title << "#{@user.username} is following"
+    end
 
     haml :"users/list", :locals => {:title => title}
   end
@@ -232,7 +243,11 @@ class Rstatus
 
     #build title
     title = ""
-    title << "#{@user.username}'s followers"
+    if @user == current_user
+      title << "Your followers"
+    else
+      title << "#{@user.username}'s followers"
+    end
 
     haml :"users/list", :locals => {:title => title}
   end

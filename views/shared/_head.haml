@@ -1,0 +1,28 @@
+%head
+  %meta{:charset => "utf-8"}
+  %title= @title ? "rstat.us": "rstat.us - #{@title}"
+
+  -if @author
+    %link{:rel => "alternate", :type => "application/atom+xml",
+          :title => "OStatus Feed for #{@author.username}", :href => "/users/#{@author.username}/feed"}
+
+  %script{:src => "/assets/javascripts/application.js"}
+  %link{:href => "/assets/stylesheets/screen.css", :media => "screen", :rel => "stylesheet"}
+  %link{:rel => "apple-touch-icon-precomposed", :sizes => "114x114", :href => "images/mobile_icons/apple-touch-icon_114.png"}
+  %link{:rel => "apple-touch-icon-precomposed", :sizes => "72x72", :href => "images/mobile_icons/apple-touch-icon_72.png"}
+  %link{:rel => "apple-touch-icon-precomposed", :href => "images/mobile_icons/apple-touch-icon.png"}
+
+  != yield_content :css
+
+  - if production?
+    :javascript
+      var _gaq = _gaq || [];
+      _gaq.push(['_setAccount', 'UA-22030550-1']);
+      _gaq.push(['_trackPageview']);
+
+      (function() {
+        var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+        ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(ga);
+      })();
+  != yield_content :javascript

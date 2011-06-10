@@ -10,6 +10,8 @@ gem "mongomapper_ext"
 gem "bson_ext"
 gem "i18n"
 gem "haml"
+gem "rake", "=0.8.7"
+gem "rack", "=1.2.2"
 gem "rack-flash"
 gem "rack-timeout"
 gem "system_timer", :platforms => :ruby_18
@@ -35,6 +37,9 @@ gem "compass"
 gem "tzinfo"
 gem "rsa"
 gem "exceptional"
+gem "sprockets", "2.0.0.beta8"
+gem "rack-mount", :require => "rack/mount"
+gem "uglifier"
 
 # background job queue
 gem "delayed_job", :git => "git://github.com/collectiveidea/delayed_job.git", :tag => "v2.1.4"
@@ -51,8 +56,9 @@ group :development, :test do
   gem "rocco"
   gem "pygmentize"
   gem "mocha"
-  gem "jammit"
   gem "vcr"
   gem "webmock"
   gem "simplecov", "~> 0.4.0", :require => false
+  gem "launchy"
+  gem "jammit"
 end

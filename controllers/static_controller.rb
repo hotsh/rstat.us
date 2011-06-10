@@ -5,18 +5,18 @@
 # XXX: Add explicit caching headers to all of these.
 class Rstatus
   get "/open_source" do
-    haml :opensource
+    haml :"static/opensource"
   end
 
   get "/follow" do
-    haml :external_subscription
+    haml :"static/external_subscription"
   end
 
   get "/contact" do
-    haml :contact
+    haml :"static/contact"
   end
 
   get "/help" do
-    haml :help
+    haml :"static/help"
   end
 end

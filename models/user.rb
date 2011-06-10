@@ -19,6 +19,7 @@ class User
 
   # Users MIGHT have an email
   key :email, String
+  key :email_confirmed, Boolean
 
   # RSA for salmon usage
   key :private_key, String
@@ -26,8 +27,7 @@ class User
   # Required for confirmation
   key :perishable_token, String
 
-  # We cannot put a :unique tag above because of a MongoMapper bug
-  validates_uniqueness_of :email, :allow_nil => :true
+  validate :email_already_confirmed
   validates_uniqueness_of :username, :allow_nil => :true, :case_sensitive => false
 
   # The maximum is arbitrary
@@ -240,7 +240,7 @@ class User
     http = Net::HTTP.new(uri.host, uri.port)
     res = http.post(uri.path, envelope, {"Content-Type" => "application/magic-envelope+xml"})
   end
-  
+
   # unfollow takes a feed (since it is guaranteed to exist)
   def unfollow! followed_feed
     following_ids.delete(followed_feed.id)
@@ -362,14 +362,24 @@ class User
 
   # Edit profile information
   def edit_user_profile(params)
+    self.email_confirmed = same_email?(params[:email])
+    self.email = params[:email]
+
+    self.save
+
     author.name    = params[:name]
     author.email   = params[:email]
     author.website = params[:website]
     author.bio     = params[:bio]
     author.save
+
   end
 
   private
+
+  def same_email?(email_param)
+    self.email == email_param
+  end
 
   def create_feed
     f = Feed.create(
@@ -386,4 +396,14 @@ class User
       errors.add(:username, "contains restricted characters. Try sticking to letters, numbers, hyphens and underscores.")
     end
   end
+
+  def email_already_confirmed
+    if User.where(:email => self.email,
+      :email_confirmed => true,
+      :username.ne => self.username).count > 0
+      errors.add(:email, "is already taken.")
+    end
+  end
+
+
 end
