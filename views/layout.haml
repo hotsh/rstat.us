@@ -13,6 +13,8 @@
 
         #content
           != yield
+          
+        != yield_content :bottom
       
       #sidebar
         != haml :"shared/sidebar/_profile" unless @profile_sidebar == false

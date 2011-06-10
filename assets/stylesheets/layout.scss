@@ -57,20 +57,16 @@ body {
 #content-wrap {
   @include column(14);
   @include rounded(4px);
-  padding: $gutter_width/2 0;
   background: $content_background;  
+  padding-top: $gutter_width/2;
 }
 
-#content, #top {
+#top {
   margin: 0 $gutter_width/2;
 }
 #content {
-  background: white;
-  @include rounded(4px);
-  border: 1px solid #ccc;
-  padding: 1em;
-  position: relative;
-  
+  @include content-block;
+  margin-top: 0;
   .loading {
     position: absolute;
     top: 0;

@@ -362,10 +362,14 @@ class User
 
   # Edit profile information
   def edit_user_profile(params)
-    self.email_confirmed = same_email?(params[:email])
-    self.email = params[:email]
-
-    self.save
+    unless params[:password].empty?
+      if params[:password] == params[:password_confirm]
+        self.password = params[:password]
+        self.save
+      else
+        return "Passwords must match"
+      end
+    end
 
     author.name    = params[:name]
     author.email   = params[:email]
@@ -373,6 +377,7 @@ class User
     author.bio     = params[:bio]
     author.save
 
+    return true
   end
 
   private
@@ -404,6 +409,4 @@ class User
       errors.add(:email, "is already taken.")
     end
   end
-
-
 end

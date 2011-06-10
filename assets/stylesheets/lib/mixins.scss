@@ -46,3 +46,12 @@ $highlight: #fffeef;
   font-family: Arial, sans-serif;
 }
 
+@mixin content-block {
+  background: white;
+  @include rounded(4px);
+  border: 1px solid #ccc;
+  padding: 1em;
+  position: relative;
+  margin: $gutter_width/2;
+  
+}
