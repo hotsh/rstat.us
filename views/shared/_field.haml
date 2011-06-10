@@ -1,3 +1,4 @@
+- value = params[attr] ? params[attr] : (defined?(obj) ? obj.send(attr) : "")
 
 .form-field{:class => attr}
   %label{:for => attr}
@@ -10,8 +11,9 @@
     - if defined?(as)
       - case as
       - when :text
-        %textarea{:id => attr, :name => attr, :type => "text", :rows => 5, :value => (defined?(obj) ? obj.send(attr) : "") }
+        %textarea{:id => attr, :name => attr, :type => "text", :rows => 5}
+          = value
       - when :password
-        %input{:id => attr, :name => attr, :type => "password" }
+        %input{:id => attr, :name => attr, :type => "password", :placeholder => "••••••••••••••••••" }
     - else
-      %input{:id => attr, :name => attr, :type => "text", :value => (defined?(obj) ? obj.send(attr) : "") }
+      %input{:id => attr, :name => attr, :type => "text", :value => value}

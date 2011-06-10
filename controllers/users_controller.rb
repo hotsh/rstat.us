@@ -164,13 +164,17 @@ class Rstatus
   post "/users/:username" do
     @user = User.first :username => params[:username]
     if @user == current_user
-      if @user.edit_user_profile(params)
+      response = @user.edit_user_profile(params)
+      if response == true
         flash[:notice] = "Profile saved!"
+        redirect "/users/#{params[:username]}"
       else
-        flash[:notice] = "Profile could not be saved!"
+        flash[:notice] = "Profile could not be saved: #{response}"
+        haml :"users/edit"
       end
+    else
+      redirect "/users/#{params[:username]}"
     end
-    redirect "/users/#{params[:username]}"
   end
 
   # This is pretty much the same thing as /feeds/your_feed_id, but we

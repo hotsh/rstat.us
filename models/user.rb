@@ -202,11 +202,21 @@ class User
   end
 
   def edit_user_profile(params)
+    unless params[:password].empty?
+      if params[:password] == params[:password_confirm]
+        self.password = params[:password]
+        self.save
+      else
+        return "Passwords must match"
+      end
+    end
+
     author.name    = params[:name]
     author.email   = params[:email]
     author.website = params[:website]
     author.bio     = params[:bio]
     author.save
+    return true
   end
 
   private

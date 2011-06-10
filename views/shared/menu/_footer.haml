@@ -1,6 +1,7 @@
 %ul.menu#footer-meu
-  != menu_item("Home", "/home")
+  != menu_item("Home", "/")
   != menu_item("Login/Signup", "/login") unless logged_in?
+  != menu_item("About", "/about")
+  != menu_item("Open Source", "/open_source")
   != menu_item("Contact", "/contact")  
   != menu_item("Blog", ENV['BLOG_URL']) if ENV['BLOG_URL']
-  != menu_item("Open Source", "/open_source")

@@ -224,6 +224,8 @@
 }
 
 .linked-accounts {
+  @include content-block;
+
   .linked {
     @include clearfix;
     .linked-image {

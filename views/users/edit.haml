@@ -9,20 +9,21 @@
   %form#profile-update{:action => "/users/#{current_user.author.username}", :method => "POST", :name => "profile_update_form"}
     
     .form-section
-      != haml :"shared/_field", :locals => {:obj => @user.author, :attr => :name}
+      != haml :"shared/_field", :locals => {:obj => @user.author, :attr => :name, :params => params}
     
     .form-section
       != haml :"shared/_field", :locals => {:attr => :password, :as => :password}
       != haml :"shared/_field", :locals => {:attr => :password_confirm, :label => "Confirm Password", :as => :password}
     
     .form-section
-      != haml :"shared/_field", :locals => {:obj => @user.author, :attr => :email}
-      != haml :"shared/_field", :locals => {:obj => @user.author, :attr => :website}
-      != haml :"shared/_field", :locals => {:attr => :bio, :as => :text}
+      != haml :"shared/_field", :locals => {:obj => @user.author, :attr => :email, :params => params}
+      != haml :"shared/_field", :locals => {:obj => @user.author, :attr => :website, :params => params}
+      != haml :"shared/_field", :locals => {:obj => @user.author, :attr => :bio, :as => :text, :params => params}
 
     .form-submit
       %input.button{:type => "submit", :value => "Save"}
 
+- content_for :bottom do
   .linked-accounts
     %h4 Linked Accounts
 
