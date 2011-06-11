@@ -2,11 +2,11 @@
 - content_for :title do
   = "Users"
   
-- content_for :top do  
+- content_for :top do
   #users-search.search
     %form{:method => :get, :action => "/users"}
-      %input{:name => "search", :type => "text"}
-      %input{:type => "submit", :value => "Search", :class => "button"}
+      %input.search-field{:name => "search", :type => "text"}
+      %input.submit{:type => "submit", :value => "Search", :class => "button"}
 
   #users-nav.nav
     %a{:href => "/users", :class => "all"} All

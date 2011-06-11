@@ -145,7 +145,8 @@
     background: $highlight;
   }
   .empty {
-    font-size: 1.2em;
+    text-align: center;
+    font-size: 1.35em;
     padding: 1em;
     color: #bbb;
   }
@@ -231,9 +232,11 @@
   }
 }
 
-.linked-accounts {
-  @include content-block;
+.bottom-block {
+  @include content-block;  
+}
 
+.linked-accounts {
   .linked {
     @include clearfix;
     .linked-image {
@@ -307,5 +310,32 @@
     }
     border-bottom: 1px solid #ddd;
     padding: 0.75em 1em 0.25em;
+  }
+}
+
+#users-nav {
+  text-align: center;
+  margin-bottom: 1em;
+  a {
+    padding: 0 1px;
+  }
+}
+
+/* ****************************** */
+/* Log in */
+/* ****************************** */
+#login-services {
+  @include clearfix;
+  .login-service {
+    float: left;
+    p {
+      @include column(4);
+      margin-top: 0.5em;
+      margin-bottom: 0;
+    }
+    a {
+      padding: 0.65em 2em;
+      margin-right: 1em;
+    }
   }
 }

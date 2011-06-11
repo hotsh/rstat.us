@@ -83,10 +83,11 @@ h2.title {
   
   .pagination {
     @include clearfix;
-    margin-top: 1.5em;
+    margin: 0;
 
     .button {
       margin: 0;
+      margin-top: 1em;
     }
 
     #next_button {

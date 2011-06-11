@@ -32,11 +32,16 @@ form {
       }
       textarea {
       }
+      input[type="checkbox"] {
+        margin-left: -0.25em;
+        margin-top: 0.75em;
+      }
     }
   }
   
   .form-submit {
     @include prepend(4);
+    @include column(11);
   }
 }
 
@@ -106,4 +111,31 @@ form#update-form {
 
 .no-js #update-count {
   display: none;
+}
+
+/* ****************************** */
+/* Search */
+/* ****************************** */
+.search {
+  padding-left: 1em;
+  form {
+    margin-bottom: 1em;
+    .search-field {
+      width: 20em;
+      padding: 0.5em;
+    }
+    .submit {
+      
+    }
+  }
+}
+
+/* ****************************** */
+/* Login */
+/* ****************************** */
+#login {
+  .forgot-password {
+    padding-left: 2em;
+    color: #888;
+  }
 }
