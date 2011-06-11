@@ -8,10 +8,11 @@ class Feed
   require 'osub'
   require 'opub'
   require 'nokogiri'
+  require 'atom'
 
   include MongoMapper::Document
 
-  # Feed url (and an indicator that it is local)
+  # Feed url (and an indicator that it is local if this is nil)
   key :remote_url, String
 
   # OStatus subscriber information
@@ -24,33 +25,48 @@ class Feed
 
   belongs_to :author
   many :updates
-  one :user
+
+  timestamps!
 
   after_create :default_hubs
 
-  def populate
+  def populate xrd = nil
     # TODO: More entropy would be nice
     self.verify_token = Digest::MD5.hexdigest(rand.to_s)
     self.secret = Digest::MD5.hexdigest(rand.to_s)
 
-    f = OStatus::Feed.from_url(url)
+    ostatus_feed = OStatus::Feed.from_url(url)
 
-    avatar_url = f.icon
+    avatar_url = ostatus_feed.icon
     if avatar_url == nil
-      avatar_url = f.logo
+      avatar_url = ostatus_feed.logo
     end
 
-    a = f.author
+    a = ostatus_feed.author
 
     self.author = Author.create(:name => a.portable_contacts.display_name,
                                 :username => a.name,
                                 :email => a.email,
                                 :remote_url => a.uri,
+                                :salmon_url => ostatus_feed.salmon,
+                                :bio => a.portable_contacts.note,
                                 :image_url => avatar_url)
 
-    self.hubs = f.hubs
+    if xrd
+      # Retrieve the public key
+      public_key = xrd.links.find { |l| l['rel'].downcase == 'magic-public-key' }
+      public_key = public_key.href[/^.*?,(.*)$/,1]
+      self.author.public_key = public_key
+      self.author.reset_key_lease
 
-    populate_entries(f.entries)
+      # Salmon URL
+      self.author.salmon_url = xrd.links.find { |l| l['rel'].downcase == 'salmon' }
+      self.author.save
+    end
+
+    self.hubs = ostatus_feed.hubs
+
+    populate_entries(ostatus_feed.entries)
 
     save
   end
@@ -62,15 +78,17 @@ class Feed
         u = Update.create(:author => self.author,
                           :created_at => entry.published,
                           :url => entry.url,
+                          :feed => self,
                           :updated_at => entry.updated)
         self.updates << u
-        save
       end
 
       # Strip HTML
       u.text = Nokogiri::HTML::Document.parse(entry.content).text
       u.save
     end
+
+    save
   end
 
   # Pings hub
@@ -103,43 +121,44 @@ class Feed
   end
 
   def default_hubs
-    self.hubs << "http://pubsubhubbub.appspot.com/publish"
+    self.hubs << "http://pubsubhubbub.appspot.com/"
+
     save
   end
 
   # create atom feed
   # need base_uri since urls outgoing should be absolute
   def atom(base_uri)
-    # Create the OStatus::PortableContacts object
-    poco = OStatus::PortableContacts.new(:id => author.id,
-                                         :display_name => author.name,
-                                         :preferred_username => author.username)
-
     # Create the OStatus::Author object
-    os_auth = OStatus::Author.new(:name => author.username,
-                                  :uri => author.website,
-                                  :portable_contacts => poco)
+    os_auth = author.to_atom
 
     # Gather entries as OStatus::Entry objects
     entries = updates.to_a.sort{|a, b| b.created_at <=> a.created_at}.map do |update|
-      OStatus::Entry.new(:title => update.text,
-                         :content => update.text,
-                         :updated => update.updated_at,
-                         :published => update.created_at,
-                         :id => update.id,
-                         :link => { :href => ("#{base_uri}updates/#{update.id.to_s}")})
+      update.to_atom(base_uri)
+    end
+
+    avatar_url_abs = author.avatar_url
+    if avatar_url_abs.start_with?("/")
+      avatar_url_abs = "#{base_uri}#{author.avatar_url[1..-1]}"
     end
 
     # Create a Feed representation which we can generate
     # the Atom feed and send out.
     feed = OStatus::Feed.from_data("#{base_uri}feeds/#{id}.atom",
-                                   :title => "#{author.username}'s Updates",
-                                   :id => "#{base_uri}feeds/#{id}.atom",
-                                   :author => os_auth,
-                                   :entries => entries,
-                                   :links => {
-                                     :hub => [{:href => hubs.first}]
-                                   })
+                             :title => "#{author.username}'s Updates",
+                             :logo => avatar_url_abs,
+                             :id => "#{base_uri}feeds/#{id}.atom",
+                             :author => os_auth,
+                             :updated => updated_at,
+                             :entries => entries,
+                             :links => {
+                               :hub => [{:href => hubs.first}],
+                               :salmon => [{:href => "#{base_uri}feeds/#{id}/salmon"}],
+                               :"http://salmon-protocol.org/ns/salmon-replies" =>
+                                 [{:href => "#{base_uri}feeds/#{id}/salmon"}],
+                               :"http://salmon-protocol.org/ns/salmon-mention" =>
+                                 [{:href => "#{base_uri}feeds/#{id}/salmon"}]
+                             })
     feed.atom
   end
 

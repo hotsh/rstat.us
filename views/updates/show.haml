@@ -21,17 +21,17 @@
         %input.remove-update{:type => "submit", :value => "I Regret This"}
 
 
--unless @referral.nil?
+-unless @update.referral.nil?
   .reply-title in reply to
   .update-text-wrap.reply-text-wrap
     .reply-text
-      != @referral.to_html
+      != @update.referral.to_html
 
   .byline
-    %a.source{:href => "/updates/#{@referral.id}"}
+    %a.source{:href => "/updates/#{@update.referral.id}"}
       .update-date
         = @update.created_at.ago_in_words
         by
         .avatar
-          %img{:alt => "avatar", :src => @referral.author.avatar_url}/
-        = @referral.author.username
+          %img{:alt => "avatar", :src => @update.referral.author.avatar_url}/
+        = @update.referral.author.username

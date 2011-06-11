@@ -67,6 +67,16 @@ class Rstatus
     haml :"updates/search"
   end
 
+  # get "/hashtags/:tag" do
+  #   @hashtag = params[:tag]
+  #   set_params_page
+  #   @updates = Update.hashtag_search(@hashtag, params).paginate( :page => params[:page], :per_page => params[:per_page] || 20, :order => :created_at.desc)
+  #   set_pagination_buttons(@updates)
+  #   @timeline = true
+  #   @update_text = params[:status]
+  #   haml :"updates/hashtags"
+  # end
+
   # If you're POST-ing to /updates, it means you're making a new one. Woo-hoo!
   # This is what it's all built for.
   post '/updates' do
@@ -81,6 +91,7 @@ class Rstatus
 
     # add entry to user's feed
     current_user.feed.updates << u
+
     unless u.valid?
       flash[:notice] = u.errors.errors.values.join("\n")
     else
@@ -102,7 +113,6 @@ class Rstatus
   # Yay for REST-y CRUD! This just shows an update.
   get '/updates/:id' do
     @update = Update.first :id => params[:id]
-    @referral = @update.referral
     haml :"updates/show", :layout => :'layout/update'
   end
 

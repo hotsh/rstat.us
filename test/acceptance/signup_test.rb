@@ -35,7 +35,7 @@ describe "signup" do
       click_button "Log in"
 
       assert_match /1 error prohibited your account from being created:/, page.body
-      assert_match /Username can't be empty/, page.body
+      assert_match /Username can't be blank/, page.body
     end
 
     it "requires a password" do
@@ -64,8 +64,10 @@ describe "signup" do
 
     it "shows an error if the username is too long" do
       visit '/login'
+
       fill_in "username", :with => "supercalifragilisticexpialidocious"
       fill_in "password", :with => "baseball"
+
       click_button "Log in"
 
       assert_match /1 error prohibited your account from being created:/, page.body
@@ -76,10 +78,9 @@ describe "signup" do
   describe "twitter" do
     it "prompts for a new username if it clashes" do
       existing_user = Factory(:user, :username => "taken")
-      new_user = Factory.build(:user, :username => 'taken')
 
-      old_count = User.count
-      log_in(new_user)
+      log_in("taken")
+
       assert_match /users\/new/, page.current_url, "not on the new user page."
 
       fill_in "username", :with => "taken"
@@ -98,9 +99,8 @@ describe "signup" do
 
     it "prompts for a new username if it contains spaces" do
       name = 'with spaces'
-      new_user = Factory.build(:user, :username => name)
 
-      log_in(new_user)
+      log_in(name)
 
       fill_in "username", :with => name
       click_button "Finish Signup"
@@ -111,9 +111,8 @@ describe "signup" do
 
     it "will keep rejecting multiple bad username attempts" do
       name =  "with spaces"
-      new_user = Factory.build(:user, :username => name)
 
-      log_in(new_user)
+      log_in(name)
 
       fill_in "username", :with => name
       click_button "Finish Signup"
@@ -136,8 +135,9 @@ describe "signup" do
   describe "facebook" do
     it "rejects bad usernames when trying to create an account from fb" do
       existing_user = Factory(:user, :username => "taken")
-      new_user = Factory.build(:user, :username => 'profile.php?id=1')
-      log_in_fb(new_user)
+
+      log_in_fb('profile.php?id=1')
+
       assert_match /users\/new/, page.current_url, "not on the new user page."
 
       fill_in "username", :with => "jane public"

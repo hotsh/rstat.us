@@ -8,10 +8,4 @@
       %input.search-field{:name => "q", :type => "text"}
       %input.submit{:type => "submit", :value => "Search", :class => "button"}
 
-- if @updates.empty?
-  .updates
-    .empty
-      Nothing matched your search results
-- else
-  != haml :"updates/_list", :locals => {:updates =>  @updates}
-
+!= haml :"updates/_list", :locals => {:updates =>  @updates, :tagline => "No statuses match your search."}

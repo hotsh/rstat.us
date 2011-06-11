@@ -21,12 +21,15 @@
       .info
         %time.published{:pubdate => "pubdate", :datetime => update.created_at.iso8601}
           %a{:href => update.url, :rel => "bookmark"}= update.created_at.ago_in_words
-
-        -unless update.referral.nil?
-          %span.in-reply
-            %a{:href => "/updates/#{update.referral.id}"}
-              in reply to
-              %span.name= update.referral.author.username
+      -if not update.referral.nil?
+        %span.in-reply
+          %a{:href => "/updates/#{update.referral.id}"}
+            in reply to
+            %span.name= update.referral.author.username
+      -elsif not update.referral_url.nil?
+        %span.in-reply
+          %a{:href => update.referral_url}
+            in reply to
 
       .actions
         -# when @timeline is true, this is a list on the user's page
@@ -39,10 +42,9 @@
           %form{:method => "post", :action => "/updates/#{update.id}"}
             %input{:type => "hidden", :name => "_method", :value => "delete"}
             %input.remove-update{:type => "submit", :value => "I Regret This"}
-
-  - if updates.empty?
-    .empty
-      There are no updates here yet
       
 != haml :"shared/_pagination"
 
+- if updates.empty?
+  .empty
+    #{locals[:tagline] || "There are no updates here yet."}

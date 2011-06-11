@@ -17,9 +17,11 @@ class Rstatus
   post "/login" do
     u = User.first :username => params[:username]
     if u.nil?
-      @user = User.new params
+      author = Author.new params
+      @user = User.new params.merge({:author => author})
       if @user.valid?
-        if @user.password.length > 0
+        if params[:password].length > 0
+          author.save
           @user.save
           session[:user_id] = @user.id
           flash[:notice] = "Thanks for signing up!"
