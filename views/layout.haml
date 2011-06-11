@@ -21,7 +21,10 @@
       
       #sidebar
         != haml :"shared/sidebar/_profile" unless @profile_sidebar == false
-        != haml :"shared/sidebar/_help" unless @current_user.nil?
+        - if @current_user
+          != haml :"shared/sidebar/_help"
+        - else
+          != haml :"shared/sidebar/_signup"
         != yield_content :sidebar
 
     != haml :"shared/_footer"
