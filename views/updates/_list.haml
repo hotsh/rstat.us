@@ -27,10 +27,6 @@
           %a{:href => "/updates/#{update.referral.id}"}
             in reply to
             %span.name= update.referral.author.username
-      -elsif not update.referral_url.nil?
-        .in-reply
-          %a{:href => update.referral_url}
-            in reply to
 
       .actions
         -# when @timeline is true, this is a list on the user's page
@@ -49,10 +45,3 @@
       There are no updates here yet
       
 != haml :"shared/_pagination"
-
-<<<<<<< HEAD
-- if updates.empty?
-  .empty
-    #{locals[:tagline] || "There are no updates here yet."}
-=======
->>>>>>> sidebar help block added, main menu updated
