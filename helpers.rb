@@ -39,7 +39,7 @@ module Sinatra
     # the previous setting or resets it to a default value.
     def set_params_page
       params[:page] = params.fetch("page"){1}.to_i
-      params[:per_page] = params.fetch(:per_page){20}.to_i
+      params[:per_page] = params.fetch("per_page"){20}.to_i
     end
 
     # Similar to the set_params_page helper this one creates the links
