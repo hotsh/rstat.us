@@ -2,60 +2,6 @@
 # forgotten password logic.
 
 class Rstatus
-  # XXX: This shouldn't even be used any more.
-  get '/users/confirm' do
-    haml :"login/confirm"
-  end
-
-  # Password reset for users that are currently logged in. If a user does not
-  # have an email address they are prompted to enter one
-  get '/users/password_reset' do
-    if logged_in?
-      haml :"login/password_reset"
-    else
-      redirect "/forgot_password"
-    end
-  end
-
-
-  # Submitted passwords are checked for length and confirmation. If the user
-  # does not have an email address they are required to provide one. Once the
-  # password has been reset the user is redirected to /
-  post '/users/password_reset' do
-    if logged_in?
-      # Repeated in user_handler /reset_password/:token, make sure any changes
-      # are in sync
-      # XXX: yes, this is a code smell
-      if params[:password].size == 0
-        flash[:notice] = "Password must be present"
-        redirect "/users/password_reset"
-        return
-      end
-      if params[:password] != params[:password_confirm]
-        flash[:notice] = "Passwords do not match"
-        redirect "/users/password_reset"
-        return
-      end
-
-      if current_user.email.nil?
-        if params[:email].empty?
-          flash[:notice] = "Email must be provided"
-          redirect "/users/password_reset"
-          return
-        else
-          current_user.email = params[:email]
-        end
-      end
-
-      current_user.password = params[:password]
-      current_user.save
-      flash[:notice] = "Password successfully set"
-      redirect "/"
-    else
-      redirect "/forgot_password"
-    end
-  end
-
   get '/users' do
     set_params_page
     # Filter users by search params
@@ -205,14 +151,12 @@ class Rstatus
 
     @authors = @feeds.map{|f| f.author}
 
-    title = ""
     if @user == current_user
-      title << "You're following"
+      title = "You're following"
     else
-      title << "#{@user.username} is following"
+      title = "@#{@user.username} is following"
     end
 
-    title = "@#{@user.username} is following"
     haml :"users/list", :locals => {:title => title}
   end
 
@@ -241,11 +185,10 @@ class Rstatus
     @authors = @feeds.map{|f| f.author}
 
     #build title
-    title = ""
     if @user == current_user
-      title << "Your followers"
+      title = "Your followers"
     else
-      title << "#{@user.username}'s followers"
+      title = "@#{@user.username}'s followers"
     end
 
     haml :"users/list", :locals => {:title => title}
