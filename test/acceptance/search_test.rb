@@ -11,7 +11,7 @@ describe "search" do
 
       visit "/"
 
-      assert has_link? "Search Updates"
+      assert has_link? "Search"
     end
   end
 
