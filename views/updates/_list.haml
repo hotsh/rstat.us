@@ -40,8 +40,8 @@
             %input{:type => "hidden", :name => "_method", :value => "delete"}
             %input.remove-update{:type => "submit", :value => "I Regret This"}
 
-  - if updates.empty?
-    .empty
-      There are no updates here yet
-      
 != haml :"shared/_pagination"
+
+- if updates.empty?
+  .empty
+    #{locals[:tagline] || "There are no updates here yet"}
