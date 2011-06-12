@@ -21,8 +21,6 @@ describe "profile" do
   end
 
   it "updates your profile" do
-    Notifier.expects(:send_confirm_email_notification)
-
     u = Factory(:user)
     a = Factory(:authorization, :user => u)
     log_in(u, a.uid)
