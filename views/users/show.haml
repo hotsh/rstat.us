@@ -41,22 +41,23 @@
 
       %p.note= @author.bio
 
-    %ul.stats
-      %li.update-count
-        .icon
-        %a{ :href => "#profile_updates"}= current_user.feed.updates.count
-        Updates
-      %li.following-count
-        .icon
-        %a{ :href => "/users/#{current_user.username}/following"}= current_user.following.length
-        Following
-      %li.follower-count
-        .icon
-        %a{ :href => "/users/#{current_user.username}/followers"}= current_user.followers.length
-        Followers
-      %li.atom.last
-        .icon
-        %a{} Atom
-        Feed
+    -unless current_user.nil?
+      %ul.stats
+        %li.update-count
+          .icon
+          %a{ :href => "#profile_updates"}= current_user.feed.updates.count
+          Updates
+        %li.following-count
+          .icon
+          %a{ :href => "/users/#{current_user.username}/following"}= current_user.following.length
+          Following
+        %li.follower-count
+          .icon
+          %a{ :href => "/users/#{current_user.username}/followers"}= current_user.followers.length
+          Followers
+        %li.atom.last
+          .icon
+          %a{} Atom
+          Feed
         
 != haml :"updates/_list", :locals => {:updates => @updates, :id => "profile_updates", :no_highlight => true}
