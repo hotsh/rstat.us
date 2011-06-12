@@ -20,7 +20,7 @@ begin
         end
       end
 
-      Jammit.package!
+      Jammit.package! :base_url => "http://deadreckoning.cs.pitt.edu/"
     end
   end
 rescue LoadError
