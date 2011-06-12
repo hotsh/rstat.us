@@ -362,7 +362,7 @@ class User
 
   # Edit profile information
   def edit_user_profile(params)
-    unless params[:password].empty?
+    unless params[:password].nil? or params[:password].empty?
       if params[:password] == params[:password_confirm]
         self.password = params[:password]
         self.save
@@ -370,6 +370,11 @@ class User
         return "Passwords must match"
       end
     end
+
+    self.email_confirmed = self.email == params[:email]
+    self.email = params[:email]
+
+    self.save
 
     author.name    = params[:name]
     author.email   = params[:email]
