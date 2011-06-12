@@ -5,7 +5,8 @@
 
   -if @author
     %link{:rel => "alternate", :type => "application/atom+xml",
-          :title => "OStatus Feed for #{@author.username}", :href => "/users/#{@author.username}/feed"}
+          :title => "OStatus Feed for #{@author.username}", 
+          :href => url("/users/#{@author.username}/feed")}
 
   %script{:src => "/assets/javascripts/application.js"}
   %link{:href => "/assets/stylesheets/screen.css", :media => "screen", :rel => "stylesheet"}
