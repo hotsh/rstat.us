@@ -269,6 +269,22 @@ class User
     res = http.post(uri.path, envelope, {"Content-Type" => "application/magic-envelope+xml"})
   end
 
+  # Send an update to a remote user as a Salmon notification
+  def send_mention_notification update_id, to_feed_id
+    f = Feed.first :id => to_feed_id
+    u = Update.first :id => update_id
+
+    base_uri = "http://#{author.domain}/"
+    salmon = OStatus::Salmon.new(u.to_atom(base_uri))
+
+    envelope = salmon.to_xml retrieve_private_key
+
+    # Send envelope to Author's Salmon endpoint
+    uri = URI.parse(f.author.salmon_url)
+    http = Net::HTTP.new(uri.host, uri.port)
+    res = http.post(uri.path, envelope, {"Content-Type" => "application/magic-envelope+xml"})
+  end
+
   def followed_by? feed_url
     f = Feed.first(:remote_url => feed_url)
 

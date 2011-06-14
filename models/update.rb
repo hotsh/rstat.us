@@ -73,6 +73,8 @@ class Update
     matches.nil? ? false : matches.length > 0
   end
 
+  # These handle sending the update to other nodes and services
+  after_create :send_to_remote_mentions
   after_create :send_to_external_accounts
 
   timestamps!
@@ -101,11 +103,13 @@ class Update
   def to_atom(base_uri)
     links = []
     links << Atom::Link.new({ :href => ("#{base_uri}updates/#{self.id.to_s}")})
+
     mentions.each do |author|
       author_url = author.url
       if author_url.start_with?("/")
-        author_url = base_uri + author_url[1..-1]
+        author_url = "http://#{author.domain}/feeds/#{author.feed.id}"
       end
+
       links << Atom::Link.new({ :rel => 'ostatus:attention', :href => author_url })
       links << Atom::Link.new({ :rel => 'mentioned', :href => author_url })
     end
@@ -201,6 +205,23 @@ class Update
       "#{$1}<a href='/hashtags/#{$2}'>##{$2}</a>"
     end
     self.html = out
+  end
+
+  def send_to_remote_mentions
+    # Only local users can do this
+    if author.user
+      # For each mention, if they are not following this user, send
+      # this update to them as a salmon notification
+      # XXX: allow for authors that we do not know (who do not have feeds)
+      mentions.each do |mentioned_author|
+        unless mentioned_author.domain == author.domain
+          mentioned_feed = mentioned_author.feed
+          unless author.user.followers.include? mentioned_feed
+            author.user.delay.send_mention_notification id, mentioned_feed.id
+          end
+        end
+      end
+    end
   end
 
   # If a user has twitter or facebook enabled on their account and they checked
