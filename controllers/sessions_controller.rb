@@ -17,7 +17,11 @@ class Rstatus
   post "/login" do
     u = User.first :username => params[:username]
     if u.nil?
+      # Grab the domain for this author from the request url
+      params[:domain] = url("/")[/\:\/\/(.*?)\/$/, 1]
+
       author = Author.new params
+
       @user = User.new params.merge({:author => author})
       if @user.valid?
         if params[:password].length > 0
