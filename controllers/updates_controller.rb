@@ -83,7 +83,7 @@ class Rstatus
     current_user.feed.updates << u
 
     unless u.valid?
-      flash[:notice] = u.errors.errors.values.join("\n")
+      flash[:notice] = u.errors.values.join("\n")
     else
       current_user.feed.save
       current_user.save
