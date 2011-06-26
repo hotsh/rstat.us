@@ -89,10 +89,10 @@
         top: 1em;
         left: 1em;
 
-		img.photo {
-			width: 48px;
-			height: 48px;
-		}
+        img.photo {
+          width: 48px;
+          height: 48px;
+        }
       }
       .fn, .nickname {
         a {
@@ -301,6 +301,11 @@
     
     .avatar, .info {
       float: left;
+
+      a img {
+        width: 48px;
+        height: 48px;
+      }
     }
     .info {
       @include column(8);
