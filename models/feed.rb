@@ -19,8 +19,8 @@ class Feed
   key :verify_token, String
   key :secret, String
 
-  # For both pubs and subs, it needs to know what hubs are communicating with
-  # it
+  # For both pubs and subs, it needs to know what hubs the feed is in
+  # communication with in order to control pub/sub operations
   key :hubs, Array
 
   belongs_to :author
@@ -94,6 +94,7 @@ class Feed
   # Pings hub
   # needs absolute url for feed to give to hub for callback
   def ping_hubs(feed_url)
+    feed_url = "#{feed_url}.atom"
     OPub::Publisher.new(feed_url, hubs).ping_hubs
   end
 
@@ -121,7 +122,7 @@ class Feed
   end
 
   def default_hubs
-    self.hubs << "http://pubsubhubbub.appspot.com/"
+    self.hubs << "http://rstatus.superfeedr.com/"
 
     save
   end
