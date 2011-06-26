@@ -15,7 +15,6 @@
   background: url('/images/embed/nav-background.png') center bottom repeat-x;  
 }
 
-
 #updates-menu {
   @include clearfix;
   float: left;
@@ -118,9 +117,13 @@
     }
     
     .actions, .published, .in-reply {
-    	font-size: 0.9em;
-    	color: #aaa;
-      line-height: 2em;
+      font-size: 0.9em;
+      color: #aaa;
+	  line-height: 2em;
+    }
+	
+    .in-reply {
+      padding-left: 0.5em;  
     }
     
     .actions {
