@@ -22,6 +22,7 @@ class Rstatus
 
     # Interpret data payload
     atom_entry = salmon.entry
+    puts atom_entry.to_xml
 
     if atom_entry.author.uri.start_with?(url("/"))
       # Is a local user, we can ignore salmon
@@ -143,6 +144,20 @@ class Rstatus
         if user.followed_by? author.feed.remote_url
           user.unfollowed_by! author.feed
         end
+      end
+
+    # A profile update
+    elsif action == "http://ostatus.org/schema/1.0/update-profile"
+      if not verify_author
+        author.name = atom_entry.author.portable_contacts.display_name
+        author.username = atom_entry.author.name
+        author.remote_url = atom_entry.author.uri
+        author.email = atom_entry.author.email
+        author.email = nil if author.email == ""
+        author.bio = atom_entry.author.portable_contacts.note
+        avatar_url = atom_entry.author.links.find_all{|l| l.rel.downcase == "avatar"}.first.href
+        author.image_url = avatar_url
+        author.save
       end
     end
 
