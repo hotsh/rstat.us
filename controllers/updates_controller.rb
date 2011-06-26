@@ -21,14 +21,14 @@ class Rstatus
     @update_id, @update_text = "", ""
     
     # Set update form state correctly
-    id = params.fetch(:reply) { params[:share] }
+    id = params.fetch("reply") { params["share"] }
     if id
       u = Update.first(:id => id)
       @update_id = id
-      @update_text = "@#{u.author.username} " if params[:reply]
-      @update_text = "RS @#{u.author.username}: #{u.text}" if params[:share]        
-    elsif params[:status]
-      @update_text = params[:status]
+      @update_text = "@#{u.author.username} " if params["reply"]
+      @update_text = "RS @#{u.author.username}: #{u.text}" if params["share"]
+    elsif params["status"]
+      @update_text = params["status"]
     end
   end
   
