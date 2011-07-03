@@ -23,7 +23,7 @@ Assets = Sprockets::Environment.new(Rstatus.root.to_s)
 Assets.static_root = File.join(Rstatus.root, "public", "assets")
 Assets.paths << "assets"
 Assets.logger = Rstatus.log
-Assets.js_compressor = Uglifier.new
+# Assets.js_compressor = Uglifier.new
 
 Sass::Engine::DEFAULT_OPTIONS[:load_paths].tap do |load_paths|
   load_paths << "#{Rstatus.root}/assets/stylesheets"
