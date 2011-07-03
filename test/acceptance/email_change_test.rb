@@ -17,7 +17,7 @@ describe "email change" do
       log_in_email(u)
 
       visit "/users/#{u.username}/edit"
-      fill_in 'Email:', :with => 'team@jackhq.com'
+      fill_in 'email', :with => 'team@jackhq.com'
       click_button 'Save'
 
       # Need to figure out the best way to do this, expects is swallowing up token generation...

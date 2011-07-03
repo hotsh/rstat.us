@@ -23,7 +23,7 @@ describe "following" do
       @a = Factory(:authorization, :user => @u)
       log_in(@u, @a.uid)
       visit "/"
-      click_link "Would you like to follow someone not on rstat.us?"
+      click_link "Follow Remote User"
 
       VCR.use_cassette('subscribe_remote') do
         fill_in 'url', :with => "steveklabnik@identi.ca"
@@ -57,7 +57,7 @@ describe "following" do
       a2 = Factory(:authorization, :user => u2)
       log_in(u2, a2.uid)
       visit "/"
-      click_link "Would you like to follow someone not on rstat.us?"
+      click_link "Follow Remote User"
 
       assert_match "ostatus Sites", page.body
 

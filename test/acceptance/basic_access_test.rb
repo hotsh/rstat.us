@@ -33,7 +33,7 @@ describe "basic access" do
     a = Factory(:authorization, :user => u)
     log_in(u, a.uid)
     visit "/users/#{u.username}"
-    click_link "Edit profile"
+    click_link "Edit"
 
     assert_equal 200, page.status_code
   end

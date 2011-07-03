@@ -117,7 +117,7 @@ describe "Authorization" do
         click_button "Finish Signup"
         assert_match /Thanks! You're all signed up with janepublic for your username./, page.body
         assert_match /\//, page.current_url
-        click_link "Logout"
+        click_link "Log Out"
         log_in_fb(new_user)
         assert_match /janepublic/, page.body
       end
