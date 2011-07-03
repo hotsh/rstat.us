@@ -4,4 +4,4 @@
   .reply
     .title
       in reply to
-    != haml :"updates/_detail", :locals => {:update => @update.referral}
+    != haml :"updates/_detail", :locals => {:update => @update.referral, :reply => true}

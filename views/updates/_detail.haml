@@ -1,3 +1,4 @@
+- reply ||= false
 .update
   .byline
     %a.author{:href => "/users/#{update.author.username}"}
@@ -8,7 +9,10 @@
     .content 
       != update.to_html
     .update-date
-      = update.created_at.ago_in_words
+      - if reply
+        %a{:href => "/updates/#{update.id}"}= update.created_at.ago_in_words
+      - else
+        = update.created_at.ago_in_words
     
     .end-links
       -unless current_user.nil? or (current_user.author.id == update.author.id)
