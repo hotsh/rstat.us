@@ -88,11 +88,6 @@
         position: absolute;
         top: 1em;
         left: 1em;
-
-        img.photo {
-          width: 48px;
-          height: 48px;
-        }
       }
       .fn, .nickname {
         a {
@@ -117,13 +112,9 @@
     }
     
     .actions, .published, .in-reply {
-      font-size: 0.9em;
-      color: #aaa;
-	  line-height: 2em;
-    }
-	
-    .in-reply {
-      padding-left: 0.5em;  
+    	font-size: 0.9em;
+    	color: #aaa;
+      line-height: 2em;
     }
     
     .actions {
@@ -153,7 +144,8 @@
     background: $highlight;
   }
   .empty {
-    font-size: 1.2em;
+    text-align: center;
+    font-size: 1.35em;
     padding: 1em;
     color: #bbb;
   }
@@ -242,6 +234,11 @@
 .linked-accounts {
   @include content-block;
 
+.bottom-block {
+  @include content-block;  
+}
+
+.linked-accounts {
   .linked {
     @include clearfix;
     .linked-image {
@@ -301,11 +298,6 @@
     
     .avatar, .info {
       float: left;
-
-      a img {
-        width: 48px;
-        height: 48px;
-      }
     }
     .info {
       @include column(8);
@@ -320,5 +312,32 @@
     }
     border-bottom: 1px solid #ddd;
     padding: 0.75em 1em 0.25em;
+  }
+}
+
+#users-nav {
+  text-align: center;
+  margin-bottom: 1em;
+  a {
+    padding: 0 1px;
+  }
+}
+
+/* ****************************** */
+/* Log in */
+/* ****************************** */
+#login-services {
+  @include clearfix;
+  .login-service {
+    float: left;
+    p {
+      @include column(4);
+      margin-top: 0.5em;
+      margin-bottom: 0;
+    }
+    a {
+      padding: 0.65em 2em;
+      margin-right: 1em;
+    }
   }
 }

@@ -1,34 +1,35 @@
+- content_for :title do
+  Log In or Sign up
+  
 #login-forms
   != haml :"users/_errors", :locals => {:user => @user}
 
-  #login
-    %form{:action => "/login", :method => "POST"}
-      %h3 Log In or Sign up
-      %p One form, no problem: Put in a username and password, and we'll take care of the rest.
+  %h4
+    One form, that's all.
+  %p
+    Put in a username and password, and we'll take care of the rest.
+  
+  %form#login{:action => "/login", :method => "POST"}
+    .form-section
+    .form-section
+      != haml :"shared/_field", :locals => {:attr => :username, :params => params}
+      != haml :"shared/_field", :locals => {:attr => :password, :params => params, :as => :password}
+      != haml :"shared/_field", :locals => {:attr => :remember_me, :params => params, :as => :checkbox, :label => "Remember me"}
 
-      .form-item
-        %label{:for => "username"} Username
-        %input{:id => "username", :name => "username", :size => 30, :type => "text"}
-      .form-item
-        %label{:for => "password"} Password
-        %input{:id => "password", :name => "password", :size => 30, :type => "password"}
-      .form-item
-        %label{:for => "remember_me"} Remember me
-        %input{:id => "remember_me", :name => "remember_me", :type => "checkbox", :value => "1"}
-      .form-item
-        %input{:value => "Log in", :type => "submit", :class => "button"}
+    .form-submit  
+      %input.button{:type => "submit", :value => "Log in"}
+      %a.forgot-password{:href => "/forgot_password"} Forgot Password
 
-      %a{:href => "/forgot_password"} Forgot Password
-
-  #signup
-    %h3 Want to sign in with Twitter or Facebook?
-    %p Use the links below:
-    .twitter
+- content_for :bottom do
+  #login-services.bottom-block
+    %h4 Use Your Existing Facebook or Twitter Account
+    .login-service
+      %p Sign in with:
+    .twitter.login-service
       %a.button{:href=>'/auth/twitter'}
         %span.icon.twitter
         Twitter
-    
-    .facebook
+    .facebook.login-service
       %a.button{:href=>'/auth/facebook'}
         %span.icon.facebook
         Facebook

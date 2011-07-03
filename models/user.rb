@@ -397,7 +397,6 @@ class User
     author.website = params[:website]
     author.bio     = params[:bio]
     author.save
-
     return true
   end
 

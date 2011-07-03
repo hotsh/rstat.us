@@ -15,5 +15,7 @@
           = value
       - when :password
         %input{:id => attr, :name => attr, :type => "password", :placeholder => "••••••••••••••••••" }
+      - when :checkbox
+        %input{:id => attr, :name => attr, :type => "checkbox", :value => 1}
     - else
       %input{:id => attr, :name => attr, :type => "text", :value => value}
