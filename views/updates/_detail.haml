@@ -1,0 +1,22 @@
+.update
+  .byline
+    %a.author{:href => "/users/#{update.author.username}"}
+      .avatar
+        %img{:alt => "avatar", :src => update.author.avatar_url}/
+      = update.author.username
+  .update-text
+    .content 
+      != update.to_html
+    .update-date
+      = update.created_at.ago_in_words
+    
+    .end-links
+      -unless current_user.nil? or (current_user.author.id == update.author.id)
+        %a.share{:href => "/?share=#{update.id}"} share
+        |
+        %a.reply{:href => "/?reply=#{update.id}"} reply
+
+      - if current_user and update.author.id == current_user.author.id
+        %form{:method => "post", :action => "/updates/#{update.id}"}
+          %input{:type => "hidden", :name => "_method", :value => "delete"}
+          %input.remove-update{:type => "submit", :value => "I Regret This"}

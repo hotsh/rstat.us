@@ -154,6 +154,71 @@
 }  
 
 /* ****************************** */
+/* Single Update  */
+/* ****************************** */
+#single-update {
+  #page {
+    padding-bottom: 2em;
+  }
+  .update {
+    @include clearfix;
+    .byline {
+      @include column(4);
+      padding-top: 2.25em;
+      text-align: right;
+      
+      a {
+        color: black;
+      }
+    }
+    .update-text {
+      
+      @include content_block;
+      @include column(13);
+      @include clearfix;
+      
+      .content { 
+        font-size: 2em;
+        padding-bottom: 6px;
+        border-bottom: 1px solid #f3f3f3;
+        margin-bottom: 12px;
+      }
+      
+      .update-date {
+        color: #999;
+        float: left;
+      }
+      .end-links {
+        float: right;
+      }
+    }
+  }
+  
+  .reply {
+    .title {
+      @include prepend(4);
+      margin-left: 2em;
+      color: #777;
+    }
+    .update {
+      .content {
+        color: #999;
+        font-size: 1.2em;
+        padding-top: 0.25em;
+      }      
+    }
+  }
+  
+  #footer {
+    a {
+      color: #999;
+    }
+  }
+}
+
+
+
+/* ****************************** */
 /* Profile */
 /* ****************************** */
 #profile {
@@ -340,3 +405,5 @@
     }
   }
 }
+
+

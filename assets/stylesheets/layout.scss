@@ -3,6 +3,7 @@
 body {
   background: $background_color;
   color: $text_color;
+  min-width: 840px;
 }
 
 #header, #page, #footer {
