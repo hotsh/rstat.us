@@ -1,12 +1,14 @@
+@import "lib/base";
+
 form {
   @include clearfix;
   margin-bottom: 2em;
   
   .form-section {
     @include column(11);
-    padding-bottom: 1em;
-    border-bottom: 1px solid #eee;
-    margin-bottom: 1em;
+    padding-top: 1em;
+    border-top: 1px solid #eee;
+    margin-top: 1em;
   }
   .last {
     border: none;
@@ -41,7 +43,10 @@ form {
   
   .form-submit {
     @include prepend(4);
-    @include column(11);
+    @include column(7);
+    padding-top: 1em;
+    border-top: 1px solid #eee;
+    margin-top: 1em;
   }
 }
 

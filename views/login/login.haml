@@ -11,7 +11,6 @@
   
   %form#login{:action => "/login", :method => "POST"}
     .form-section
-    .form-section
       != haml :"shared/_field", :locals => {:attr => :username, :params => params}
       != haml :"shared/_field", :locals => {:attr => :password, :params => params, :as => :password}
       != haml :"shared/_field", :locals => {:attr => :remember_me, :params => params, :as => :checkbox, :label => "Remember me"}
