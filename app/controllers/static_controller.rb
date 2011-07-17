@@ -12,6 +12,7 @@ class StaticController < ApplicationController
   end
 
   def homepage
+    render :layout => false
   end
 
 end

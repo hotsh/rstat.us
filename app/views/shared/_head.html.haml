@@ -7,8 +7,8 @@
           :title => "OStatus Feed for #{@author.username}", 
           :href => url("/users/#{@author.username}/feed")}
 
-  %script{:src => "/assets/javascripts/application"}
-  %link{:href => "/assets/stylesheets/application", :media => "screen", :rel => "stylesheet"}
+  = javascript_include_tag "application"
+  = stylesheet_link_tag "application", :media => "screen"
   %link{:rel => "apple-touch-icon-precomposed", :sizes => "114x114", :href => "images/mobile_icons/apple-touch-icon_114.png"}
   %link{:rel => "apple-touch-icon-precomposed", :sizes => "72x72", :href => "images/mobile_icons/apple-touch-icon_72.png"}
   %link{:rel => "apple-touch-icon-precomposed", :href => "images/mobile_icons/apple-touch-icon.png"}
