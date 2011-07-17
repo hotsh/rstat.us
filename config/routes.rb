@@ -1,4 +1,14 @@
 RstatUs::Application.routes.draw do
+  get "static/open_source"
+
+  get "static/follow"
+
+  get "static/contact"
+
+  get "static/help"
+
+  root :to => "static#homepage"
+
   # The priority is based upon order of creation:
   # first created -> highest priority.
 

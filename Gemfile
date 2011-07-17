@@ -11,6 +11,8 @@ gem 'compass', :git => "git://github.com/chriseppstein/compass.git", :branch => 
 gem 'coffee-script'
 gem 'uglifier'
 
+gem "haml-rails"
+
 gem 'jquery-rails'
 
 gem 'haml-rails'
