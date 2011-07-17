@@ -1,10 +1,10 @@
 - value = params[attr] ? params[attr] : (defined?(obj) ? obj.send(attr) : "")
-- field_label = defined?(label) ? label : attr.to_s.capitalize
+- field_label = defined?(lbl) ? lbl : attr.to_s.capitalize
 
 
 .form-field{:class => attr}
   %label{:for => attr}= field_label
-  
+
   .input
     - if defined?(as)
       - case as

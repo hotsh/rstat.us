@@ -4,5 +4,5 @@
       %a{:href=>"/"}
         %h1
           rstat.us
-    != haml :"shared/menu/_main"
-    != haml :"shared/menu/_profile"
+    != render :partial => "shared/menu/main"
+    != render :partial => "shared/menu/profile"

@@ -1,21 +1,21 @@
 - content_for :title do
   Log In or Sign up
-  
+
 #login-forms
-  != haml :"users/_errors", :locals => {:user => @user}
+  != render :partial => "users/errors", :locals => {:user => @user}
 
   %h4
     One form, that's all.
   %p
     Put in a username and password, and we'll take care of the rest.
-  
-  %form#login{:action => "/login", :method => "POST"}
-    .form-section
-      != haml :"shared/_field", :locals => {:attr => :username, :params => params}
-      != haml :"shared/_field", :locals => {:attr => :password, :params => params, :as => :password}
-      != haml :"shared/_field", :locals => {:attr => :remember_me, :params => params, :as => :checkbox, :label => "Remember me"}
 
-    .form-submit  
+  %form#login{:action => "/sessions", :method => "POST"}
+    .form-section
+      != render :partial => "shared/field", :locals => {:attr => :username, :params => params}
+      != render :partial => "shared/field", :locals => {:attr => :password, :params => params, :as => :password}
+      != render :partial => "shared/field", :locals => {:attr => :remember_me, :params => params, :as => :checkbox, :lbl => "Remember me"}
+
+    .form-submit
       %input.button{:type => "submit", :value => "Log in"}
       %a.forgot-password{:href => "/forgot_password"} Forgot Password
 

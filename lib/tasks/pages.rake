@@ -1,3 +1,5 @@
+require 'rake/clean'
+
 desc 'Update gh-pages branch'
 task :pages => ['docs/.git', :docs] do
   rev = `git rev-parse --short HEAD`.strip
