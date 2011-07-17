@@ -53,14 +53,6 @@ class Rstatus
   require "coffee-script"
 
   configure do
-    if ENV['MONGOHQ_URL']
-      MongoMapper.config = {ENV['RACK_ENV'] => {'uri' => ENV['MONGOHQ_URL']}}
-      MongoMapper.database = ENV['MONGOHQ_DATABASE']
-      MongoMapper.connect("production")
-    else
-      MongoMapper.connection = Mongo::Connection.new('localhost')
-      MongoMapper.database = "rstatus-#{settings.environment}"
-    end
 
     Compass.add_project_configuration(File.join(File.dirname(__FILE__), 'compass.config'))
     MongoMapperExt.init

@@ -13,9 +13,9 @@
   %link{:rel => "apple-touch-icon-precomposed", :sizes => "72x72", :href => "images/mobile_icons/apple-touch-icon_72.png"}
   %link{:rel => "apple-touch-icon-precomposed", :href => "images/mobile_icons/apple-touch-icon.png"}
 
-  != yield_content :css
+  != yield :css
 
-  - if production?
+  - if Rails.env.production?
     :javascript
       var _gaq = _gaq || [];
       _gaq.push(['_setAccount', 'UA-22030550-1']);
@@ -26,4 +26,4 @@
         ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
         (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(ga);
       })();
-  != yield_content :javascript
+  != yield :javascript
