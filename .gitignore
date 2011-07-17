@@ -1,5 +1,11 @@
-.bundle
-db/*.sqlite3
-log/*.log
-tmp/
-.sass-cache/
+.swp
+docs
+config.yml
+.sass-cache
+tmp
+public/assets/src
+test/data
+test/coverage
+log/*.log*
+capybara*
+.DS_Store
