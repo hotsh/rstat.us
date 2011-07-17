@@ -312,7 +312,6 @@ DEPENDENCIES
   exceptional
   factory_girl
   fb_graph
-  haml
   haml-rails
   i18n
   jquery-rails
