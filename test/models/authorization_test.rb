@@ -1,9 +1,6 @@
-require 'require_relative' if RUBY_VERSION[0,3] == '1.8'
-require_relative '../test_helper'
+require "test_helper"
 
-describe Authorization do
-
-  include TestHelper
+class AuthorizationTest < MiniTest::Rails::Model
 
   before do
     @u = Factory(:user)

@@ -1,10 +1,7 @@
 # encoding: UTF-8
-require 'require_relative' if RUBY_VERSION[0,3] == '1.8'
-require_relative '../test_helper'
+require "test_helper"
 
-describe User do
-
-  include TestHelper
+class UserTest < MiniTest::Rails::Model
 
   describe "#at_replies" do
     it "returns all at_replies for this user" do

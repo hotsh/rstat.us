@@ -1,0 +1,18 @@
+defaults: &defaults
+  host: 127.0.0.1
+  port: 27017
+
+development:
+  <<: *defaults
+  database: rstatus-development
+
+test:
+  <<: *defaults
+  database: rstatus-test
+
+# set these environment variables on your prod server
+production:
+  <<: *defaults
+  database: <%= ENV['MONGOHQ_DATABASE'] %>
+  uri: <%= ENV['MONGOHQ_URL'] %>
+
