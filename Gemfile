@@ -1,6 +1,7 @@
 source 'http://rubygems.org'
 
 gem 'rails', '3.1.0.rc4'
+#gem 'rails', :git => 'git://github.com/rails/rails.git'
 
 gem 'sqlite3'
 
@@ -54,7 +55,6 @@ gem "delayed_job_mongo_mapper", :git => "git://github.com/earbits/delayed_job_mo
 gem "whenever"
 
 group :development, :test do
-  gem "minitest"
   gem 'rack-test'
   gem "database_cleaner"
   gem "factory_girl"
@@ -66,5 +66,5 @@ group :development, :test do
   gem "webmock"
   gem "simplecov", "~> 0.4.0", :require => false
   gem "launchy"
+  gem 'minitest-rails'
 end
-

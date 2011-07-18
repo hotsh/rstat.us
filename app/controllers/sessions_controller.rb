@@ -1,11 +1,6 @@
-class Rstatus
-
-  get "/login" do
-    if logged_in?
-      redirect '/'
-    else
-      haml :"login/login"
-    end
+class SessionsController < ApplicationController
+  def new
+    redirect_to root_path && return if logged_in?
   end
 
   # We have a bit of an interesting feature with the POST to /login.
@@ -14,7 +9,7 @@ class Rstatus
   # you in if you do. Therefore, we try to fetch your user from the DB, and
   # check if you're there, which is the first half of the `if`. The `else`
   # is your run-of-the-mill login procedure.
-  post "/login" do
+  def create
     u = User.first :username => params[:username]
     if u.nil?
       # Grab the domain for this author from the request url
@@ -29,32 +24,29 @@ class Rstatus
           @user.save
           session[:user_id] = @user.id
           flash[:notice] = "Thanks for signing up!"
-          redirect "/"
+          redirect_to "/"
         else
           @user.errors.add(:password, "can't be empty")
         end
       end
-      haml :"login/login"
+      render "sessions#new"
     else
       if user = User.authenticate(params[:username], params[:password])
         session[:user_id] = user.id
         session[:remember_me] = (params[:remember_me])
         flash[:notice] = "Login successful."
-        redirect "/"
+        redirect_to "/"
+        return
       end
       flash[:error] = "The username exists; the password you entered was incorrect. If you are trying to create a new account, please choose a different username."
-      redirect "/login"
+      redirect_to "/login"
     end
   end
 
-  get "/logout" do
-    # XXX: I'm pretty sure we don't need this logged_in? call. Too bad this
-    # commit is only documentation. :)
-    if logged_in?
-      session[:user_id] = nil
-      flash[:notice] = "You've been logged out."
-    end
-    redirect '/'
+  def destroy
+    session[:user_id] = nil
+    flash[:notice] = "You've been logged out."
+    redirect_to '/'
   end
 
 end

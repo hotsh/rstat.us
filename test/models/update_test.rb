@@ -1,9 +1,6 @@
-require 'require_relative' if RUBY_VERSION[0,3] == '1.8'
-require_relative '../test_helper'
+require "test_helper"
 
-describe Update do
-
-  include TestHelper
+class UpdateTest < MiniTest::Rails::Model
 
   describe "text length" do
     it "is not valid without any text" do
