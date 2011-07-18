@@ -7,7 +7,7 @@
   Well, that's kind of boring.  Why not check out the links on the left to browse users or search rstat.us updates?
 
 - else
-  != haml :"users/_list", :locals => {:authors => @authors}
+  = render "users/_list", :locals => {:authors => @authors}
 
 
-!= haml :"shared/_pagination"
+= render "shared/_pagination"

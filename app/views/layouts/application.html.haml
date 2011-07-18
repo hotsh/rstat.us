@@ -1,0 +1,32 @@
+!!!5
+%html.no-js{:lang => "en"}
+  = render "shared/head"
+  %body
+    = render "shared/header"          
+    = @error_bar
+  
+    #page
+      #content-wrap
+        - title =  yield :title
+        - unless title.empty?
+          %h2.title #{title}
+        #top
+          = render "shared/flash"
+          = yield :top
+
+        #content
+          = yield
+          
+        = yield :bottom
+      
+      #sidebar
+        = render "shared/sidebar/profile" unless @profile_sidebar == false
+
+        - if @current_user
+          = render "shared/sidebar/help"
+        - else
+          = render "shared/sidebar/signup"
+
+        = yield :sidebar
+
+    = render "shared/footer"

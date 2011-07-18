@@ -1,10 +1,10 @@
 !!! 5
 %html.no-js{:lang => "en"}
-  != haml :"shared/_head", :locals => {:title => @update.text}
+  = render "shared/_head", :locals => {:title => @update.text}
   %body#single-update
-    != haml :"shared/_header"          
+    = render "shared/_header"          
     != @error_bar
-    != haml :"shared/_flash"
+    = render "shared/_flash"
 
     #page
       != yield

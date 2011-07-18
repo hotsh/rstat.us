@@ -1,7 +1,7 @@
-!= haml :"updates/_detail", :locals => {:update => @update}
+= render "updates/_detail", :locals => {:update => @update}
 
 -unless @update.referral.nil?
   .reply
     .title
       in reply to
-    != haml :"updates/_detail", :locals => {:update => @update.referral, :reply => true}
+    = render "updates/_detail", :locals => {:update => @update.referral, :reply => true}

@@ -2,10 +2,10 @@
 
 - content_for :top do
   - unless current_user.nil?
-    != haml :"updates/_form"
+    = render "updates/_form"
 
   #updates-menu-wrap
     #updates-menu-background
-      != haml :"shared/menu/_updates"
+      = render "shared/menu/_updates"
 
-!= haml :"updates/_list", :locals => {:updates => @updates}
+= render "updates/_list", :locals => {:updates => @updates}

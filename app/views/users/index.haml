@@ -22,6 +22,6 @@
   .empty
     Sorry, no users that match.
 - else
-  != haml :"users/_list", :locals => {:authors => @authors}
+  = render "users/_list", :locals => {:authors => @authors}
 
-!= haml :"shared/_pagination"
+= render "shared/_pagination"

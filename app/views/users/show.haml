@@ -3,7 +3,7 @@
 
 - content_for :sidebar do
   - if @author.user == current_user
-    != haml :"shared/sidebar/_gravatar"
+    = render "shared/sidebar/_gravatar"
 
 - content_for :top do
   #profile.vcard
@@ -60,4 +60,4 @@
         %a{} Atom
         Feed
         
-!= haml :"updates/_list", :locals => {:updates => @updates, :id => "profile_updates", :no_highlight => true}
+= render "updates/_list", :locals => {:updates => @updates, :id => "profile_updates", :no_highlight => true}
