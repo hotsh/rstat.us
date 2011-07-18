@@ -8,5 +8,5 @@
       %input#search-input{:name => "q", :type => "text"}
       %input#search-button.button{:type => "submit", :value => "Search"}
 
-!= haml :"updates/_list", :locals => {:updates => @updates, :tagline => "No statuses match your search."}
+!= render :partial => "updates/list", :locals => {:updates => @updates, :tagline => "No statuses match your search."}
 

@@ -1,0 +1,11 @@
+- title "Updates"
+
+- content_for :top do
+  - unless current_user.nil?
+    != render :partial => "updates/form"
+
+  #updates-menu-wrap
+    #updates-menu-background
+      != render :partial => "shared/menu/updates"
+
+!= render :partial => "updates/list", :locals => {:updates => @updates}

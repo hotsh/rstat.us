@@ -1,6 +1,6 @@
 RstatUs::Application.routes.draw do
   root :to => "static#homepage", :constraints => lambda {|x| x.session[:user_id] == nil}
-  root :to => "dashboard#index", :constraints => lambda {|x| x.session[:user_id] != nil}
+  root :to => "updates#index", :constraints => lambda {|x| x.session[:user_id] != nil}
 
   # Sessions
   resources :sessions, :only => [:new, :create, :destroy]
@@ -21,4 +21,9 @@ RstatUs::Application.routes.draw do
 
   # Users
   resources :users, :only => [:create]
+
+  # Updates
+  resources :updates, :only => [:index, :show, :create, :destroy]
+  match "/timeline", :to => "updates#timeline"
+  match "/replies", :to => "updates#replies"
 end

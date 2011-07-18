@@ -1,0 +1,7 @@
+!= render :partial => "updates/detail", :locals => {:update => @update}
+
+-unless @update.referral.nil?
+  .reply
+    .title
+      in reply to
+    != render :partial => "updates/detail", :locals => {:update => @update.referral, :reply => true}
