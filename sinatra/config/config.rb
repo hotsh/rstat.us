@@ -1,9 +1,3 @@
-require_relative '../lib/rstatus/session'
-
-class Rstatus
-  # The `PONY_VIA_OPTIONS` hash is used to configure `pony`. Basically, we only
-  # want to actually send mail if we're in the production environment. So we set
-  # the hash to just be `{}`, except when we want to send mail.
   configure :test do
     PONY_VIA_OPTIONS = {}
   end
@@ -71,10 +65,5 @@ class Rstatus
         return settings.environment == environment
       end
     end
-  end
-
-  use OmniAuth::Builder do
-    provider :twitter, ENV["CONSUMER_KEY"], ENV["CONSUMER_SECRET"]
-    provider :facebook, ENV["APP_ID"], ENV["APP_SECRET"], {:scope => 'publish_stream,offline_access,email'}
   end
 end

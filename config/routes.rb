@@ -12,4 +12,9 @@ RstatUs::Application.routes.draw do
   match "contact" => "static#contact"
   match "open_source" => "static#open_source"
   match "help" => "static#help"
+
+  # AUTH
+  match '/auth/:provider/callback', :to => 'auth#auth'
+  match '/auth/failure', :to => 'auth#failure'
+  match '/users/:username/auth/:provider', :via => :delete, :to => "auth#destroy"
 end
