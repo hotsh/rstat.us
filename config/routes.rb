@@ -43,4 +43,8 @@ RstatUs::Application.routes.draw do
 
   # Salmon
   match 'feeds/:id/salmon', :to => "salmon#feeds"
+
+  # Subscriptions
+  resources :subscriptions, :except => [:update]
+  match 'subscriptions/:id.atom', :to => "subscriptions#post_update", :via => :post
 end

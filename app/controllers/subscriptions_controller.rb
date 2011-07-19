@@ -1,11 +1,6 @@
-# Even though a 'subscription' isn't an actual model, we still treat it as a
-# resource for maximum RESTful-ness. After all, it could be one, but we just
-# don't need to keep any data about the subscription itself.
+class SubscriptionsController < ApplicationController
+  def show
 
-class Rstatus
-
-  # subscribers will verify a subscription
-  get "/subscriptions/:id.atom" do
     feed = Feed.first :id => params[:id]
 
     if params['hub.challenge']
@@ -41,7 +36,7 @@ class Rstatus
 
   # A DELETE call will unsubscribe you from that particular feed. We make
   # sure that you're logged in first, because otherwise, it's nonsensical.
-  delete '/subscriptions/:id' do
+  def destroy
     require_login! :return => request.referrer
 
     feed = Feed.first :id => params[:id]
@@ -65,7 +60,7 @@ class Rstatus
 
   # subscriber receives updates
   # should be 'put', PuSH sucks at REST
-  post "/subscriptions/:id.atom" do
+  def post_update
     feed = Feed.first :id => params[:id]
     if feed.nil?
       status 404
@@ -79,7 +74,7 @@ class Rstatus
 
   # A POST is how you subscribe to someone's feed. We want to make sure
   # that you're logged in for this one, too.
-  post "/subscriptions" do
+  def create
     require_login! :return => request.referrer
 
     feed_url = nil
@@ -156,5 +151,4 @@ class Rstatus
       redirect request.referrer
     end
   end
-
 end
