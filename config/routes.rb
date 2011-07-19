@@ -38,6 +38,9 @@ RstatUs::Application.routes.draw do
   resources :feeds, :only => :show
 
   # Webfinger
-  match '/.well-known/host-meta', :to => "webfinger#host_meta"
-  match '/users/:username/xrd.xml', :to => "webfinger#xrd"
+  match '.well-known/host-meta', :to => "webfinger#host_meta"
+  match 'users/:username/xrd.xml', :to => "webfinger#xrd"
+
+  # Salmon
+  match 'feeds/:id/salmon', :to => "salmon#feeds"
 end
