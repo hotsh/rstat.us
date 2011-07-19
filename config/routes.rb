@@ -20,7 +20,11 @@ RstatUs::Application.routes.draw do
   match '/users/:username/auth/:provider', :via => :delete, :to => "auth#destroy"
 
   # Users
-  resources :users, :only => [:create]
+  resources :users
+  match "users/:id/feed", :to => "users#feed"
+  # other new route?
+  match 'users/:id/followers', :to => "users#followers"
+  match 'users/:id/following', :to => "users#following"
 
   # Updates
   resources :updates, :only => [:index, :show, :create, :destroy]
