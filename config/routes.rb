@@ -29,4 +29,7 @@ RstatUs::Application.routes.draw do
 
   # Search
   resource :search, :only => :show
+
+  # feeds
+  resources :feeds, :only => :show
 end
