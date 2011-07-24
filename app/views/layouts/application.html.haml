@@ -22,7 +22,7 @@
       #sidebar
         = render :partial => "shared/sidebar/profile" unless @profile_sidebar == false
 
-        - if @current_user
+        - if current_user
           = render :partial => "shared/sidebar/help"
         - else
           = render :partial => "shared/sidebar/signup"
