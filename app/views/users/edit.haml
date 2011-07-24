@@ -6,8 +6,7 @@
 #profile
   %h3= "Edit Profile for @#{@user.username}"
 
-  %form#profile-update{:action => "/users/#{current_user.author.username}", :method => "POST", :name => "profile_update_form"}
-    
+  = form_tag(user_path(@user.username), :method => "put", :name => "profile_update_form", :id => "profile-update") do |f|    
     .form-section
       = render :partial => "shared/field", :locals => {:obj => @user.author, :attr => :name, :params => params}
     

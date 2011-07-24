@@ -59,7 +59,6 @@ class UsersController < ApplicationController
     @user = User.first :username => params[:id]
     puts @user
     puts current_user
-    # raise params.inspect
 
     # While it might be cool to edit other people's profiles, we probably
     # shouldn't let you do that. We're no fun.
@@ -71,13 +70,13 @@ class UsersController < ApplicationController
   end
 
   def update
-    @user = User.first :username => params[:username]
+    @user = User.first :username => params[:id]
     if @user == current_user
       response = @user.edit_user_profile(params)
       if response == true
         flash[:notice] = "Profile saved!"
-        redirect "/users/#{params[:username]}"
-
+        redirect_to user_path(params[:id])
+        
         unless @user.email_confirmed
           # Generate same token as password reset....
           Notifier.send_confirm_email_notification(@user.email, @user.set_perishable_token)
@@ -88,10 +87,10 @@ class UsersController < ApplicationController
 
       else
         flash[:notice] = "Profile could not be saved: #{response}"
-        haml :"users/edit"
+        render :edit
       end
     else
-      redirect "/users/#{params[:username]}"
+      redirect_to user_path(params[:id])
     end
   end
 
