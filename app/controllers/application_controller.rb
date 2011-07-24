@@ -1,7 +1,16 @@
 class ApplicationController < ActionController::Base
   protect_from_forgery
 
-  helper_method :current_user, :logged_in?, :admin_only!, :menu_item
+  helper_method :current_user
+  helper_method :logged_in?
+  helper_method :admin_only!
+  helper_method :menu_item
+  helper_method :require_user
+  helper_method :set_params_page
+  helper_method :show_layout?
+  helper_method :pjax_request?
+  helper_method :title
+  helper_method :set_pagination_buttons
 
   protected
 
@@ -50,5 +59,56 @@ class ApplicationController < ActionController::Base
       (icon ? "<div class='icon'></div>" : "") + 
       "#{name}</a>
     </li>"
+  end
+
+  def require_user
+    redirect_to root_path unless current_user
+  end
+
+  # Many pages on rstatus are paginated. To keep track of it in all the
+  # different routes we have this handy helper that either picks up
+  # the previous setting or resets it to a default value.
+  def set_params_page
+    params[:page] = params.fetch("page"){1}.to_i
+    params[:per_page] = params.fetch("per_page"){20}.to_i
+  end
+
+  # Similar to the set_params_page helper this one creates the links
+  # for the previous and the next page on all routes that display
+  # stuff on more than one page.
+  #If needed it can also take options for more parameters
+  def set_pagination_buttons(data, options = {})
+    return if data.nil? || data.empty?
+
+    if data.next_page
+      params = {
+        :page     => data.next_page,
+        :per_page => data.per_page
+      }.merge(options)
+
+      @next_page = "?#{Rack::Utils.build_query params}"
+    end
+
+    if data.previous_page
+      params = {
+        :page     => data.previous_page,
+        :per_page => data.per_page
+      }.merge(options)
+
+      @prev_page = "?#{Rack::Utils.build_query params}"
+    end
+  end
+
+  def title(str)
+    @title = str
+    pjax_request? ? @title : nil
+  end
+
+  def pjax_request?
+    env['HTTP_X_PJAX']
+  end
+
+  def show_layout?
+    !pjax_request?
   end
 end

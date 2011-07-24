@@ -1,18 +1,15 @@
-class Rstatus
-
-  # webfinger integration
-
+class WebfingerController < ApplicationController
   # Webfinger base xml, describes how to find user xrds
-  get '/.well-known/host-meta' do
-    @base_url = url("/")
+  def host_meta
+    @base_url = root_url
     @hostname = request.host
 
     content_type "application/xrd+xml"
-    haml :"xml/webfinger/host-meta", :layout => false
+    render "xml/webfinger/host-meta", :layout => false
   end
 
   # User xrd generation
-  get "/users/:username/xrd.xml" do
+  def xrd
     # webfinger likes to give fully qualified names
     # For example: "acct:wilkie@rstat.us" 
 
@@ -21,10 +18,9 @@ class Rstatus
     username = params[:username][/^.*?\:(.*?)@/, 1] || params[:username]
 
     @user = User.first :username => /^#{username}$/i
-    @base_url = url("/")
+    @base_url = root_url
 
     content_type "application/xrd+xml"
-    haml :"xml/webfinger/xrd", :layout => false
+    render "xml/webfinger/xrd", :layout => false
   end
-
 end

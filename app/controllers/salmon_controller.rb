@@ -1,9 +1,5 @@
-class Rstatus
-  require 'ostatus'
-  require 'rsa'
-
-  # Salmon input
-  post '/feeds/:id/salmon' do
+class SalmonController < ApplicationController
+  def feeds
     feed = Feed.first :id => params[:id]
 
     if feed.nil?

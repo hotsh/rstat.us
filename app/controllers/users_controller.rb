@@ -1,8 +1,6 @@
-# This is all the standard CRUD stuff for Users, with a light garnish of
-# forgotten password logic.
+class UsersController < ApplicationController
 
-class Rstatus
-  get '/users' do
+  def index
     set_params_page
     # Filter users by search params
     if params[:search] && !params[:search].empty?
@@ -35,51 +33,13 @@ class Rstatus
     haml :"users/index"
   end
 
-  # Just a sign up page, nothing to see here.
-  get '/users/new' do
-    haml :"users/new"
-  end
-
-  # The signup page posts here.
-  post '/users' do
-    # this is really stupid.
-    auth = {}
-    auth['uid'] = session[:uid]
-    auth['provider'] = session[:provider]
-    auth['user_info'] = {}
-    auth['user_info']['name'] = session[:name]
-    auth['user_info']['nickname'] = session[:nickname]
-    auth['user_info']['urls'] = {}
-    auth['user_info']['urls']['Website'] = session[:website]
-    auth['user_info']['description'] = session[:description]
-    auth['user_info']['image'] = session[:image]
-    auth['user_info']['email'] = session[:email]
-    auth['credentials'] = {}
-    auth['credentials']['token'] = session[:oauth_token]
-    auth['credentials']['secret'] = session[:oauth_secret]
-
-    params[:author] = Author.create_from_hash! auth, uri("/")
-
-    @user = User.new params
-    if @user.save
-      Authorization.create_from_hash(auth, uri("/"), @user)
-
-      flash[:notice] = "Thanks! You're all signed up with #{@user.username} for your username."
-      session[:user_id] = @user.id
-      redirect '/'
-    else
-      haml :"users/new"
-    end
-  end
-
-  # This route lets you view someone's profile page.
-  get "/users/:username" do
+  def show
     set_params_page
 
-    user = User.first :username => params[:username]
+    user = User.first :username => params[:id]
     if user.nil?
       #check for a case insensitive match and then redirect to the correct address
-      username = Regexp.escape(params[:username])
+      username = Regexp.escape(params[:id])
       user = User.first :username => /^#{username}$/i
       if user.nil?
         raise Sinatra::NotFound
@@ -96,21 +56,19 @@ class Rstatus
     haml :"users/show"
   end
 
-  # When you want to edit your own profile, this is where you go.
-  get "/users/:username/edit" do
+  def edit
     @user = User.first :username => params[:username]
 
     # While it might be cool to edit other people's profiles, we probably
     # shouldn't let you do that. We're no fun.
     if @user == current_user
-      haml :"users/edit"
+      render :edit
     else
-      redirect "/users/#{params[:username]}"
+      redirect_to "/users/#{params[:username]}"
     end
   end
 
-  # This actually does the updating. Sweet.
-  post "/users/:username" do
+  def update
     @user = User.first :username => params[:username]
     if @user == current_user
       response = @user.edit_user_profile(params)
@@ -135,19 +93,66 @@ class Rstatus
     end
   end
 
+  def new
+  end
+
+  def create
+    # this is really stupid.
+    auth = {}
+    auth['uid'] = session[:uid]
+    auth['provider'] = session[:provider]
+    auth['user_info'] = {}
+    auth['user_info']['name'] = session[:name]
+    auth['user_info']['nickname'] = session[:nickname]
+    auth['user_info']['urls'] = {}
+    auth['user_info']['urls']['Website'] = session[:website]
+    auth['user_info']['description'] = session[:description]
+    auth['user_info']['image'] = session[:image]
+    auth['user_info']['email'] = session[:email]
+    auth['credentials'] = {}
+    auth['credentials']['token'] = session[:oauth_token]
+    auth['credentials']['secret'] = session[:oauth_secret]
+
+    params[:author] = Author.create_from_hash! auth, uri("/")
+
+    @user = User.new params
+    if @user.save
+      Authorization.create_from_hash(auth, uri("/"), @user)
+
+      flash[:notice] = "Thanks! You're all signed up with #{@user.username} for your username."
+      session[:user_id] = @user.id
+      redirect_to root_path
+    else
+      render :new
+    end
+  end
+
+  #uuuhhhh
+  def create_from_email
+    u = User.create(:email => params[:email],
+                    :status => "unconfirmed")
+    u.set_perishable_token
+
+    if development?
+      puts uri("/") + "confirm/#{u.perishable_token}"
+    else
+      Notifier.send_signup_notification(params[:email], u.perishable_token)
+    end
+  end
+
   # This is pretty much the same thing as /feeds/your_feed_id, but we
   # wanted to have a really nice URL for it, and not just the ugly one.
   # Since it's only two lines, we don't bother to do a redirect, and
   # it's arguably better to display them as two different resources.
   # Whatevs.
-  get "/users/:username/feed" do
+  def feed
     feed = User.first(:username => params[:username]).feed
     redirect "/feeds/#{feed.id}.atom"
   end
 
   # Who do you think is a really neat person? This page will show it to the
   # world, so pick wisely!
-  get '/users/:username/following' do
+  def following
     set_params_page
 
     # XXX: case insensitive username
@@ -169,18 +174,9 @@ class Rstatus
     haml :"users/list", :locals => {:title => title}
   end
 
-  # This should really be a part of the above route.
-  get '/users/:username/following.json' do
-    set_params_page
-
-    feeds = User.first(:username => params[:username]).following
-    authors = feeds.map { |feed| feed.author }
-    authors.to_a.to_json
-  end
-
   # This shows off how cool you are: I hope you've got the biggest number of
   # followers. Only one way to find out...
-  get '/users/:username/followers' do
+  def followers
     set_params_page
 
     # XXX: case insensitive username
@@ -202,4 +198,5 @@ class Rstatus
 
     haml :"users/list", :locals => {:title => title}
   end
+
 end

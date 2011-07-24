@@ -1,12 +1,12 @@
 # This controller handles all of the external authentication needs of Rstatus.
 # We're using OmniAuth to handle our Twitter and Facebook connections, so these
 # routes are all derived from that codebase.
+class AuthController < ApplicationController
 
-class Rstatus
   # Omniauth callback after a successful oauth session has been established.
   # New users and existing users adding linked accounts both use this callback
   # to obtain oauth credentials.
-  get '/auth/:provider/callback' do
+  def auth
     auth = request.env['omniauth.auth']
 
     # If an authorization is not present then that request is assumed to be for a
@@ -74,7 +74,7 @@ class Rstatus
   # We have a very simple error handler. If they got the credentials wrong, then we'd
   # like to show them a page explaining that, but anything else should just show a
   # 404, because it's not really going to provide any helpful information to the user.
-  get '/auth/failure' do
+  def failure
     if params[:message] == "invalid_credentials"
       haml :"signup/invalid_credentials"
     else
@@ -83,7 +83,7 @@ class Rstatus
   end
 
   # This lets someone remove a particular Authorization from their account.
-  delete '/users/:username/auth/:provider' do
+  def destroy
     user = User.first(:username => params[:username])
     if user
       auth = Authorization.first(:provider => params[:provider], :user_id => user.id)
@@ -91,5 +91,4 @@ class Rstatus
     end
     redirect "/users/#{params[:username]}/edit"
   end
-
 end
