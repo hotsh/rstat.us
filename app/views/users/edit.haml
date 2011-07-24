@@ -1,7 +1,7 @@
 - @profile_sidebar = false
 
 - content_for :sidebar do
-  = render "shared/sidebar/_gravatar"
+  = render :partial => "shared/sidebar/gravatar"
 
 #profile
   %h3= "Edit Profile for @#{@user.username}"
@@ -9,16 +9,16 @@
   %form#profile-update{:action => "/users/#{current_user.author.username}", :method => "POST", :name => "profile_update_form"}
     
     .form-section
-      = render "shared/_field", :locals => {:obj => @user.author, :attr => :name, :params => params}
+      = render :partial => "shared/field", :locals => {:obj => @user.author, :attr => :name, :params => params}
     
     .form-section
-      = render "shared/_field", :locals => {:attr => :password, :as => :password}
-      = render "shared/_field", :locals => {:attr => :password_confirm, :label => "Confirm Password", :as => :password}
+      = render :partial => "shared/field", :locals => {:attr => :password, :as => :password}
+      = render :partial => "shared/field", :locals => {:attr => :password_confirm, :lbl => "Confirm Password", :as => :password}
     
     .form-section
-      = render "shared/_field", :locals => {:obj => @user.author, :attr => :email, :params => params}
-      = render "shared/_field", :locals => {:obj => @user.author, :attr => :website, :params => params}
-      = render "shared/_field", :locals => {:obj => @user.author, :attr => :bio, :as => :text, :params => params}
+      = render :partial => "shared/field", :locals => {:obj => @user.author, :attr => :email, :params => params}
+      = render :partial => "shared/field", :locals => {:obj => @user.author, :attr => :website, :params => params}
+      = render :partial => "shared/field", :locals => {:obj => @user.author, :attr => :bio, :as => :text, :params => params}
 
     .form-submit
       %input.button{:type => "submit", :value => "Save"}
@@ -29,7 +29,7 @@
 
     .linked
       - if @user.twitter?
-        %img.linked-image{:src => "/images/twitter_newbird_blue.png", :alt => "Twitter Account"}
+        %img.linked-image{:src => image_path("twitter_newbird_blue.png"), :alt => "Twitter Account"}
         .linked-name="@#{@user.twitter.nickname}"
         %form.profile-update{:action => "/users/#{@user.username}/auth/twitter", :method => "POST", :name => "profile_update_form"}
           %input{:type => "hidden", :name => "_method", :value => "delete"}

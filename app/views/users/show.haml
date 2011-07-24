@@ -26,7 +26,7 @@
 
       - if @author.user == current_user
         .edit
-          %a{:href => "/users/#{@author.username}/edit"}Edit
+          %a{:href => edit_user_path(@author.username)} Edit
 
     - unless @author.website.blank? or @author.bio.blank?
       .info

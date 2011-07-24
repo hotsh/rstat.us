@@ -56,14 +56,17 @@ class UsersController < ApplicationController
   end
 
   def edit
-    @user = User.first :username => params[:username]
+    @user = User.first :username => params[:id]
+    puts @user
+    puts current_user
+    # raise params.inspect
 
     # While it might be cool to edit other people's profiles, we probably
     # shouldn't let you do that. We're no fun.
     if @user == current_user
       render :edit
     else
-      redirect_to "/users/#{params[:username]}"
+      redirect_to user_path(params[:id])
     end
   end
 
