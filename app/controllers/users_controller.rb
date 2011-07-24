@@ -11,7 +11,7 @@ class UsersController < ApplicationController
       if params[:letter] == "other"
         @authors = Author.where(:username => /^[^a-z0-9]/i)
       elsif params[:letter].empty?
-        break
+        raise "EMPTY"
       else
         @authors = Author.where(:username => /^#{params[:letter][0].chr}/i)
       end
@@ -52,8 +52,7 @@ class UsersController < ApplicationController
     @updates = @updates.paginate(:page => params[:page], :per_page => params[:per_page])
     set_pagination_buttons(@updates)
 
-    headers 'Link' => "<#{url("/users/#{user.author.username}/xrd.xml")}>; rel=\"lrdd\"; type=\"application/xrd+xml\""
-    haml :"users/show"
+    headers['Link'] = "<#{user_xrd_path(user.author.username)}>; rel=\"lrdd\"; type=\"application/xrd+xml\""
   end
 
   def edit

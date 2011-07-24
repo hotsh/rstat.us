@@ -21,7 +21,7 @@ RstatUs::Application.routes.draw do
 
   # Users
   resources :users
-  match "users/:id/feed", :to => "users#feed"
+  match "users/:id/feed", :to => "users#feed", :as => "user_feed"
   # other new route?
   match 'users/:id/followers', :to => "users#followers"
   match 'users/:id/following', :to => "users#following"
@@ -39,7 +39,7 @@ RstatUs::Application.routes.draw do
 
   # Webfinger
   match '.well-known/host-meta', :to => "webfinger#host_meta"
-  match 'users/:username/xrd.xml', :to => "webfinger#xrd"
+  match 'users/:username/xrd.xml', :to => "webfinger#xrd", :as => "user_xrd"
 
   # Salmon
   match 'feeds/:id/salmon', :to => "salmon#feeds"

@@ -1,6 +1,6 @@
 %ul.menu#updates-menu
   - if current_user
-    != menu_item("Timeline", "/timeline", {:icon => true})
+    != menu_item("Timeline", "/", {:icon => true})
     != menu_item("Replies", "/replies", {:icon => true})
   != menu_item("World", "/updates", {:icon => true})
 

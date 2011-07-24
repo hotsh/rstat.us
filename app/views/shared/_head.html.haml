@@ -5,7 +5,7 @@
   -if @author
     %link{:rel => "alternate", :type => "application/atom+xml",
           :title => "OStatus Feed for #{@author.username}", 
-          :href => url("/users/#{@author.username}/feed")}
+          :href => user_feed_path(@author.username)}
 
   = javascript_include_tag "application"
   = stylesheet_link_tag "application", :media => "screen"
