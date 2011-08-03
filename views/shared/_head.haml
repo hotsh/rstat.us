@@ -1,13 +1,14 @@
 %head
   %meta{:charset => "utf-8"}
-  %title= @title ? "rstat.us": "rstat.us - #{@title}"
+  %title= @title ? "#{@title} - rstat.us" : "rstat.us"
 
   -if @author
     %link{:rel => "alternate", :type => "application/atom+xml",
-          :title => "OStatus Feed for #{@author.username}", :href => "/users/#{@author.username}/feed"}
+          :title => "OStatus Feed for #{@author.username}", 
+          :href => url("/users/#{@author.username}/feed")}
 
-  %script{:src => "/assets/javascripts/application.js"}
-  %link{:href => "/assets/stylesheets/screen.css", :media => "screen", :rel => "stylesheet"}
+  %script{:src => "/assets/javascripts/application"}
+  %link{:href => "/assets/stylesheets/application", :media => "screen", :rel => "stylesheet"}
   %link{:rel => "apple-touch-icon-precomposed", :sizes => "114x114", :href => "images/mobile_icons/apple-touch-icon_114.png"}
   %link{:rel => "apple-touch-icon-precomposed", :sizes => "72x72", :href => "images/mobile_icons/apple-touch-icon_72.png"}
   %link{:rel => "apple-touch-icon-precomposed", :href => "images/mobile_icons/apple-touch-icon.png"}

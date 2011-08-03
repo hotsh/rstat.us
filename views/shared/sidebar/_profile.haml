@@ -1,0 +1,24 @@
+- if current_user
+  #current_user_block.vcard.block
+    .avatar
+      %a{:href=>"/users/#{current_user.username}"}
+        %img.photo{:alt => "avatar", :src => current_user.author.avatar_url}/
+    .user-info
+      %h4.name 
+        = current_user.author.display_name
+      .nickname
+        %a.url{:href=>"/users/#{current_user.username}"}
+          @#{current_user.username}
+      %ul.stats
+        %li.update-count
+          .icon
+          %a{ :href => "/users/#{current_user.username}"}= current_user.feed.updates.count
+          Updates
+        %li.following-count
+          .icon
+          %a{ :href => "/users/#{current_user.username}/following"}= current_user.following.length
+          Following
+        %li.follower-count.last
+          .icon
+          %a{ :href => "/users/#{current_user.username}/followers"}= current_user.followers.length
+          Followers

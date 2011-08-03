@@ -1,0 +1,146 @@
+@import "lib/base";
+
+form {
+  @include clearfix;
+  margin-bottom: 2em;
+  
+  .form-section {
+    @include column(11);
+    padding-top: 1em;
+    border-top: 1px solid #eee;
+    margin-top: 1em;
+  }
+  .last {
+    border: none;
+  }
+  
+  .form-field {
+    @include clearfix;
+    label {
+      padding-top: 0.65em;
+      @include column(4);
+    }
+    
+    .input {
+      @include column(7);
+      @include last;
+      
+      input, textarea {
+        @include rounded(2px, 2px, 2px, 2px);
+        border: 1px solid #ccc;
+        padding: 5px;
+        font-size: 1.1em;
+        width: 268px;
+      }
+      textarea {
+      }
+      input[type="checkbox"] {
+        margin-left: -0.25em;
+        margin-top: 0.75em;
+      }
+    }
+  }
+  
+  .form-submit {
+    @include prepend(4);
+    @include column(7);
+    padding-top: 1em;
+    border-top: 1px solid #eee;
+    margin-top: 1em;
+  }
+}
+
+/* *******************************/
+/* Update Form */
+/* *******************************/
+
+form#update-form {
+  @include clearfix;
+  margin: 1em;
+
+  #update-content {
+    /* the textarea where the user types an update */
+    textarea {
+      @include copy-face;
+      width: 97%;
+      padding: 1%;
+      font-size: 1.1em;
+
+      height: 2.5em;
+      border: solid 1px #CCCCCC;
+      @include rounded(3px);
+      outline: none;
+    }
+  }
+
+  #update-info {
+    @include clearfix;
+
+    /* Twitter and Facebook checkboxes */
+    #repost-services {
+      float: left;
+      font-size: 0.9em;
+      padding: 0.85em 1em;
+
+      .info, .input-checkbox {
+        float: left;
+        padding-right: 0.8em;
+        label {
+          font-weight: normal;
+        }
+      }
+    }
+    
+    #update-button {
+      float: right;
+      margin-right: 5px;
+    }
+    
+    /* Character counter */
+    #update-count {
+      float: right;
+      padding: 0.75em;
+
+      .update-count {
+        color: $de_emph_text_color;
+        padding-right: 0.2em;
+      }
+      color: #aaa;
+    }
+  }
+  
+  #update-info.negative #update-count .update-count {
+    color: red;
+  }
+}
+
+.no-js #update-count {
+  display: none;
+}
+
+/* ****************************** */
+/* Search */
+/* ****************************** */
+.search {
+  padding-left: 1em;
+  form {
+    margin-bottom: 1em;
+    .search-field {
+      width: 20em;
+      padding: 0.5em;
+    }
+    .submit {
+      
+    }
+  }
+}
+
+/* ****************************** */
+/* Login */
+/* ****************************** */
+#login {
+  .forgot-password {
+    padding-left: 2em;
+    color: #888;
+  }
+}

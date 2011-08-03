@@ -1,5 +1,9 @@
+@import "lib/base";
+
 body {
+  font-size: 0.75em;
   line-height: 1.5;
+  @include copy-face;
 }
 
 p {
@@ -26,7 +30,7 @@ h1 {
 
 h2 {
   font-size: 2em;
-  margin-bottom: 0.75em;
+  margin-bottom: 0.35em;
 }
 
 h3 {
@@ -36,22 +40,25 @@ h3 {
 }
 
 h4 {
-  font-size: 1.2em;
+  font-size: 1.25em;
   line-height: 1.25;
-  margin-bottom: 1.25em;
+  margin-bottom: 0.75em;
 }
 
 h5 {
   font-size: 1em;
-  font-weight: bold;
   margin-bottom: 1.50em;
 }
 
 h6 {
   font-size: 1em;
-  font-weight: bold;
 }
 
 label {
   font-weight: bold;
+}
+
+em {
+  font-weight: bold;
+  font-style: italic;
 }

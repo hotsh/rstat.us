@@ -8,3 +8,6 @@ test/data
 test/coverage
 log/*.log*
 capybara*
+.DS_Store
+*.rbc
+.DS_Store

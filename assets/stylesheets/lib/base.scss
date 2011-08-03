@@ -1,0 +1,71 @@
+// Here is where you can define your constants for your application and to configure the blueprint framework.
+// Feel free to delete these if you want keep the defaults:
+
+$blueprint-grid-columns: 20;
+$blueprint-container-size: 820px;
+$blueprint-grid-margin: 10px;
+
+// Use this to calculate the width based on the total width.
+// Or you can set $blueprint-grid-width to a fixed value and unset $blueprint-container-size -- it will be calculated for you.
+$blueprint-grid-width: ($blueprint-container-size + $blueprint-grid-margin) / $blueprint-grid-columns - $blueprint-grid-margin;
+
+@import "blueprint/grid";
+@import "compass";
+
+/* Helper functions
+ *******************************************/
+@mixin image-replaced($image, $width: auto, $height: auto) {
+  display: block;
+  background: url($image) no-repeat;
+  text-indent: -9999px;
+  width: $width;
+  height: $height;
+}
+
+@mixin rounded($radius:5px) {
+  border-radius: $radius;
+}
+
+@mixin rounded($tl:5px, $tr:5px, $br:5px, $bl:5px) {
+  border-top-left-radius: $tl;
+  border-top-right-radius: $tr;
+  border-bottom-right-radius: $br;
+  border-bottom-left-radius: $bl;
+}
+
+/* Layout
+*******************************************/
+$gutter_width: 20px;
+
+/* Color
+*******************************************/
+$background_color: #d8d8d8;
+$header_color: #3a3a3a;
+$content_background: #ededed;
+
+$text_color: #505050;
+$de_emph_text_color: #7e7e7e;
+$link_color: #439fc3;
+$mention: #e4feff;
+$highlight: #fffeef;
+
+/* Typography
+*******************************************/
+@mixin title-face {
+  font-weight: bold;
+  font-family: Arial, sans-serif;
+}
+
+@mixin copy-face {
+  font-family: Arial, sans-serif;
+}
+
+@mixin content-block {
+  background: white;
+  @include rounded(4px);
+  border: 1px solid #ccc;
+  padding: 1em;
+  position: relative;
+  margin: $gutter_width/2;
+  
+}

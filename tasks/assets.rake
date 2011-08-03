@@ -7,7 +7,7 @@ begin
     desc "compile and compress application assets"
     task :compile do
 
-      sh "compass compile views/stylesheets/screen.scss --output-style compressed --css-dir ../public/assets/src"
+      sh "compass compile assets/stylesheets/screen.css.scss --output-style compressed --css-dir ../public/assets/src"
       source = "#{File.dirname(__FILE__)}/../public/js/"
       javascripts = "#{File.dirname(__FILE__)}/../public/assets/src/"
 
@@ -20,7 +20,7 @@ begin
         end
       end
 
-      Jammit.package!
+      Jammit.package! :base_url => "http://deadreckoning.cs.pitt.edu/"
     end
   end
 rescue LoadError

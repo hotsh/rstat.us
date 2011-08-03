@@ -1,40 +1,51 @@
-- updates.each do |update|
-  - if !defined?(no_highlight)
-    - mine = current_user.nil? ? false : (update.author.user == current_user)
-  - mentioned = current_user.nil? ? false : update.mentioned?(current_user.username)
-  - mine = current_user.nil? ? false : update.author.user == current_user
-  .update.hentry{:class => (mentioned ? "mention " : "") + (mine ? "mine " : ""), :id => "update-#{update.id}", "data-id" => update.id, "data-name" => update.author.username}
-    .author.vcard
-      .avatar
-        %a.url{:href => update.author.url}
-          %img.photo{:alt => "avatar", :src => update.author.avatar_url}/
-      %span.fn= update.author.display_name
-      (<span class="nickname">#{update.author.username}</span>)
-    .entry-content
-      != update.to_html
+- unless defined?(id)
+  - id = (request.path_info.gsub("/", "_")[1..-1]) 
 
-    .entry-info
-      %time.published{:pubdate => "pubdate", :datetime => update.created_at.iso8601}
-        %a{:href => update.url, :rel => "bookmark"}= update.created_at.ago_in_words
+%ul.updates.has-update-form{:id => id}
+  - updates.each do |update|
+    - unless defined?(no_highlight) and no_highlight
+      - mine = current_user.nil? ? false : (update.author.user == current_user)      
+      - mentioned = current_user.nil? ? false : update.mentioned?(current_user.username)
+    %li.update.hentry{:class => (mentioned ? "mention " : "") + (mine ? "mine " : ""), :id => "update-#{update.id}", "data-id" => update.id, "data-name" => update.author.username}
+      .author.vcard
+        .avatar
+          %a.url{:href => update.author.url}
+            %img.photo{:alt => "avatar", :src => update.author.avatar_url}/
+        %span.fn
+          %a.url{:href => update.author.url}
+            = update.author.display_name
+            (<span class="nickname">#{update.author.username}</span>)
+      .entry-content
+        != update.to_html
 
-      -unless update.referral.nil?
-        .in-reply
+      .info
+        %time.published{:pubdate => "pubdate", :datetime => update.created_at.iso8601}
+          %a{:href => update.url, :rel => "bookmark"}= update.created_at.ago_in_words
+
+      - if !update.referral.nil?
+        %span.in-reply
           %a{:href => "/updates/#{update.referral.id}"}
             in reply to
             %span.name= update.referral.author.username
+      - elsif !update.referral_url.nil?
+        %span.in-reply
+          %a{:href => update.referral_url}
+            in reply to
 
-    .end-links
-      -# when @timeline is true, this is a list on the user's page
-      -unless current_user.nil? or (current_user.author.id == update.author.id)
-        %a.share{:href => "/?share=#{update.id}"} share
-        |
-        %a.reply{:href => "/?reply=#{update.id}"} reply
+      .actions
+        -# when @timeline is true, this is a list on the user's page
+        -unless current_user.nil? or (current_user.author.id == update.author.id)
+          %a.share{:href => "?share=#{update.id}"} share
+          |
+          %a.reply{:href => "?reply=#{update.id}"} reply
 
-      - if current_user and update.author.id == current_user.author.id
-        %form{:method => "post", :action => "/updates/#{update.id}"}
-          %input{:type => "hidden", :name => "_method", :value => "delete"}
-          %input.remove-update{:type => "submit", :value => "I Regret This"}
+        - if current_user and update.author.id == current_user.author.id
+          %form{:method => "post", :action => "/updates/#{update.id}"}
+            %input{:type => "hidden", :name => "_method", :value => "delete"}
+            %input.remove-update{:type => "submit", :value => "I Regret This"}
+
+!= haml :"shared/_pagination"
 
 - if updates.empty?
   .empty
-    #{locals[:tagline] || "There are no updates here yet."}
+    #{locals[:tagline] || "There are no updates here yet"}

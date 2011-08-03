@@ -17,7 +17,7 @@ describe "profile" do
     log_in(u, a.uid)
     visit "/users/#{u.username}"
 
-    assert has_link? "Edit profile"
+    assert has_link? "Edit"
   end
 
   it "updates your profile" do

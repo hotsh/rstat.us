@@ -1,19 +1,27 @@
 %h1 Follow a User
-%p You can follow your friends from other sites that use the ostatus protocol. Check below for the list of ostatus sites we support, and let us know if you'd like us to add another.
-
-%h3 Still working on it!
-
-%p You may get an error with this, we're ironing out the last bits of details with our ostatus implementation. If you get an error, no worries, we're on the case!
-
-%h3 ostatus Sites
-
-#sites
-  .osite
-    %h4 identi.ca
-    %p Copy the link to the Atom feed from a user's profile in identi.ca and paste it into the field to your right.
-    %img{:src=>"assets/images/identica.png"}
+%p You can follow your friends from other sites that use the ostatus protocol by providing their webfinger identification.
+%p For examples for some common sites, direct your attention to the bottom of this page.
 
 #follow-form
   %form{:action => "/subscriptions", :method => "POST"}
     %input{:type => "text", :name => "url"}
-    %input{:type => "submit", :value => "Follow"}
+    %input.button.follow{:type => "submit", :value => "Follow"}
+      
+%h3 OStatus Sites
+
+#sites
+  .osite
+    %h4
+      %a{:href=>"http://rstat.us"} rstat.us
+    %p username@rstat.us
+
+  .osite
+    %h4 
+      %a{:href=>"http://identi.ca"} identi.ca
+    %p username@identi.ca
+
+  .osite
+    %h4
+      %a{:href=>"http://status.net"} status.net
+    %p username@status.net
+

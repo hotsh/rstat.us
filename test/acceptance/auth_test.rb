@@ -117,7 +117,7 @@ describe "Authorization" do
         click_button "Finish Signup"
         assert_match /Thanks! You're all signed up with janepublic for your username./, page.body
         assert_match /\//, page.current_url
-        click_link "Logout"
+        click_link "Log Out"
         log_in_fb(new_user)
         assert_match /janepublic/, page.body
       end
@@ -259,7 +259,7 @@ describe "Authorization" do
   it "changes your username" do
     #stubbed to allow testing with new username validation
     existing_user = Factory.build(:user, :username => 'profile.php?id=1')
-    existing_user.expects(:no_special_chars).at_least_once.returns(true)
+    existing_user.expects(:no_malformed_username).at_least_once.returns(true)
     existing_user.save
     a = Factory(:authorization, :user => existing_user)
     log_in(existing_user, a.uid)

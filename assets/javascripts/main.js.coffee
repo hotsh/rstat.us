@@ -20,16 +20,18 @@ $(document).ready ->
   #########################################
   
   # PJAX-ify the tabs
-  $('#navigation a').pjax('#content .updates').click ->
+  $('#updates-menu a').pjax('#content').click ->
     # Set clicked tab to be given active class when pjax returns
-    $('#navigation a').removeClass("next")
-    $(this).addClass("next");
+    $('#updates-menu li').removeClass("active")
+    $(this).parent().addClass("active")
   
-  $("#content .updates").bind "end.pjax", pjaxSuccess = ->
-    # Set active class appropriately
-    $('#navigation li').removeClass("active")
-    $('#navigation a.next').parent().addClass("active")
+  $('.pagination a').pjax('#content')
   
+  $("#content").bind("start.pjax", pjaxStart = ->
+    loading = $("<div class='loading' />")
+    $("#content").append(loading)
+    window.scrollTo(0,0)
+  )
   
   #########################################
   # Update Form

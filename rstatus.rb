@@ -106,16 +106,6 @@ class Rstatus
 
     haml :"signup/thanks"
   end
-  
-  get "/hashtags/:tag" do
-    @hashtag = params[:tag]
-    set_params_page
-    @updates = Update.hashtag_search(@hashtag, params)
-    set_pagination_buttons(@updates)
-    @timeline = true
-    @update_text = params[:status]
-    haml :"updates/index"
-  end
 
   not_found do
     haml :"static/error", :layout => false, :locals => {:code => 404, :message => "We couldn't find the page you're looking for"}

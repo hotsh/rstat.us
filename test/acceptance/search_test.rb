@@ -11,7 +11,7 @@ describe "search" do
 
       visit "/"
 
-      assert has_link? "Search Updates"
+      assert has_link? "Search"
     end
   end
 
@@ -24,15 +24,15 @@ describe "search" do
     end
 
     it "actually searches" do
-      s = Update.new(:text => "These aren't the droids you're looking for!")
-      s.save
+      update_text = "These aren't the droids you're looking for!"
+      Factory(:update, :text => update_text)
 
       visit "/search"
 
       fill_in "q", :with => "droids"
       click_button "Search"
 
-      assert_match "These aren't the droids you're looking for!", page.body
+      assert_match update_text, page.body
     end
   end
 end

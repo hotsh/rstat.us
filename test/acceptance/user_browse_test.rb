@@ -29,12 +29,18 @@ describe "user browse" do
     end
 
     describe "pagination" do
-      it "does not paginate when there are too few" do
+      before do
         u = Factory(:user)
         a = Factory(:authorization, :user => u)
 
         log_in(u, a.uid)
 
+        5.times do
+          u2 = Factory(:user)
+        end
+      end
+
+      it "does not paginate when there are too few" do
         visit "/users"
 
         refute_match "Previous", page.body
@@ -42,33 +48,15 @@ describe "user browse" do
       end
 
       it "paginates forward only if on the first page" do
-        u = Factory(:user)
-        a = Factory(:authorization, :user => u)
-
-        log_in(u, a.uid)
-
-        51.times do
-          u2 = Factory(:user)
-        end
-
-        visit "/users"
+        visit "/users?per_page=3"
 
         refute_match "Previous", page.body
         assert_match "Next", page.body
       end
 
       it "paginates backward only if on the last page" do
-        u = Factory(:user)
-        a = Factory(:authorization, :user => u)
+        visit "/users?per_page=3"
 
-        log_in(u, a.uid)
-
-        51.times do
-          u2 = Factory(:user)
-        end
-
-        visit "/users"
-        click_link "next_button"
         click_link "next_button"
 
         refute_match "Next", page.body
@@ -76,16 +64,7 @@ describe "user browse" do
       end
 
       it "paginates forward and backward if on a middle page" do
-        u = Factory(:user)
-        a = Factory(:authorization, :user => u)
-
-        log_in(u, a.uid)
-
-        51.times do
-          u2 = Factory(:user)
-        end
-
-        visit "/users"
+        visit "/users?per_page=2"
 
         click_link "next_button"
 
@@ -144,40 +123,35 @@ describe "user browse" do
     end
 
     describe "pagination" do
-      it "does not paginate when there are too few" do
+      before do
         u = Factory(:user, :username => "alpha")
         a = Factory(:authorization, :user => u)
 
         log_in(u, a.uid)
 
-        visit "/users/a"
+        5.times do
+          u2 = Factory(:user)
+        end
+      end
+
+      it "does not paginate when there are too few" do
+        visit "/users?letter=U"
 
         refute_match "Previous", page.body
         refute_match "Next", page.body
       end
 
       it "paginates forward only if on the first page" do
-        visit "/users"
-
-        49.times do
-          u2 = Factory(:user)
-        end
-
-        click_link "U"
+        visit "/users?letter=U&per_page=3"
 
         refute_match "Previous", page.body
         assert_match "Next", page.body
       end
 
       it "paginates backward only if on the last page" do
-        visit "/users"
-
-        49.times do
-          u2 = Factory(:user)
-        end
         u2 = Factory(:user, :username => "uzzzzz")
 
-        click_link "U"
+        visit "/users?letter=U&per_page=3"
         click_link "next_button"
 
         assert_match u2.username, page.body
@@ -186,15 +160,8 @@ describe "user browse" do
       end
 
       it "paginates forward and backward if on a middle page" do
-        visit "/users"
+        visit "/users?letter=U&per_page=2"
 
-        77.times do
-          u2 = Factory(:user)
-        end
-        u2 = Factory(:user, :username => "uzzzzz")
-
-        click_link "U"
-        click_link "next_button"
         click_link "next_button"
 
         assert_match "Previous", page.body

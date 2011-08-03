@@ -1,24 +1,8 @@
 #footer
   #footer-wrap
-    #logo
+    #footer-logo
       %a{:href=>"/"}
         rstat.us
-    %ul
-      %li
-        %a{:href=>"/home"}
-          Home
-      - unless logged_in?
-        %li
-          %a{:href=>"/login"}
-            Login/Signup
-      %li
-        %a{:href=>"/contact"}
-          Contact
-      - if ENV['BLOG_URL']
-        %li
-          %a{:href=>ENV['BLOG_URL']}
-            Blog
-      %li
-        %a{:href=>"/open_source"}
-          Open Source
+    != haml :"shared/menu/_footer"
+
 

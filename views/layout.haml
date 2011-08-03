@@ -1,63 +1,32 @@
-!!! 5
+!!!5
 %html.no-js{:lang => "en"}
   != haml :"shared/_head"
-  %body.internal
-    #main
-      #left
-        #logo
-          %a{:href=>"/"}
-            %h2
-              rstat.us
-        - if current_user
-          #profile.vcard
-            %h3 Profile
-            .profile-wrap
-              .avatar
-                %a{:href=>"/users/#{current_user.username}"}
-                  %img.photo{:alt => "avatar", :src => (current_user.author.avatar_url ||= "asdfasdf")}/
-              .userinfo
-                .nickname
-                  %a.url{:href=>"/users/#{current_user.username}"}
-                    = current_user.username
-                .stats
-                  .following
-                    Following:
-                    %a{ :href => "/users/#{current_user.username}/following"}
-                      #{current_user.following.length}
-                  .followers
-                    Followers:
-                    %a{ :href => "/users/#{current_user.username}/followers"}
-                      #{current_user.followers.length}
-                  .updates
-                    Updates: #{current_user.feed.updates.count}
-                  .edit-profile
-                    %a{ :href => "/users/#{current_user.username}/edit"}
-                      Edit profile
-
-          .links
-            %a{:href => "/follow"} Would you like to follow someone not on rstat.us?
-
-          .links
-            %a{:href => "/search"} Search Updates
-
-          .links
-            %a{:href => "/users"} Browse rstat.us users
-
-          .links
-            %a{:href => "/feeds/#{current_user.feed.id}.atom"} Atom
-
-          .logout
-            %a{:href => "/logout"}
-              Logout
-
-      #right
-        != @error_bar
-
-        #content
+  %body
+    != haml :"shared/_header"          
+    != @error_bar
+  
+    #page
+      #content-wrap
+        - title =  yield_content :title
+        - unless title.empty?
+          %h2.title #{title}
+        #top
+          != haml :"shared/_flash"
           != yield_content :top
 
-          != haml :"shared/_flash"
-
+        #content
           != yield
+          
+        != yield_content :bottom
+      
+      #sidebar
+        != haml :"shared/sidebar/_profile" unless @profile_sidebar == false
+
+        - if @current_user
+          != haml :"shared/sidebar/_help"
+        - else
+          != haml :"shared/sidebar/_signup"
+
+        != yield_content :sidebar
 
     != haml :"shared/_footer"

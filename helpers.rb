@@ -38,10 +38,8 @@ module Sinatra
     # different routes we have this handy helper that either picks up
     # the previous setting or resets it to a default value.
     def set_params_page
-      params[:page] ||= 1
-      params[:per_page] ||= 25
-      params[:page] = params[:page].to_i
-      params[:per_page] = params[:per_page].to_i
+      params[:page] = params.fetch("page"){1}.to_i
+      params[:per_page] = params.fetch("per_page"){20}.to_i
     end
 
     # Similar to the set_params_page helper this one creates the links
@@ -49,15 +47,23 @@ module Sinatra
     # stuff on more than one page.
     #If needed it can also take options for more parameters
     def set_pagination_buttons(data, options = {})
-      return if data.nil?
+      return if data.nil? || data.empty?
 
       if data.next_page
-        params = {:page => data.next_page}.merge(options)
+        params = {
+                   :page     => data.next_page,
+                   :per_page => data.per_page
+                 }.merge(options)
+
         @next_page = "?#{Rack::Utils.build_query params}"
       end
 
       if data.previous_page
-        params = {:page => data.previous_page}.merge(options)
+        params = {
+                   :page     => data.previous_page,
+                   :per_page => data.per_page
+                 }.merge(options)
+
         @prev_page = "?#{Rack::Utils.build_query params}"
       end
     end
@@ -79,6 +85,20 @@ module Sinatra
 
     def show_layout?
       !pjax_request?
+    end
+
+    def menu_item(name, url, options = {})
+      icon = options.fetch(:icon){ false }
+      classes = options.fetch(:classes){ [] }
+      
+      classes << name.downcase.gsub(" ", "_")
+      classes << (request.path_info == url ? "active" : "")  
+    
+      "<li class='#{classes.join(" ")}'>
+        <a href='#{url}'>" +
+        (icon ? "<div class='icon'></div>" : "") + 
+        "#{name}</a>
+      </li>"
     end
 
   end

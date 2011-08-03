@@ -1,119 +1,148 @@
-/* Layout
-*******************************************/
+@import "lib/base";
+
 body {
-	background-color: white;
-	font-family: Arial, sans-serif;
-  font-size: 12px;
-	padding: 0;
+  background: $background_color;
+  color: $text_color;
+  min-width: 840px;
 }
 
-#main {
-  background: #f3f3f3;
+#header, #page, #footer {
   @include container();
-  padding-top: 3em;
-  margin-top: 0;
-  padding-bottom: 2em;
 }
 
-#flash, #error {
-  padding: 0.75em;
-  font-size: 1.2em;
+.menu {
+  @include clearfix;
+
+  li {
+    float: left;
+    list-style-type: none;
+    padding: 0 0.5em;
+  }
+}
+
+/* *******************************/
+/* Header */
+/* *******************************/
+#header-wrap {
   color: white;
-  background: #aaa;
-  margin-bottom: 1em;
-}
-
-#error {
-  background: #990000;
-  p {
-    margin: 0.5em 0;
-  }
-  a {
-    color: #66ffff;
-  }
-  ul {
-    margin-left: 1em;
-  }
-}
-
-/* Homepage */
-body#home {
+  background: $header_color;
+  margin-bottom: 1.5em;
+  @include clearfix;  
+  
   #header {
     @include clearfix;
-
-    h2#logo {
-      @include column(16);
+    #logo {
+      float: left;
+      padding: 1em $gutter_width/2;
+      h1 {
+        @include image-replaced("/assets/images/embed/logo-sm.png", 96px, 33px);
+        margin: 0;
+      }      
     }
-    #login {
-      @include column(8);
-      @include last;
+    .menu {
+      margin-top: 1.75em;
+      float: left;
+    }
+    
+    #profile_menu {
+      float: right;
+      
+      a {
+        color: $de_emph_text_color;
+      }
     }
   }
+}
 
-  #pitch {
+/* *******************************/
+/* Flashes */
+/* *******************************/
+#error {
+  padding: 0 1em 1em;
+  color: red;
+  
+  ul {
+    padding-left: 2em;
+  }
+}
+
+/* *******************************/
+/* Main Content */
+/* *******************************/
+#content-wrap {
+  @include column(14);
+  @include rounded(4px);
+  background: $content_background;  
+  padding-top: $gutter_width/2;
+}
+
+h2.title {
+  padding: 0 $gutter_width;
+}
+
+#top {
+  margin: 0 $gutter_width/2;
+}
+#content {
+  @include content-block;
+  margin-top: 0;
+  .loading {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: #ddd;
+    opacity: 0.5;
+  }
+  
+  .pagination {
     @include clearfix;
-    .col {
-      @include column(8);
-    }
-    .last-col {
-      @include last;
-    }
-  }
+    margin: 0;
 
-  #home-bottom {
-    #manifesto {
-      @include column(9);
+    .button {
+      margin: 0;
+      margin-top: 1em;
     }
-    #recent {
-      @include column(14);
-      @include last;
+
+    #next_button {
+      float: right;
+      margin-right: 0.5em;
     }
-  }
-}
-
-/* Internal */
-#main {
-  #left {
-    @include prepend(1);
-    @include column(6);
-  }
-
-  #right {
-    @include column(14);
-    @include last;
+    #prev_button {
+      float: left;
+      margin-left: 0.5em;
+    }
   }
 }
 
-.internal #main, .internal #footer {
-  width: 880px;
+/* *******************************/
+/* Sidebar */
+/* *******************************/
+#sidebar {
+  @include column(6);
+  @include last;
+    
+  .block {
+    margin-left: 1em;
+    padding-top: 1em;
+    border-bottom: 1px solid #ccc;
+  
+  }
 }
 
+/* *******************************/
 /* Footer */
+/* *******************************/
 #footer {
   #footer-wrap {
-    padding: 1em;
+    padding: $gutter_width $gutter_width/2;    
     @include clearfix;
   }
-  @include container();
-  border-top: 1px solid #ccc;
-
-  #logo {
+  #footer-logo {
     float: left;
-    a {
-      @include image-replaced("/assets/images/embed/logo-xs.png", 71px, 20px)
-    }
-  }
-  ul {
-    float: left;
-    @include clearfix;
-    padding-left: 1em;
-    padding-top: 0.25em;
-    li {
-      list-style-type: none;
-      float: left;
-      padding-left: 1em;
-      border-left: 1px solid #ddd;
-      padding-right: 1em;
-    }
+    padding-right: 1em;
+    border-right: 1px solid #ccc;
+    margin-right: 0.5em;
   }
 }

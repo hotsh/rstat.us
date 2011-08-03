@@ -1,9 +1,14 @@
-!= haml :"users/_errors", :locals => {:user => @user}
+- content_for :title do
+  Pick a new username
 
-%h2 Pick a new username
+- content_for :top do
+  != haml :"users/_errors", :locals => {:user => @user}
+
+%p You're almost done! Choose a username to log in.
 
 %form{:action => "/users", :method => "POST"}
-  %label{:for => "username"} Username:
-  %input{:type => "text", :name => "username", :id => "username"}
-  %br/
-  %input{:type => "submit", :value => "Finish Signup"}
+  .form-section
+    != haml :"shared/_field", :locals => {:attr => :username, :params => params}
+  
+  .form-submit  
+    %input.button{:type => "submit", :value => "Finish Signup"}

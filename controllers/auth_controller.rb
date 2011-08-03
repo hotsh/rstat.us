@@ -42,15 +42,14 @@ class Rstatus
         if User.first :username => auth['user_info']['nickname']
           flash[:error] = "Sorry, someone else has that username. Please pick another."
           redirect '/users/new'
-          return
         elsif auth['user_info']['nickname'] =~ /profile[.]php[?]id=/
           flash[:error] = "Please choose a username."
           redirect '/users/new'
-          return
         else
           redirect '/users/confirm'
-          return
         end
+
+        return
       end
     end
 
