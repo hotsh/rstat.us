@@ -41,6 +41,7 @@ gem "sprockets", "2.0.0.beta.10"
 gem "rack-mount", :require => "rack/mount"
 gem "uglifier"
 gem 'coffee-script'
+gem "unicorn"
 
 # background job queue
 gem "delayed_job", :git => "git://github.com/collectiveidea/delayed_job.git", :tag => "v2.1.4"

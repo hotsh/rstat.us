@@ -114,6 +114,7 @@ GEM
       yui-compressor (>= 0.9.3)
     json (1.5.1)
     json_pure (1.5.1)
+    kgio (2.6.0)
     launchy (0.4.0)
       configuration (>= 0.0.5)
       rake (>= 0.8.1)
@@ -218,6 +219,7 @@ GEM
       activesupport (= 3.0.7)
       rake (>= 0.8.7)
       thor (~> 0.14.4)
+    raindrops (0.7.0)
     rake (0.8.7)
     ratom (0.6.8)
       libxml-ruby (>= 1.1.2)
@@ -280,6 +282,10 @@ GEM
     uglifier (0.5.1)
       execjs
       json
+    unicorn (4.0.1)
+      kgio (~> 2.4)
+      rack
+      raindrops (~> 0.6)
     uuidtools (2.1.2)
     vcr (1.7.2)
     webmock (1.6.2)
@@ -349,6 +355,7 @@ DEPENDENCIES
   twitter
   tzinfo
   uglifier
+  unicorn
   vcr
   webmock
   whatlanguage
