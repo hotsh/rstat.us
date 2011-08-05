@@ -88,7 +88,7 @@ class Rstatus
       current_user.feed.save
       current_user.save
       # tell hubs there is a new entry
-      current_user.feed.ping_hubs(url(current_user.feed.url))
+      current_user.feed.ping_hubs
 
       flash[:notice] = "Update created."
     end
