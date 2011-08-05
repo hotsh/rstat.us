@@ -37,7 +37,7 @@ gem "compass"
 gem "tzinfo"
 gem "rsa"
 gem "exceptional"
-gem "sprockets", "2.0.0.beta.10"
+gem "sprockets", :git => "https://github.com/sstephenson/sprockets.git", :tag => "v2.0.0.beta.10"
 gem "rack-mount", :require => "rack/mount"
 gem "uglifier"
 gem 'coffee-script'

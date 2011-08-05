@@ -1,5 +1,6 @@
 %ul.menu#main
   != menu_item("Home", "/")
+  != menu_item("Updates", "/updates") unless current_user
   != menu_item("Search", "/search")
   != menu_item("Users", "/users")
   
