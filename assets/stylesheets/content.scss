@@ -365,6 +365,10 @@
     
     .avatar, .info {
       float: left;
+
+      a img {
+        width: 48px;
+      }
     }
     .info {
       @include column(8);
