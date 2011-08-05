@@ -55,9 +55,5 @@
         .icon
         %a{ :href => "/users/#{@author.username}/followers"}= @author.user.followers.length
         Followers
-      %li.atom.last
-        .icon
-        %a{} Atom
-        Feed
         
 != haml :"updates/_list", :locals => {:updates => @updates, :id => "profile_updates", :no_highlight => true}
