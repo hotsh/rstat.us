@@ -13,6 +13,7 @@ class User
   # Associations
   many :authorizations, :dependant => :destroy
   belongs_to :author
+  key :author_id, ObjectId
 
   # Users MUST have a username
   key :username, String, :required => true

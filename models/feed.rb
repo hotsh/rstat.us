@@ -24,6 +24,8 @@ class Feed
   key :hubs, Array
 
   belongs_to :author
+  key :author_id, ObjectId
+
   many :updates
 
   timestamps!
