@@ -21,7 +21,6 @@ class Rstatus
     username = params[:username][/^.*?\:(.*?)@/, 1] || params[:username]
 
     @user = User.first :username => /^#{username}$/i
-    @base_url = url("/")
 
     content_type "application/xrd+xml"
     haml :"xml/webfinger/xrd", :layout => false
