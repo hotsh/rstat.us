@@ -94,18 +94,18 @@ class Feed
   # Pings hub
   # needs absolute url for feed to give to hub for callback
   def ping_hubs
-    feed_url = "http://#{author.domain}/feeds/#{id}.atom"
+    feed_url = "#{url}.atom"
     puts feed_url
     OPub::Publisher.new(feed_url, hubs).ping_hubs
   end
 
   def local?
-    url.start_with?("http://#{author.domain}/")
+    remote_url.nil?
   end
 
   def url
     if remote_url.nil?
-      "/feeds/#{id}"
+      "http://#{author.domain}/feeds/#{id}"
     else
       remote_url
     end
