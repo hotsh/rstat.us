@@ -12,6 +12,14 @@ namespace :jobs do
     end
   end
 
+  desc "Spawn a worker"
+  task :spawn do
+    require_relative '../rstatus.rb'
+
+    worker = Delayed::Worker.new(:min_priority => ENV['MIN_PRIORITY'], :max_priority => ENV['MAX_PRIORITY'], :quiet => false)
+    worker.start
+  end
+
   desc "Clear all outstanding jobs."
   task :clear do
     require_relative '../rstatus.rb'
