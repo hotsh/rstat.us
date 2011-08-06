@@ -13,7 +13,7 @@ $(document).ready ->
   #########################################
   
   # Set equal heights for 3-column area
-  $("#pitch").equalHeights()
+  # $("#pitch").equalHeights()
   
   #########################################
   # Updates
