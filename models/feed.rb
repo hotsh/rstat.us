@@ -100,7 +100,7 @@ class Feed
   end
 
   def local?
-    url.start_with?("/")
+    url.start_with?("http://#{author.domain}/")
   end
 
   def url
