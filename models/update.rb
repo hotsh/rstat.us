@@ -60,7 +60,7 @@ class Update
     feed.local? ? "/updates/#{id}" : remote_url
   end
 
-  def url=(the_url)
+  def url= the_url
     self.remote_url = the_url
   end
 
