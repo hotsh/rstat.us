@@ -104,7 +104,7 @@ class Feed
   end
 
   def url
-    if remote_url.nil?
+    if remote_url.nil? && author
       "http://#{author.domain}/feeds/#{id}"
     else
       remote_url

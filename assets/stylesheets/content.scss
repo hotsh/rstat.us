@@ -14,7 +14,7 @@
   margin: 5px 5px 0 5px;
   -webkit-box-shadow: 0px 0px 4px #bbb;
   float: left;
-  background: url('/assets/images/embed/nav-background.png') center bottom repeat-x;  
+  background: url('/images/embed/nav-background.png') center bottom repeat-x;  
 }
 
 #updates-menu {
@@ -32,7 +32,7 @@
     border-right: 1px solid #f7f7f7;
     
     .icon {
-      @include image_replaced('/assets/images/icons_sprite.png', 24px, 16px);
+      @include image_replaced('/images/icons_sprite.png', 24px, 16px);
     }
     .icon, a { 
       float: left; 
@@ -289,7 +289,7 @@
         float: left;
         margin-top: 2px;
         margin-right: 0.5em;
-        @include image_replaced('/assets/images/icons_sprite.png', 24px, 16px);
+        @include image_replaced('/images/icons_sprite.png', 24px, 16px);
       }
     }
     
