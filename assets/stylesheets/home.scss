@@ -4,16 +4,16 @@
   #header-wrap {
     margin-bottom: 0;
   }
+  .wrap {
+    @include container();      
+  }
+
   #welcome {
-    .wrap {
-      @include container();      
-    }
     background: $link_color;
     padding: 1.5em;
-    margin-bottom: 1em;
     
     border-top: 1px solid $link_color + #222;
-    border-bottom: 1px solid $link_color - #222;
+    border-bottom: 1px solid $link_color + #222;
 
     h1, h3 {
       margin: 0;
@@ -23,9 +23,16 @@
       float: left;
 
       color: white;
-      @include text-shadow(0, 1px, 0, black);
+      @include text-shadow(0, 1px, 0, rgba(0,0,0,0.5));
 
     }
+  }
+  
+  #pitch {
+    border-top: 1px solid $link_color;
+    border-bottom: 1px solid #999;
+    background: white;
+    margin-bottom: 2em;
   }
   
   #signup {
@@ -43,10 +50,34 @@
     .option {
       float: left;
       padding-right: 1em;
-      .button {
-/*        font-size: 1.2em;
-        padding: 0.5em 1em;
-*/      }
     } 
+  }
+  #content-wrap {
+    @include column(11);
+    #top {
+      padding: 0.5em;
+      h3, p {
+        margin-bottom: 0;
+      }
+    }
+    #bottom {
+      @include clearfix;
+      padding: 0 1em 1em 1em;
+      
+      .login {
+        float: left;
+        font-weight: bold;
+        @include text-shadow(0, 1px, 0, rgba(255,255,255,1));
+      }
+      .read-more {
+        float: right;
+        a { color: $text_color;}
+      }
+    }
+  }
+  #sidebar {
+    @include column(8);
+    @include prepend(1);
+    @include last;
   }
 }
