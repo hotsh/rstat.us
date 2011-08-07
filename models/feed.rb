@@ -137,7 +137,7 @@ class Feed
     os_auth = author.to_atom
 
     # Gather entries as OStatus::Entry objects
-    entries = updates.to_a.sort{|a, b| b.created_at <=> a.created_at}.map do |update|
+    entries = updates.sort(:created_at.desc).limit(15).to_a.map do |update|
       update.to_atom(base_uri)
     end
 
