@@ -14,7 +14,7 @@
       - else
         = update.created_at.ago_in_words
     
-    .end-links
+    .actions
       -unless current_user.nil? or (current_user.author.id == update.author.id)
         %a.share{:href => "/?share=#{update.id}"} share
         |

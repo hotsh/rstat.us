@@ -124,17 +124,6 @@
     
     .actions {
       display: none;
-      float: right;
-      
-      form {
-        margin: 0;
-      }
-      .remove-update {
-        cursor: pointer;
-        float: right;
-        border: none;
-        @include image-replaced('/images/embed/trash.png', 13px, 16px)
-      }
     }
 
     &:hover .actions {
@@ -155,6 +144,20 @@
     color: #bbb;
   }
 }  
+
+.actions {
+  float: right;
+  
+  form {
+    margin: 0;
+  }
+  .remove-update {
+    cursor: pointer;
+    float: right;
+    border: none;
+    @include image-replaced('/images/embed/trash.png', 13px, 16px)
+  }
+}
 
 /* ****************************** */
 /* Single Update  */
