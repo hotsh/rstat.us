@@ -2,7 +2,9 @@
 %html.no-js{:lang => "en"}
   != render :partial => :"shared/_head"
   %body#home
-    != render :partial => :"shared/_header"
+    != render :partial => :"shared/_header"          
+    != @error_bar
+    != render :partial => :"shared/_flash"
 
     #welcome
       .wrap
@@ -25,62 +27,58 @@
               %span.icon.comment
               Username
 
+    #pitch
+      .wrap
+        %a#col-1.col{:href=>'/login'}          
+          .content
+            %h3
+              Sign Up
+            with Twitter or Facebook, or create a new account
+          %img{:src => "/assets/images/slide1.png"}
+        #col-2.col
+          .content
+            %h3
+              Connect
+            to your friends and family around the world
+          %img{:src => "/assets/images/slide2.png"}
+        #col-3.col.last-col
+          .content
+            %h3
+              Share
+            your thoughts in 140 characters or less
+          %img{:src => "/assets/images/slide3.png"}
 
     #page
-
-      #top
-
-      #left
-        .updates
+      #content-wrap
+        #top
           %h3 Recent updates
-          != render :partial => :"updates/_list", :locals => {:updates => Update.hot_updates}
-          .world-link
-            %a{:href => "/updates"}
-              more...
-          %h4
+          %p What people are talking about right now
+        #content
+          .updates
+            != render :partial => :"updates/_list", :locals => {:updates => Update.hot_updates}
+        #bottom
+          .login
             %a{:href => "/login"}
               Join the conversation
-      #right
+          .read-more
+            %a{:href => "/updates"}
+              more...
+      #sidebar
         #manifesto
-          .wrap
-            :markdown
-              ## rstat.us?
+          :markdown
+            ### rstat.us?
 
-              Microblogging has taken the world by storm. Millions of people around the world now share their thoughts with friends, family, and random strangers every day. Links are shared, stories are told, and events are discussed. rstatus is the newest place to participate in the collective conscious of the planet.
+            Microblogging has taken the world by storm. Millions of people around the world now share their thoughts with friends, family, and random strangers every day. Links are shared, stories are told, and events are discussed. rstatus is the newest place to participate in the collective conscious of the planet.
 
-              ### What's different about it?
+            ### What's different about it?
 
-              There are two things that make rstat.us special: _simplicity_ and _openness_.
+            There are two things that make rstat.us special: _simplicity_ and _openness_.
 
-              **Simplicity** is a core 'feature' of rstat.us. We pride ourselves on saying 'no' to lots of features. Our interface is clean, and easy to understand. We give you just enough features to be interesting, but not enough to be complicated and confusing.
+            **Simplicity** is a core 'feature' of rstat.us. We pride ourselves on saying 'no' to lots of features. Our interface is clean, and easy to understand. We give you just enough features to be interesting, but not enough to be complicated and confusing.
 
-              If you're a software developer, you'll probably want to check out our [Open Source page](/open_source). If that's greek to you, here's the deal on **Openness**: the programming code that makes up rstat.us is available for anyone to download, free of charge. Programmers can use that code to run their own websites just like rstat.us, and you can subscribe to your friends on any site that supports the [OStatus protocol](http://ostatus.org/about), like [identi.ca](http://identi.ca/). This also means that you can own your data, we'll never stop you from having full access to everything you've put into rstat.us.
+            If you're a software developer, you'll probably want to check out our [Open Source page](/open_source). If that's greek to you, here's the deal on **Openness**: the programming code that makes up rstat.us is available for anyone to download, free of charge. Programmers can use that code to run their own websites just like rstat.us, and you can subscribe to your friends on any site that supports the [OStatus protocol](http://ostatus.org/about), like [identi.ca](http://identi.ca/). This also means that you can own your data, we'll never stop you from having full access to everything you've put into rstat.us.
 
-              \- The **rstat.us** team
+            \- The **rstat.us** team
         
 
-    .content
-      != render :partial => :"shared/_flash"
-
-      #pitch
-        %a#col-1.col{:href=>'/login'}
-          %h2.title
-            Sign Up
-          .content
-            with Twitter or Facebook, or create a new account
-        #col-2.col
-          %h2.title
-            Connect
-          .content
-            to your friends and family around the world
-        #col-3.col.last-col
-          %h2.title
-            Share
-          .content
-            your thoughts in 140 characters or less
-      #home-bottom
-        #recent
-
-
     != render :partial => :"shared/_footer"
-

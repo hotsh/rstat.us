@@ -1,0 +1,114 @@
+@import "lib/base";
+
+#home {
+  #header-wrap {
+    margin-bottom: 0;
+  }
+  .wrap {
+    @include container();      
+  }
+
+  #welcome {
+    background: $link_color;
+    padding: 1.5em;
+    
+    border-top: 1px solid $link_color + #222;
+    border-bottom: 1px solid $link_color + #222;
+
+    h1, h3 {
+      margin: 0;
+    }      
+
+    #intro {
+      float: left;
+
+      color: white;
+      @include text-shadow(0, 1px, 0, rgba(0,0,0,0.5));
+
+    }
+  }
+  
+  #pitch {
+    border-top: 1px solid $link_color;
+    border-bottom: 1px solid #999;
+    background: white;
+    margin-bottom: 2em;
+    @include clearfix;
+    .wrap {
+      width: 850px;
+    }
+    
+    a {
+      color: $text_color;
+    }
+    a:hover {
+      text-decoration: none;
+    }
+    
+    .col {
+      width: 270px;
+      padding-right: 10px;
+      margin-right: 9px;
+      border-right: 1px solid #ccc;
+      float: left;
+      .content {
+        padding: 1.75em;
+        h3 {
+          margin-bottom: 0.1em;
+        }
+      }
+    }
+    .last-col {
+      padding: 0;
+      margin: 0;
+      border: none;
+    }
+  }
+  
+  #signup {
+    float: right;
+    @include clearfix;
+    @include rounded(4px);
+    background: $content_background; 
+    padding: 1em;
+    
+    h3 {
+      float: left;
+      padding-top: 0.35em;
+      padding-right: 1em;
+    }
+    .option {
+      float: left;
+      padding-right: 1em;
+    } 
+  }
+  #content-wrap {
+    @include column(11);
+    #top {
+      padding: 0.5em;
+      h3, p {
+        margin-bottom: 0;
+      }
+    }
+    #bottom {
+      @include clearfix;
+      padding: 0 1em 1em 1em;
+      
+      .login {
+        float: left;
+        font-weight: bold;
+        @include text-shadow(0, 1px, 0, rgba(255,255,255,1));
+      }
+      .read-more {
+        float: right;
+        a { color: $text_color;}
+      }
+    }
+  }
+  #sidebar {
+    @include column(8);
+    padding-left: 1em;
+    padding-top: 1.5em;
+    @include last;
+  }
+}
