@@ -68,7 +68,14 @@ class Feed
 
     self.hubs = ostatus_feed.hubs
 
-    populate_entries(ostatus_feed.entries)
+    save
+
+    # Save the first 3 updates in our feed
+    entries = ostatus_feed.entries
+    if entries.length > 3
+      entries = entries[0..2]
+    end
+    populate_entries(entries)
 
     save
   end
@@ -76,18 +83,36 @@ class Feed
   def populate_entries(os_entries)
     os_entries.each do |entry|
       u = Update.first(:url => entry.url)
+      new_update = false
       if u.nil?
-        u = Update.create(:author => self.author,
-                          :created_at => entry.published,
-                          :url => entry.url,
-                          :feed => self,
-                          :updated_at => entry.updated)
-        self.updates << u
+        new_update = true
+        u = Update.new(:author => self.author,
+                       :created_at => entry.published,
+                       :url => entry.url,
+                       :feed => self,
+                       :updated_at => entry.updated)
       end
 
       # Strip HTML
       u.text = Nokogiri::HTML::Document.parse(entry.content).text
+
+      # Truncate text
+      truncation_necessary = u.text.length > 140
+      if truncation_necessary
+        u.text = u.text[0..138]
+      end
+
+      # Generate HTML
+      if truncation_necessary
+        u.html = "#{u.to_html}<a href='#{entry.url}'>\u2026</a>"
+      end
+
+      # Commit
       u.save
+
+      if new_update
+        self.updates << u
+      end
     end
 
     save
