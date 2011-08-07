@@ -1,1 +1,53 @@
 @import "lib/base.css.scss";
+
+#home {
+  #header-wrap {
+    margin-bottom: 0;
+  }
+  #welcome {
+    .wrap {
+      @include container();      
+    }
+    background: $link_color;
+    padding: 1.5em;
+    margin-bottom: 1em;
+    
+    border-top: 1px solid $link_color + #222;
+    border-bottom: 1px solid $link_color - #222;
+
+    h1, h3 {
+      margin: 0;
+    }      
+
+    #intro {
+      float: left;
+
+      color: white;
+      @include text-shadow(0, 1px, 0, black);
+
+    }
+  }
+  
+  #signup {
+    float: right;
+    @include clearfix;
+    @include rounded(4px);
+    background: $content_background; 
+    padding: 1em;
+    
+    h3 {
+      float: left;
+      padding-top: 0.35em;
+      padding-right: 1em;
+    }
+    .option {
+      float: left;
+      padding-right: 1em;
+      .button {
+/*        font-size: 1.2em;
+        padding: 0.5em 1em;
+*/      }
+    } 
+  }
+}
+
