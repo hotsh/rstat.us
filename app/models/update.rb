@@ -148,7 +148,7 @@ class Update
 
           # Is it in update to this author?
           if in_reply_to = referral
-            if authors.contains in_reply_to.author
+            if not authors.index(in_reply_to.author).nil?
               a = in_reply_to.author
             end
           end
