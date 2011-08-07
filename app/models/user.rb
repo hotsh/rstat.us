@@ -397,6 +397,12 @@ class User
     author.website = params[:website]
     author.bio     = params[:bio]
     author.save
+
+    # TODO: Send out notice to other nodes
+    # To each remote domain that is following you via hub
+    # and to each remote domain that you follow via salmon
+    author.feed.ping_hubs
+
     return true
   end
 
