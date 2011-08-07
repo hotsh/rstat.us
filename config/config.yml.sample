@@ -6,3 +6,8 @@ development:
   #set this to the URL of a status blog or the like.
   #if empty, the Blog footer link won't show.
   BLOG_URL:
+
+test:
+  CONSUMER_KEY: asdf
+  CONSUMER_SECRET: asdf
+  BLOG_URL:
