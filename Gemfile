@@ -1,22 +1,20 @@
 source 'http://rubygems.org'
 
-gem 'rails', '3.1.0.rc4'
+gem 'rails', '3.1.0.rc5'
+gem 'sprockets', :git => 'git://github.com/sstephenson/sprockets.git'
 #gem 'rails', :git => 'git://github.com/rails/rails.git'
 
 gem 'sqlite3'
 
 # Asset template engines
 gem 'sass'
-gem 'sass-rails', '3.1.0.rc.4'
+gem 'sass-rails', '3.1.0.rc.5'
 gem 'compass', :git => "git://github.com/chriseppstein/compass.git", :branch => "rails31"
 gem 'coffee-script'
 gem 'uglifier'
 
 gem "haml-rails"
-
 gem 'jquery-rails'
-
-gem 'haml-rails'
 
 # Use unicorn as the web server
 # gem 'unicorn'
