@@ -56,4 +56,4 @@
         %a{ :href => "/users/#{@author.username}/followers"}= @author.user.followers.length
         Followers
         
-!= haml :"updates/_list", :locals => {:updates => @updates, :id => "profile_updates", :no_highlight => true}
+!= haml :"updates/_list", :locals => {:updates => @updates, :id => "profile_updates", :no_highlight => true, :has_update_form => false}
