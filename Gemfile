@@ -16,15 +16,7 @@ gem 'uglifier'
 gem "haml-rails"
 gem 'jquery-rails'
 
-# Use unicorn as the web server
-# gem 'unicorn'
-
-# Deploy with Capistrano
-# gem 'capistrano'
-
-# To use debugger
-# gem 'ruby-debug19', :require => 'ruby-debug'
-
+gem 'unicorn'
 gem "omniauth"
 gem "sinatra", :require => "sinatra/base"
 gem "mongo_mapper"
