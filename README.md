@@ -87,7 +87,7 @@ systems, check out [nodejs.org][node].
 For coffee-script installation, [check the docs][coffee-install].
 
 You may also need the java runtime for asset compression, which is handled by
-jammit using yui compressor and closure compiler. Installing a JDK, such as
+Sprockets. Installing a JDK, such as
 [OpenJDK][openjdk] should do the trick.
 
 [node]: http://nodejs.org
