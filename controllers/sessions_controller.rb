@@ -15,12 +15,12 @@ class Rstatus
   # check if you're there, which is the first half of the `if`. The `else`
   # is your run-of-the-mill login procedure.
   post "/login" do
-    u = User.first :username => params[:username]
+    u = User.first :username => /^#{params[:username]}$/i
     if u.nil?
       # Grab the domain for this author from the request url
       params[:domain] = url("/")[/\:\/\/(.*?)\/$/, 1]
 
-      author = Author.new params
+      author = Author.new :username => params[:username]
 
       @user = User.new params.merge({:author => author})
       if @user.valid?
