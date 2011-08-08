@@ -29,7 +29,7 @@ describe Update do
 
       it "does not make links (after create)" do
         u = Factory(:update, :text => "This is a message mentioning @steveklabnik.")
-        assert_match "This is a message mentioning @steveklabnik.", u.html
+        assert_match "This is a message mentioning @steveklabnik.", u.to_html
       end
     end
 
@@ -45,25 +45,25 @@ describe Update do
 
       it "makes a link (after create)" do
         u = Factory(:update, :text => "This is a message mentioning @SteveKlabnik.")
-        assert_match /\/users\/steveklabnik'>@SteveKlabnik<\/a>/, u.html
+        assert_match /\/users\/steveklabnik'>@SteveKlabnik<\/a>/, u.to_html
       end
     end
 
     describe "existing user with domain" do
-      before do
-        @a = Factory(:author, :username => "steveklabnik",
-                             :domain => "identi.ca",
-                             :remote_url => 'http://identi.ca/steveklabnik')
-      end
-
       it "makes a link (before create)" do
+        @author = Factory(:author, :username => "steveklabnik",
+                                   :domain => "identi.ca",
+                                   :remote_url => 'http://identi.ca/steveklabnik')
         u = Factory.build(:update, :text => "This is a message mentioning @SteveKlabnik@identi.ca.")
-        assert_match /<a href='#{@a.url}'>@SteveKlabnik@identi.ca<\/a>/, u.to_html
+        assert_match /<a href='#{@author.url}'>@SteveKlabnik@identi.ca<\/a>/, u.to_html
       end
 
       it "makes a link (after create)" do
+        @author = Factory(:author, :username => "steveklabnik",
+                                   :domain => "identi.ca",
+                                   :remote_url => 'http://identi.ca/steveklabnik')
         u = Factory(:update, :text => "This is a message mentioning @SteveKlabnik@identi.ca.")
-        assert_match /<a href='#{@a.url}'>@SteveKlabnik@identi.ca<\/a>/, u.html
+        assert_match /<a href='#{@author.url}'>@SteveKlabnik@identi.ca<\/a>/, u.to_html
       end
     end
 
@@ -80,7 +80,7 @@ describe Update do
 
       it "does not make a link (after create)" do
         u = Factory(:update, :text => "@SteveKlabnik @nobody foo@bar.wadus @SteveKlabnik")
-        assert_match "\/users\/steveklabnik'>@SteveKlabnik<\/a> @nobody foo@bar.wadus <a href='http:\/\/#{u.author.domain}\/users\/steveklabnik'>@SteveKlabnik<\/a>", u.html
+        assert_match "\/users\/steveklabnik'>@SteveKlabnik<\/a> @nobody foo@bar.wadus <a href='http:\/\/#{u.author.domain}\/users\/steveklabnik'>@SteveKlabnik<\/a>", u.to_html
       end
     end
   end
@@ -95,9 +95,9 @@ describe Update do
 
     it "makes URLs into links (after create)" do
       u = Factory(:update, :text => "This is a message mentioning http://rstat.us/.")
-      assert_match /<a href='http:\/\/rstat.us\/'>http:\/\/rstat.us\/<\/a>/, u.html
+      assert_match /<a href='http:\/\/rstat.us\/'>http:\/\/rstat.us\/<\/a>/, u.to_html
       u = Factory(:update, :text => "https://github.com/hotsh/rstat.us/issues#issue/11")
-      assert_equal "<a href='https://github.com/hotsh/rstat.us/issues#issue/11'>https://github.com/hotsh/rstat.us/issues#issue/11</a>", u.html
+      assert_equal "<a href='https://github.com/hotsh/rstat.us/issues#issue/11'>https://github.com/hotsh/rstat.us/issues#issue/11</a>", u.to_html
     end
 
     it "makes URLs in this edgecase into links" do
@@ -120,15 +120,16 @@ describe Update do
 
     it "makes links if hash starts a word (after create)" do
       u = Factory(:update, :text => "This is a message with a #hashtag.")
-      assert_match /<a href='\/hashtags\/hashtag'>#hashtag<\/a>/, u.html
+      assert_match /<a href='\/hashtags\/hashtag'>#hashtag<\/a>/, u.to_html
       u = Factory(:update, :text => "This is a message with a#hashtag.")
-      assert_equal "This is a message with a#hashtag.", u.html
+      assert_equal "This is a message with a#hashtag.", u.to_html
     end
 
     it "makes links for both a hashtag and a URL (after create)" do
       u = Factory(:update, :text => "This is a message with a #hashtag and mentions http://rstat.us/.")
-      assert_match /<a href='\/hashtags\/hashtag'>#hashtag<\/a>/, u.html
-      assert_match /<a href='http:\/\/rstat.us\/'>http:\/\/rstat.us\/<\/a>/, u.html
+
+      assert_match /<a href='\/hashtags\/hashtag'>#hashtag<\/a>/, u.to_html
+      assert_match /<a href='http:\/\/rstat.us\/'>http:\/\/rstat.us\/<\/a>/, u.to_html
     end
 
     it "extracts hashtags" do

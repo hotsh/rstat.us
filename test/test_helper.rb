@@ -1,4 +1,5 @@
 require "minitest/autorun"
+require "webmock/test_unit"
 
 ENV["RAILS_ENV"] = "test"
 require File.expand_path('../../config/environment', __FILE__)

@@ -1,8 +1,22 @@
 # encoding: UTF-8
 require_relative '../test_helper'
+require "webmock"
+include WebMock::API
 
 describe User do
   include TestHelper
+
+  def stub_superfeedr_request_for_user(user)
+    user_feed_url = CGI.escape(user.feed.url(true)).downcase
+
+    stub_request(:post, "http://rstatus.superfeedr.com/").
+      with(:body => "hub.mode=publish&hub.url=#{user_feed_url}",
+           :headers => { 'Accept' => '*/*', 
+                         'Content-Type' => 'application/x-www-form-urlencoded', 
+                         'User-Agent' => 'Ruby'}).
+      to_return(:status => 200, :body => "", :headers => {})      
+  end
+
   describe "#at_replies" do
     it "returns all at_replies for this user" do
       u = Factory(:user, :username => "steve")
@@ -24,6 +38,7 @@ describe User do
   end
 
   describe "username" do
+    
     it "must be unique" do
       Factory(:user, :username => "steve")
       u = Factory.build(:user, :username => "steve")
@@ -94,6 +109,9 @@ describe User do
   describe "email" do
     it "changes email" do
       u = Factory.create(:user)
+      
+      stub_superfeedr_request_for_user u
+      
       u.edit_user_profile(:email => 'team@jackhq.com')
       u.save
       assert_equal u.email_confirmed, false
@@ -131,6 +149,9 @@ describe User do
   describe "email confirmation" do
     it "allows unconfirmed emails to be entered more than once" do
       u = Factory.create(:user)
+      
+      stub_superfeedr_request_for_user u
+
       u.edit_user_profile(:email => 'team@jackhq.com')
 
       u2 = Factory.create(:user)
@@ -140,10 +161,13 @@ describe User do
 
     it "does not allow confirmed emails to be entered more than once" do
       u = Factory.create(:user)
+      stub_superfeedr_request_for_user u
       u.edit_user_profile(:email => 'team@jackhq.com')
       u.email_confirmed = true
       u.save
+
       u2 = Factory.create(:user)
+      stub_superfeedr_request_for_user u2
       u2.edit_user_profile(:email => 'team@jackhq.com')
 
       refute u2.valid?

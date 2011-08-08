@@ -17,6 +17,7 @@ describe Author do
   end
 
   describe "#avatar_url" do
+    
     it "returns image_url as avatar_url if image_url is set" do
       image_url = 'http://example.net/cool-avatar'
       @author.image_url = image_url
@@ -34,7 +35,12 @@ describe Author do
     end
   end
 
-  describe "#display_name" do
+  describe "#display_name" do    
+    
+    before do 
+      @author = Factory.build :author, :username => "james", :email => nil, :image_url => nil
+    end
+    
     it "uses the username if name is not set" do
       @author.name = nil
       assert_equal @author.display_name, @author.username
