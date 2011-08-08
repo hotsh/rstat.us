@@ -15,7 +15,7 @@
         .bio
           = author.bio
 
-      - if current_user && current_user.feed != author.feed
+      - if current_user && current_user.feed != author.feed && author.feed
         / - unfollow_url = author.feed.local? ? "/users/#{author.username}/unfollow" : "/feeds/#{author.feed.id}/unsubscribe"
 
         - following = current_user.following?(author.feed.url)

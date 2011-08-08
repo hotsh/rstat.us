@@ -13,7 +13,7 @@ class SessionsController < ApplicationController
     u = User.first :username => params[:username]
     if u.nil?
       # Grab the domain for this author from the request url
-      params[:domain] = url("/")[/\:\/\/(.*?)\/$/, 1]
+      params[:domain] = root_path()[/\:\/\/(.*?)\/$/, 1]
 
       author = Author.new params
 
@@ -25,6 +25,7 @@ class SessionsController < ApplicationController
           session[:user_id] = @user.id
           flash[:notice] = "Thanks for signing up!"
           redirect_to "/"
+          return
         else
           @user.errors.add(:password, "can't be empty")
         end
@@ -37,9 +38,11 @@ class SessionsController < ApplicationController
         flash[:notice] = "Login successful."
         redirect_to "/"
         return
+        return
       end
       flash[:error] = "The username exists; the password you entered was incorrect. If you are trying to create a new account, please choose a different username."
       redirect_to "/login"
+      return
     end
   end
 

@@ -22,6 +22,6 @@
   .empty
     Sorry, no users that match.
 - else
-  = render "users/_list", :locals => {:authors => @authors}
+  = render :partial => "users/list", :locals => {:authors => @authors}
 
-= render "shared/_pagination"
+= render :partial => "shared/pagination"

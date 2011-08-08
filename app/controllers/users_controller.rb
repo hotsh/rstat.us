@@ -30,7 +30,6 @@ class UsersController < ApplicationController
     else
       set_pagination_buttons(@authors)
     end
-    haml :"users/index"
   end
 
   def show
