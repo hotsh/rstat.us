@@ -56,8 +56,6 @@ class UsersController < ApplicationController
 
   def edit
     @user = User.first :username => params[:id]
-    puts @user
-    puts current_user
 
     # While it might be cool to edit other people's profiles, we probably
     # shouldn't let you do that. We're no fun.
@@ -75,7 +73,7 @@ class UsersController < ApplicationController
       if response == true
         flash[:notice] = "Profile saved!"
         redirect_to user_path(params[:id])
-        
+
         unless @user.email_confirmed
           # Generate same token as password reset....
           Notifier.send_confirm_email_notification(@user.email, @user.set_perishable_token)
