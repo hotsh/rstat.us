@@ -1,7 +1,7 @@
 require_relative '../test_helper'
 
-class AuthorizationTest < MiniTest::Rails::Model
-
+describe Authorization do
+  include TestHelper
   before do
     @u = Factory(:user)
   end

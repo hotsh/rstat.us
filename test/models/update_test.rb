@@ -1,6 +1,7 @@
 require_relative '../test_helper'
 
-class UpdateTest < MiniTest::Rails::Model
+describe Update do
+  include TestHelper
 
   describe "text length" do
     it "is not valid without any text" do

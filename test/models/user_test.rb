@@ -1,8 +1,8 @@
 # encoding: UTF-8
 require_relative '../test_helper'
 
-class UserTest < MiniTest::Rails::Model
-
+describe User do
+  include TestHelper
   describe "#at_replies" do
     it "returns all at_replies for this user" do
       u = Factory(:user, :username => "steve")

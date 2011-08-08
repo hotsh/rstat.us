@@ -1,5 +1,4 @@
 require "minitest/autorun"
-require "minitest/rails"
 
 ENV["RAILS_ENV"] = "test"
 require File.expand_path('../../config/environment', __FILE__)
@@ -9,8 +8,7 @@ MongoMapper.database = "rstatus-test"
 
 require_relative "factories"
 
-class MiniTest::Rails::Spec
-
+module TestHelper
   def setup
     DatabaseCleaner.strategy = :truncation
     DatabaseCleaner.clean_with(:truncation)
@@ -40,12 +38,6 @@ class MiniTest::Rails::Spec
     }
     return hsh
   end
-
 end
 
-# Uncomment to support fixtures in Model tests...
-# require "active_record/fixtures"
-class MiniTest::Rails::Model
-  # include ActiveRecord::TestFixtures
-  # self.fixture_path = File.join(Rails.root, "test", "fixtures")
-end
+
