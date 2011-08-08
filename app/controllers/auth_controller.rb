@@ -17,7 +17,7 @@ class AuthController < ApplicationController
     unless @auth = Authorization.find_from_hash(auth)
       if logged_in?
         Authorization.create_from_hash(auth, uri("/"), current_user)
-        redirect "/users/#{current_user.username}/edit"
+        redirect_to "/users/#{current_user.username}/edit"
       else
 
         # This situation here really sucks. I'd like to do something better,
@@ -41,12 +41,12 @@ class AuthController < ApplicationController
         # their username and enter an email address.
         if User.first :username => auth['user_info']['nickname']
           flash[:error] = "Sorry, someone else has that username. Please pick another."
-          redirect '/users/new'
+          redirect_to '/users/new'
         elsif auth['user_info']['nickname'] =~ /profile[.]php[?]id=/
           flash[:error] = "Please choose a username."
-          redirect '/users/new'
+          redirect_to '/users/new'
         else
-          redirect '/users/confirm'
+          redirect_to '/users/confirm'
         end
 
         return
@@ -68,7 +68,7 @@ class AuthController < ApplicationController
     session[:user_id] = @auth.user.id
 
     flash[:notice] = "You're now logged in."
-    redirect '/'
+    redirect_to '/'
   end
 
   # We have a very simple error handler. If they got the credentials wrong, then we'd
@@ -89,6 +89,6 @@ class AuthController < ApplicationController
       auth = Authorization.first(:provider => params[:provider], :user_id => user.id)
       auth.destroy if auth
     end
-    redirect "/users/#{params[:username]}/edit"
+    redirect_to "/users/#{params[:username]}/edit"
   end
 end

@@ -169,7 +169,7 @@ class UsersController < ApplicationController
       title = "@#{@user.username} is following"
     end
 
-    haml :"users/list", :locals => {:title => title}
+    render "users/list", :locals => {:title => title}
   end
 
   # This shows off how cool you are: I hope you've got the biggest number of
@@ -194,7 +194,7 @@ class UsersController < ApplicationController
       title = "@#{@user.username}'s followers"
     end
 
-    haml :"users/list", :locals => {:title => title}
+    render "users/list", :locals => {:title => title}
   end
 
 end
