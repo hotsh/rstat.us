@@ -76,7 +76,8 @@ class AuthController < ApplicationController
   # 404, because it's not really going to provide any helpful information to the user.
   def failure
     if params[:message] == "invalid_credentials"
-      haml :"signup/invalid_credentials"
+      render "signup/invalid_credentials"
+      return
     else
       raise Sinatra::NotFound
     end
