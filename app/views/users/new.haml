@@ -2,13 +2,13 @@
   Pick a new username
 
 - content_for :top do
-  = render "users/errors", :locals => {:user => @user}
+  = render :partial => "users/errors", :locals => {:user => @user}
 
 %p You're almost done! Choose a username to log in.
 
 %form{:action => "/users", :method => "POST"}
   .form-section
-    = render "shared/field", :locals => {:attr => :username, :params => params}
+    = render :partial => "shared/field", :locals => {:attr => :username, :params => params}
 
   .form-submit
     %input.button{:type => "submit", :value => "Finish Signup"}
