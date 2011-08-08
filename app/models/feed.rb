@@ -129,12 +129,10 @@ class Feed
     remote_url.nil?
   end
 
-  def url
-    if remote_url.nil? && author
-      "http://#{author.domain}/feeds/#{id}"
-    else
-      remote_url
-    end
+  def url(atom_format = false)
+    url = (remote_url.nil? && author) ? "http://#{author.domain}/feeds/#{id}" : remote_url
+    url << ".atom" if atom_format
+    url
   end
 
   def update_entries(atom_xml, callback_url, feed_url, signature)
