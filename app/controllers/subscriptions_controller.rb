@@ -69,7 +69,7 @@ class SubscriptionsController < ApplicationController
     if development?
       puts "Hub post received for #{feed.author.username}."
     end
-    feed.update_entries(request.body.read, request.url, url(feed.url), request.env['HTTP_X_HUB_SIGNATURE'])
+    feed.update_entries(request.body.read, request.url, feed.url, request.env['HTTP_X_HUB_SIGNATURE'])
   end
 
   # A POST is how you subscribe to someone's feed. We want to make sure
@@ -137,7 +137,7 @@ class SubscriptionsController < ApplicationController
       if not f.hubs.empty?
         hub_url = f.hubs.first
 
-        sub = OSub::Subscription.new(url("/subscriptions/#{f.id}.atom"), f.url, f.secret)
+        sub = OSub::Subscription.new(subscription_url(f.id, :format => "atom"), f.url, f.secret)
         sub.subscribe(hub_url, false, f.verify_token)
       end
 

@@ -20,7 +20,7 @@ class SalmonController < ApplicationController
     atom_entry = salmon.entry
     puts atom_entry.to_xml
 
-    if atom_entry.author.uri.start_with?(url("/"))
+    if atom_entry.author.uri.start_with?(root_url)
       # Is a local user, we can ignore salmon
       status 200
       return
@@ -116,10 +116,10 @@ class SalmonController < ApplicationController
       thread = atom_entry.thr_in_reply_to
       if not thread.nil?
         update_url = thread.href
-        if update_url.start_with?(url("/"))
+        if update_url.start_with?(root_url)
           # Local update url
           # Retrieve update id
-          update_id = update_url[/#{url("\/")}updates\/(.*)$/,1]
+          update_id = update_url[/#{root_url}\/updates\/(.*)$/,1]
             u = author.feed.updates.first :remote_url => atom_entry.url
           u.referral_id = update_id
           u.save
