@@ -155,7 +155,7 @@ class UsersController < ApplicationController
     set_params_page
 
     # XXX: case insensitive username
-    @user = User.first(:username => params[:username])
+    @user = User.first(:username => params[:id])
     @feeds = @user.following
 
     @feeds = @feeds.paginate(:page => params[:page], :per_page => params[:per_page], :order => :id.desc)
