@@ -16,7 +16,7 @@ class UpdatesController < ApplicationController
 
   def show
     @update = Update.first(:id => params[:id])
-    render :layout => :update
+    render :layout => "update"
   end
 
   def create
