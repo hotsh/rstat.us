@@ -1,10 +1,10 @@
 !!!5
 %html.no-js{:lang => "en"}
-  != render :partial => :"shared/_head"
+  != render :partial => "shared/head"
   %body#home
-    != render :partial => :"shared/_header"          
+    != render :partial => "shared/header"
     != @error_bar
-    != render :partial => :"shared/_flash"
+    != render :partial => "shared/flash", :locals => {:flash => flash}
 
     #welcome
       .wrap
@@ -29,24 +29,24 @@
 
     #pitch
       .wrap
-        %a#col-1.col{:href=>'/login'}          
+        %a#col-1.col{:href=>'/login'}
           .content
             %h3
               Sign Up
             with Twitter or Facebook, or create a new account
-          %img{:src => "/assets/images/slide1.png"}
+          = image_tag "slide1.png"
         #col-2.col
           .content
             %h3
               Connect
             to your friends and family around the world
-          %img{:src => "/assets/images/slide2.png"}
+          = image_tag "slide2.png"
         #col-3.col.last-col
           .content
             %h3
               Share
             your thoughts in 140 characters or less
-          %img{:src => "/assets/images/slide3.png"}
+          = image_tag "slide3.png"
 
     #page
       #content-wrap
@@ -55,7 +55,7 @@
           %p What people are talking about right now
         #content
           .updates
-            != render :partial => :"updates/_list", :locals => {:updates => Update.hot_updates}
+            != render :partial => "updates/list", :locals => {:updates => Update.hot_updates}
         #bottom
           .login
             %a{:href => "/login"}
@@ -81,4 +81,4 @@
             \- The **rstat.us** team
         
 
-    != render :partial => :"shared/_footer"
+    != render :partial => "shared/footer"
