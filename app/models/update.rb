@@ -176,8 +176,26 @@ class Update
     # Note: Do this first! Otherwise it will add anchors inside anchors!
     out.gsub!(/(http[s]?:\/\/\S+[a-zA-Z0-9\/}])/, "<a href='\\1'>\\1</a>")
 
-    mentions.each do |author|
-      out.gsub!(/(@#{author.username}(?:@#{author.domain})?)/, "a href='#{author.url}'>\\1</a>")
+    # we let almost anything be in a username, except those that mess with urls.
+    # but you can't end in a .:;, or !
+    # also ignore container chars [] () "" '' {}
+    # XXX: the _correct_ solution will be to use an email validator
+    out.gsub!(USERNAME_REGULAR_EXPRESSION) do |match|
+      if $3 and a = Author.first(:username => /^#{$2}$/i, :domain => /^#{$3}$/i)
+        author_url = a.url
+        if author_url.start_with?("/")
+          author_url = "http://#{author.domain}#{author_url}"
+        end
+        "#{$1}<a href='#{author_url}'>@#{$2}@#{$3}</a>"
+      elsif not $3 and a = Author.first(:username => /^#{$2}$/i)
+        author_url = a.url
+        if author_url.start_with?("/")
+          author_url = "http://#{author.domain}#{author_url}"
+        end
+        "#{$1}<a href='#{author_url}'>@#{$2}</a>"
+      else
+        match
+      end
     end
 
     out.gsub!(/(^|\s+)#(\w+)/) do |match|
