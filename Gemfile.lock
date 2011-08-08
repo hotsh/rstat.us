@@ -132,12 +132,6 @@ GEM
       mime-types (~> 1.16)
       treetop (~> 1.4.8)
     mime-types (1.16)
-    minitest (2.3.1)
-    minitest-rails (0.0.5)
-      actionpack (~> 3.1.0.rc1)
-      activesupport (~> 3.1.0.rc1)
-      minitest (~> 2.2)
-      railties (~> 3.1.0.rc1)
     mocha (0.9.12)
     mongo (1.3.1)
       bson (>= 1.3.1)
@@ -332,7 +326,6 @@ DEPENDENCIES
   i18n
   jquery-rails
   launchy
-  minitest-rails
   mocha
   mongo_mapper
   mongomapper_ext

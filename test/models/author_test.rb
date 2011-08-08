@@ -1,11 +1,11 @@
 require_relative '../test_helper'
 
-class AuthorTest < MiniTest::Rails::Model
-
+describe Author do
+  include TestHelper
   before do
     @author = Factory.build :author, :username => "james", :email => nil, :image_url => nil
   end
-  
+
   it "creates an author from a hash" do
     hash = {"user_info" => {"name" => "james", "nickname" => "jim", "urls" => {}} }
     assert Author.create_from_hash!(hash, "rstat.us").is_a?(Author)
