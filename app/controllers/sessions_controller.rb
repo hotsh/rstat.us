@@ -30,7 +30,8 @@ class SessionsController < ApplicationController
           @user.errors.add(:password, "can't be empty")
         end
       end
-      render "sessions#new"
+      redirect_to "sessions#new"
+      return
     else
       if user = User.authenticate(params[:username], params[:password])
         session[:user_id] = user.id

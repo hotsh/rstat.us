@@ -145,7 +145,7 @@ class UsersController < ApplicationController
   # it's arguably better to display them as two different resources.
   # Whatevs.
   def feed
-    feed = User.first(:username => params[:username]).feed
+    feed = User.first(:username => params[:id]).feed
     redirect "/feeds/#{feed.id}.atom"
   end
 
@@ -179,7 +179,7 @@ class UsersController < ApplicationController
     set_params_page
 
     # XXX: case insensitive username
-    @user = User.first(:username => params[:username])
+    @user = User.first(:username => params[:id])
     @feeds = @user.followers
 
     @feeds = @feeds.paginate(:page => params[:page], :per_page => params[:per_page], :order => :id.desc)
