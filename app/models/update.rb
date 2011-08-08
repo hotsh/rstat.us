@@ -3,7 +3,6 @@
 class Update
   require 'cgi'
   include MongoMapper::Document
-  include MongoMapperExt::Filter
 
   # Determines what constitutes a username inside an update text
   USERNAME_REGULAR_EXPRESSION = /(^|[ \t\n\r\f"'\(\[{]+)@([^ \t\n\r\f&?=@%\/\#]*[^ \t\n\r\f&?=@%\/\#.!:;,"'\]}\)])(?:@([^ \t\n\r\f&?=@%\/\#]*[^ \t\n\r\f&?=@%\/\#.!:;,"'\]}\)]))?/
@@ -48,8 +47,6 @@ class Update
   key :referral_id
   # Remote Update url: (nil if local)
   key :referral_url, String
-
-  filterable_keys :text
 
   def referral
     Update.first(:id => referral_id)

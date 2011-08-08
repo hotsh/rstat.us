@@ -9,7 +9,7 @@ class SearchesController < ApplicationController
     @updates = []
     if params[:q]
       set_params_page
-      @updates = Update.filter(params[:q]).paginate(:page => params[:page], :per_page => params[:per_page] || 20, :order => :created_at.desc)
+      @updates = Update.where(:text => /#{Regexp.quote(params[:q])}/).paginate(:page => params[:page], :per_page => params[:per_page] || 20, :order => :created_at.desc)
       set_pagination_buttons(@updates)
     end
   end
