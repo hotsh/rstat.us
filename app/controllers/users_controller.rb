@@ -41,7 +41,8 @@ class UsersController < ApplicationController
       username = Regexp.escape(params[:id])
       user = User.first :username => /^#{username}$/i
       if user.nil?
-        raise ActiveRecord::RecordNotFound
+        render :file => "#{Rails.root}/public/404.html", :status => 404
+        return
       else
         redirect "users/#{user.username}"
       end
