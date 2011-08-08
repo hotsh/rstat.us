@@ -116,7 +116,7 @@ class UsersController < ApplicationController
 
     @user = User.new params
     if @user.save
-      Authorization.create_from_hash(auth, uri("/"), @user)
+      Authorization.create_from_hash(auth, root_url, @user)
 
       flash[:notice] = "Thanks! You're all signed up with #{@user.username} for your username."
       session[:user_id] = @user.id
@@ -133,7 +133,7 @@ class UsersController < ApplicationController
     u.set_perishable_token
 
     if development?
-      puts uri("/") + "confirm/#{u.perishable_token}"
+      puts root_url + "/confirm/#{u.perishable_token}"
     else
       Notifier.send_signup_notification(params[:email], u.perishable_token)
     end

@@ -16,7 +16,7 @@ class AuthController < ApplicationController
     # user and the auth information is collected to provision a new account. The
     unless @auth = Authorization.find_from_hash(auth)
       if logged_in?
-        Authorization.create_from_hash(auth, uri("/"), current_user)
+        Authorization.create_from_hash(auth, root_url, current_user)
         redirect_to "/users/#{current_user.username}/edit"
       else
 
