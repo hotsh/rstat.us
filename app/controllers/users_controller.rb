@@ -41,7 +41,7 @@ class UsersController < ApplicationController
       username = Regexp.escape(params[:id])
       user = User.first :username => /^#{username}$/i
       if user.nil?
-        raise Sinatra::NotFound
+        raise ActiveRecord::RecordNotFound
       else
         redirect "users/#{user.username}"
       end
@@ -112,7 +112,7 @@ class UsersController < ApplicationController
     auth['credentials']['token'] = session[:oauth_token]
     auth['credentials']['secret'] = session[:oauth_secret]
 
-    params[:author] = Author.create_from_hash! auth, uri("/")
+    params[:author] = Author.create_from_hash! auth, root_url
 
     @user = User.new params
     if @user.save
