@@ -10,7 +10,7 @@
       != update.to_html
     .update-date
       - if reply
-        %a{:href => "/updates/#{update.id}"}= update.created_at.ago_in_words
+        %a{:href => "/updates/#{update.id}"}= time_ago_in_words(update.created_at)
       - else
         = time_ago_in_words(update.created_at)
 
