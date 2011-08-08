@@ -9,9 +9,9 @@ end
 
 module AcceptanceHelper
   require 'capybara/dsl'
-  include Capybara
+  require 'capybara/rails'
+  include Capybara::DSL
   include Rack::Test::Methods
-  include Sinatra::UserHelper
   include TestHelper
 
   OmniAuth.config.test_mode = true
@@ -77,5 +77,4 @@ module AcceptanceHelper
     cookies.send(:hash_for)['rack.session'].expires
   end
 
-  Capybara.app = Rstatus
 end
