@@ -1,3 +1,4 @@
+# encoding: utf-8
 development:
   # Twitter API stuff (these fake keys work)
   CONSUMER_KEY: asdf
