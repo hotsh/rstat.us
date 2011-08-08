@@ -17,7 +17,7 @@ gem "haml-rails"
 gem 'jquery-rails'
 
 gem 'unicorn'
-gem "omniauth"
+gem 'omniauth', :git => 'git://github.com/intridea/omniauth.git'
 gem "sinatra", :require => "sinatra/base"
 gem "mongo_mapper"
 gem "mongomapper_ext"
@@ -32,7 +32,7 @@ gem "ostatus", "~>0.0.9"
 gem "osub", "~>0.0.6"
 gem "opub"
 gem "redfinger"
-gem "nokogiri", "= 1.4.4"
+gem "nokogiri"
 gem "whatlanguage"
 gem "ruby-stemmer"
 gem "tzinfo"
