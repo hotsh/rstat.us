@@ -147,7 +147,7 @@ class UsersController < ApplicationController
   # Whatevs.
   def feed
     feed = User.first(:username => params[:id]).feed
-    redirect "/feeds/#{feed.id}.atom"
+    redirect_to "/feeds/#{feed.id}.atom"
   end
 
   # Who do you think is a really neat person? This page will show it to the
