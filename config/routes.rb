@@ -7,7 +7,7 @@ RstatUs::Application.routes.draw do
   match "/login", :to => "sessions#new"
   match "/logout", :to => "sessions#destroy"
 
-  get "static/follow"
+  match "/follow", :to => "static#follow", :via => :get
 
   # Static
   match "contact" => "static#contact"
