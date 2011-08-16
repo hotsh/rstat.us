@@ -34,7 +34,7 @@ class ApplicationController < ActionController::Base
   def admin_only!(opts = {:return => "/"})
     unless logged_in? && current_user.admin?
       flash[:error] = "Sorry, buddy"
-      redirect opts[:return]
+      redirect_to opts[:return]
     end
   end
 
@@ -43,7 +43,7 @@ class ApplicationController < ActionController::Base
   def require_login!(opts = {:return => "/"})
     unless logged_in?
       flash[:error] = "Sorry, buddy"
-      redirect opts[:return]
+      redirect_to opts[:return]
     end
   end
 

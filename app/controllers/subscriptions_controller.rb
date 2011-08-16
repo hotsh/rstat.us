@@ -44,18 +44,18 @@ class SubscriptionsController < ApplicationController
     @author = feed.author
 
     # You're not allowed to follow yourself.
-    redirect request.referrer if @author.user == current_user
+    redirect_to request.referrer if @author.user == current_user
 
     # If we're already following them, noop.
     unless current_user.following? feed.url
       flash[:notice] = "You're not following #{@author.username}."
-      redirect request.referrer
+      redirect_to request.referrer
     end
 
     current_user.unfollow! feed
 
     flash[:notice] = "No longer following #{@author.username}."
-    redirect request.referrer
+    redirect_to request.referrer
   end
 
   # subscriber receives updates
@@ -122,14 +122,14 @@ class SubscriptionsController < ApplicationController
 
       flash[:notice] = "You're already following #{feed.author.username}."
 
-      redirect request.referrer
+      redirect_to request.referrer
     end
 
     f = current_user.follow! feed_url, acct
 
     unless f
       flash[:notice] = "There was a problem following #{params[:url]}."
-      redirect request.referrer
+      redirect_to request.referrer
     end
 
     if not f.local?
@@ -144,11 +144,11 @@ class SubscriptionsController < ApplicationController
       name = f.author.username
 
       flash[:notice] = "Now following #{name}."
-      redirect request.referrer
+      redirect_to request.referrer
     else
       # If it's a local feed, then we're already good.
       flash[:notice] = "Now following #{f.author.username}."
-      redirect request.referrer
+      redirect_to request.referrer
     end
   end
 end
