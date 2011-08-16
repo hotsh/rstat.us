@@ -244,4 +244,76 @@ class UsersController < ApplicationController
     @email = session.delete(:fp_email)
     render "login/forgot_password_confirm"
   end
+
+
+  def reset_password_new
+    if not logged_in?
+      redirect_to "/forgot_password"
+    else
+      render "login/password_reset"
+    end
+  end
+
+  # Submitted passwords are checked for length and confirmation. If the user
+  # does not have an email address they are required to provide one. Once the
+  # password has been reset the user is redirected to /
+  def reset_password_create
+    user = nil
+
+    if params[:token]
+      user = User.first(:perishable_token => params[:token])
+      if user and user.password_reset_sent.to_time < 2.days.ago
+        user = nil
+      end
+    end
+
+    unless user.nil?
+      # XXX: yes, this is a code smell
+
+      if params[:password].size == 0
+        flash[:notice] = "Password must be present"
+        redirect_to "/reset_password/#{params[:token]}"
+        return
+      end
+
+      if params[:password] != params[:password_confirm]
+        flash[:notice] = "Passwords do not match"
+        redirect_to "/reset_password/#{params[:token]}"
+        return
+      end
+
+      if user.email.nil?
+        if params[:email].empty?
+          flash[:notice] = "Email must be provided"
+          redirect_to "/reset_password/#{params[:token]}"
+          return
+        else
+          user.email = params[:email]
+        end
+      end
+
+      user.password = params[:password]
+      user.save
+      flash[:notice] = "Password successfully set"
+      redirect_to "/"
+    else
+      redirect_to "/forgot_password"
+    end
+  end
+
+
+  # Public reset password page, accessible via a valid token. Tokens are only
+  # valid for 2 days and are unique to that user. The user is found using the
+  # token and the reset password page is rendered
+  def reset_password_with_token
+    user = User.first(:perishable_token => params[:token])
+    if user.nil? || user.password_reset_sent.to_time < 2.days.ago
+      flash[:notice] = "Your link is no longer valid, please request a new one."
+      redirect_to "/forgot_password"
+    else
+      @token = params[:token]
+      @user = user
+      render "login/password_reset"
+    end
+  end
 end

@@ -29,6 +29,9 @@ RstatUs::Application.routes.draw do
   match 'forgot_password', :to => "users#forgot_password_new", :via => :get
   match 'forgot_password', :to => "users#forgot_password_create", :via => :post
   match 'forgot_password_confirm', :to => "users#forgot_password_confirm", :via => :get
+  match 'reset_password', :to => "users#reset_password_new", :via => :get
+  match 'reset_password', :to => "users#reset_password_create", :via => :post
+  match 'reset_password/:token', :to => "users#reset_password_with_token", :via => :get
 
   # Updates
   resources :updates, :only => [:index, :show, :create, :destroy]
