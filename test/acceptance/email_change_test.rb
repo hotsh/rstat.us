@@ -18,7 +18,9 @@ describe "email change" do
 
       visit "/users/#{u.username}/edit"
       fill_in 'email', :with => 'team@jackhq.com'
-      click_button 'Save'
+      VCR.use_cassette('update_email') do
+        click_button 'Save'
+      end
 
       # Need to figure out the best way to do this, expects is swallowing up token generation...
       # refute u.perishable_token.nil?

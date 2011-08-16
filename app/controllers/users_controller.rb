@@ -199,4 +199,18 @@ class UsersController < ApplicationController
     render "users/list", :locals => {:title => title}
   end
 
+  def confirm_email
+    user = User.first(:perishable_token => params[:token])
+    if user.nil?
+      flash[:notice] = "Can't find User Account for this link."
+      redirect_to "/"
+    else
+      user.email_confirmed = true
+      user.save
+      # Register a session for the user
+      session[:user_id] = user.id
+      flash[:notice] = "Email successfully confirmed."
+      redirect_to "/"
+    end
+  end
 end

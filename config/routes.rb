@@ -25,6 +25,7 @@ RstatUs::Application.routes.draw do
   # other new route?
   match 'users/:id/followers', :to => "users#followers"
   match 'users/:id/following', :to => "users#following"
+  match 'confirm_email/:token', :to => "users#confirm_email"
 
   # Updates
   resources :updates, :only => [:index, :show, :create, :destroy]
