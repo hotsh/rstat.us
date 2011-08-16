@@ -41,7 +41,8 @@ class UsersController < ApplicationController
       username = Regexp.escape(params[:id])
       user = User.first :username => /^#{username}$/i
       if user.nil?
-        raise ActiveRecord::RecordNotFound
+        render :file => "#{Rails.root}/public/404.html", :status => 404
+        return
       else
         redirect "users/#{user.username}"
       end
@@ -146,7 +147,7 @@ class UsersController < ApplicationController
   # Whatevs.
   def feed
     feed = User.first(:username => params[:id]).feed
-    redirect "/feeds/#{feed.id}.atom"
+    redirect_to "/feeds/#{feed.id}.atom"
   end
 
   # Who do you think is a really neat person? This page will show it to the
