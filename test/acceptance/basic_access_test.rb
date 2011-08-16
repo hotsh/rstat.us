@@ -42,11 +42,4 @@ describe "basic access" do
     visit "/users/1n2i12399992sjdsa21293jj"
     assert_equal 404, page.status_code
   end
-
-  it "404s on invalid feed type" do
-    u = Factory(:user, :username => "dfnkt")
-    visit "/users/#{u.username}/feed.json"
-
-    assert_equal 404, page.status_code
-  end
 end
