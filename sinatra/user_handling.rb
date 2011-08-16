@@ -38,37 +38,6 @@ class Rstatus
     end
   end
 
-  # Passwords can be reset by unauthenticated users by navigating to the forgot
-  # password and page and submitting the email address they provided.
-  get '/forgot_password' do
-    haml :"login/forgot_password"
-  end
-
-  # We've got a pretty solid forgotten password implementation. It's simple:
-  # the email address is looked up, if no user is found an error is provided.
-  # If a user is found a token is generated and an email is sent to the user
-  # with the url to reset their password. Users are then redirected to the
-  # confirmation page to prevent repost issues
-  post '/forgot_password' do
-    user = User.first(:email => params[:email])
-    if user.nil?
-      flash[:notice] = "Your account could not be found, please check your email and try again."
-      haml :"login/forgot_password"
-    else
-      Notifier.send_forgot_password_notification(user.email, user.set_password_reset_token)
-      # Redirect to try to avoid repost issues
-      session[:fp_email] = user.email
-      redirect '/forgot_password_confirm'
-    end
-  end
-
-  # Forgot password confirmation screen, displays email address that the email
-  # was sent to
-  get '/forgot_password_confirm' do
-    @email = session.delete(:fp_email)
-    haml :"login/forgot_password_confirm"
-  end
-
   get '/reset_password' do
     if not logged_in?
       redirect "/forgot_password"

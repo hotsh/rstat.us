@@ -213,4 +213,35 @@ class UsersController < ApplicationController
       redirect_to "/"
     end
   end
+
+  # Passwords can be reset by unauthenticated users by navigating to the forgot
+  # password and page and submitting the email address they provided.
+  def forgot_password_new
+    render "login/forgot_password"
+  end
+
+  # We've got a pretty solid forgotten password implementation. It's simple:
+  # the email address is looked up, if no user is found an error is provided.
+  # If a user is found a token is generated and an email is sent to the user
+  # with the url to reset their password. Users are then redirected to the
+  # confirmation page to prevent repost issues
+  def forgot_password_create
+    user = User.first(:email => params[:email])
+    if user.nil?
+      flash[:notice] = "Your account could not be found, please check your email and try again."
+      render "login/forgot_password"
+    else
+      Notifier.send_forgot_password_notification(user.email, user.set_password_reset_token)
+      # Redirect to try to avoid repost issues
+      session[:fp_email] = user.email
+      redirect_to '/forgot_password_confirm'
+    end
+  end
+
+  # Forgot password confirmation screen, displays email address that the email
+  # was sent to
+  def forgot_password_confirm
+    @email = session.delete(:fp_email)
+    render "login/forgot_password_confirm"
+  end
 end

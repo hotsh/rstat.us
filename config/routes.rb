@@ -26,6 +26,9 @@ RstatUs::Application.routes.draw do
   match 'users/:id/followers', :to => "users#followers"
   match 'users/:id/following', :to => "users#following"
   match 'confirm_email/:token', :to => "users#confirm_email"
+  match 'forgot_password', :to => "users#forgot_password_new", :via => :get
+  match 'forgot_password', :to => "users#forgot_password_create", :via => :post
+  match 'forgot_password_confirm', :to => "users#forgot_password_confirm", :via => :get
 
   # Updates
   resources :updates, :only => [:index, :show, :create, :destroy]
