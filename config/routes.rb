@@ -13,6 +13,8 @@ RstatUs::Application.routes.draw do
   match "contact" => "static#contact"
   match "open_source" => "static#open_source"
   match "help" => "static#help"
+  # static for remote follows
+  match "/follow", :to => "static#follow"
 
   # External Auth
   match '/auth/:provider/callback', :to => 'auth#auth'
