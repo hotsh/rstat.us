@@ -44,7 +44,7 @@ class UsersController < ApplicationController
         render :file => "#{Rails.root}/public/404.html", :status => 404
         return
       else
-        redirect_to "users/#{user.username}"
+        redirect_to "/users/#{user.username}"
       end
     end
     @author = user.author
