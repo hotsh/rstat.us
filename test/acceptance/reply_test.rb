@@ -28,10 +28,11 @@ describe "replies" do
     u.feed.updates << Factory(:update, :text => "some text @someone, @#{u2.username} Hey man.")
     log_in(u, a.uid)
     visit "/updates"
-    assert_match "class='hentry mention update'", page.body
+
+    assert has_selector?("#updates .mention")
 
     log_in(u2, a2.uid)
     visit "/updates"
-    assert_match "class='hentry mention update'", page.body
+    assert has_selector?("#updates .mention")
   end
 end
