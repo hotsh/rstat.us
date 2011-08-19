@@ -59,7 +59,7 @@ describe "following" do
       visit "/"
       click_link "Follow Remote User"
 
-      assert_match "ostatus Sites", page.body
+      assert_match "OStatus Sites", page.body
 
       VCR.use_cassette('subscribe_remote') do
         fill_in 'url', :with => "steveklabnik@identi.ca"
