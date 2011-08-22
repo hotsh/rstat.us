@@ -16,11 +16,11 @@
         #follow
           - if current_user and current_user.following? @author.feed.url
             .negative
-              %form{:method => "post", :action => "/subscriptions/#{@author.feed.id}"}
+              = form_tag "/subscriptions/#{@author.feed.id}" do
                 %input{:type => "hidden", :name => "_method", :value => "delete"}
                   %input.button.unfollow{:type => "submit", :value => "Unfollow", :id => "unfollow-#{@author.feed.id}"}
           - elsif current_user
-            %form{:method => "post", :action => "/subscriptions"}
+            = form_tag "/subscriptions" do
               %input{:type => "hidden", :name => "url", :value => "/feeds/#{@author.feed.id}"}
                 %input.button.follow{:type => "submit", :value => "Follow", :id => "follow-#{@author.feed.id}"}
 
