@@ -1,4 +1,4 @@
-%form#update-form{ :action => "/updates", :method => "POST", :name => "update_form"}
+= form_for Update.new, :html => {:name => "update_form", :id => "update-form", :class => "update-form"} do |f|
   %h4 What's Going On?
   #update-content
     %textarea#update-textarea{:name => "text"}=@update_text
