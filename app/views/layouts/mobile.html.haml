@@ -1,0 +1,32 @@
+!!!5
+%html.no-js{:lang => "en"}
+  = render :partial => "shared/head"
+  %body
+    = render :partial => "shared/header"
+    = @error_bar
+
+    #page
+      #content-wrap
+        - title =  yield :title
+        - unless title.empty?
+          %h2.title #{title}
+        #top
+          = render :partial => "shared/flash", :locals => {:flash => flash}
+          = yield :top
+
+        #content
+          = yield
+
+        = yield :bottom
+
+      #sidebar
+        = render :partial => "shared/sidebar/profile" unless @profile_sidebar == false
+
+        - if current_user
+          = render :partial => "shared/sidebar/help"
+        - else
+          = render :partial => "shared/sidebar/signup"
+
+        = yield :sidebar
+
+    = render :partial => "shared/footer"
