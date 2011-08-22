@@ -40,7 +40,7 @@
           %a.reply{:href => "?reply=#{update.id}"} reply
 
         - if current_user and update.author.id == current_user.author.id
-          %form{:method => "post", :action => "/updates/#{update.id}"}
+          = form_tag "/updates/#{update.id}" do
             %input{:type => "hidden", :name => "_method", :value => "delete"}
             %input.remove-update{:type => "submit", :value => "I Regret This"}
 

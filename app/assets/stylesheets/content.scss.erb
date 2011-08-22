@@ -113,27 +113,10 @@
       float: left;
     }
 
-    .actions, .published, .in-reply {
-    	font-size: 0.9em;
-    	color: #aaa;
-      line-height: 2em;
-    }
-
     .actions {
       display: none;
-      float: right;
-
-      form {
-        margin: 0;
-      }
-      .remove-update {
-        cursor: pointer;
-        float: right;
-        border: none;
-        @include image-replaced('<%= image_path 'embed/trash.png' %>', 13px, 16px)
-      }
     }
-
+    
     &:hover .actions {
       display: block;
     }
@@ -150,6 +133,28 @@
     font-size: 1.35em;
     padding: 1em;
     color: #bbb;
+  }
+}
+
+.update {
+  .actions, .published, .in-reply {
+  	font-size: 0.9em;
+  	color: #aaa;
+    line-height: 2em;
+  }
+
+  .actions {
+    float: right;
+
+    form {
+      margin: 0;
+    }
+    .remove-update {
+      cursor: pointer;
+      float: right;
+      border: none;
+      @include image-replaced('<%= image_path 'embed/trash.png' %>', 13px, 16px)
+    }
   }
 }
 

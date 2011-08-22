@@ -14,13 +14,13 @@
       - else
         = time_ago_in_words(update.created_at)
 
-    .end-links
+    .actions
       -unless current_user.nil? or (current_user.author.id == update.author.id)
         %a.share{:href => "/?share=#{update.id}"} share
         |
         %a.reply{:href => "/?reply=#{update.id}"} reply
 
       - if current_user and update.author.id == current_user.author.id
-        %form{:method => "post", :action => "/updates/#{update.id}"}
+        = form_tag "/updates/#{update.id}" do
           %input{:type => "hidden", :name => "_method", :value => "delete"}
           %input.remove-update{:type => "submit", :value => "I Regret This"}

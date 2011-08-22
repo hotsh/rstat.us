@@ -11,7 +11,7 @@
   %p
     Put in a username and password, and we'll take care of the rest.
 
-  %form#login{:action => "/sessions", :method => "POST"}
+  = form_tag "/sessions", :html => {:id => "login"} do
     .form-section
       = render :partial => "shared/field", :locals => {:attr => :username, :params => params}
       = render :partial => "shared/field", :locals => {:attr => :password, :params => params, :as => :password}

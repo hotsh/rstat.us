@@ -3,7 +3,7 @@
 %p For examples for some common sites, direct your attention to the bottom of this page.
 
 #follow-form
-  %form{:action => "/subscriptions", :method => "POST"}
+  = form_tag "/subscriptions" do
     %input{:type => "text", :name => "url"}
     %input.button.follow{:type => "submit", :value => "Follow"}
       

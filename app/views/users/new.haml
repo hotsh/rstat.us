@@ -6,7 +6,7 @@
 
 %p You're almost done! Choose a username to log in.
 
-%form{:action => "/users", :method => "POST"}
+= form_tag "/users" do
   .form-section
     = render :partial => "shared/field", :locals => {:attr => :username, :params => params}
 
