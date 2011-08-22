@@ -256,20 +256,6 @@ describe "Authorization" do
     end
   end
 
-  it "changes your username" do
-    #stubbed to allow testing with new username validation
-    existing_user = Factory.build(:user, :username => 'profile.php?id=1')
-    existing_user.expects(:no_malformed_username).at_least_once.returns(true)
-    existing_user.save
-    a = Factory(:authorization, :user => existing_user)
-    log_in(existing_user, a.uid)
-    click_link "reset_username"
-    assert_match /\/reset-username/, page.current_url
-    fill_in "username", :with => "janepublic"
-    click_button "Update"
-    assert_match /janepublic/, page.body
-  end
-
   it "migrates your token" do
     u = Factory(:user)
     a = Factory(:authorization, :user => u, :oauth_token => nil, :oauth_secret => nil, :nickname => nil)

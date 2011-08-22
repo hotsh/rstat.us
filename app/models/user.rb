@@ -368,14 +368,6 @@ class User
     nil
   end
 
-  # Reset the username to one given
-  def reset_username(params)
-    self.username = params[:username]
-    author.username = params[:username]
-    return false unless save
-    author.save
-  end
-
   # Edit profile information
   def edit_user_profile(params)
     unless params[:password].nil? or params[:password].empty?

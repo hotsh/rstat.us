@@ -1,8 +1,10 @@
 - content_for :title do
   Log In or Sign up
 
-#login-forms
+- content_for :top do
   = render :partial => "users/errors", :locals => {:user => @user}
+
+#login-forms
 
   %h4
     One form, that's all.
