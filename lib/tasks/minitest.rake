@@ -1,3 +1,5 @@
+require 'rake/testtask'
+
 desc "Run unit tests"
 task :test do
   test_task = Rake::TestTask.new("unittests") do |t|
