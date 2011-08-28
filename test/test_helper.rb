@@ -2,10 +2,30 @@ require "minitest/autorun"
 require "webmock/test_unit"
 
 ENV["RAILS_ENV"] = "test"
-require File.expand_path('../../config/environment', __FILE__)
+begin
+  require File.expand_path('../../config/environment', __FILE__)
+  MongoMapper.connection = Mongo::Connection.new('localhost')
+  MongoMapper.database = "rstatus-test"
+rescue Mongo::ConnectionFailure => e
+  puts <<-DERPMSG
 
-MongoMapper.connection = Mongo::Connection.new('localhost')
-MongoMapper.database = "rstatus-test"
+  *DERP*DERP*DERP*DERP*DERP*DERP*DERP*DERP*DERP*DERP*DERP*DERP*DERP*DERP*DERP*
+  *
+  *  Whoops! It looks like mongo isn't running on this machine.
+  *  Please check the following:
+  *
+  *  1. Is Mongo installed? (http://www.mongodb.org/)
+  *
+  *  2. Is `mongod` running? <<<<<<<<<<<<<<<<<<<< MOST COMMON PROBLEM
+  *
+  *  3. Have you done anything custom that would warrant a change to the
+  *     config in test/test_helper.rb? (You probably haven't)
+  *
+  *DERP*DERP*DERP*DERP*DERP*DERP*DERP*DERP*DERP*DERP*DERP*DERP*DERP*DERP*DERP*
+
+  DERPMSG
+  exit 1
+end
 
 require_relative "factories"
 
