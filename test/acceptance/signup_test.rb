@@ -96,40 +96,6 @@ describe "signup" do
       refute_match /prohibited your account from being created/, page.body
       assert_match /\//, page.current_url
     end
-
-    it "prompts for a new username if it contains spaces" do
-      name = 'with spaces'
-
-      log_in(name)
-
-      fill_in "username", :with => name
-      click_button "Finish Signup"
-
-      assert_match /1 error prohibited your account from being created:/, page.body
-      assert_match /contains restricted characters\./, page.body
-    end
-
-    it "will keep rejecting multiple bad username attempts" do
-      name =  "with spaces"
-
-      log_in(name)
-
-      fill_in "username", :with => name
-      click_button "Finish Signup"
-
-      assert_match /contains restricted characters\./, page.body
-
-      fill_in "username", :with => "still #{name}"
-      click_button "Finish Signup"
-
-      assert_match /contains restricted characters\./, page.body
-
-      fill_in "username", :with => name.gsub(/ /, "")
-      click_button "Finish Signup"
-
-      assert_match /Thanks! You're all signed up with #{name.gsub(/ /, "")} for your username\./, page.body
-      refute_match /prohibited your account from being created/, page.body
-    end
   end
 
   describe "facebook" do
