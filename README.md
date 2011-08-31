@@ -1,6 +1,8 @@
 rstat.us is a microblogging site built on top of the [ostatus
 protocol](http://status.net/wiki/OStatus).
 
+[![Build Status](https://secure.travis-ci.org/hotsh/rstat.us.png)](http://travis-ci.org/hotsh/rstat.us)
+
 Helping out with rstat.us
 -------------------------
 

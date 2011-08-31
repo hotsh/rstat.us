@@ -1,0 +1,10 @@
+rvm:
+  - 1.9.2
+  - rbx-2.0
+  - ruby-head
+script: "bundle exec rake test:all"
+notifications:
+  irc: "irc.freenode.org#rstatus"
+branches:
+  only:
+    - rails3
