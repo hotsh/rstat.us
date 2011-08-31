@@ -153,7 +153,7 @@ class Update
           # look at who they are following
           if a.nil? and user = self.author.user
             authors.each do |author|
-              if user.following?(author.remote_url)
+              if user.following_author?(author)
                 a = author
               end
             end

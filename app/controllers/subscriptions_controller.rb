@@ -47,7 +47,7 @@ class SubscriptionsController < ApplicationController
     redirect_to request.referrer if @author.user == current_user
 
     # If we're already following them, noop.
-    unless current_user.following? feed.url
+    unless current_user.following_url? feed.url
       flash[:notice] = "You're not following #{@author.username}."
       redirect_to request.referrer
     end
@@ -109,7 +109,7 @@ class SubscriptionsController < ApplicationController
     end
 
     # If we're already following them, noop
-    if current_user.following? feed_url
+    if current_user.following_url? feed_url
       feed = Feed.first(:remote_url => feed_url)
       if feed.nil? and feed_url.start_with?("/")
         feed_id = feed_url[/^\/feeds\/(.+)$/,1]

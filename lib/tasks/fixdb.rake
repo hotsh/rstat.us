@@ -21,7 +21,7 @@ namespace :fixdb do
   desc "Fix any users who are following themselves"
   task :unfollow_self => :environment do
     User.find_each do |user|
-      if user.following? user.feed.url
+      if user.following_url? user.feed.url
         user.unfollow! user.feed
       end
     end

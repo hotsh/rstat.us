@@ -301,12 +301,16 @@ class User
     end
   end
 
-  def following? feed_url
+  def following_author? author
+    following.include?(author.feed)
+  end
+
+  def following_url? feed_url
     # Handle possibly created multiple feeds for the same remote_url
     existing_feeds = Feed.all(:remote_url => feed_url)
 
     # local feed?
-    if existing_feeds.empty? and feed_url[0].chr == "/"
+    if existing_feeds.empty? and feed_url.start_with?("http://#{author.domain}/")
       feed_id = feed_url[/^\/feeds\/(.+)$/,1]
       existing_feeds = [Feed.first(:id => feed_id)]
     end
@@ -314,6 +318,8 @@ class User
     if existing_feeds.empty?
       false
     else
+      # Intersect the feeds we're following and the possibly
+      # created multiple feeds for the remote
       !(following & existing_feeds).empty?
     end
   end
