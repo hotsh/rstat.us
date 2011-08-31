@@ -6,7 +6,7 @@ gem 'sprockets', :git => 'git://github.com/sstephenson/sprockets.git'
 
 gem 'sqlite3'
 
-gem 'require_relative', :platform => :rbx
+gem 'backports', :platform => :rbx
 
 # Asset template engines
 gem 'sass'
