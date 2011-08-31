@@ -171,7 +171,10 @@ class UsersController < ApplicationController
       title = "@#{@user.username} is following"
     end
 
-    render "users/list", :locals => {:title => title}
+    respond_to do |format|
+      format.html { render "users/list", :locals => {:title => title} }
+      format.json { render :json => @authors }
+    end
   end
 
   # This shows off how cool you are: I hope you've got the biggest number of

@@ -134,7 +134,7 @@ describe "following" do
 
       visit "/users/#{u.username}/following.json"
 
-      json = JSON.parse(page.body)
+      json = JSON.parse(page.source)
       assert_equal "user1", json.last["username"]
     end
 
