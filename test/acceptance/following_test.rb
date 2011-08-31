@@ -106,18 +106,15 @@ describe "following" do
 
   describe "/following" do
     it "maintains the order in which you follow people" do
-      aardvark = Factory(:user, :username => "aardvark", :created_at => Date.new(2010, 10, 23))
-      zebra    = Factory(:user, :username => "zebra", :created_at => Date.new(2011, 10, 23))
-      leopard  = Factory(:user, :username => "leopard", :created_at => Date.new(2011, 10, 23))
+      aardvark = Factory(:user, :username => "aardvark")
+      zebra    = Factory(:user, :username => "zebra")
+      leopard  = Factory(:user, :username => "leopard")
       a = Factory(:authorization, :user => aardvark)
 
+      aardvark.follow! zebra.feed.url
+      aardvark.follow! leopard.feed.url
+
       log_in(aardvark, a.uid)
-
-      visit "/users/#{zebra.username}"
-      click_button "follow-#{zebra.feed.id}"
-
-      visit "/users/#{leopard.username}"
-      click_button "follow-#{leopard.feed.id}"
 
       visit "/users/#{aardvark.username}/following"
       assert_match /leopard.*zebra/m, page.body
@@ -134,7 +131,7 @@ describe "following" do
 
       visit "/users/#{u.username}/following.json"
 
-      json = JSON.parse(page.body)
+      json = JSON.parse(page.source)
       assert_equal "user1", json.last["username"]
     end
 
@@ -212,23 +209,14 @@ describe "following" do
 
   describe "/followers" do
     it "maintains the order in which people follow you" do
-      aardvark = Factory(:user, :username => "aardvark", :created_at => Date.new(2010, 10, 23))
-      zebra    = Factory(:user, :username => "zebra", :created_at => Date.new(2011, 10, 23))
-      leopard  = Factory(:user, :username => "leopard", :created_at => Date.new(2011, 10, 23))
+      aardvark = Factory(:user, :username => "aardvark")
+      zebra    = Factory(:user, :username => "zebra")
+      leopard  = Factory(:user, :username => "leopard")
 
       aardvark_auth = Factory(:authorization, :user => aardvark)
-      zebra_auth = Factory(:authorization, :user => zebra)
-      leopard_auth = Factory(:authorization, :user => leopard)
 
-      log_in(zebra, zebra_auth.uid)
-
-      visit "/users/#{aardvark.username}"
-      click_button "follow-#{aardvark.feed.id}"
-
-      log_in(leopard, leopard_auth.uid)
-
-      visit "/users/#{aardvark.username}"
-      click_button "follow-#{aardvark.feed.id}"
+      zebra.follow! aardvark.feed.url
+      leopard.follow! aardvark.feed.url
 
       log_in(aardvark, aardvark_auth.uid)
       visit "/users/#{aardvark.username}/followers"
