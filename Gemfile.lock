@@ -249,6 +249,7 @@ GEM
       hashie
       nokogiri (>= 1.4.0)
       rest-client (>= 1.5.0)
+    require_relative (1.0.2)
     rest-client (1.6.3)
       mime-types (>= 1.16)
     rocco (0.8.1)
@@ -346,6 +347,7 @@ DEPENDENCIES
   rails (= 3.1.0.rc5)
   rdiscount
   redfinger
+  require_relative
   rocco
   rsa
   ruby-stemmer
