@@ -4,7 +4,7 @@ rvm:
   - ruby-head
 script: "bundle exec rake test:all"
 notifications:
-  irc: "chat.freenode.net#rstatus"
+  irc: "irc.freenode.org#rstatus"
 branches:
   only:
     - rails3
