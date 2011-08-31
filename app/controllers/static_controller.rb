@@ -3,6 +3,7 @@ class StaticController < ApplicationController
   end
 
   def follow
+    render "static/follow.html"
   end
 
   def contact

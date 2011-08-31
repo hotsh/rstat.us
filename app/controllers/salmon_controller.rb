@@ -129,7 +129,7 @@ class SalmonController < ApplicationController
     # A notification that somebody is now following our user
     elsif action == :follow
       if user
-        if not user.following? author.feed.remote_url
+        if not user.following_author? author
           user.followed_by! author.feed
         end
       end

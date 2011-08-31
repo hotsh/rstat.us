@@ -16,9 +16,7 @@
           = author.bio
 
       - if current_user && current_user.feed != author.feed && author.feed
-        / - unfollow_url = author.feed.local? ? "/users/#{author.username}/unfollow" : "/feeds/#{author.feed.id}/unsubscribe"
-
-        - following = current_user.following?(author.feed.url)
+        - following = current_user.following_author?(author)
         .follow{:class => (following ? "negative" : "positive")}
           - if following
             = form_tag "/subscriptions/#{author.feed.id}" do

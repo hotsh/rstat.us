@@ -14,7 +14,7 @@
     .follow-wrap
       - unless current_user and @author.user == current_user
         #follow
-          - if current_user and current_user.following? @author.feed.url
+          - if current_user and current_user.following_author? @author
             .negative
               = form_tag "/subscriptions/#{@author.feed.id}" do
                 %input{:type => "hidden", :name => "_method", :value => "delete"}

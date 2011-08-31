@@ -7,13 +7,13 @@ describe "following" do
   describe "yourself" do
     it "doesn't make you follow yourself after signing up" do
       u = Factory(:user)
-      refute u.following? u.feed.url
+      refute u.following_url? u.feed.url
     end
 
     it "disallows following yourself" do
       u = Factory(:user)
       u.follow! u.feed.url
-      refute u.following? u.feed.url
+      refute u.following_url? u.feed.url
     end
   end
 
