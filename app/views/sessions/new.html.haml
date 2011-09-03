@@ -15,7 +15,6 @@
     .form-section
       = render :partial => "shared/field", :locals => {:attr => :username, :params => params}
       = render :partial => "shared/field", :locals => {:attr => :password, :params => params, :as => :password}
-      = render :partial => "shared/field", :locals => {:attr => :remember_me, :params => params, :as => :checkbox, :lbl => "Remember me"}
 
     .form-submit
       %input.button{:type => "submit", :value => "Log in"}

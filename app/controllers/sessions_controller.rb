@@ -30,20 +30,19 @@ class SessionsController < ApplicationController
           @user.errors.add(:password, "can't be empty")
         end
       end
-      
+
       render :new
       return
     else
       if user = User.authenticate(params[:username], params[:password])
         session[:user_id] = user.id
-        session[:remember_me] = (params[:remember_me])
         flash[:notice] = "Login successful."
         redirect_to "/"
         return
         return
       end
-      flash[:error] = "The password given for username \"#{params[:username]}\" is incorrect. 
-      
+      flash[:error] = "The password given for username \"#{params[:username]}\" is incorrect.
+
       If you are trying to create a new account, please choose a different username."
       render :new
       return

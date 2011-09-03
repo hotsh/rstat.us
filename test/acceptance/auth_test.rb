@@ -265,32 +265,4 @@ describe "Authorization" do
     assert_equal "4567", u.twitter.oauth_secret
     assert_equal u.username, u.twitter.nickname
   end
-
-  describe "remember me" do
-    it "remembers me if I tell it to" do
-      u = Factory(:user)
-      log_in_email(u, true)
-      assert_equal 30, ((session_expires - Time.now + 60).to_i / 1.day.to_i)
-    end
-
-    it "remembers me by default while i'm logged in" do
-      u = Factory(:user)
-      log_in_email(u)
-      assert_equal 4, ((session_expires - Time.now + 60).to_i / 1.hour.to_i)
-    end
-
-    it "expires the session after logout if i've told it to remember me" do
-      u = Factory(:user)
-      log_in_email(u, true)
-      visit "/logout"
-      assert_equal session_expires, nil
-    end
-
-    it "expires the session after logout if i've told it not to remember me" do
-      u = Factory(:user)
-      log_in_email(u)
-      visit "/logout"
-      assert_equal session_expires, nil
-    end
-  end
 end
