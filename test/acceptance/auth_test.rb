@@ -164,7 +164,7 @@ describe "Authorization" do
         log_in_new_twitter_user
 
         assert_match page.body, /Twitter/
-        assert_equal find_field('tweet').checked?, true
+        assert find_field('tweet').checked?
       end
 
       it "sends updates to twitter" do
@@ -190,7 +190,7 @@ describe "Authorization" do
         log_in_new_fb_user
 
         assert_match page.body, /Facebook/
-        assert_equal find_field('facebook').checked?, true
+        assert find_field('facebook').checked?
       end
 
       it "sends updates to facebook" do
