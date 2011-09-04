@@ -177,14 +177,14 @@ class User
   many :followers, :in => :followers_ids, :class_name => 'Feed'
 
   # A particular feed follows this user
-  def followed_by! feed
-    followers << feed
+  def followed_by! f
+    followers << f
     save
   end
 
   # A particular feed unfollows this user
-  def unfollowed_by! feed
-    followers_ids.delete(feed.id)
+  def unfollowed_by! f
+    followers_ids.delete(f.id)
     save
   end
 
