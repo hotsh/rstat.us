@@ -202,7 +202,6 @@ class User
       # Add the inverse relationship
       followee = User.first(:author_id => f.author.id)
       followee.followed_by! self.feed
-      followee.save
     else
       # Queue a notification job
       self.delay.send_follow_notification(f.id)
