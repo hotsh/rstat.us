@@ -9,25 +9,21 @@ task :test do
 end
 
 namespace :test do
-  desc "Run all tests"
+  desc "Run all tests (you can just do `rake test` now)"
   task :all do
     Rake::Task["test"].invoke
   end
 
-  desc "Run model tests"
-  task :models do
-    test_task = Rake::TestTask.new("modeltests") do |t|
-      t.test_files = Dir.glob(File.join("test", "models", "**", "*_test.rb"))
+  Dir.foreach("test") do |dirname|
+    if dirname !~ /\.|coverage|data/ && File.directory?(File.join("test", dirname))
+      desc "Run #{dirname} tests"
+      task dirname do
+        test_task = Rake::TestTask.new("#{dirname}tests") do |t|
+          t.test_files = Dir.glob(File.join("test", dirname, "**", "*_test.rb"))
+        end
+        task("#{dirname}tests").execute
+      end
     end
-    task("modeltests").execute
-  end
-
-  desc "Run acceptance tests"
-  task :acceptance do
-    test_task = Rake::TestTask.new("acceptance") do |t|
-      t.test_files = Dir.glob(File.join("test", "acceptance", "**", "*_test.rb"))
-    end
-    task("acceptance").execute
   end
 
   desc "Run single file"
