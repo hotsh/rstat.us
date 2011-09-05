@@ -1,20 +1,17 @@
 require 'rake/testtask'
 
-desc "Run unit tests"
+desc "Run all tests"
 task :test do
-  test_task = Rake::TestTask.new("unittests") do |t|
-    t.test_files = Dir.glob(File.join("test", "models", "**", "*_test.rb"))
+  test_task = Rake::TestTask.new("alltests") do |t|
+    t.test_files = Dir.glob(File.join("test", "**", "*_test.rb"))
   end
-  task("unittests").execute
+  task("alltests").execute
 end
 
 namespace :test do
   desc "Run all tests"
   task :all do
-    test_task = Rake::TestTask.new("all") do |t|
-      t.test_files = Dir.glob(File.join("test", "**", "*_test.rb"))
-    end
-    task("all").execute
+    Rake::Task["test"].invoke
   end
 
   desc "Run model tests"
@@ -32,7 +29,7 @@ namespace :test do
     end
     task("acceptance").execute
   end
-  
+
   desc "Run single file"
   task :file, :file do |task, args|
     puts args.file
