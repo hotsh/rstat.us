@@ -12,7 +12,7 @@ describe "following" do
 
     it "disallows following yourself" do
       u = Factory(:user)
-      u.follow! u.feed.url
+      u.follow! u.feed
       refute u.following_url? u.feed.url
     end
   end
@@ -95,7 +95,7 @@ describe "following" do
       a2 = Factory(:authorization, :user => u2)
 
       log_in(u, a.uid)
-      u.follow! u2.feed.url
+      u.follow! u2.feed
 
       visit "/users/#{u.username}/following"
       click_button "unfollow-#{u2.feed.id}"
@@ -111,8 +111,8 @@ describe "following" do
       leopard  = Factory(:user, :username => "leopard")
       a = Factory(:authorization, :user => aardvark)
 
-      aardvark.follow! zebra.feed.url
-      aardvark.follow! leopard.feed.url
+      aardvark.follow! zebra.feed
+      aardvark.follow! leopard.feed
 
       log_in(aardvark, a.uid)
 
@@ -127,7 +127,7 @@ describe "following" do
       log_in(u, a.uid)
 
       u2 = Factory(:user, :username => "user1")
-      u.follow! u2.feed.url
+      u.follow! u2.feed
 
       visit "/users/#{u.username}/following.json"
 
@@ -170,7 +170,7 @@ describe "following" do
 
         5.times do
           u2 = Factory(:user)
-          @u.follow! u2.feed.url
+          @u.follow! u2.feed
         end
       end
 
@@ -215,8 +215,8 @@ describe "following" do
 
       aardvark_auth = Factory(:authorization, :user => aardvark)
 
-      zebra.follow! aardvark.feed.url
-      leopard.follow! aardvark.feed.url
+      zebra.follow! aardvark.feed
+      leopard.follow! aardvark.feed
 
       log_in(aardvark, aardvark_auth.uid)
       visit "/users/#{aardvark.username}/followers"
@@ -258,7 +258,7 @@ describe "following" do
 
         5.times do
           u2 = Factory(:user)
-          u2.follow! @u.feed.url
+          u2.follow! @u.feed
         end
       end
 

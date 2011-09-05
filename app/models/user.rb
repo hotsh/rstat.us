@@ -189,32 +189,17 @@ class User
   end
 
   # Follow a particular feed
-  def follow! feed_url, xrd = nil
-    f = Feed.first(:remote_url => feed_url)
-
-    # local feed?
-    if f.nil? and feed_url.start_with?("http://#{author.domain}/")
-      feed_id = feed_url[/^http:\/\/#{author.domain}\/feeds\/(.+)$/,1]
-      f = Feed.first(:id => feed_id)
-    end
-
+  def follow! f
     # can't follow yourself
     if f == self.feed
       return
-    end
-
-    if f.nil?
-      f = Feed.create(:remote_url => feed_url)
-
-      # Populate the Feed with Updates and Author from the remote site
-      # Pass along the xrd information to build the Author if available
-      f.populate xrd
     end
 
     following << f
     save
 
     if f.local?
+      # Add the inverse relationship
       followee = User.first(:author_id => f.author.id)
       followee.followed_by! self.feed
       followee.save
@@ -222,7 +207,6 @@ class User
       # Queue a notification job
       self.delay.send_follow_notification(f.id)
     end
-
     f
   end
 
@@ -299,6 +283,10 @@ class User
     else
       followers.include? f
     end
+  end
+
+  def following_feed? f
+    following.include? f
   end
 
   def following_author? author
