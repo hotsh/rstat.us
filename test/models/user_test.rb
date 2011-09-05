@@ -223,6 +223,18 @@ describe User do
           @u2.followers.count.must_equal(0)
         end
       end
+
+      describe "followed_by?" do
+        it "is true if the feed is following this user" do
+          @u.follow!(@u2.feed)
+          @u2.reload
+          assert @u2.followed_by?(@u.feed)
+        end
+
+        it "is false if the feed is not following this user" do
+          refute @u2.followed_by?(@u.feed)
+        end
+      end
     end
 
     describe "remote users" do

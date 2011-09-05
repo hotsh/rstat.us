@@ -268,20 +268,8 @@ class User
     res = http.post(uri.path, envelope, {"Content-Type" => "application/magic-envelope+xml"})
   end
 
-  def followed_by? feed_url
-    f = Feed.first(:remote_url => feed_url)
-
-    # local feed?
-    if f.nil? and feed_url.start_with?("/")
-      feed_id = feed_url[/^\/feeds\/(.+)$/,1]
-      f = Feed.first(:id => feed_id)
-    end
-
-    if f.nil?
-      false
-    else
-      followers.include? f
-    end
+  def followed_by? f
+    followers.include? f
   end
 
   def following_feed? f

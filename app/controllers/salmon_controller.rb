@@ -98,7 +98,7 @@ class SalmonController < ApplicationController
     # has been verified as coming from that author.
     if verified and verify_author
       # Create a feed for our author
-      author.feed = Feed.create(:author => author, 
+      author.feed = Feed.create(:author => author,
                                 :remote_url => feed_url)
       author.save
     end
@@ -125,7 +125,7 @@ class SalmonController < ApplicationController
           u.save
         end
       end
-    
+
     # A notification that somebody is now following our user
     elsif action == :follow
       if user
@@ -137,7 +137,7 @@ class SalmonController < ApplicationController
     # A notification that somebody has unfollowed our user
     elsif action == "http://ostatus.org/schema/1.0/unfollow"
       if user
-        if user.followed_by? author.feed.remote_url
+        if user.followed_by? author.feed
           user.unfollowed_by! author.feed
         end
       end
