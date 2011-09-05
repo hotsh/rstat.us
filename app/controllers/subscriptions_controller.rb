@@ -77,78 +77,58 @@ class SubscriptionsController < ApplicationController
   def create
     require_login! :return => request.referrer
 
-    feed_url = nil
+    # Find or create the Feed
+    subscribe_to_feed = Feed.first(:id => params[:subscribe_to])
 
-    # We need to also pass along the Redfinger look up to follow!
-    # if it is retrieved for a remote user:
-    acct = nil
+    unless subscribe_to_feed
+      # Allow for a variety of feed addresses
+      case params[:subscribe_to]
+      when /^feed:\/\//
+        # SAFARI!!!!1 /me shakes his first at the sky
+        feed_url = "http" + params[:subscribe_to][4..-1]
+      when /@/
+        # XXX: ensure caching of finger lookup.
+        redfinger_lookup = Redfinger.finger(params[:subscribe_to])
+        feed_url = redfinger_lookup.links.find { |l| l['rel'] == 'http://schemas.google.com/g/2010#updates-from' }.to_s
+      else
+        feed_url = params[:subscribe_to]
+      end
 
-    # Allow for a variety of feed addresses
-    case params[:url]
-    when /^feed:\/\//
-      # SAFARI!!!!1 /me shakes his first at the sky
-      feed_url = "http" + params[:url][4..-1]
-    when /@/
-      # XXX: ensure caching of finger lookup.
-      acct = Redfinger.finger(params[:url])
-      feed_url = acct.links.find { |l| l['rel'] == 'http://schemas.google.com/g/2010#updates-from' }.to_s
-    else
-      feed_url = params[:url]
+      # See if we already have a local feed for this remote
+      subscribe_to_feed = Feed.first(:remote_url => feed_url)
 
-      # Determine if it is a remote feed that is locally addressed
-      # If it is, then let's get the remote url and use that instead
-      if feed_url.start_with?("/")
-        feed_id = feed_url[/^\/feeds\/(.+)$/,1]
-        feed = Feed.first(:id => feed_id)
-
-        if not feed.nil? and not feed.remote_url.nil?
-          # This is a remote feed that we already know about
-          feed_url = feed.remote_url
-        end
+      unless subscribe_to_feed
+        # create a feed
+        subscribe_to_feed = Feed.create(:remote_url => feed_url)
+        # Populate the Feed with Updates and Author from the remote site
+        # Pass along the redfinger information to build the Author if available
+        subscribe_to_feed.populate redfinger_lookup
       end
     end
 
-    # If we're already following them, noop
-    if current_user.following_url? feed_url
-      feed = Feed.first(:remote_url => feed_url)
-      if feed.nil? and feed_url.start_with?("/")
-        feed_id = feed_url[/^\/feeds\/(.+)$/,1]
-        feed = Feed.first(:id => feed_id)
-        if feed.nil?
-          status 404
-          return
-        end
-      end
-
-      flash[:notice] = "You're already following #{feed.author.username}."
-
+    # Stop and return a nice message if already following this feed
+    if current_user.following_feed? subscribe_to_feed
+      flash[:notice] = "You're already following #{subscribe_to_feed.author.username}."
       redirect_to request.referrer
     end
 
-    f = current_user.follow! feed_url, acct
+    # Actually follow!
+    f = current_user.follow! subscribe_to_feed
 
     unless f
-      flash[:notice] = "There was a problem following #{params[:url]}."
+      flash[:notice] = "There was a problem following #{params[:subscribe_to_feed]}."
       redirect_to request.referrer
     end
 
-    if not f.local?
-      # Remote feeds require some talking to a hub.
-      if not f.hubs.empty?
-        hub_url = f.hubs.first
+    # Attempt to inform the hub for remote feeds
+    unless f.local? || f.hubs.empty?
+      hub_url = f.hubs.first
 
-        sub = OSub::Subscription.new(subscription_url(f.id, :format => "atom"), f.url, f.secret)
-        sub.subscribe(hub_url, false, f.verify_token)
-      end
-
-      name = f.author.username
-
-      flash[:notice] = "Now following #{name}."
-      redirect_to request.referrer
-    else
-      # If it's a local feed, then we're already good.
-      flash[:notice] = "Now following #{f.author.username}."
-      redirect_to request.referrer
+      sub = OSub::Subscription.new(subscription_url(f.id, :format => "atom"), f.url, f.secret)
+      sub.subscribe(hub_url, false, f.verify_token)
     end
+
+    flash[:notice] = "Now following #{f.author.username}."
+    redirect_to request.referrer
   end
 end

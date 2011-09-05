@@ -11,10 +11,10 @@ describe User do
 
     stub_request(:post, "http://rstatus.superfeedr.com/").
       with(:body => "hub.mode=publish&hub.url=#{user_feed_url}",
-           :headers => { 'Accept' => '*/*', 
-                         'Content-Type' => 'application/x-www-form-urlencoded', 
+           :headers => { 'Accept' => '*/*',
+                         'Content-Type' => 'application/x-www-form-urlencoded',
                          'User-Agent' => 'Ruby'}).
-      to_return(:status => 200, :body => "", :headers => {})      
+      to_return(:status => 200, :body => "", :headers => {})
   end
 
   describe "#at_replies" do
@@ -38,7 +38,7 @@ describe User do
   end
 
   describe "username" do
-    
+
     it "must be unique" do
       Factory(:user, :username => "steve")
       u = Factory.build(:user, :username => "steve")
@@ -109,9 +109,9 @@ describe User do
   describe "email" do
     it "changes email" do
       u = Factory.create(:user)
-      
+
       stub_superfeedr_request_for_user u
-      
+
       u.edit_user_profile(:email => 'team@jackhq.com')
       u.save
       assert_equal u.email_confirmed, false
@@ -149,7 +149,7 @@ describe User do
   describe "email confirmation" do
     it "allows unconfirmed emails to be entered more than once" do
       u = Factory.create(:user)
-      
+
       stub_superfeedr_request_for_user u
 
       u.edit_user_profile(:email => 'team@jackhq.com')
@@ -172,7 +172,80 @@ describe User do
 
       refute u2.valid?
     end
+  end
 
+  describe "following" do
+    describe "local users" do
+      before do
+        @u = Factory.create(:user)
+        @u2 = Factory.create(:user)
+      end
+
+      describe "#follow!" do
+        it "adds the followee's feed to the follower's following list" do
+          @u.follow!(@u2.feed)
+          @u.following.must_include(@u2.feed)
+        end
+
+        it "adds the follower's feed to the followee's followers list" do
+          @u.follow!(@u2.feed)
+          @u2.reload
+          @u2.followers.must_include(@u.feed)
+        end
+
+        it "does nothing if already following" do
+          @u.follow!(@u2.feed)
+          @u.follow!(@u2.feed)
+          @u2.reload
+          @u.following.count.must_equal(1)
+          @u2.followers.count.must_equal(1)
+        end
+      end
+
+      describe "#unfollow!" do
+        it "removes the followee's feed from the follower's following list" do
+          @u.follow!(@u2.feed)
+          @u.unfollow!(@u2.feed)
+          @u.following.wont_include(@u2.feed)
+        end
+
+        it "removes the follower's feed from the followee's followers list" do
+          @u.follow!(@u2.feed)
+          @u.unfollow!(@u2.feed)
+          @u2.reload
+          @u2.followers.wont_include(@u.feed)
+        end
+
+        it "does nothing if already not following" do
+          @u.unfollow!(@u2.feed)
+          @u2.reload
+          @u.following.count.must_equal(0)
+          @u2.followers.count.must_equal(0)
+        end
+      end
+
+      describe "followed_by?" do
+        it "is true if the feed is following this user" do
+          @u.follow!(@u2.feed)
+          @u2.reload
+          assert @u2.followed_by?(@u.feed)
+        end
+
+        it "is false if the feed is not following this user" do
+          refute @u2.followed_by?(@u.feed)
+        end
+      end
+    end
+
+    describe "remote users" do
+    end
+  end
+
+  describe "feed" do
+    it "has a local feed" do
+      u = Factory.create(:user)
+      assert u.feed.local?
+    end
   end
 
 end

@@ -177,52 +177,35 @@ class User
   many :followers, :in => :followers_ids, :class_name => 'Feed'
 
   # A particular feed follows this user
-  def followed_by! feed
-    followers << feed
+  def followed_by! f
+    followers << f
     save
   end
 
   # A particular feed unfollows this user
-  def unfollowed_by! feed
-    followers_ids.delete(feed.id)
+  def unfollowed_by! f
+    followers_ids.delete(f.id)
     save
   end
 
   # Follow a particular feed
-  def follow! feed_url, xrd = nil
-    f = Feed.first(:remote_url => feed_url)
-
-    # local feed?
-    if f.nil? and feed_url.start_with?("http://#{author.domain}/")
-      feed_id = feed_url[/^http:\/\/#{author.domain}\/feeds\/(.+)$/,1]
-      f = Feed.first(:id => feed_id)
-    end
-
+  def follow! f
     # can't follow yourself
     if f == self.feed
       return
-    end
-
-    if f.nil?
-      f = Feed.create(:remote_url => feed_url)
-
-      # Populate the Feed with Updates and Author from the remote site
-      # Pass along the xrd information to build the Author if available
-      f.populate xrd
     end
 
     following << f
     save
 
     if f.local?
+      # Add the inverse relationship
       followee = User.first(:author_id => f.author.id)
       followee.followed_by! self.feed
-      followee.save
     else
       # Queue a notification job
       self.delay.send_follow_notification(f.id)
     end
-
     f
   end
 
@@ -285,20 +268,12 @@ class User
     res = http.post(uri.path, envelope, {"Content-Type" => "application/magic-envelope+xml"})
   end
 
-  def followed_by? feed_url
-    f = Feed.first(:remote_url => feed_url)
+  def followed_by? f
+    followers.include? f
+  end
 
-    # local feed?
-    if f.nil? and feed_url.start_with?("/")
-      feed_id = feed_url[/^\/feeds\/(.+)$/,1]
-      f = Feed.first(:id => feed_id)
-    end
-
-    if f.nil?
-      false
-    else
-      followers.include? f
-    end
+  def following_feed? f
+    following.include? f
   end
 
   def following_author? author
