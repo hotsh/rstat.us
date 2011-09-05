@@ -7,10 +7,10 @@
 
 - content_for :top do
   #profile.vcard
-    
+
     %h3.fn= @author.display_name
     .nickname  @#{@author.username}
-    
+
     .follow-wrap
       - unless current_user and @author.user == current_user
         #follow
@@ -21,7 +21,7 @@
                   %input.button.unfollow{:type => "submit", :value => "Unfollow", :id => "unfollow-#{@author.feed.id}"}
           - elsif current_user
             = form_tag "/subscriptions" do
-              %input{:type => "hidden", :name => "url", :value => "/feeds/#{@author.feed.id}"}
+              %input{:type => "hidden", :name => "subscribe_to", :value => @author.feed.id}
                 %input.button.follow{:type => "submit", :value => "Follow", :id => "follow-#{@author.feed.id}"}
 
       - if @author.user == current_user

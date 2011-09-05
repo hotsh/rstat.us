@@ -24,5 +24,5 @@
               %input.button.unfollow{:type => "submit", :value => "Unfollow", :id => "unfollow-#{author.feed.id}"}
           - else
             = form_tag "/subscriptions" do
-              %input{:type => "hidden", :name => "url", :value => "/feeds/#{author.feed.id}"}
+              %input{:type => "hidden", :name => "subscribe_to", :value => author.feed.id}
               %input.button.follow{:type => "submit", :value => "Follow", :id => "follow-#{author.feed.id}"}
