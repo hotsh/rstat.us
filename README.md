@@ -8,7 +8,7 @@ Helping out with rstat.us
 
 If you'd like to contribute, here are some details:
 
-- The stack: ruby/sinatra/mongodb
+- The stack: ruby/rails 3.1/mongodb
 - [The code][code]
 - [The documentation][docs] (need lots of improvement here!)
 - [The Issues list][issues]
@@ -54,9 +54,9 @@ Then update your gemset:
 
 And start the server:
 
-    $ rackup
+    $ rails server
 
-Bam! Visit http://localhost:9292/ in your browser, and you'll be good.
+Bam! Visit <http://localhost:9292/> in your browser, and you'll be good.
 
 To run the tests you may want to make use of `bundle exec` so you don't get
 mixed up with different versions of gems that might or might not work with
@@ -79,7 +79,7 @@ When preparing for deployment, we compress our stylesheets and javascripts, as
 well as embedding what images we can. To compile Coffeescript and SCSS,
 use the following rake task:
 
-    $ rake assets:compile
+    $ bundle exec rake assets:precompile
 
 Note: This relies on some sort of coffee compiler being installed globally. If
 you get "undefined method 'compile' for nil:NilClass", that might be your
