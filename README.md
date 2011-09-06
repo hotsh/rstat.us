@@ -75,12 +75,6 @@ We use Coffeescript (.coffee) and Sassy CSS (.scss) for javascript and CSS
 development respectively. When running the site locally, these files will
 automatically be compiled by the application when requested.
 
-When preparing for deployment, we compress our stylesheets and javascripts, as
-well as embedding what images we can. To compile Coffeescript and SCSS,
-use the following rake task:
-
-    $ bundle exec rake assets:precompile
-
 Note: This relies on some sort of coffee compiler being installed globally. If
 you get "undefined method 'compile' for nil:NilClass", that might be your
 problem. On Ubuntu, installing the nodejs package fixes this; for other
