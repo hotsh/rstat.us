@@ -17,7 +17,7 @@ class AuthController < ApplicationController
     unless @auth = Authorization.find_from_hash(auth)
       if logged_in?
         Authorization.create_from_hash(auth, root_url, current_user)
-        redirect_to "/users/#{current_user.username}/edit"
+        redirect_to "/users/#{current_user.username}/edit" and return
       else
 
         # This situation here really sucks. I'd like to do something better,
