@@ -1,8 +1,7 @@
 source 'http://rubygems.org'
 
-gem 'rails', '3.1.0.rc5'
-gem 'sprockets', :git => 'git://github.com/sstephenson/sprockets.git'
-#gem 'rails', :git => 'git://github.com/rails/rails.git'
+gem 'rails', '3.1.0'
+gem 'sprockets', '2.0.0'
 
 gem 'sqlite3'
 
@@ -10,7 +9,7 @@ gem 'backports', :platform => :rbx
 
 # Asset template engines
 gem 'sass'
-gem 'sass-rails', '3.1.0.rc.5'
+gem 'sass-rails', '3.1.0'
 gem 'compass', :git => "git://github.com/chriseppstein/compass.git", :branch => "rails31"
 gem 'coffee-script'
 gem 'uglifier'
