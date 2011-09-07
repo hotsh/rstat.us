@@ -54,7 +54,10 @@ group :development, :test do
   gem "pygmentize"
   gem "mocha"
   gem "vcr"
-  gem "webmock"
   gem "simplecov", "~> 0.4.0", :require => false
   gem "launchy"
+end
+
+group :test do
+  gem "webmock"
 end
