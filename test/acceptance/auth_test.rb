@@ -64,20 +64,23 @@ describe "Authorization" do
         assert a.nil?
       end
 
+      # TODO: Add one for logging in with twitter
       it "signs up with twitter" do
-        omni_mock("twit")
+        omni_mock("twitter_user", {:uid => 78654, :token => "1111", :secret => "2222"})
         visit '/auth/twitter'
 
-        assert_match /Confirm account information/, page.body
-        assert_match /\/users\/confirm/, page.current_url
+        assert_match /\/users\/new/, page.current_url
 
         fill_in "username", :with => "new_user"
-        fill_in "email", :with => "new_user@email.com"
         click_button "Finish Signup"
 
         u = User.first(:username => "new_user")
         refute u.nil?
-        assert_equal u.email, "new_user@email.com"
+
+        auth = Authorization.first :nickname => "twitter_user"
+        assert_equal u, auth.user
+        assert_equal "1111", auth.oauth_token
+        assert_equal "2222", auth.oauth_secret
       end
     end
 
@@ -108,6 +111,8 @@ describe "Authorization" do
         assert a.nil?
       end
 
+      # TODO: Add one for sign up with facebook under normal circumstances
+      #   just like the above twitter one
       it "creates a username" do
         new_user = Factory.build(:user, :username => 'profile.php?id=1')
         log_in_fb(new_user)

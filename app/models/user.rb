@@ -11,6 +11,7 @@ class User
   include MongoMapper::Document
 
   # Associations
+  # XXX: These don't seem to be getting set when you sign up with Twitter, etc?
   many :authorizations, :dependant => :destroy
   belongs_to :author
 

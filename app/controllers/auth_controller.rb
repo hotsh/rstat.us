@@ -41,13 +41,11 @@ class AuthController < ApplicationController
         # their username and enter an email address.
         if User.first :username => auth['user_info']['nickname']
           flash[:error] = "Sorry, someone else has that username. Please pick another."
-          redirect_to '/users/new'
         elsif auth['user_info']['nickname'] =~ /profile[.]php[?]id=/
           flash[:error] = "Please choose a username."
-          redirect_to '/users/new'
-        else
-          redirect_to '/users/confirm'
         end
+
+        redirect_to '/users/new'
 
         return
       end
