@@ -302,7 +302,7 @@ class User
   timestamps!
 
   # Retrieve the list of Updates in the user's timeline
-  def timeline(params)
+  def timeline(params = nil)
     following_plus_me = following.map(&:author_id)
     following_plus_me << self.author.id
     Update.where(:author_id => following_plus_me).order(['created_at', 'descending'])
