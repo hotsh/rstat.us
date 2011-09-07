@@ -38,7 +38,6 @@ describe User do
   end
 
   describe "username" do
-
     it "must be unique" do
       Factory(:user, :username => "steve")
       u = Factory.build(:user, :username => "steve")
@@ -121,9 +120,7 @@ describe User do
       u = Factory.create(:user)
       assert_equal u.email_confirmed.nil?, true
     end
-
   end
-
 
   describe "reset password" do
     it "sets the token" do
@@ -134,7 +131,6 @@ describe User do
       refute u.perishable_token.nil?
       refute u.password_reset_sent.nil?
     end
-
 
     it "changes the password" do
       u = Factory.create(:user)
@@ -241,11 +237,52 @@ describe User do
     end
   end
 
-  describe "feed" do
+  describe "#feed" do
     it "has a local feed" do
       u = Factory.create(:user)
       assert u.feed.local?
     end
   end
 
+  describe "#timeline" do
+    it "includes my updates" do
+      u = Factory.create(:user)
+
+      my_update = Factory.create(
+                    :update,
+                    :text => "this is my update",
+                    :author => u.author)
+      u.feed.updates << my_update
+
+      assert u.timeline.include? my_update
+    end
+
+    it "includes updates from users i'm following" do
+      u = Factory.create(:user)
+      u2 = Factory.create(:user)
+
+      u.follow! u2.feed
+
+      u2_update = Factory.create(
+                    :update,
+                    :text => "this is your update",
+                    :author => u2.author)
+      u2.feed.updates << u2_update
+
+      assert u.timeline.include? u2_update
+    end
+
+    it "does not include updates from users i'm not following" do
+      u = Factory.create(:user)
+      u2 = Factory.create(:user)
+
+      u2_update = Factory.create(
+                    :update,
+                    :text => "this is your update",
+                    :author => u2.author)
+      u2.feed.updates << u2_update
+
+      refute u.timeline.include? u2_update
+    end
+  end
 end

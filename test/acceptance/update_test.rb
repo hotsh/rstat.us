@@ -200,7 +200,9 @@ describe "update" do
 
       refute_match page.body, /Post to/
     end
+  end
 
+  describe "no update messages" do
     it "renders tagline default for timeline" do
       u = Factory(:user)
       log_in_email(u)
@@ -223,6 +225,100 @@ describe "update" do
       visit "/search"
 
       assert_match page.body, /No statuses match your search/
+    end
+  end
+
+  describe "timeline" do
+    it "has a status of myself in my timeline" do
+      u = Factory(:user)
+      a = Factory(:authorization, :user => u)
+
+      update = Factory(
+                 :update,
+                 :author => u.author)
+      u.feed.updates << update
+
+      log_in(u, a.uid)
+      visit "/"
+      assert_match page.body, /#{update.text}/
+    end
+
+    it "has a status of someone i'm following in my timeline" do
+      u = Factory(:user)
+      a = Factory(:authorization, :user => u)
+
+      u2 = Factory(:user)
+      update = Factory(
+                 :update,
+                 :author => u2.author)
+      u2.feed.updates << update
+      u.follow! u2.feed
+
+      log_in(u, a.uid)
+      visit "/"
+      assert_match page.body, /#{update.text}/
+    end
+
+    it "does not have a status of someone i'm not following in my timeline" do
+      u = Factory(:user)
+      a = Factory(:authorization, :user => u)
+
+      u2 = Factory(:user)
+      update = Factory(
+                 :update,
+                 :author => u2.author)
+      u2.feed.updates << update
+
+      log_in(u, a.uid)
+      visit "/"
+      refute_match page.body, /#{update.text}/
+    end
+  end
+
+  describe "world" do
+    it "has my updates in the world view" do
+      u = Factory(:user)
+      a = Factory(:authorization, :user => u)
+
+      update = Factory(
+                 :update,
+                 :author => u.author)
+      u.feed.updates << update
+
+      log_in(u, a.uid)
+      visit "/updates"
+      assert_match page.body, /#{update.text}/
+    end
+
+    it "has someone i'm following in the world view" do
+      u = Factory(:user)
+      a = Factory(:authorization, :user => u)
+
+      u2 = Factory(:user)
+      update = Factory(
+                 :update,
+                 :author => u2.author)
+      u2.feed.updates << update
+      u.follow! u2.feed
+
+      log_in(u, a.uid)
+      visit "/updates"
+      assert_match page.body, /#{update.text}/
+    end
+
+    it "has someone i'm not following in the world view" do
+      u = Factory(:user)
+      a = Factory(:authorization, :user => u)
+
+      u2 = Factory(:user)
+      update = Factory(
+                 :update,
+                 :author => u2.author)
+      u2.feed.updates << update
+
+      log_in(u, a.uid)
+      visit "/updates"
+      assert_match page.body, /#{update.text}/
     end
   end
 end
