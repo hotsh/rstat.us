@@ -384,6 +384,11 @@ class User
     return true
   end
 
+  # A better name would be very welcome.
+  def self.find_by_case_insensitive_username(username)
+    User.first(:username => /^#{Regexp.escape(username)}$/i)
+  end
+
   private
 
   def same_email?(email_param)

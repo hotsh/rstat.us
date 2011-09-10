@@ -53,4 +53,22 @@ describe "profile" do
 
     assert_match page.body, /#{bio_text}/
   end
+
+  it "doesn't let you update someone else's profile" do
+    u = Factory(:user)
+    visit "/users/#{u.username}/edit"
+    assert_match /\/users\/#{u.username}$/, page.current_url
+  end
+
+  it "does let you update your profile even if you use a different case in the url" do
+    u = Factory(:user, :username => "LADY_GAGA")
+    a = Factory(:authorization, :user => u)
+    log_in(u, a.uid)
+    visit "/users/lady_gaga/edit"
+    bio_text = "To be or not to be"
+    fill_in "bio", :with => bio_text
+    click_button "Save"
+
+    assert_match page.body, /#{bio_text}/
+  end
 end

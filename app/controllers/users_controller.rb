@@ -14,8 +14,7 @@ class UsersController < ApplicationController
   end
 
   def show
-
-    user = User.first :username => /^#{Regexp.escape(params[:id])}$/i
+    user = User.find_by_case_insensitive_username(params[:id])
 
     if user.nil?
       render :file => "#{Rails.root}/public/404.html", :status => 404
@@ -23,6 +22,7 @@ class UsersController < ApplicationController
       redirect_to "/users/#{user.username}"
     else
       set_params_page
+
       @author  = user.author
       @updates = user.updates
       @updates = @updates.paginate(:page => params[:page], :per_page => params[:per_page])
@@ -34,7 +34,7 @@ class UsersController < ApplicationController
   end
 
   def edit
-    @user = User.first :username => params[:id]
+    @user = User.find_by_case_insensitive_username(params[:id])
 
     # While it might be cool to edit other people's profiles, we probably
     # shouldn't let you do that. We're no fun.
@@ -46,7 +46,7 @@ class UsersController < ApplicationController
   end
 
   def update
-    @user = User.first :username => params[:id]
+    @user = User.find_by_case_insensitive_username(params[:id])
     if @user == current_user
       response = @user.edit_user_profile(params)
       if response == true
@@ -123,61 +123,78 @@ class UsersController < ApplicationController
   # Since it's only two lines, we don't bother to do a redirect, and
   # it's arguably better to display them as two different resources.
   # Whatevs.
+  # Except we ARE doing a redirect??? /me shakes fist at steve
   def feed
-    feed = User.first(:username => params[:id]).feed
-    redirect_to "/feeds/#{feed.id}.atom"
+    user = User.find_by_case_insensitive_username(params[:id])
+    if user
+      redirect_to "/feeds/#{user.feed.id}.atom"
+    else
+      render :file => "#{Rails.root}/public/404.html", :status => 404
+    end
   end
 
   # Who do you think is a really neat person? This page will show it to the
   # world, so pick wisely!
   def following
-    set_params_page
+    @user = User.find_by_case_insensitive_username(params[:id])
 
-    # XXX: case insensitive username
-    @user = User.first(:username => params[:id])
-    @feeds = @user.following
-
-    @feeds = @feeds.paginate(:page => params[:page], :per_page => params[:per_page], :order => :id.desc)
-
-    set_pagination_buttons(@feeds)
-
-    @authors = @feeds.map{|f| f.author}
-
-    if @user == current_user
-      title = "You're following"
+    if @user.nil?
+      render :file => "#{Rails.root}/public/404.html", :status => 404
+    elsif @user.username != params[:id] # case difference
+      redirect_to "/users/#{@user.username}/following"
     else
-      title = "@#{@user.username} is following"
-    end
+      set_params_page
 
-    respond_to do |format|
-      format.html { render "users/list", :locals => {:title => title} }
-      format.json { render :json => @authors }
+      @feeds = @user.following
+
+      @feeds = @feeds.paginate(:page => params[:page], :per_page => params[:per_page], :order => :id.desc)
+
+      set_pagination_buttons(@feeds)
+
+      @authors = @feeds.map{|f| f.author}
+
+      if @user == current_user
+        title = "You're following"
+      else
+        title = "@#{@user.username} is following"
+      end
+
+      respond_to do |format|
+        format.html { render "users/list", :locals => {:title => title} }
+        format.json { render :json => @authors }
+      end
     end
   end
 
   # This shows off how cool you are: I hope you've got the biggest number of
   # followers. Only one way to find out...
   def followers
-    set_params_page
+    @user = User.find_by_case_insensitive_username(params[:id])
 
-    # XXX: case insensitive username
-    @user = User.first(:username => params[:id])
-    @feeds = @user.followers
-
-    @feeds = @feeds.paginate(:page => params[:page], :per_page => params[:per_page], :order => :id.desc)
-
-    set_pagination_buttons(@feeds)
-
-    @authors = @feeds.map{|f| f.author}
-
-    #build title
-    if @user == current_user
-      title = "Your followers"
+    if @user.nil?
+      render :file => "#{Rails.root}/public/404.html", :status => 404
+    elsif @user.username != params[:id] # case difference
+      redirect_to "/users/#{@user.username}/followers"
     else
-      title = "@#{@user.username}'s followers"
-    end
+      set_params_page
 
-    render "users/list", :locals => {:title => title}
+      @feeds = @user.followers
+
+      @feeds = @feeds.paginate(:page => params[:page], :per_page => params[:per_page], :order => :id.desc)
+
+      set_pagination_buttons(@feeds)
+
+      @authors = @feeds.map{|f| f.author}
+
+      #build title
+      if @user == current_user
+        title = "Your followers"
+      else
+        title = "@#{@user.username}'s followers"
+      end
+
+      render "users/list", :locals => {:title => title}
+    end
   end
 
   def confirm_email
@@ -225,7 +242,6 @@ class UsersController < ApplicationController
     @email = session.delete(:fp_email)
     render "login/forgot_password_confirm"
   end
-
 
   def reset_password_new
     if not logged_in?
@@ -281,7 +297,6 @@ class UsersController < ApplicationController
       redirect_to "/forgot_password"
     end
   end
-
 
   # Public reset password page, accessible via a valid token. Tokens are only
   # valid for 2 days and are unique to that user. The user is found using the
