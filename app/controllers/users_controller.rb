@@ -2,26 +2,7 @@ class UsersController < ApplicationController
 
   def index
     set_params_page
-    # Filter users by search params
-    if params[:search] && !params[:search].empty?
-      @authors = Author.where(:username => /#{params[:search]}/i)
-
-    # Filter and sort users by letter
-    elsif params[:letter]
-      if params[:letter] == "other"
-        @authors = Author.where(:username => /^[^a-z0-9]/i)
-      elsif params[:letter].empty?
-        raise "EMPTY"
-      else
-        @authors = Author.where(:username => /^#{params[:letter][0].chr}/i)
-      end
-      @authors = @authors.sort(:username)
-
-    # Otherwise get all users and sort by creation date
-    else
-      @authors = Author
-      @authors = @authors.sort(:created_at.desc)
-    end
+    @authors = Author.search(params)
 
     @authors = @authors.paginate(:page => params[:page], :per_page => params[:per_page])
 
