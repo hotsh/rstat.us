@@ -28,6 +28,11 @@ describe "profile" do
     assert_match /#{update1.text}.*#{update2.text}/m, page.body
   end
 
+  it "404s if the user doesnt exist" do
+    visit "/users/nonexistent"
+    assert_match "The page you were looking for doesn't exist.", page.body
+  end
+
   it "has a link to edit your own profile" do
     u = Factory(:user)
     a = Factory(:authorization, :user => u)

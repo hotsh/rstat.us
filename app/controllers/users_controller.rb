@@ -14,26 +14,23 @@ class UsersController < ApplicationController
   end
 
   def show
-    set_params_page
 
-    user = User.first :username => params[:id]
+    user = User.first :username => /^#{Regexp.escape(params[:id])}$/i
+
     if user.nil?
-      #check for a case insensitive match and then redirect to the correct address
-      username = Regexp.escape(params[:id])
-      user = User.first :username => /^#{username}$/i
-      if user.nil?
-        render :file => "#{Rails.root}/public/404.html", :status => 404
-        return
-      else
-        redirect_to "/users/#{user.username}"
-      end
-    end
-    @author  = user.author
-    @updates = user.updates
-    @updates = @updates.paginate(:page => params[:page], :per_page => params[:per_page])
-    set_pagination_buttons(@updates)
+      render :file => "#{Rails.root}/public/404.html", :status => 404
+    elsif user.username != params[:id] # case difference
+      redirect_to "/users/#{user.username}"
+    else
+      set_params_page
+      @author  = user.author
+      @updates = user.updates
+      @updates = @updates.paginate(:page => params[:page], :per_page => params[:per_page])
 
-    headers['Link'] = "<#{user_xrd_path(user.author.username)}>; rel=\"lrdd\"; type=\"application/xrd+xml\""
+      set_pagination_buttons(@updates)
+
+      headers['Link'] = "<#{user_xrd_path(user.author.username)}>; rel=\"lrdd\"; type=\"application/xrd+xml\""
+    end
   end
 
   def edit
