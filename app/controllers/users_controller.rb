@@ -28,8 +28,8 @@ class UsersController < ApplicationController
         redirect_to "/users/#{user.username}"
       end
     end
-    @author = user.author
-    @updates = Update.where(:feed_id => user.feed.id).order(['created_at', 'descending'])
+    @author  = user.author
+    @updates = user.updates
     @updates = @updates.paginate(:page => params[:page], :per_page => params[:per_page])
     set_pagination_buttons(@updates)
 

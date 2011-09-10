@@ -11,6 +11,23 @@ describe "profile" do
     assert_equal url, page.current_url
   end
 
+  it "has the user's updates on the page in reverse chronological order" do
+    u = Factory(:user)
+    update1 = Factory(:update,
+                      :text       => "This is a message posted yesterday",
+                      :author     => u.author,
+                      :created_at => 1.day.ago)
+    update2 = Factory(:update,
+                      :text       => "This is a message posted last week",
+                      :author     => u.author,
+                      :created_at => 1.week.ago)
+    u.feed.updates << update1
+    u.feed.updates << update2
+
+    visit "/users/#{u.username}"
+    assert_match /#{update1.text}.*#{update2.text}/m, page.body
+  end
+
   it "has a link to edit your own profile" do
     u = Factory(:user)
     a = Factory(:authorization, :user => u)
