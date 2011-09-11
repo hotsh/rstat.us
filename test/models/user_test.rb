@@ -285,4 +285,26 @@ describe User do
       refute u.timeline.include? u2_update
     end
   end
+
+  describe "self#find_by_case_insensitive_username" do
+    before do
+      @u = Factory.create(:user, :username => "oMg")
+    end
+
+    it "returns the user if we use the same case" do
+      assert_equal @u, User.find_by_case_insensitive_username("oMg")
+    end
+
+    it "returns the user if we use a different case" do
+      assert_equal @u, User.find_by_case_insensitive_username("OmG")
+    end
+
+    it "returns nil if no user matches" do
+      assert_equal nil, User.find_by_case_insensitive_username("blah")
+    end
+
+    it "escapes regex chars so that regexing isnt allowed" do
+      assert_equal nil, User.find_by_case_insensitive_username(".mg")
+    end
+  end
 end

@@ -153,6 +153,19 @@ describe "following" do
       assert_match "#{u.username} is following", page.body
     end
 
+    it "redirects to the correct case" do
+      u = Factory(:user, :username => "dfnkt")
+
+      visit "/users/#{u.username.upcase}/following"
+      assert_match "#{u.username} is following", page.body
+      assert_match /\/users\/#{u.username}\/following$/, page.current_url
+    end
+
+    it "404s if the requested user does not exist" do
+      visit "/users/nonexistent/following"
+      assert_match "The page you were looking for doesn't exist.", page.body
+    end
+
     it "has a nice message if not following anyone" do
       u = Factory(:user, :username => "dfnkt")
 
@@ -239,6 +252,19 @@ describe "following" do
 
       visit "/users/#{u.username}/followers"
       assert_match "#{u.username}'s followers", page.body
+    end
+
+    it "redirects to the correct case" do
+      u = Factory(:user, :username => "dfnkt")
+
+      visit "/users/#{u.username.upcase}/followers"
+      assert_match "#{u.username}'s followers", page.body
+      assert_match /\/users\/#{u.username}\/followers$/, page.current_url
+    end
+
+    it "404s if the requested user does not exist" do
+      visit "/users/nonexistent/followers"
+      assert_match "The page you were looking for doesn't exist.", page.body
     end
 
     it "has a nice message if not followed by anyone" do

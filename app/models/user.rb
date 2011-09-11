@@ -45,6 +45,10 @@ class User
     self.author.feed
   end
 
+  def updates
+    self.author.feed.updates.sort(:created_at.desc)
+  end
+
   # Before a user is created, we will generate some RSA keys
   def generate_rsa_pair
     key = RSA::KeyPair.generate(2048)
@@ -378,6 +382,11 @@ class User
     author.feed.ping_hubs
 
     return true
+  end
+
+  # A better name would be very welcome.
+  def self.find_by_case_insensitive_username(username)
+    User.first(:username => /^#{Regexp.escape(username)}$/i)
   end
 
   private
