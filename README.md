@@ -1,3 +1,12 @@
+<pre>
+               .            .
+ .___    ____ _/_     ___  _/_     ,   .   ____
+ /   \  (      |     /   `  |      |   |  (
+ |   '  `--.   |    |    |  |      |   |  `--.
+ /     \___.'  \__/ `.__/|  \__/ / `._/| \___.'
+
+</pre>
+
 rstat.us is a microblogging site built on top of the [ostatus
 protocol](http://status.net/wiki/OStatus).
 
@@ -43,11 +52,6 @@ Then do:
     $ git clone https://github.com/$MY_GITHUB_USERNAME/rstat.us.git
     $ cd rstat.us
 
-Copy the config file; if you have actual Twitter API keys, you can add yours,
-but this file just needs to exist for the server to work.
-
-    $ cp config/config.yml.sample config/config.yml
-
 Then update your gemset:
 
     $ gem install bundler && bundle install
@@ -64,40 +68,14 @@ the current rstat.us branch.
 
 Run the tests:
 
-    $ bundle exec rake test
+    $ bundle exec rake test:all
 
 [mongo-quickstart]: http://www.mongodb.org/display/DOCS/Quickstart
-
-Compiling CSS and Javascript
-----------------------------
-
-We use Coffeescript (.coffee) and Sassy CSS (.scss) for javascript and CSS
-development respectively. When running the site locally, these files will
-automatically be compiled by the application when requested.
-
-Note: This relies on some sort of coffee compiler being installed globally. If
-you get "undefined method 'compile' for nil:NilClass", that might be your
-problem. On Ubuntu, installing the nodejs package fixes this; for other
-systems, check out [nodejs.org][node].
-
-For coffee-script installation, [check the docs][coffee-install].
-
-You may also need the java runtime for asset compression, which is handled by
-jammit using yui compressor and closure compiler. Installing a JDK, such as
-[OpenJDK][openjdk] should do the trick.
-
-[node]: http://nodejs.org
-[coffee-install]: http://jashkenas.github.com/coffee-script/#installation
-[openjdk]: http://openjdk.java.net/
 
 Running your own node
 ---------------------
 
-If you need help with this, then you're not ready to run one.
-Here's the deal: we're still finishing up our ostatus implementation,
-and until it's 100% compatible, these instructions are kept secret.
-Eventually, we plan on making this _super easy_, but until we feel that
-it's ready, we're keeping the instructions 'secret.' Sorry!
+If you need help with this, then you're not ready to run one. We're working
+on making this super easy, but right now, we're not quite there.
 
-If you do run your own node anyway, please keep current with upstream
-until we hit 1.0, and it should all be smooth sailing!
+If you do run your own node, please keep current with upstream.
