@@ -1,4 +1,4 @@
-.swp
+*.swp
 docs
 config.yml
 .sass-cache
