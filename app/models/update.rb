@@ -226,7 +226,7 @@ class Update
   # either twitter, facebook or both on update form, repost the update to
   # facebook or twitter.
   def send_to_external_accounts
-    return if ENV['RACK_ENV'] == 'development'
+    return if ENV['RAILS_ENV'] == 'development'
 
     # If there is no user we can't get to the oauth tokens, abort!
     if author.user
