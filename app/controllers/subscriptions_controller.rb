@@ -14,23 +14,14 @@ class SubscriptionsController < ApplicationController
       # url matches what we expect
       verified = params['hub.topic'] == feed.url
       if verified and sub.verify_subscription(params['hub.verify_token'])
-        if development?
-          puts "Verified"
-          p respond
-        end
-        body respond[:body]
-        status respond[:status]
+        render :text => respond[:body], :status => respond[:status]
       else
-        if development?
-          puts "Verification Failed"
-          p respond
-        end
         # if the verification fails, the specification forces us to
         # return a 404 status
-        status 404
+        raise ActionController::RoutingError.new('Not Found')
       end
     else
-      status 404
+      raise ActionController::RoutingError.new('Not Found')
     end
   end
 
@@ -63,12 +54,9 @@ class SubscriptionsController < ApplicationController
   def post_update
     feed = Feed.first :id => params[:id]
     if feed.nil?
-      status 404
-      return
+      raise ActionController::RoutingError.new('Not Found')
     end
-    if development?
-      puts "Hub post received for #{feed.author.username}."
-    end
+
     feed.update_entries(request.body.read, request.url, feed.url, request.env['HTTP_X_HUB_SIGNATURE'])
   end
 
@@ -125,7 +113,7 @@ class SubscriptionsController < ApplicationController
       hub_url = f.hubs.first
 
       sub = OSub::Subscription.new(subscription_url(f.id, :format => "atom"), f.url, f.secret)
-      sub.subscribe(hub_url, false, f.verify_token)
+      sub.subscribe(hub_url, true, f.verify_token)
     end
 
     flash[:notice] = "Now following #{f.author.username}."
