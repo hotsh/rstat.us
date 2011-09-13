@@ -4,8 +4,7 @@ class WebfingerController < ApplicationController
     @base_url = root_url
     @hostname = request.host
 
-    content_type "application/xrd+xml"
-    render "xml/webfinger/host-meta", :layout => false
+    render "xml/webfinger/host-meta", :layout => false, :content_type => "application/xrd+xml"
   end
 
   # User xrd generation
@@ -20,7 +19,6 @@ class WebfingerController < ApplicationController
     @user = User.first :username => /^#{username}$/i
     @base_url = root_url
 
-    content_type "application/xrd+xml"
-    render "xml/webfinger/xrd", :layout => false
+    render "xml/webfinger/xrd", :layout => false, :content_type => "application/xrd+xml"
   end
 end
