@@ -8,13 +8,11 @@ gem 'sqlite3'
 gem 'backports', :platform => :rbx
 
 # Asset template engines
-group :assets do
-  gem 'sass'
-  gem 'sass-rails', '3.1.0'
-  gem 'compass', :git => "git://github.com/chriseppstein/compass.git", :branch => "rails31"
-  gem 'coffee-script'
-  gem 'uglifier'
-end
+gem 'sass'
+gem 'sass-rails', '3.1.0'
+gem 'compass', :git => "git://github.com/chriseppstein/compass.git", :branch => "rails31"
+gem 'coffee-script'
+gem 'uglifier'
 
 gem "haml-rails"
 gem 'jquery-rails'
