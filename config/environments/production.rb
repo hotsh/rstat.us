@@ -13,6 +13,7 @@ RstatUs::Application.configure do
 
   # Compress JavaScripts and CSS
   config.assets.compress = true
+  config.assets.digest = true
 
   # Specify the default JavaScript compressor
   config.assets.js_compressor  = :uglifier
