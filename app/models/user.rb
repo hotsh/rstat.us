@@ -3,10 +3,10 @@
 # that sign up via Twitter get a User model, though it's a bit empty in that
 # particular case.
 
+require_relative '../../lib/crypto'
+
 class User
   require 'digest/md5'
-  require 'openssl'
-  require 'rsa'
 
   include MongoMapper::Document
 
@@ -51,52 +51,12 @@ class User
 
   # Before a user is created, we will generate some RSA keys
   def generate_rsa_pair
-    key = RSA::KeyPair.generate(2048)
+    keypair = Crypto.generate_keypair
 
-    public_key = key.public_key
-    m = public_key.modulus
-    e = public_key.exponent
-
-    modulus = ""
-    until m == 0 do
-      modulus << [m % 256].pack("C")
-      m >>= 8
-    end
-    modulus.reverse!
-
-    exponent = ""
-    until e == 0 do
-      exponent << [e % 256].pack("C")
-      e >>= 8
-    end
-    exponent.reverse!
-
-    public_key = "RSA.#{Base64::urlsafe_encode64(modulus)}.#{Base64::urlsafe_encode64(exponent)}"
-
-    tmp_private_key = key.private_key
-    m = tmp_private_key.modulus
-    e = tmp_private_key.exponent
-
-    modulus = ""
-    until m == 0 do
-      modulus << [m % 256].pack("C")
-      m >>= 8
-    end
-    modulus.reverse!
-
-    exponent = ""
-    until e == 0 do
-      exponent << [e % 256].pack("C")
-      e >>= 8
-    end
-    exponent.reverse!
-
-    tmp_private_key = "RSA.#{Base64::urlsafe_encode64(modulus)}.#{Base64::urlsafe_encode64(exponent)}"
-
-    self.author.public_key = public_key
+    self.author.public_key = keypair.public_key
     self.author.save
 
-    self.private_key = tmp_private_key
+    self.private_key = keypair.private_key
   end
 
   # Retrieves a valid RSA::KeyPair for the User's private key
