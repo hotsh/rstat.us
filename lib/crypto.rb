@@ -3,7 +3,7 @@ require 'rsa'
 
 KeyPair = Struct.new(:public_key, :private_key)
 
-class Crypto
+module Crypto
   def self.generate_keypair
     keypair = KeyPair.new
 
