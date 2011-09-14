@@ -60,8 +60,8 @@ class User
   end
 
   # Retrieves a valid RSA::KeyPair for the User's private key
-  def self.to_rsa_key
-    Crypto.make_rsa_key(nil, private_key)
+  def self.to_rsa_keypair
+    Crypto.make_rsa_keypair(nil, private_key)
   end
 
   # After a user is created, create the feed and reset the token
@@ -169,7 +169,7 @@ class User
 
     salmon = OStatus::Salmon.from_follow(author.to_atom, f.author.to_atom)
 
-    envelope = salmon.to_xml self.to_rsa_key
+    envelope = salmon.to_xml self.to_rsa_keypair
 
     # Send envelope to Author's Salmon endpoint
     uri = URI.parse(f.author.salmon_url)
@@ -197,7 +197,7 @@ class User
 
     salmon = OStatus::Salmon.from_unfollow(author.to_atom, f.author.to_atom)
 
-    envelope = salmon.to_xml self.to_rsa_key
+    envelope = salmon.to_xml self.to_rsa_keypair
 
     # Send envelope to Author's Salmon endpoint
     uri = URI.parse(f.author.salmon_url)
@@ -213,7 +213,7 @@ class User
     base_uri = "http://#{author.domain}/"
     salmon = OStatus::Salmon.new(u.to_atom(base_uri))
 
-    envelope = salmon.to_xml self.to_rsa_key
+    envelope = salmon.to_xml self.to_rsa_keypair
 
     # Send envelope to Author's Salmon endpoint
     uri = URI.parse(f.author.salmon_url)

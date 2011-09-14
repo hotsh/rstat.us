@@ -90,19 +90,7 @@ class Author
 
   # Retrieves a valid RSA::KeyPair for the Author's public key
   def retrieve_public_key
-    # Create the public key from the key stored
-
-    # Retrieve the exponent and modulus from the key string
-    public_key.match /^RSA\.(.*?)\.(.*)$/
-    modulus = Base64::urlsafe_decode64($1)
-    exponent = Base64::urlsafe_decode64($2)
-
-    modulus = modulus.bytes.inject(0) {|num, byte| (num << 8) | byte }
-    exponent = exponent.bytes.inject(0) { |num, byte| (num << 8) | byte }
-
-    # Create the public key instance
-    key = RSA::Key.new(modulus, exponent)
-    keypair = RSA::KeyPair.new(nil, key)
+    Crypto.make_rsa_keypair(public_key, nil)
   end
 
   # Returns a locally useful url for the Author
