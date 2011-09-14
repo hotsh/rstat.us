@@ -1,18 +1,5 @@
 class UsersController < ApplicationController
 
-  def index
-    set_params_page
-    @authors = Author.search(params)
-
-    @authors = @authors.paginate(:page => params[:page], :per_page => params[:per_page])
-
-    if params[:letter] && !params[:letter].empty?
-      set_pagination_buttons(@authors, :letter => params[:letter])
-    else
-      set_pagination_buttons(@authors)
-    end
-  end
-
   def show
     user = User.find_by_case_insensitive_username(params[:id])
 
