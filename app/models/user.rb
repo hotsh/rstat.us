@@ -60,20 +60,8 @@ class User
   end
 
   # Retrieves a valid RSA::KeyPair for the User's private key
-  def retrieve_private_key
-    # Create the private key from the key stored
-
-    # Retrieve the exponent and modulus from the key string
-    private_key.match /^RSA\.(.*?)\.(.*)$/
-    modulus = Base64::urlsafe_decode64($1)
-    exponent = Base64::urlsafe_decode64($2)
-
-    modulus = modulus.bytes.inject(0) {|num, byte| (num << 8) | byte }
-    exponent = exponent.bytes.inject(0) { |num, byte| (num << 8) | byte }
-
-    # Create the public key instance
-    key = RSA::Key.new(modulus, exponent)
-    keypair = RSA::KeyPair.new(key, nil)
+  def self.to_rsa_key
+    Crypto.make_rsa_key(nil, private_key)
   end
 
   # After a user is created, create the feed and reset the token
@@ -181,7 +169,7 @@ class User
 
     salmon = OStatus::Salmon.from_follow(author.to_atom, f.author.to_atom)
 
-    envelope = salmon.to_xml retrieve_private_key
+    envelope = salmon.to_xml self.to_rsa_key
 
     # Send envelope to Author's Salmon endpoint
     uri = URI.parse(f.author.salmon_url)
@@ -209,7 +197,7 @@ class User
 
     salmon = OStatus::Salmon.from_unfollow(author.to_atom, f.author.to_atom)
 
-    envelope = salmon.to_xml retrieve_private_key
+    envelope = salmon.to_xml self.to_rsa_key
 
     # Send envelope to Author's Salmon endpoint
     uri = URI.parse(f.author.salmon_url)
@@ -225,7 +213,7 @@ class User
     base_uri = "http://#{author.domain}/"
     salmon = OStatus::Salmon.new(u.to_atom(base_uri))
 
-    envelope = salmon.to_xml retrieve_private_key
+    envelope = salmon.to_xml self.to_rsa_key
 
     # Send envelope to Author's Salmon endpoint
     uri = URI.parse(f.author.salmon_url)

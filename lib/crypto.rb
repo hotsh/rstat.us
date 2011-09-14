@@ -51,4 +51,20 @@ class Crypto
 
     keypair
   end
+
+  # We don't yet do anything with the public key, but I added it so that when we
+  # need to, it'll be there.
+  def self.make_rsa_key(public_key, private_key)
+    # Retrieve the exponent and modulus from the key string
+    private_key.match /^RSA\.(.*?)\.(.*)$/
+    modulus = Base64::urlsafe_decode64($1)
+    exponent = Base64::urlsafe_decode64($2)
+
+    modulus = modulus.bytes.inject(0) {|num, byte| (num << 8) | byte }
+    exponent = exponent.bytes.inject(0) { |num, byte| (num << 8) | byte }
+
+    # Create the public key instance
+    key = RSA::Key.new(modulus, exponent)
+    RSA::KeyPair.new(key, nil)
+  end
 end
