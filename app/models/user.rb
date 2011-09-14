@@ -3,7 +3,7 @@
 # that sign up via Twitter get a User model, though it's a bit empty in that
 # particular case.
 
-require_relative '../../lib/crypto'
+require 'crypto'
 
 class User
   require 'digest/md5'
