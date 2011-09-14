@@ -339,10 +339,6 @@ class User
 
   private
 
-  def same_email?(email_param)
-    self.email == email_param
-  end
-
   def create_feed
     f = Feed.create(
       :author => self.author
