@@ -21,11 +21,12 @@ If you'd like to contribute, here are some details:
 - [The code][code]
 - [The documentation][docs] (need lots of improvement here!)
 - [The Issues list][issues]
-- Please fork the project and make a pull request
-  - Pull requests will not be merged without tests/documentation
-    - We use [minitest][minitest]/[capybara][capy] for tests
-    - We use [docco][docco] (rocco) for documentation
-    - If you think it doesn't need a test, make your case, I'm just saying.
+- We follow [GitHub flow][flow], as a workflow. Basically:
+  - Please fork the project and make a pull request
+    - Pull requests will not be merged without tests/documentation
+      - We use [minitest][minitest]/[capybara][capy] for tests
+      - We use [docco][docco] (rocco) for documentation
+      - If you think it doesn't need a test, make your case, I'm just saying.
 
 [code]: http://github.com/hotsh/rstat.us
 [docs]: http://hotsh.github.com/rstat.us/
@@ -33,6 +34,7 @@ If you'd like to contribute, here are some details:
 [minitest]: https://github.com/seattlerb/minitest
 [capy]: https://github.com/jnicklas/capybara
 [docco]: https://github.com/jashkenas/docco
+[flow]: http://scottchacon.com/2011/08/31/github-flow.html
 
 Source code documentation
 -------------------------
