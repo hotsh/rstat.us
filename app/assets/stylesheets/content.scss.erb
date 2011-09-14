@@ -14,7 +14,7 @@
   margin: 5px 5px 0 5px;
   -webkit-box-shadow: 0px 0px 4px #bbb;
   float: left;
-  background: url('<%= image_path 'embed/nav-background.png' %>') center bottom repeat-x;
+  background: url('<%= asset_path 'embed/nav-background.png' %>') center bottom repeat-x;
 }
 
 #updates-menu {
@@ -32,7 +32,7 @@
     border-right: 1px solid #f7f7f7;
 
     .icon {
-      @include image_replaced('<%= image_path 'icons_sprite.png' %>', 24px, 16px);
+      @include image_replaced('<%= asset_path 'icons_sprite.png' %>', 24px, 16px);
     }
     .icon, a {
       float: left;
@@ -119,7 +119,7 @@
     .actions {
       display: none;
     }
-    
+
     &:hover .actions {
       display: block;
     }
@@ -156,7 +156,7 @@
       cursor: pointer;
       float: right;
       border: none;
-      @include image-replaced('<%= image_path 'embed/trash.png' %>', 13px, 16px)
+      @include image-replaced('<%= asset_path 'embed/trash.png' %>', 13px, 16px)
     }
   }
 }
@@ -294,7 +294,7 @@
         float: left;
         margin-top: 2px;
         margin-right: 0.5em;
-        @include image_replaced('<%= image_path 'icons_sprite.png' %>', 24px, 16px);
+        @include image_replaced('<%= asset_path 'icons_sprite.png' %>', 24px, 16px);
       }
     }
 

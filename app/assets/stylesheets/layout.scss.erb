@@ -27,26 +27,26 @@ body {
   color: white;
   background: $header_color;
   margin-bottom: 1.5em;
-  @include clearfix;  
-  
+  @include clearfix;
+
   #header {
     @include clearfix;
     #logo {
       float: left;
       padding: 1em $gutter_width/2;
       h1 {
-        @include image-replaced("<%= image_path 'embed/logo-sm.png' %>", 96px, 33px);
+        @include image-replaced("<%= asset_path 'embed/logo-sm.png' %>", 96px, 33px);
         margin: 0;
-      }      
+      }
     }
     .menu {
       margin-top: 1.75em;
       float: left;
     }
-    
+
     #profile_menu {
       float: right;
-      
+
       a {
         color: $de_emph_text_color;
       }
@@ -60,7 +60,7 @@ body {
 #error {
   padding: 0 1em 1em;
   color: red;
-  
+
   ul {
     padding-left: 2em;
   }
@@ -72,7 +72,7 @@ body {
 #content-wrap {
   @include column(14);
   @include rounded(4px);
-  background: $content_background;  
+  background: $content_background;
   padding-top: $gutter_width/2;
 }
 
@@ -95,7 +95,7 @@ h2.title {
     background: #ddd;
     opacity: 0.5;
   }
-  
+
   .pagination {
     @include clearfix;
     margin: 0;
@@ -122,12 +122,12 @@ h2.title {
 #sidebar {
   @include column(6);
   @include last;
-    
+
   .block {
     margin-left: 1em;
     padding-top: 1em;
     border-bottom: 1px solid #ccc;
-  
+
   }
 }
 
@@ -136,7 +136,7 @@ h2.title {
 /* *******************************/
 #footer {
   #footer-wrap {
-    padding: $gutter_width $gutter_width/2;    
+    padding: $gutter_width $gutter_width/2;
     @include clearfix;
   }
   #footer-logo {
