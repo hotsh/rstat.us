@@ -115,6 +115,9 @@ GEM
     childprocess (0.2.1)
       ffi (~> 1.0.6)
     chunky_png (1.2.0)
+    coffee-rails (3.1.1)
+      coffee-script (>= 2.2.0)
+      railties (~> 3.1.0)
     coffee-script (2.2.0)
       coffee-script-source
       execjs
@@ -316,7 +319,7 @@ DEPENDENCIES
   bcrypt-ruby
   bson_ext
   capybara
-  coffee-script
+  coffee-rails (~> 3.1.0)
   compass!
   database_cleaner
   delayed_job!
@@ -345,11 +348,9 @@ DEPENDENCIES
   rocco
   rsa
   ruby-stemmer
-  sass
-  sass-rails (= 3.1.0)
+  sass-rails (~> 3.1.0)
   simplecov (~> 0.4.0)
   sinatra
-  sprockets (= 2.0.0)
   sqlite3
   twitter
   tzinfo
