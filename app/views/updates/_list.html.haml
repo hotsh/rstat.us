@@ -20,7 +20,7 @@
 
       .info
         %time.published{:pubdate => "pubdate", :datetime => update.created_at.iso8601}
-          %a{:href => update.url, :rel => "bookmark"}= time_ago_in_words(update.created_at)
+          %a{:href => update.url, :rel => "bookmark"}= time_ago_in_words(update.created_at) + " ago"
 
       - if !update.referral.nil?
         %span.in-reply
