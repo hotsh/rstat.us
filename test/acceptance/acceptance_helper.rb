@@ -66,4 +66,8 @@ module AcceptanceHelper
 
     click_button "Log in"
   end
+
+  def profile_bio
+    ".info p.note"
+  end
 end
