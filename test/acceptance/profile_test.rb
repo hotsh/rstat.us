@@ -49,9 +49,14 @@ describe "profile" do
     visit "/users/#{u.username}/edit"
     bio_text = "To be or not to be"
     fill_in "bio", :with => bio_text
-    click_button "Save"
 
-    assert_match page.body, /#{bio_text}/
+    VCR.use_cassette('update_profile') do
+      click_button "Save"
+    end
+
+    within profile_bio do
+      assert has_content? bio_text
+    end
   end
 
   it "doesn't let you update someone else's profile" do
@@ -67,8 +72,13 @@ describe "profile" do
     visit "/users/lady_gaga/edit"
     bio_text = "To be or not to be"
     fill_in "bio", :with => bio_text
-    click_button "Save"
 
-    assert_match page.body, /#{bio_text}/
+    VCR.use_cassette('update_profile_different_case') do
+      click_button "Save"
+    end
+
+    within profile_bio do
+      assert has_content? bio_text
+    end
   end
 end

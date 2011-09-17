@@ -61,4 +61,14 @@ module TestHelper
   end
 end
 
+# Mock Pony for mail delivery
+module Pony
+  def self.deliveries
+    @deliveries ||= []
+  end
+
+  def self.mail(options)
+    deliveries << build_mail(options)
+  end
+end
 

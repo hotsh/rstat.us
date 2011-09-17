@@ -9,7 +9,7 @@ class Notifier
               :subject => "Reset your rstat.us password",
               :from => "steve+rstatus@steveklabnik.com",
               :body => render_haml_template("forgot_password", {:token => token}),
-              :via => :smtp, :via_options => Rstatus::PONY_VIA_OPTIONS)
+              :via => :smtp)
   end
 
   def self.send_confirm_email_notification(recipient, token)
@@ -17,7 +17,7 @@ class Notifier
               :subject => "Confirm your rstat.us email",
               :from => "steve+rstatus@steveklabnik.com",
               :body => render_haml_template("email_change", {:token => token}),
-              :via => :smtp, :via_options => Rstatus::PONY_VIA_OPTIONS)
+              :via => :smtp)
   end
 
   private
@@ -25,7 +25,7 @@ class Notifier
   # This was kinda crazy to figure out. We have to make our own instantiation
   # of the Engine, and then set local variables. Crazy.
   def self.render_haml_template(template, opts)
-    engine = Haml::Engine.new(File.open("views/notifier/#{template}.haml", "rb").read)
+    engine = Haml::Engine.new(File.open("app/views/notifier/#{template}.haml", "rb").read)
     engine.render(Object.new, opts)
   end
 end

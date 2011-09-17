@@ -8,6 +8,15 @@ development:
   #if empty, the Blog footer link won't show.
   BLOG_URL:
 
+  # See https://github.com/benprew/pony for via_options.
+  PONY_VIA_OPTIONS:
+    address: smtp.yourserver.com
+    port: 25
+    user_name: user
+    password: password
+    authentication: :plain
+    domain: localhost.localdomain
+
 test:
   CONSUMER_KEY: asdf
   CONSUMER_SECRET: asdf
