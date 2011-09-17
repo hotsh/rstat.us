@@ -25,7 +25,7 @@ class Notifier
   # This was kinda crazy to figure out. We have to make our own instantiation
   # of the Engine, and then set local variables. Crazy.
   def self.render_haml_template(template, opts)
-    engine = Haml::Engine.new(File.open("views/notifier/#{template}.haml", "rb").read)
+    engine = Haml::Engine.new(File.open("app/views/notifier/#{template}.haml", "rb").read)
     engine.render(Object.new, opts)
   end
 end
