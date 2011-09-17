@@ -9,6 +9,10 @@ unless Rails.env.production?
   config = YAML.load_file(config_file)[Rails.env]
 
   config.each do |key, value|
-    ENV[key] = value
+    if key == "PONY_VIA_OPTIONS"
+      Pony.options = { :via_options => value }
+    else
+      ENV[key] = value
+    end
   end
 end
