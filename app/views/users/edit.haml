@@ -6,14 +6,14 @@
 #profile
   %h3= "Edit Profile for @#{@user.username}"
 
-  = form_tag(user_path(@user.username), :method => "put", :name => "profile_update_form", :id => "profile-update") do |f|    
+  = form_tag(user_path(@user.username), :method => "put", :name => "profile_update_form", :id => "profile-update") do |f|
     .form-section
       = render :partial => "shared/field", :locals => {:obj => @user.author, :attr => :name, :params => params}
-    
+
     .form-section
       = render :partial => "shared/field", :locals => {:attr => :password, :as => :password}
       = render :partial => "shared/field", :locals => {:attr => :password_confirm, :lbl => "Confirm Password", :as => :password}
-    
+
     .form-section
       = render :partial => "shared/field", :locals => {:obj => @user.author, :attr => :email, :params => params}
       = render :partial => "shared/field", :locals => {:obj => @user.author, :attr => :website, :params => params}
@@ -28,7 +28,7 @@
 
     .linked
       - if @user.twitter?
-        %img.linked-image{:src => image_path("twitter_newbird_blue.png"), :alt => "Twitter Account"}
+        %img.linked-image{:src => asset_path("twitter_newbird_blue.png"), :alt => "Twitter Account"}
         .linked-name="@#{@user.twitter.nickname}"
         %form.profile-update{:action => "/users/#{@user.username}/auth/twitter", :method => "POST", :name => "profile_update_form"}
           %input{:type => "hidden", :name => "_method", :value => "delete"}
@@ -39,7 +39,7 @@
 
     .linked
       - if @user.facebook?
-        %img.linked-image{:src => "/images/f_logo.png", :alt => "Facebook Account"}
+        %img.linked-image{:src => asset_path("f_logo.png"), :alt => "Facebook Account"}
         .linked-name="#{@user.facebook.nickname}"
         %form.profile-update{:action => "/users/#{@user.username}/auth/facebook", :method => "POST", :name => "profile_update_form"}
           %input{:type => "hidden", :name => "_method", :value => "delete"}
