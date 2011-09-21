@@ -4,7 +4,8 @@ require 'rsa'
 KeyPair = Struct.new(:public_key, :private_key)
 
 module Crypto
-  def self.generate_keypair
+  extend self
+  def generate_keypair
     keypair = KeyPair.new
 
     key = RSA::KeyPair.generate(2048)
