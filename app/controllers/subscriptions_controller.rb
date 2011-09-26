@@ -34,19 +34,19 @@ class SubscriptionsController < ApplicationController
 
     @author = feed.author
 
-    # You're not allowed to follow yourself.
-    redirect_to request.referrer if @author.user == current_user
-
-    # If we're already following them, noop.
-    unless current_user.following_url? feed.url
+    if @author.user == current_user
+      # You're not allowed to follow yourself.
+      redirect_to request.referrer
+    elsif !current_user.following_url? feed.url
+      # If we're not following them, noop.
       flash[:notice] = "You're not following #{@author.username}."
       redirect_to request.referrer
+    else
+      current_user.unfollow! feed
+
+      flash[:notice] = "No longer following #{@author.username}."
+      redirect_to request.referrer
     end
-
-    current_user.unfollow! feed
-
-    flash[:notice] = "No longer following #{@author.username}."
-    redirect_to request.referrer
   end
 
   # subscriber receives updates

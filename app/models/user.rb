@@ -239,7 +239,7 @@ class User
 
     # local feed?
     if existing_feeds.empty? and feed_url.start_with?("http://#{author.domain}/")
-      feed_id = feed_url[/^\/feeds\/(.+)$/,1]
+      feed_id = feed_url[/\/feeds\/(.+)$/,1]
       existing_feeds = [Feed.first(:id => feed_id)]
     end
 
