@@ -45,19 +45,18 @@ describe "profile" do
   describe "updating" do
     before do
       Pony.deliveries.clear
+      @u = Factory(:user)
+      a = Factory(:authorization, :user => @u)
+      log_in(@u, a.uid)
     end
 
-    attributes_without_confirmation = {:name    => "Mark Zuckerberg",
-                                       :website => "http://test.com",
-                                       :bio     => "To be or not to be"}
+    attributes_without_confirmation = {"name"    => "Mark Zuckerberg",
+                                       "website" => "http://test.com",
+                                       "bio"     => "To be or not to be"}
 
     attributes_without_confirmation.each do |key, value|
       it "updates your #{key}" do
-        u = Factory(:user)
-        a = Factory(:authorization, :user => u)
-        log_in(u, a.uid)
-        visit "/users/#{u.username}/edit"
-
+        visit "/users/#{@u.username}/edit"
         fill_in key, :with => value
 
         VCR.use_cassette("update_profile_#{key}") do
@@ -65,24 +64,43 @@ describe "profile" do
         end
 
         within profile(key) do
-          assert has_content? value
+          assert has_content?(value), "Cannot find #{key} with text #{value}"
         end
       end
     end
 
     it "updates your password successfully" do
+      visit "/users/#{@u.username}/edit"
+      fill_in "password", :with => "new_password"
+      fill_in "password_confirm", :with => "new_password"
 
+      VCR.use_cassette("update_profile_password") do
+        click_button "Save"
+      end
+
+      within profile "name" do
+        assert has_content?(@u.author.name), "Password update failed"
+      end
     end
 
     it "does not update your password if the confirmation doesn't match" do
+      visit "/users/#{@u.username}/edit"
+      fill_in "password", :with => "new_password"
+      fill_in "password_confirm", :with => "bunk"
+
+      VCR.use_cassette("update_profile_password_mismatch") do
+        click_button "Save"
+      end
+
+      within flash do
+        assert has_content?("Profile could not be saved: Passwords must match")
+      end
+
+      assert has_field?("password")
     end
 
     it "verifies your email if you change it" do
-      u = Factory(:user)
-      a = Factory(:authorization, :user => u)
-
-      log_in(u, a.uid)
-      visit "/users/#{u.username}/edit"
+      visit "/users/#{@u.username}/edit"
       email = "new_email@new_email.com"
       fill_in "email", :with => email
 
@@ -90,19 +108,19 @@ describe "profile" do
         click_button "Save"
       end
 
-      within profile(:name) do
-        assert has_content? u.author.name
+      within profile "name" do
+        assert has_content? @u.author.name
       end
 
       assert_equal 1, Pony.deliveries.size
     end
 
     it "does not verify your email if you havent specified one" do
-      u = Factory(:user, :email => "")
-      a = Factory(:authorization, :user => u)
+      user_without_email = Factory(:user, :email => "", :username => "no_email")
+      a = Factory(:authorization, :user => user_without_email)
 
-      log_in(u, a.uid)
-      visit "/users/#{u.username}/edit"
+      log_in(user_without_email, a.uid)
+      visit "/users/#{user_without_email.username}/edit"
       name = "Mark Zuckerberg"
       fill_in "name", :with => name
 
@@ -110,7 +128,7 @@ describe "profile" do
         click_button "Save"
       end
 
-      within profile(:name) do
+      within profile "name" do
         assert has_content? name
       end
 
@@ -118,11 +136,7 @@ describe "profile" do
     end
 
     it "does not verify your email if you havent changed it" do
-      u = Factory(:user)
-      a = Factory(:authorization, :user => u)
-
-      log_in(u, a.uid)
-      visit "/users/#{u.username}/edit"
+      visit "/users/#{@u.username}/edit"
       name = "Steve Jobs"
       fill_in "name", :with => name
 
@@ -130,7 +144,7 @@ describe "profile" do
         click_button "Save"
       end
 
-      within profile(:name) do
+      within profile "name" do
         assert has_content? name
       end
 
@@ -156,7 +170,7 @@ describe "profile" do
       click_button "Save"
     end
 
-    within profile(:bio) do
+    within profile "bio" do
       assert has_content? bio_text
     end
   end

@@ -69,14 +69,18 @@ module AcceptanceHelper
 
   def profile(section = nil)
     case section
-    when :name
+    when "name"
       "#profile h3.fn"
-    when :website
+    when "website"
       "#profile .info .website"
-    when :bio
+    when "bio"
       "#profile .info p.note"
     else
       "#profile"
     end
+  end
+
+  def flash
+    "#flash"
   end
 end
