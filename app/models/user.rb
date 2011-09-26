@@ -60,7 +60,7 @@ class User
   end
 
   # Retrieves a valid RSA::KeyPair for the User's private key
-  def self.to_rsa_keypair
+  def to_rsa_keypair
     Crypto.make_rsa_keypair(nil, private_key)
   end
 
