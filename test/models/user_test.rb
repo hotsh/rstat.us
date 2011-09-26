@@ -91,20 +91,6 @@ describe User do
     end
   end
 
-  describe "facebook auth" do
-    it "has facebook" do
-      u = Factory.create(:user)
-      a = Factory.create(:authorization, :user => u, :provider => "facebook")
-      assert u.facebook?
-    end
-
-    it "returns facebook" do
-      u = Factory.create(:user)
-      a = Factory.create(:authorization, :user => u, :provider => "facebook")
-      assert_equal a, u.facebook
-    end
-  end
-
   describe "email" do
     it "changes email" do
       u = Factory.create(:user)

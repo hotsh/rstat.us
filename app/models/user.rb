@@ -98,16 +98,6 @@ class User
     get_authorization(:twitter)
   end
 
-  # Returns true when this user has a facebook authorization
-  def facebook?
-    has_authorization?(:facebook)
-  end
-
-  # Returns the facebook authorization
-  def facebook
-    get_authorization(:facebook)
-  end
-
   # Check if a a user has a certain authorization by providing the associated
   # provider
   def has_authorization?(auth)

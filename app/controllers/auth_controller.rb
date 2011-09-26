@@ -1,5 +1,5 @@
 # This controller handles all of the external authentication needs of Rstatus.
-# We're using OmniAuth to handle our Twitter and Facebook connections, so these
+# We're using OmniAuth to handle our Twitter connections, so these
 # routes are all derived from that codebase.
 class AuthController < ApplicationController
 
@@ -34,15 +34,13 @@ class AuthController < ApplicationController
         session[:oauth_token] = auth['credentials']['token']
         session[:oauth_secret] = auth['credentials']['secret']
 
-        # The username is checked to ensure it is unique, if it is not, or if there is a
-        # screwy facebook nickname the user is redirected to /users/new to change
-        # their registration information. If the username is unique and not facebook
-        # screwery the user is sent to the confirmation page where they will confirm
+        # The username is checked to ensure it is unique, if it is not,
+        # the user is redirected to /users/new to change
+        # their registration information. If the username is unique
+        # the user is sent to the confirmation page where they will confirm
         # their username and enter an email address.
         if User.first :username => auth['user_info']['nickname']
           flash[:error] = "Sorry, someone else has that username. Please pick another."
-        elsif auth['user_info']['nickname'] =~ /profile[.]php[?]id=/
-          flash[:error] = "Please choose a username."
         end
 
         redirect_to '/users/new'

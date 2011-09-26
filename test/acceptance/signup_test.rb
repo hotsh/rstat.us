@@ -97,32 +97,4 @@ describe "signup" do
       assert_match /\//, page.current_url
     end
   end
-
-  describe "facebook" do
-    it "rejects bad usernames when trying to create an account from fb" do
-      existing_user = Factory(:user, :username => "taken")
-
-      log_in_fb('profile.php?id=1')
-
-      assert_match /users\/new/, page.current_url, "not on the new user page."
-
-      fill_in "username", :with => "jane public"
-      click_button "Finish Signup"
-
-      assert_match /1 error prohibited your account from being created:/, page.body
-      assert_match /contains restricted characters\./, page.body
-
-      fill_in "username", :with => "taken"
-      click_button "Finish Signup"
-
-      assert_match /1 error prohibited your account from being created:/, page.body
-      assert_match /Username has already been taken/, page.body
-
-      fill_in "username", :with => "jane_public"
-      click_button "Finish Signup"
-
-      assert_match /Thanks! You're all signed up with jane_public for your username\./, page.body
-      refute_match /prohibited your account from being created/, page.body
-    end
-  end
 end

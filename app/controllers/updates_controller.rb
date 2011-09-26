@@ -22,12 +22,10 @@ class UpdatesController < ApplicationController
   def create
     # XXX: This should really be put into a model. Fat controller here!
     do_tweet = params[:tweet] == "1"
-    do_facebook = params[:facebook] == "1"
     u = Update.new(:text => params[:text],
                    :referral_id => params[:referral_id],
                    :author => current_user.author,
-                   :twitter => do_tweet,
-                   :facebook => do_facebook)
+                   :twitter => do_tweet)
 
     # add entry to user's feed
     current_user.feed.updates << u
