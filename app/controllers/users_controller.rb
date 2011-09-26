@@ -50,8 +50,6 @@ class UsersController < ApplicationController
     if @user == current_user
       response = @user.edit_user_profile(params)
       if response == true
-        flash[:notice] = "Profile saved!"
-        redirect_to user_path(params[:id])
 
         unless @user.email_confirmed
           # Generate same token as password reset....
@@ -60,6 +58,8 @@ class UsersController < ApplicationController
         else
           flash[:notice] = "Profile saved!"
         end
+
+        redirect_to user_path(params[:id])
 
       else
         flash[:notice] = "Profile could not be saved: #{response}"

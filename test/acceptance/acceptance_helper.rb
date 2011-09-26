@@ -67,7 +67,20 @@ module AcceptanceHelper
     click_button "Log in"
   end
 
-  def profile_bio
-    ".info p.note"
+  def profile(section = nil)
+    case section
+    when "name"
+      "#profile h3.fn"
+    when "website"
+      "#profile .info .website"
+    when "bio"
+      "#profile .info p.note"
+    else
+      "#profile"
+    end
+  end
+
+  def flash
+    "#flash"
   end
 end

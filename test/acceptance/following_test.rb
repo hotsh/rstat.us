@@ -100,7 +100,9 @@ describe "following" do
       visit "/users/#{u.username}/following"
       click_button "unfollow-#{u2.feed.id}"
 
-      assert_match "No longer following #{u2.username}", page.body
+      within flash do
+        assert has_content? "No longer following #{u2.username}"
+      end
     end
   end
 

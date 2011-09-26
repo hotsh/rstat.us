@@ -23,7 +23,8 @@ end
 
 Factory.define :user do |u|
   u.username { Factory.next(:usernames) }
-  u.author {|a| Factory(:author, :username => a.username, :created_at => a.created_at) }
+  u.email { Factory.next(:emails) }
+  u.author {|a| Factory(:author, :username => a.username, :created_at => a.created_at, :email => a.email) }
 end
 
 Factory.sequence :integer do |i|
