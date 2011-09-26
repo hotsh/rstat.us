@@ -1,31 +1,31 @@
 MAX_LENGTH = 140
 
 $(document).ready ->
-  
+
   # Turn on JS styles
   $("html").removeClass("no-js").addClass("js")
 
   # Hide flash messages
   $("#flash").delay(2000).slideUp('slow')
-  
+
   #########################################
   # Updates
   #########################################
-  
+
   # PJAX-ify the tabs
   $('#updates-menu a').pjax('#content').click ->
     # Set clicked tab to be given active class when pjax returns
     $('#updates-menu li').removeClass("active")
     $(this).parent().addClass("active")
-  
+
   $('.pagination a').pjax('#content')
-  
+
   $("#content").bind("start.pjax", pjaxStart = ->
     loading = $("<div class='loading' />")
     $("#content").append(loading)
     window.scrollTo(0,0)
   )
-  
+
   #########################################
   # Update Form
   #########################################
@@ -48,11 +48,11 @@ $(document).ready ->
   # Validate form on submit
   $("#update-form").submit ->
     false if textarea.val().length <= 0 || textarea.val().length > MAX_LENGTH
-  
+
   # Helper method for RS messages
   shareText = (update) ->
     "RS @" + $(update).data("name") + ": " + $(update).find(".entry-content").text().trim()
-    
+
   # Helper method to add text and move cursor to correct position
   focusTextArea = (update) ->
     $(update_field).attr("value", $(update).data("id"))
@@ -66,7 +66,7 @@ $(document).ready ->
   # If update form, target when clicking reply and insert appropriate text
   $(".has-update-form .update").each ->
     update = $(this)
-    
+
     $(this).find(".reply").bind "click", (ev) ->
       ev.preventDefault()
       textarea.text("@" + $(update).data("name") + " ")
@@ -76,11 +76,11 @@ $(document).ready ->
       ev.preventDefault()
       textarea.text(shareText(update))
       focusTextArea(update)
-  
+
   # Delete update check
   $(".remove-update").click ->
     confirm "Are you sure you want to delete this update?"
-  
+
   # Manage reply state and service share checkboxes
   updateTickyboxes = ->
     return if(userTickiedBox)
@@ -107,11 +107,3 @@ $(document).ready ->
     $("#tweet").change(recordTickyboxChange)
   if( $("#facebook").length > 0)
     $("#facebook").change(recordTickyboxChange)
-  
-  #########################################
-  # Users
-  #########################################
-  $(".unfollow").click ->
-    confirm "Are you sure you want to unfollow this user?"
-
-  
