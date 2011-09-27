@@ -36,14 +36,3 @@
       - else
         %form.profile-update{:action => "/auth/twitter", :method => "GET", :name => "profile_update_form"}
           %input.button{:type => "submit", :value => "Add Twitter Account"}
-
-    .linked
-      - if @user.facebook?
-        %img.linked-image{:src => asset_path("f_logo.png"), :alt => "Facebook Account"}
-        .linked-name="#{@user.facebook.nickname}"
-        %form.profile-update{:action => "/users/#{@user.username}/auth/facebook", :method => "POST", :name => "profile_update_form"}
-          %input{:type => "hidden", :name => "_method", :value => "delete"}
-          %input.button{:type => "submit", :value => "Remove"}
-      - else
-        %form.profile-update{:action => "/auth/facebook", :method => "GET", :name => "profile_update_form"}
-          %input.button{:type => "submit", :value => "Add Facebook Account"}

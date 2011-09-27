@@ -35,9 +35,6 @@
       if ($("#tweet").length > 0) {
         $("#tweet").attr('checked', enabled);
       }
-      if ($("#facebook").length > 0) {
-        return $("#facebook").attr('checked', enabled);
-      }
     };
     textarea.keypress(updateTickyboxes).keyup(updateTickyboxes);
     recordTickyboxChange = function() {
@@ -45,9 +42,6 @@
     };
     if ($("#tweet").length > 0) {
       $("#tweet").change(recordTickyboxChange);
-    }
-    if ($("#facebook").length > 0) {
-      $("#facebook").change(recordTickyboxChange);
     }
     $("#update-form").submit(function() {
       if (textarea.val().length <= 0 || textarea.val().length > MAX_LENGTH) {

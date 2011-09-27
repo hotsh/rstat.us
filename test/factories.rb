@@ -8,7 +8,6 @@ end
 Factory.define :update do |u|
   u.text { Factory.next(:update_text) }
   u.twitter false
-  u.facebook false
   u.author { Factory(:author) }
   u.feed { |update| Factory(:feed, :author => update.author) }
 end

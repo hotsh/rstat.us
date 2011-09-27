@@ -44,16 +44,6 @@ module AcceptanceHelper
     visit '/auth/twitter'
   end
 
-  def log_in_fb(user, uid = 12345)
-    if user.is_a? User
-      user = user.username
-    end
-
-    omni_mock(user, {:uid => uid, :provider => :facebook})
-
-    visit '/auth/facebook'
-  end
-
   def log_in_email(user)
     User.stubs(:authenticate).returns(user)
 

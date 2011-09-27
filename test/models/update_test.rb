@@ -173,7 +173,7 @@ describe Update do
         u = Factory(:user, :author => at)
         a = Factory(:authorization, :user => u)
         Twitter.expects(:update)
-        u.feed.updates << Factory.build(:update, :text => "This is a message", :twitter => true, :facebook => false, :author => at)
+        u.feed.updates << Factory.build(:update, :text => "This is a message", :twitter => true, :author => at)
         assert_equal u.twitter?, true
       end
 
@@ -182,7 +182,7 @@ describe Update do
         at = Factory(:author, :feed => f)
         u = Factory(:user, :author => at)
         Twitter.expects(:update).never
-        u.feed.updates << Factory.build(:update, :text => "This is a message", :twitter => true, :facebook => false, :author => at)
+        u.feed.updates << Factory.build(:update, :text => "This is a message", :twitter => true, :author => at)
       end
     end
 
@@ -198,39 +198,7 @@ describe Update do
         u = Factory(:user, :author => at)
         a = Factory(:authorization, :user => u)
         Twitter.expects(:update).never
-        u.feed.updates << Factory.build(:update, :text => "This is a message", :twitter => false, :facebook => false, :author => at)
-      end
-    end
-  end
-
-  describe "facebook" do
-    describe "facebook => true" do
-      it "sends the update to facebook" do
-        f = Factory(:feed)
-        at = Factory(:author, :feed => f)
-        u = Factory(:user, :author => at)
-        a = Factory(:authorization, :user => u, :provider => "facebook")
-        FbGraph::User.expects(:me).returns(mock(:feed! => nil))
-        u.feed.updates << Factory.build(:update, :text => "This is a message", :facebook => true, :twitter => false, :author => at)
-      end
-
-      it "does not send the update to facebook if no facebook auth" do
-        f = Factory(:feed)
-        at = Factory(:author, :feed => f)
-        u = Factory(:user, :author => at)
-        FbGraph::User.expects(:me).never
-        u.feed.updates << Factory.build(:update, :text => "This is a message", :facebook => true, :twitter => false, :author => at)
-      end
-    end
-
-    describe "facebook => false" do
-      it "does not send the update to facebook" do
-        f = Factory(:feed)
-        at = Factory(:author, :feed => f)
-        u = Factory(:user, :author => at)
-        a = Factory(:authorization, :user => u, :provider => "facebook")
-        FbGraph::User.expects(:me).never
-        u.feed.updates << Factory.build(:update, :text => "This is a message", :facebook => false, :twitter => false, :author => at)
+        u.feed.updates << Factory.build(:update, :text => "This is a message", :twitter => false, :author => at)
       end
     end
   end
@@ -240,12 +208,12 @@ describe Update do
       feed = Factory(:feed)
       author = Factory(:author, :feed => feed)
       user = Factory(:user, :author => author)
-      update = Factory.build(:update, :text => "This is a message", :feed => author.feed, :author => author, :twitter => false, :facebook => false)
+      update = Factory.build(:update, :text => "This is a message", :feed => author.feed, :author => author, :twitter => false)
       user.feed.updates << update
       user.feed.save
       user.save
       assert_equal 1, user.feed.updates.size
-      update = Factory.build(:update, :text => "This is a message", :feed => author.feed, :author => author, :twitter => false, :facebook => false)
+      update = Factory.build(:update, :text => "This is a message", :feed => author.feed, :author => author, :twitter => false)
       user.feed.updates << update
       refute update.valid?
     end
@@ -257,12 +225,12 @@ describe Update do
       feed2 = Factory(:feed)
       author2 = Factory(:author, :feed => feed2)
       user2 = Factory(:user, :author => author2)
-      update = Factory.build(:update, :text => "This is a message", :feed => author1.feed, :author => author1, :twitter => false, :facebook => false)
+      update = Factory.build(:update, :text => "This is a message", :feed => author1.feed, :author => author1, :twitter => false)
       user1.feed.updates << update
       user1.feed.save
       user1.save
       assert_equal 1, user1.feed.updates.size
-      update = Factory.build(:update, :text => "This is a message", :feed => author2.feed, :author => author2, :twitter => false, :facebook => false)
+      update = Factory.build(:update, :text => "This is a message", :feed => author2.feed, :author => author2, :twitter => false)
       user1.feed.updates << update
       assert update.valid?
     end

@@ -28,7 +28,6 @@ class Update
   key :tags, Array, :default => []
   key :language, String
   key :twitter, Boolean
-  key :facebook, Boolean
 
   # For speed, we generate the html for the update lazily when it is rendered
   key :html, String
@@ -222,9 +221,8 @@ class Update
     end
   end
 
-  # If a user has twitter or facebook enabled on their account and they checked
-  # either twitter, facebook or both on update form, repost the update to
-  # facebook or twitter.
+  # If a user has twitter enabled on their account and they checked
+  # it on update form, repost the update to twitter
   def send_to_external_accounts
     return if ENV['RAILS_ENV'] == 'development'
 
@@ -242,17 +240,6 @@ class Update
           end
 
           Twitter.update(text)
-        rescue Exception => e
-          #I should be shot for doing this.
-        end
-      end
-
-      # If the facebook flag is true and the user has a facebook account linked
-      # send the update
-      if self.facebook? && author.user.facebook?
-        begin
-          user = FbGraph::User.me(author.user.facebook.oauth_token)
-          user.feed!(:message => text)
         rescue Exception => e
           #I should be shot for doing this.
         end

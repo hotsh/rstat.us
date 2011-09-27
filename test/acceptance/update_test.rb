@@ -184,15 +184,6 @@ describe "update" do
       assert_match page.body, /Post to/
     end
 
-    it "displays for a facebook user" do
-      u = Factory(:user)
-      a = Factory(:authorization, :user => u, :provider => "facebook")
-      log_in_fb(u, a.uid)
-      visit "/updates"
-
-      assert_match page.body, /Post to/
-    end
-
     it "does not display for an email user" do
       u = Factory(:user)
       log_in_email(u)

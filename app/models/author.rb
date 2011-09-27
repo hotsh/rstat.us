@@ -105,11 +105,11 @@ class Author
   # Returns a locally useful url for the Author's avatar
 
   # We've got a couple of options here. If they have some sort of image from
-  # Facebook or Twitter, we use that, and if they don't, we go with Gravatar.
+  # Twitter, we use that, and if they don't, we go with Gravatar.
   # If none of that is around, then we show the DEFAULT_AVATAR
   def avatar_url
 
-    # If the user has a facebook or twitter image, return it
+    # If the user has a twitter image, return it
     if image_url.present?
       image_url
 

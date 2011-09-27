@@ -18,10 +18,6 @@
             %a.button{:href=>'/auth/twitter'}
               %span.icon.twitter
               Twitter
-          .facebook.option
-            %a.button{:href=>'/auth/facebook'}
-              %span.icon.facebook
-              Facebook
           .username.option
             %a.button{:href=>'/login'}
               %span.icon.comment
@@ -33,7 +29,7 @@
           .content
             %h3
               Sign Up
-            with Twitter or Facebook, or create a new account
+            with Twitter or create a new account
           = image_tag "slide1.png"
         #col-2.col
           .content
@@ -79,6 +75,6 @@
             If you're a software developer, you'll probably want to check out our [Open Source page](/open_source). If that's greek to you, here's the deal on **Openness**: the programming code that makes up rstat.us is available for anyone to download, free of charge. Programmers can use that code to run their own websites just like rstat.us, and you can subscribe to your friends on any site that supports the [OStatus protocol](http://ostatus.org/about), like [identi.ca](http://identi.ca/). This also means that you can own your data, we'll never stop you from having full access to everything you've put into rstat.us.
 
             \- The **rstat.us** team
-        
+
 
     != render :partial => "shared/footer"

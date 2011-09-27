@@ -3,18 +3,12 @@
   #update-content
     %textarea#update-textarea{:name => "text"}=@update_text
   #update-info
-    - if current_user.twitter? || current_user.facebook?
+    - if current_user.twitter?
       #repost-services
         .info Post to:
-        - if current_user.twitter?
-          .input-checkbox
-            %input{:type => "checkbox", :name => "tweet", :id => "tweet", :checked => "checked", :value => "1"}
-            %label{:for => "tweet"} Twitter
-        - if current_user.facebook?
-          .input-checkbox
-            %input{:type => "checkbox", :name => "facebook", :id => "facebook", :checked => "checked", :value => "1"}
-            %label{:for => "facebook"} Facebook
-
+        .input-checkbox
+          %input{:type => "checkbox", :name => "tweet", :id => "tweet", :checked => "checked", :value => "1"}
+          %label{:for => "tweet"} Twitter
 
     %input#update-referral{:type => 'hidden', :name => 'referral_id', :value => @update_id}
     %input#update-button.button{:type => "submit", :value => "Share"}
