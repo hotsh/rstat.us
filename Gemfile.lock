@@ -254,7 +254,6 @@ GEM
     ruby-openid (2.1.8)
     ruby-openid-apps-discovery (1.2.0)
       ruby-openid (>= 2.1.7)
-    ruby-stemmer (0.9.1)
     rubyntlm (0.1.1)
     rubyzip (0.9.4)
     sass (3.1.7)
@@ -304,7 +303,6 @@ GEM
     webmock (1.6.4)
       addressable (> 2.2.5, ~> 2.2)
       crack (>= 0.1.7)
-    whatlanguage (1.0.0)
     whenever (0.6.8)
       aaronh-chronic (>= 0.3.9)
       activesupport (>= 2.3.4)
@@ -347,7 +345,6 @@ DEPENDENCIES
   redfinger
   rocco
   rsa
-  ruby-stemmer
   sass-rails (~> 3.1.0)
   simplecov (~> 0.4.0)
   sinatra
@@ -358,5 +355,4 @@ DEPENDENCIES
   unicorn
   vcr
   webmock
-  whatlanguage
   whenever

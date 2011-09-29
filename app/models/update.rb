@@ -26,7 +26,6 @@ class Update
 
   # The following are extra features and identifications for the update
   key :tags, Array, :default => []
-  key :language, String
   key :twitter, Boolean
   key :facebook, Boolean
 
@@ -35,9 +34,6 @@ class Update
 
   # We also generate the tags upon editing the update
   before_save :get_tags
-
-  # We determine and store the language used within this update
-  before_create :get_language
 
   # Updates have a remote url that globally identifies them
   key :remote_url, String
@@ -89,10 +85,6 @@ class Update
 
   def get_tags
     self[:tags] = self.text.scan(/#([\w\-\.]*)/).flatten
-  end
-
-  def get_language
-    self[:language] = self.text.language
   end
 
   # Return OStatus::Entry instance describing this Update
