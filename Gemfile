@@ -23,7 +23,6 @@ gem 'unicorn'
 gem 'omniauth', :git => 'git://github.com/intridea/omniauth.git'
 gem "sinatra", :require => "sinatra/base"
 gem "mongo_mapper"
-gem "mongomapper_ext"
 gem "bson_ext"
 gem "i18n"
 gem "twitter"
