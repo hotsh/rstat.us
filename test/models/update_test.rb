@@ -155,11 +155,6 @@ describe Update do
     end
   end
 
-  it "stores the language" do
-    u = Factory(:update, :text => "Als hadden geweest is, is hebben te laat.")
-    assert_equal "dutch", u.language
-  end
-
   describe "twitter" do
     describe "twitter => true" do
       it "sets the tweeted flag" do
