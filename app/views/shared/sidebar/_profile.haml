@@ -2,7 +2,7 @@
   #current_user_block.vcard.block
     .avatar
       %a{:href=>"/users/#{current_user.username}"}
-        %img.photo{:alt => "avatar", :src => current_user.author.avatar_url}/
+        %img.photo{:alt => "avatar", :src => avatar_for(current_user.author)}/
     .user-info
       %h4.name 
         = current_user.author.display_name
