@@ -10,10 +10,7 @@
       .author.vcard
         .avatar
           %a.url{:href => update.author.url}
-            - if update.author.avatar_url.eql? Author::DEFAULT_AVATAR
-              %img.photo{:alt => "avatar", :src => asset_path(update.author.avatar_url)}/
-            - else
-              %img.photo{:alt => "avatar", :src => update.author.avatar_url}/
+            %img.photo{:alt => "avatar", :src => avatar_for(update.author)}/
         %span.fn
           %a.url{:href => update.author.url}
             = update.author.display_name
