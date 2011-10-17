@@ -34,6 +34,11 @@ module AcceptanceHelper
     return OmniAuth.config.add_mock(provider, auth_response(username, options))
   end
 
+  def omni_error_mock(message, options={})
+    provider = (options[:provider] || :twitter).to_sym
+    OmniAuth.config.mock_auth[provider] = message.to_sym
+  end
+
   def log_in(user, uid = 12345)
     if user.is_a? User
       user = user.username

@@ -67,16 +67,20 @@ class AuthController < ApplicationController
     redirect_to '/'
   end
 
-  # We have a very simple error handler. If they got the credentials wrong, then we'd
-  # like to show them a page explaining that, but anything else should just show a
-  # 404, because it's not really going to provide any helpful information to the user.
   def failure
     if params[:message] == "invalid_credentials"
-      render "signup/invalid_credentials"
-      return
+      flash[:error] = "We were unable to use your credentials to log you in. " +
+                      "Try again?"
+    elsif params[:message] == "timeout"
+      flash[:error] = "We were unable to use your credentials because of a timeout. " +
+                      "This is likely a temporary problem so feel free to try again."
     else
-      raise Sinatra::NotFound
+      flash[:error] = "We were unable to use your credentials because of a yet " +
+                      "undetermined problem. Hopefully this is temporary so " +
+                      "feel free to try again."
     end
+
+    redirect_to new_session_url
   end
 
   # This lets someone remove a particular Authorization from their account.

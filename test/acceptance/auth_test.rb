@@ -75,6 +75,33 @@ describe "Authorization" do
         assert_equal "1111", auth.oauth_token
         assert_equal "2222", auth.oauth_secret
       end
+
+      it "notifies the user of invalid credentials" do
+        omni_error_mock(:invalid_credentials, :provider => :twitter)
+
+        visit '/auth/twitter'
+
+        assert page.has_content?("We were unable to use your credentials to log you in")
+        assert_match /\/sessions\/new/, page.current_url
+      end
+
+      it "notifies the user if a timeout occurs" do
+        omni_error_mock(:timeout, :provider => :twitter)
+
+        visit '/auth/twitter'
+
+        assert page.has_content?("We were unable to use your credentials because of a timeout")
+        assert_match /\/sessions\/new/, page.current_url
+      end
+
+      it "notifies the user of an unknown error" do
+        omni_error_mock(:unknown_error, :provider => :twitter)
+
+        visit '/auth/twitter'
+
+        assert page.has_content?("We were unable to use your credentials")
+        assert_match /\/sessions\/new/, page.current_url
+      end
     end
   end
 
