@@ -90,5 +90,15 @@ describe "search" do
 
       assert_match @update_text, page.body
     end
+
+    it "gets a match for hashtag search" do
+      @hashtag_update_text = "This is a test #hashtag"
+      Factory(:update, :text => @hashtag_update_text)
+      visit "/search"
+      fill_in "q", :with => "#hashtag"
+      click_button "Search"
+
+      assert has_link? "#hashtag"
+    end
   end
 end
