@@ -117,6 +117,23 @@ describe "update" do
     assert_match page.body, /#{update.text}/
   end
 
+  describe "update with hashtag" do
+    it "creates a working hashtag link" do
+      u = Factory(:user)
+      a = Factory(:authorization, :user => u)
+
+      log_in(u, a.uid)
+
+      visit "/updates"
+      fill_in "text", :with => "So this one time #coolstorybro"
+      VCR.use_cassette('publish_to_hub') {click_button "Share"}
+      
+      visit "/updates"
+      click_link "#coolstorybro"
+      assert_match "What's Going On?", page.body
+    end
+  end
+
   describe "pagination" do
     it "does not paginate when there are too few" do
       5.times do
