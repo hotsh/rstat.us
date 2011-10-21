@@ -106,7 +106,7 @@ describe "update" do
     assert_match page.body, /#{update.text}/
   end
 
-  it "shows an update in reply to another upate" do
+  it "shows an update in reply to another update" do
     update = Factory(:update)
     update2 = Factory(:update)
     update2.referral_id = update.id
