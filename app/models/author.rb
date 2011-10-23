@@ -7,7 +7,7 @@ class Author
 
   # Constants that are useful for avatars using gravatar
   GRAVATAR               = "gravatar.com"
-  DEFAULT_AVATAR         = "/assets/avatar.png"
+  DEFAULT_AVATAR         = "avatar.png"
   ENCODED_DEFAULT_AVATAR = URI.encode_www_form_component(DEFAULT_AVATAR)
 
   # public keys are good for 4 weeks
