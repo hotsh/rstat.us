@@ -130,7 +130,8 @@ describe "update" do
       
       visit "/updates"
       click_link "#coolstorybro"
-      assert_match "What's Going On?", page.body
+      assert_match "Search Updates", page.body
+      assert has_link? "#coolstorybro"
     end
   end
 
