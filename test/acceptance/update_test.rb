@@ -106,7 +106,7 @@ describe "update" do
     assert_match page.body, /#{update.text}/
   end
 
-  it "shows an update in reply to another upate" do
+  it "shows an update in reply to another update" do
     update = Factory(:update)
     update2 = Factory(:update)
     update2.referral_id = update.id
@@ -115,6 +115,24 @@ describe "update" do
     visit "/updates/#{update2.id}"
     assert_match page.body, /#{update2.text}/
     assert_match page.body, /#{update.text}/
+  end
+
+  describe "update with hashtag" do
+    it "creates a working hashtag link" do
+      u = Factory(:user)
+      a = Factory(:authorization, :user => u)
+
+      log_in(u, a.uid)
+
+      visit "/updates"
+      fill_in "text", :with => "So this one time #coolstorybro"
+      VCR.use_cassette('publish_to_hub') {click_button "Share"}
+      
+      visit "/updates"
+      click_link "#coolstorybro"
+      assert_match "Search Updates", page.body
+      assert has_link? "#coolstorybro"
+    end
   end
 
   describe "pagination" do
