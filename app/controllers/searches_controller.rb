@@ -1,11 +1,5 @@
 class SearchesController < ApplicationController
   def show
-    if params[:hashtag]
-      @hashtag = params[:hashtag]
-      render_index(Update.hashtag_search(@hashtag, params))
-      return
-    end
-
     @updates = []
     if params[:q]
       set_params_page

@@ -136,23 +136,6 @@ describe Update do
       u = Factory(:update, :text => "#lots #of #hash #tags")
       assert_equal ["lots", "of", "hash", "tags"], u.tags
     end
-
-    it "can search by hashtag" do
-      u1 = Factory(:update, :text => "this has #lots #of #hash #tags")
-      u2 = Factory(:update, :text => "this has #lots #of #hash #tags #also")
-      search_results = Update.hashtag_search("lots", {:page => 1, :per_page => 2}).map do |update|
-        update.id.to_s
-      end
-      assert_equal search_results.sort(), [u1.id.to_s, u2.id.to_s].sort()
-    end
-
-    it "can filter by hashtag" do
-      update = Factory(:update, :text => "mother-effing #hashtags")
-      Factory(:update, :text => "just some other update")
-
-      assert_equal 1, Update.hashtag_search("hashtags", {}).length
-      assert_equal update.id, Update.hashtag_search("hashtags", {}).first.id
-    end
   end
 
   describe "twitter" do
