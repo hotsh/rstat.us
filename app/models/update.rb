@@ -70,14 +70,6 @@ class Update
 
   timestamps!
 
-  def self.hashtag_search(tag, opts)
-    popts = {
-      :page => opts[:page],
-      :per_page => opts[:per_page]
-    }
-    where(:tags.in => [tag]).order(['created_at', 'descending']).paginate(popts)
-  end
-
   def self.hot_updates
     all(:limit => 6, :order => 'created_at desc')
   end
