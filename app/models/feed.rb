@@ -30,7 +30,7 @@ class Feed
 
   after_create :default_hubs
 
-  def populate xrd = nil
+  def populate(xrd = nil)
     # TODO: More entropy would be nice
     self.verify_token = Digest::MD5.hexdigest(rand.to_s)
     self.secret = Digest::MD5.hexdigest(rand.to_s)
