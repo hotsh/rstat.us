@@ -120,19 +120,19 @@ class User
   many :followers, :in => :followers_ids, :class_name => 'Feed'
 
   # A particular feed follows this user
-  def followed_by! f
+  def followed_by!(f)
     followers << f
     save
   end
 
   # A particular feed unfollows this user
-  def unfollowed_by! f
+  def unfollowed_by!(f)
     followers_ids.delete(f.id)
     save
   end
 
   # Follow a particular feed
-  def follow! f
+  def follow!(f)
     # can't follow yourself
     if f == self.feed
       return
@@ -154,7 +154,7 @@ class User
 
   # Send Salmon notification so that the remote user
   # knows this user is following them
-  def send_follow_notification to_feed_id
+  def send_follow_notification(to_feed_id)
     f = Feed.first :id => to_feed_id
 
     salmon = OStatus::Salmon.from_follow(author.to_atom, f.author.to_atom)
@@ -168,7 +168,7 @@ class User
   end
 
   # unfollow takes a feed (since it is guaranteed to exist)
-  def unfollow! followed_feed
+  def unfollow!(followed_feed)
     following_ids.delete(followed_feed.id)
     save
     if followed_feed.local?
@@ -182,7 +182,7 @@ class User
 
   # Send Salmon notification so that the remote user
   # knows this user has stopped following them
-  def send_unfollow_notification to_feed_id
+  def send_unfollow_notification(to_feed_id)
     f = Feed.first :id => to_feed_id
 
     salmon = OStatus::Salmon.from_unfollow(author.to_atom, f.author.to_atom)
@@ -196,7 +196,7 @@ class User
   end
 
   # Send an update to a remote user as a Salmon notification
-  def send_mention_notification update_id, to_feed_id
+  def send_mention_notification(update_id, to_feed_id)
     f = Feed.first :id => to_feed_id
     u = Update.first :id => update_id
 
@@ -211,19 +211,19 @@ class User
     res = http.post(uri.path, envelope, {"Content-Type" => "application/magic-envelope+xml"})
   end
 
-  def followed_by? f
+  def followed_by?(f)
     followers.include? f
   end
 
-  def following_feed? f
+  def following_feed?(f)
     following.include? f
   end
 
-  def following_author? author
+  def following_author?(author)
     following.include?(author.feed)
   end
 
-  def following_url? feed_url
+  def following_url?(feed_url)
     # Handle possibly created multiple feeds for the same remote_url
     existing_feeds = Feed.all(:remote_url => feed_url)
 
