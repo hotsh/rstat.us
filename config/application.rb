@@ -54,10 +54,14 @@ module RstatUs
     # Version of your assets, change this if you want to expire all your assets
     config.assets.version = '1.0'
 
+    config.assets.initialize_on_precompile = false
+
+
     config.generators do |g|
       g.template_engine :haml
       g.test_framework :mini_test, :spec => true
       g.orm :mongo_mapper
     end
+
   end
 end
