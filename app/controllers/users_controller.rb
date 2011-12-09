@@ -71,31 +71,17 @@ class UsersController < ApplicationController
   end
 
   def new
+    params[:username] = session[:nickname]
     @user = User.new
   end
 
   def create
-    # this is really stupid.
-    auth = {}
-    auth['uid'] = session[:uid]
-    auth['provider'] = session[:provider]
-    auth['user_info'] = {}
-    auth['user_info']['name'] = session[:name]
-    auth['user_info']['nickname'] = session[:nickname]
-    auth['user_info']['urls'] = {}
-    auth['user_info']['urls']['Website'] = session[:website]
-    auth['user_info']['description'] = session[:description]
-    auth['user_info']['image'] = session[:image]
-    auth['user_info']['email'] = session[:email]
-    auth['credentials'] = {}
-    auth['credentials']['token'] = session[:oauth_token]
-    auth['credentials']['secret'] = session[:oauth_secret]
-
-    params[:author] = Author.create_from_hash! auth, root_url
+    params[:author] = Author.create_from_session!(session, params, root_url)
 
     @user = User.new params
+
     if @user.save
-      Authorization.create_from_hash(auth, root_url, @user)
+      Authorization.create_from_session!(session, @user)
 
       flash[:notice] = "Thanks! You're all signed up with #{@user.username} for your username."
       session[:user_id] = @user.id

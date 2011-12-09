@@ -82,6 +82,17 @@ class Author
     )
   end
 
+  def self.create_from_session!(session, params, domain)
+    create!(
+      :name     => session[:name],
+      :username => params[:username],
+      :website  => session[:website],
+      :bio      => session[:description],
+      :image    => session[:image],
+      :domain   => domain
+    )
+  end
+
   # Reset the public key lease, which will be called when the public key is
   # retrieved from a trusted source.
   def reset_key_lease

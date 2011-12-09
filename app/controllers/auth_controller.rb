@@ -9,14 +9,15 @@ class AuthController < ApplicationController
   def auth
     auth = request.env['omniauth.auth']
 
-    # If an authorization is not present then that request is assumed to be for a
-    # new account. If a request comes from a user that is logged in, it is assumed
-    # to originate from the edit profile page and the request is to add a linked
-    # account. If the request does not come from a user it is assumed to be a new
-    # user and the auth information is collected to provision a new account. The
+    # If an authorization is not present then that request is assumed to be for
+    # a new account. If a request comes from a user that is logged in, it is
+    # assumed to originate from the edit profile page and the request is to add
+    # a linked account. If the request does not come from a user it is assumed
+    # to be a new user and the auth information is collected to provision a new
+    # account.
     unless @auth = Authorization.find_from_hash(auth)
       if logged_in?
-        Authorization.create_from_hash(auth, root_url, current_user)
+        Authorization.create_from_hash!(auth, root_url, current_user)
         redirect_to "/users/#{current_user.username}/edit" and return
       else
 
@@ -35,10 +36,9 @@ class AuthController < ApplicationController
         session[:oauth_secret] = auth['credentials']['secret']
 
         # The username is checked to ensure it is unique, if it is not,
-        # the user is redirected to /users/new to change
-        # their registration information. If the username is unique
-        # the user is sent to the confirmation page where they will confirm
-        # their username and enter an email address.
+        # the user is informed that they need to change it.
+        # Everyone is redirected to /users/new to confirm that they'd like
+        # to have their username.
         if User.first :username => auth['user_info']['nickname']
           flash[:error] = "Sorry, someone else has that username. Please pick another."
         end
