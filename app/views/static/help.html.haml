@@ -1,24 +1,15 @@
 %h2 Help
 
-%h3 I logged in with Facebook and my username looks like this profile.php?id=00000000
-
-%p
-  You can use the username reset to change your username
-  %a{:href => "/reset-username"} http://rstat.us/reset-username
-
-  Note: This is only for users that have a blank username or a Facebook url.
-  Username resets will be added at a later date.
-
 %h3 My username is blank
 
 %p
   You can use the username reset to change your username
   %a{:href => "/reset-username"} http://rstat.us/reset-username
 
-  Note: This is only for users that have a blank username or a Facebook url.
+  Note: This is only for users that have a blank username.
   Username resets will be added at a later date.
 
-%h3 I signed in with Twitter or Facebook, but I want use the rstat.us login
+%h3 I signed in with Twitter, but I want to use the rstat.us login
 
 %p
   You can enable username/password logins by setting your password in the
@@ -28,10 +19,10 @@
     edit profile screen.
   You will be prompted to enter an email address for password recovery.
 
-%h3 How can I link my Twitter or Facebook account to my rstat.us account?
+%h3 How can I link my Twitter account to my rstat.us account?
 
 %p
-  You can link your Twitter or Facebook account in your
+  You can link your Twitter account in your
   - if logged_in?
     %a{:href => "/users/#{current_user.username}/edit"} edit profile screen
   - else
@@ -43,12 +34,6 @@
   We currently do not have an api, but we hope to add one soon. If you would
   like to help please
   %a{:href => "https://github.com/hotsh/rstat.us"} check out the repo
-
-%h3 There is no search.
-
-%p
-  There is but it's still hidden behind this address
-  %a{:href => "/search"} http://rstat.us/search
 
 %h3 What about the hash tags?
 

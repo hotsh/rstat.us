@@ -3,7 +3,7 @@
 form {
   @include clearfix;
   margin-bottom: 2em;
-  
+
   .form-section {
     @include column(11);
     padding-top: 1em;
@@ -13,18 +13,18 @@ form {
   .last {
     border: none;
   }
-  
+
   .form-field {
     @include clearfix;
     label {
       padding-top: 0.65em;
       @include column(4);
     }
-    
+
     .input {
       @include column(7);
       @include last;
-      
+
       input, textarea {
         @include rounded(2px, 2px, 2px, 2px);
         border: 1px solid #ccc;
@@ -40,7 +40,7 @@ form {
       }
     }
   }
-  
+
   .form-submit {
     @include prepend(4);
     @include column(7);
@@ -76,7 +76,7 @@ form#update-form {
   #update-info {
     @include clearfix;
 
-    /* Twitter and Facebook checkboxes */
+    /* Twitter checkboxes */
     #repost-services {
       float: left;
       font-size: 0.9em;
@@ -90,12 +90,12 @@ form#update-form {
         }
       }
     }
-    
+
     #update-button {
       float: right;
       margin-right: 5px;
     }
-    
+
     /* Character counter */
     #update-count {
       float: right;
@@ -108,7 +108,7 @@ form#update-form {
       color: #aaa;
     }
   }
-  
+
   #update-info.negative #update-count .update-count {
     color: red;
   }
@@ -130,7 +130,7 @@ form#update-form {
       padding: 0.5em;
     }
     .submit {
-      
+
     }
   }
 }

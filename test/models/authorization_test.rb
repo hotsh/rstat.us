@@ -14,7 +14,7 @@ describe Authorization do
 
   it "can be created from a hash" do
     auth = auth_response(@u.username)
-    a = Authorization.create_from_hash(auth, "/", @u)
+    a = Authorization.create_from_hash!(auth, "/", @u)
 
     assert_equal auth["uid"], a.uid
     assert_equal auth["provider"], a.provider

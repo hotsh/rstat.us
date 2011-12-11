@@ -59,7 +59,11 @@ describe "Authorization" do
 
       # TODO: Add one for logging in with twitter
       it "signs up with twitter" do
-        omni_mock("twitter_user", {:uid => 78654, :token => "1111", :secret => "2222"})
+        omni_mock("twitter_user", {
+          :uid => 78654,
+          :token => "1111",
+          :secret => "2222"
+        })
         visit '/auth/twitter'
 
         assert_match /\/users\/new/, page.current_url
@@ -74,6 +78,36 @@ describe "Authorization" do
         assert_equal u, auth.user
         assert_equal "1111", auth.oauth_token
         assert_equal "2222", auth.oauth_secret
+      end
+
+      it "has your username already" do
+        omni_mock("my_name_is_jonas", {
+          :uid => 78654,
+          :token => "1111",
+          :secret => "2222"
+        })
+        visit '/auth/twitter'
+
+        assert has_field?("username", :with => "my_name_is_jonas")
+      end
+
+      it "sets the author's username for the user_xrd_path (issue #423)" do
+        omni_mock("weezer", {
+          :uid => 78654,
+          :token => "1111",
+          :secret => "2222"
+        })
+        visit '/auth/twitter'
+
+        click_button "Finish Signup"
+        u = User.first(:username => "weezer")
+
+        within "#sidebar" do
+          assert has_content?(u.username)
+          click_link "@#{u.username}"
+        end
+
+        assert has_no_content?("No route matches")
       end
 
       it "notifies the user of invalid credentials" do
