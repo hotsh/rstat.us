@@ -39,12 +39,12 @@ module AcceptanceHelper
     OmniAuth.config.mock_auth[provider] = message.to_sym
   end
 
-  def log_in(user, uid = 12345)
+  def log_in(user, uid = 12345, options={})
     if user.is_a? User
       user = user.username
     end
 
-    omni_mock(user, {:uid => uid})
+    omni_mock(user, {:uid => uid}.merge(options))
 
     visit '/auth/twitter'
   end
