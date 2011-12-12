@@ -47,7 +47,7 @@ module TestHelper
       "user_info" => {
         "name" => "Joe Public",
         "email" => "joe@public.com",
-        "nickname" => username,
+        "nickname" => options[:nickname] || username,
         "urls" => { "Website" => "http://rstat.us" },
         "description" => "A description",
         "image" => "/images/something.png"

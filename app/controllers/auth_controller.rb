@@ -51,15 +51,12 @@ class AuthController < ApplicationController
 
     # If an authorization is present then it is assumed to be a successful
     # authentication. The oauth credentials for the user in question are checked
-    # and stored if not present (this is to provide oauth credentials for legacy
-    # users).
+    # and updated.
 
-    if @auth.oauth_token.nil?
-      @auth.oauth_token = auth['credentials']['token']
-      @auth.oauth_secret = auth['credentials']['secret']
-      @auth.nickname = auth['user_info']['nickname']
-      @auth.save
-    end
+    @auth.oauth_token = auth['credentials']['token']
+    @auth.oauth_secret = auth['credentials']['secret']
+    @auth.nickname = auth['user_info']['nickname']
+    @auth.save
 
     session[:user_id] = @auth.user.id
 

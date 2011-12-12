@@ -150,7 +150,7 @@ describe "Authorization" do
     it "shows twitter nickname if twitter auth" do
       u = Factory(:user)
       a = Factory(:authorization, :user => u, :nickname => "Awesomeo the Great")
-      log_in(u, a.uid)
+      log_in(u, a.uid, :nickname => a.nickname)
       visit "/users/#{u.username}/edit"
 
       assert_match page.body, /Awesomeo the Great/
