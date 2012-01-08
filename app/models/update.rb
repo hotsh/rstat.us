@@ -9,9 +9,11 @@ class Update
 
   # Updates are aggregated in Feeds
   belongs_to :feed
+  key :feed_id, ObjectId
 
   # Updates are written by Authors
   belongs_to :author
+  key :author_id, ObjectId
   validates_presence_of :author_id
 
   # The content of the update, unaltered, is stored here

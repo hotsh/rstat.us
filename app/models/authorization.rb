@@ -5,6 +5,7 @@ class Authorization
   # If you don't hook up an Authorization to a User... you're not making much
   # sense.
   belongs_to :user
+  key :user_id, ObjectId
 
   key :uid,          Integer, required: true
   key :provider,     String,  required: true

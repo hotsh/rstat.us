@@ -14,6 +14,7 @@ class User
   # XXX: These don't seem to be getting set when you sign up with Twitter, etc?
   many :authorizations, :dependant => :destroy
   belongs_to :author
+  key :author_id, ObjectId
 
   # Users MUST have a username
   key :username, String, :required => true
