@@ -32,6 +32,12 @@ class Feed
 
   after_create :default_hubs
 
+   # This is because sometimes the mongomapper association returns nil
+  # even though there is an author_id and the Author exists; see Issue #421
+  def author
+    Author.find(author_id)
+  end
+
   def populate(xrd = nil)
     # TODO: More entropy would be nice
     self.verify_token = Digest::MD5.hexdigest(rand.to_s)
