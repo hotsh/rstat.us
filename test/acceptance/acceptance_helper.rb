@@ -4,6 +4,7 @@ require 'rack/test'
 
 VCR.config do |c|
   c.cassette_library_dir = 'test/data/vcr_cassettes'
+  c.default_cassette_options = { :record => :new_episodes }
   c.stub_with :webmock
 end
 
@@ -30,6 +31,7 @@ module AcceptanceHelper
     DatabaseCleaner.strategy = :truncation
     DatabaseCleaner.clean_with(:truncation)
     DatabaseCleaner.start
+    WebMock.disable_net_connect!(:allow_localhost => true)
   end
 
   def teardown

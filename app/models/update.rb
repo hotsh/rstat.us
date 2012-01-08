@@ -5,6 +5,10 @@ class Update
   require 'cgi'
   include MongoMapper::Document
 
+  include Tire::Model::Search
+  include Tire::Model::Callbacks
+
+
   # Determines what constitutes a username inside an update text
   USERNAME_REGULAR_EXPRESSION = /(^|[ \t\n\r\f"'\(\[{]+)@([^ \t\n\r\f&?=@%\/\#]*[^ \t\n\r\f&?=@%\/\#.!:;,"'\]}\)])(?:@([^ \t\n\r\f&?=@%\/\#]*[^ \t\n\r\f&?=@%\/\#.!:;,"'\]}\)]))?/
 
@@ -34,6 +38,7 @@ class Update
   # For speed, we generate the html for the update lazily when it is rendered
   key :html, String
 
+
   # We also generate the tags upon editing the update
   before_save :get_tags
 
@@ -45,6 +50,12 @@ class Update
   key :referral_id
   # Remote Update url: (nil if local)
   key :referral_url, String
+
+  index_name 'mongo-updates'
+
+  def to_indexed_json
+    self.to_json
+  end
 
   def referral
     Update.first(:id => referral_id)

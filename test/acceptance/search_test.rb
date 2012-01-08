@@ -86,6 +86,16 @@ describe "search" do
 
       assert has_link? "#hashtag"
     end
+
+    it "gets a match for words in the update out of order" do
+      visit "/search"
+
+      fill_in "q", :with => "for looking"
+      click_button "Search"
+
+      assert_match @update_text, page.body
+    end
+
   end
 
   describe "pagination" do
