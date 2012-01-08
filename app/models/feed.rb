@@ -32,7 +32,7 @@ class Feed
 
   after_create :default_hubs
 
-  # This is because sometimes the mongomapper association returns nil
+   # This is because sometimes the mongomapper association returns nil
   # even though there is an author_id and the Author exists; see Issue #421
   def author
     Author.find(author_id)
