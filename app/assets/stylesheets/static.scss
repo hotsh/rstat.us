@@ -5,19 +5,19 @@
     margin-bottom: 0;
   }
   .wrap {
-    @include container();      
+    @include container();
   }
 
   #welcome {
     background: $link_color;
     padding: 1.5em;
-    
+
     border-top: 1px solid $link_color + #222;
     border-bottom: 1px solid $link_color + #222;
 
     h1, h3 {
       margin: 0;
-    }      
+    }
 
     #intro {
       float: left;
@@ -27,7 +27,7 @@
 
     }
   }
-  
+
   #pitch {
     border-top: 1px solid $link_color;
     border-bottom: 1px solid #999;
@@ -37,14 +37,14 @@
     .wrap {
       width: 850px;
     }
-    
+
     a {
       color: $text_color;
     }
     a:hover {
       text-decoration: none;
     }
-    
+
     .col {
       width: 270px;
       padding-right: 10px;
@@ -70,14 +70,14 @@
       border: none;
     }
   }
-  
+
   #signup {
     float: right;
     @include clearfix;
     @include rounded(4px);
-    background: $content_background; 
+    background: $content_background;
     padding: 1em;
-    
+
     h3 {
       float: left;
       padding-top: 0.35em;
@@ -86,7 +86,7 @@
     .option {
       float: left;
       padding-right: 1em;
-    } 
+    }
   }
   #content-wrap {
     @include column(11);
@@ -99,7 +99,7 @@
     #bottom {
       @include clearfix;
       padding: 0 1em 1em 1em;
-      
+
       .login {
         float: left;
         font-weight: bold;
@@ -116,5 +116,11 @@
     padding-left: 1em;
     padding-top: 1.5em;
     @include last;
+  }
+}
+
+#open-source {
+  ul {
+    margin-left: 1em;
   }
 }
