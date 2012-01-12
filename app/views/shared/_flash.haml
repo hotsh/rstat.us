@@ -1,6 +1,4 @@
-- if flash[:notice]
-  #flash
-    = flash[:notice]
-- if flash[:error]
-  #error
-    = flash[:error]
+#flash
+  - flash.each do |flashtype, message|
+    %div{:class => "flash #{flashtype}"}
+      = message
