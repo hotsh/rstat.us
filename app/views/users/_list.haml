@@ -4,7 +4,7 @@
     %li.user{:class => i%2 == 0 ? "even" : "odd"}
       .avatar
         %a{:href => author.url}
-          %img{:alt => "avatar", :src => author.avatar_url}/
+          %img{:alt => "avatar", :src => avatar_for(author)}/
 
       .info
         %a{:href => author.url}
