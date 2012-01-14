@@ -117,7 +117,7 @@ describe "profile" do
     end
 
     it "does not verify your email if you havent specified one" do
-      user_without_email = Factory(:user, :email => "", :username => "no_email")
+      user_without_email = Factory(:user, :email => nil, :username => "no_email")
       a = Factory(:authorization, :user => user_without_email)
 
       log_in(user_without_email, a.uid)
