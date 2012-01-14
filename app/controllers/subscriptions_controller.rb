@@ -58,6 +58,7 @@ class SubscriptionsController < ApplicationController
     end
 
     feed.update_entries(request.body.read, request.url, feed.url, request.env['HTTP_X_HUB_SIGNATURE'])
+    render :nothing => true
   end
 
   # A POST is how you subscribe to someone's feed. We want to make sure
