@@ -127,11 +127,41 @@ describe "update" do
       visit "/updates"
       fill_in "text", :with => "So this one time #coolstorybro"
       VCR.use_cassette('publish_to_hub') {click_button "Share"}
-      
+
       visit "/updates"
       click_link "#coolstorybro"
       assert_match "Search Updates", page.body
       assert has_link? "#coolstorybro"
+    end
+  end
+
+  describe "reply and share links for each update" do
+    update = nil
+    u2 = nil
+    before do
+      u = Factory(:user)
+      a = Factory(:authorization, :user => u)
+
+      u2 = Factory(:user)
+      update = Factory(
+           :update,
+           :author => u2.author)
+      u2.feed.updates << update
+      log_in(u, a.uid)
+    end
+
+    it "clicks the reply link from update on a user's page" do
+      visit "/users/#{u2.username}"
+      click_link "reply"
+      assert_match "What's Going On?", page.body
+      assert_match "foo", page.body
+    end
+
+    it "clicks the share link from update on a user's page" do
+      visit "/users/#{u2.username}"
+      click_link "share"
+      assert_match "What's Going On?", page.body
+      assert_match "RS @#{u2.username}: #{update.text}", page.body
     end
   end
 

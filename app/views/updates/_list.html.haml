@@ -1,7 +1,7 @@
 - unless defined?(id)
   - id = (request.path_info.gsub("/", "_")[1..-1]) 
 
-%ul.updates.has-update-form{:id => id}
+%ul.updates{:class => (controller.controller_name == "updates" ? "has-update-form" : ""), :id => id}
   - updates.each do |update|
     - unless defined?(no_highlight) and no_highlight
       - mine = current_user.nil? ? false : (update.author.user == current_user)
@@ -35,9 +35,9 @@
       .actions
         -# when @timeline is true, this is a list on the user's page
         -unless current_user.nil? or (current_user.author.id == update.author.id)
-          %a.share{:href => "?share=#{update.id}"} share
+          %a.share{:href => (controller.controller_name == "updates" ? "" : "/") + "?share=#{update.id}"} share
           |
-          %a.reply{:href => "?reply=#{update.id}"} reply
+          %a.reply{:href => (controller.controller_name == "updates" ? "" : "/") + "?reply=#{update.id}"} reply
 
         - if current_user and update.author.id == current_user.author.id
           = form_tag "/updates/#{update.id}" do
