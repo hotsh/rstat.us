@@ -51,11 +51,11 @@ class UpdatesController < ApplicationController
   def destroy
     update = Update.first :id => params[:id]
 
-    # lolsecurity.
+    # security.
     if update.author == current_user.author
       update.destroy
 
-      flash[:notice] = "Update Baleeted!"
+      flash[:notice] = "Update Deleted!"
       redirect_to root_path
     else
       flash[:notice] = "I'm afraid I can't let you do that, #{current_user.name}."
