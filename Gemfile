@@ -45,7 +45,7 @@ group :development, :test do
   gem "database_cleaner"
   gem "factory_girl"
   gem "capybara"
-  gem "rocco"
+  gem "rocco", :git => "git://github.com/rtomayko/rocco.git"
   gem "pygmentize"
   gem "mocha"
   gem "vcr"

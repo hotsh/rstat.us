@@ -64,6 +64,14 @@ GIT
       oa-oauth (= 0.3.0.rc1)
       oa-openid (= 0.3.0.rc1)
 
+GIT
+  remote: git://github.com/rtomayko/rocco.git
+  revision: 727c510d635ba3b6fcf18caf3b0f89e16ef7e8f3
+  specs:
+    rocco (0.8.2)
+      mustache
+      redcarpet (~> 1.17)
+
 GEM
   remote: http://rubygems.org/
   specs:
@@ -230,9 +238,6 @@ GEM
       rest-client (>= 1.5.0)
     rest-client (1.6.3)
       mime-types (>= 1.16)
-    rocco (0.8.1)
-      mustache
-      redcarpet
     rsa (0.1.4)
     ruby-hmac (0.4.0)
     ruby-openid (2.1.8)
@@ -323,7 +328,7 @@ DEPENDENCIES
   rails (= 3.1.0)
   rdiscount
   redfinger
-  rocco
+  rocco!
   rsa
   sass-rails (~> 3.1.0)
   simplecov (~> 0.4.0)
