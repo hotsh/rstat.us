@@ -17,11 +17,13 @@ class Author
   # of it is val*idated right now. Fun. Then again, not all of it is neccesary.
   key :username,  String
 
-  # This contains the domain that the author's feed originates (nil for local)
+  # This contains the domain that the author's feed originates.
   key :domain,    String
 
-  # We can get the domain from the remote_url
-  before_save :get_domain
+  validates_presence_of :domain
+
+  # Normalize the domain so we can use them the same way
+  before_save :normalize_domain
 
   # The Author has a profile and with that various entries
   key :name,      String
@@ -184,10 +186,13 @@ class Author
     author
   end
 
-  def get_domain
-    if self.remote_url
-      self.domain = remote_url[/\:\/\/(.*?)\//, 1]
-    end
+  def normalize_domain
+    norm = self.domain.gsub(/^.*:\/\//, "")
+    norm = norm.gsub(/^www./, "")
+    norm = norm.gsub(/\/.*$/, "")
+    norm = norm.gsub(/\?.*$/, "")
+    norm = norm.gsub(/#.*$/, "")
+    self.domain = norm
   end
 
   def self.search(params = {})

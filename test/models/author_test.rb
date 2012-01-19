@@ -3,7 +3,7 @@ require_relative '../test_helper'
 describe Author do
   include TestHelper
   before do
-    @author = Factory.build :author, :username => "james", :email => nil, :image_url => nil, :created_at => 3.days.ago
+    @author = Factory :author, :username => "james", :email => nil, :image_url => nil, :created_at => 3.days.ago
   end
 
   it "creates an author from a hash" do
@@ -49,7 +49,7 @@ describe Author do
 
   describe "Author#search" do
     before do
-      Factory.build :author, :username => "hipster", :email => nil, :image_url => nil
+      Factory :author, :username => "hipster", :email => nil, :image_url => nil
     end
 
     describe "search param" do
@@ -74,9 +74,9 @@ describe Author do
 
     describe "letter param" do
       before do
-        Factory.build :author, :username => "9000OVER", :email => nil, :image_url => nil
-        Factory.build :author, :username => "_______a", :email => nil, :image_url => nil
-        Factory.build :author, :username => "hacker", :email => nil, :image_url => nil
+        Factory :author, :username => "9000OVER", :email => nil, :image_url => nil
+        Factory :author, :username => "_______a", :email => nil, :image_url => nil
+        Factory :author, :username => "hacker", :email => nil, :image_url => nil
       end
 
       it "uses param[:letter] to filter by first letter" do

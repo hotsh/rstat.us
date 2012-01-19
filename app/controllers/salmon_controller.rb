@@ -38,6 +38,7 @@ class SalmonController < ApplicationController
       author.name = atom_entry.author.portable_contacts.display_name
       author.username = atom_entry.author.name
       author.remote_url = atom_entry.author.uri
+      author.domain = atom_entry.author.uri
       author.email = atom_entry.author.email
       author.email = nil if author.email == ""
       author.bio = atom_entry.author.portable_contacts.note

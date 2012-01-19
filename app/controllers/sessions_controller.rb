@@ -13,7 +13,7 @@ class SessionsController < ApplicationController
     u = User.first :username => params[:username]
     if u.nil?
       # Grab the domain for this author from the request url
-      params[:domain] = root_path()[/\:\/\/(.*?)\/$/, 1]
+      params[:domain] = root_url
 
       author = Author.new params
 
