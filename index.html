@@ -1,163 +1,514 @@
 <!DOCTYPE html>
-<html class='no-js' lang='en'>
-  <head>
-    <meta charset='utf-8' />
-    <title>rstat.us</title>
-    <!--[if (!IE)|(gte IE 8)]><!-->
-    <link href='screen-datauri.css' media='screen' rel='stylesheet' />
-    <!--<![endif]-->
-    <!--[if lte IE 7]>
-      <link href='screen.css' media='screen' rel='stylesheet' type='text/css' />
-    <![endif]-->
-    <script type='text/javascript'>
-      //<![CDATA[
-        var _gaq = _gaq || [];
-        _gaq.push(['_setAccount', 'UA-22030550-1']);
-        _gaq.push(['_trackPageview']);
-        
-        (function() {
-          var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
-          ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
-          (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(ga);
-        })();
-      //]]>
-    </script>
-  </head>
-  <body id='home'>
-    <div id='main'>
-      <div id='header'>
-        <h2 id='logo'>
-          <a href='/'>
-            rstat.us
-          </a>
-        </h2>
+<html>
+<head>
+  <meta http-equiv="content-type" content="text/html;charset=utf-8">
+  <title>Rstat.us Code Walkthrough</title>
+  <link rel="stylesheet" href="http://jashkenas.github.com/docco/resources/docco.css">
+  <style type="text/css">
+    hr.light { color: #fefefe; }
+  </style>
+</head>
+<body>
+<div id='container'>
+  <div id="background"></div>
+  <div id="jump_to">
+    Jump To &hellip;
+    <div id="jump_wrapper">
+      <div id="jump_page">
+          <a class="source" href="app/controllers/application_controller.html">application_controller.rb</a>
+          <a class="source" href="app/controllers/auth_controller.html">auth_controller.rb</a>
+          <a class="source" href="app/controllers/feeds_controller.html">feeds_controller.rb</a>
+          <a class="source" href="app/controllers/salmon_controller.html">salmon_controller.rb</a>
+          <a class="source" href="app/controllers/searches_controller.html">searches_controller.rb</a>
+          <a class="source" href="app/controllers/sessions_controller.html">sessions_controller.rb</a>
+          <a class="source" href="app/controllers/static_controller.html">static_controller.rb</a>
+          <a class="source" href="app/controllers/subscriptions_controller.html">subscriptions_controller.rb</a>
+          <a class="source" href="app/controllers/updates_controller.html">updates_controller.rb</a>
+          <a class="source" href="app/controllers/users_controller.html">users_controller.rb</a>
+          <a class="source" href="app/controllers/webfinger_controller.html">webfinger_controller.rb</a>
+          <a class="source" href="app/models/author.html">author.rb</a>
+          <a class="source" href="app/models/authorization.html">authorization.rb</a>
+          <a class="source" href="app/models/feed.html">feed.rb</a>
+          <a class="source" href="app/models/notifier.html">notifier.rb</a>
+          <a class="source" href="app/models/update.html">update.rb</a>
+          <a class="source" href="app/models/user.html">user.rb</a>
       </div>
-      <div class='content'>
-        <div id='pitch'>
-          <p>rstat.us is a microblogging site built on top of the <a href="http://status.net/wiki/OStatus">ostatus
-          protocol</a>.</p>
-          
-          <h2>Helping out with rstat.us</h2>
-          
-          <p>If you'd like to contribute, here are some details:</p>
-          
-          <ul>
-          <li>The stack: ruby/sinatra/mongodb</li>
-          <li><a href="http://github.com/hotsh/rstat.us">The code</a></li>
-          <li><a href="http://hotsh.github.com/rstat.us/">The documentation</a> (need lots of improvement here!)</li>
-          <li><a href="http://github.com/hotsh/rstat.us/issues">The Issues list</a></li>
-          <li>Please fork the project and make a pull request
-          
-          <ul>
-          <li>Pull requests will not be merged without tests/documentation
-          
-          <ul>
-          <li>We use <a href="https://github.com/seattlerb/minitest">minitest</a>/<a href="https://github.com/jnicklas/capybara">capybara</a> for tests</li>
-          <li>We use <a href="https://github.com/jashkenas/docco">docco</a> (rocco) for documentation</li>
-          <li>If you think it doesn't need a test, make your case, I'm just saying.</li>
-          </ul>
-          </li>
-          </ul>
-          </li>
-          </ul>
-          
-          
-          <h2>Source code documentation</h2>
-          
-          <p>We have documentation that explains all of our source code, using rocco.
-          You can view it <a href="http://hotsh.github.com/rstat.us/rstatus.html">here</a>.</p>
-          
-          <h2>Setting up a dev environment</h2>
-          
-          <p>First off: you will need MongoDB (www.mongodb.org).  They have a <a href="http://www.mongodb.org/display/DOCS/Quickstart">quickstart
-          guide</a> for getting it installed and running.</p>
-          
-          <p>Then do:</p>
-          
-          <pre><code>$ git clone https://github.com/$MY_GITHUB_USERNAME/rstat.us.git
-          $ cd rstat.us
-          </code></pre>
-          
-          <p>Copy the config file; if you have actual Twitter API keys, you can add yours,
-          but this file just needs to exist for the server to work.</p>
-          
-          <pre><code>$ cp config/config.yml.sample config/config.yml
-          </code></pre>
-          
-          <p>Then update your gemset:</p>
-          
-          <pre><code>$ gem install bundler &amp;&amp; bundle install
-          </code></pre>
-          
-          <p>And start the server:</p>
-          
-          <pre><code>$ rackup
-          </code></pre>
-          
-          <p>Bam! Visit http://localhost:9292/ in your browser, and you'll be good.</p>
-          
-          <h2>Compiling CSS and Javascript</h2>
-          
-          <p>We use Coffeescript (.coffee) or Sassy CSS (.scss) for javascript and CSS development
-          respectively. When running the site locally, these files will automatically be
-          compiled by the application when requested.</p>
-          
-          <p>When preparing for deployment, we compress our stylesheets and javascripts, as
-          well as embedding what images we can. To compile Coffeescript and SCSS,
-          use the following rake task:</p>
-          
-          <pre><code>$ rake assets:compile
-          </code></pre>
-          
-          <p>Note: This relies on some sort of coffee compiler being installed globally.  If
-          you get "undefined method 'compile' for nil:NilClass", that might be your
-          problem.  On Ubuntu, installing the nodejs package fixes this; for other
-          systems, check out <a href="http://nodejs.org">nodejs.org</a>.</p>
-          
-          <p>For coffee-script installation, <a href="http://jashkenas.github.com/coffee-script/#installation">check the docs</a>.</p>
-          
-          <p>You may also need the java runtime for asset compression, which is handled by
-          jammit using yui compressor and closure compiler. Installing a JDK, such as
-          <a href="http://openjdk.java.net/">OpenJDK</a> should do the trick.</p>
-          
-          <h2>Running your own node</h2>
-          
-          <p>If you need help with this, then you're not ready to run one.
-          Here's the deal: we're still finishing up our ostatus implementation,
-          and until it's 100% compatible, these instructions are kept secret.
-          Eventually, we plan on making this <em>super easy</em>, but until we feel that
-          it's ready, we're keeping the instructions 'secret.' Sorry!</p>
-          
-          <p>If you do run your own node anyway, please keep current with upstream
-          until we hit 1.0, and it should all be smooth sailing!</p>
-        </div>
-      </div>
-    </div>
-  </body>
-  <div id='footer'>
-    <div id='footer-wrap'>
-      <div id='logo'>
-        <a href='/'>
-          rstat.us
-        </a>
-      </div>
-      <ul>
-        <li>
-          <a href='/home'>
-            Home
-          </a>
-        </li>
-        <li>
-          <a href='/contact'>
-            Contact
-          </a>
-        </li>
-        <li>
-          <a href='/open_source'>
-            Open Source
-          </a>
-        </li>
-      </ul>
     </div>
   </div>
-</html>
+  <table cellspacing=0 cellpadding=0>
+  <thead>
+    <tr>
+      <th class=docs><h1>Rstat.us Code Walkthrough</h1></th>
+      <th class=code></th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr id='section-1'>
+      <td class=docs>
+        <div class="pilwrap">
+          <a class="pilcrow" href="#section-1">&#182;</a>
+        </div>
+        <p>Welcome to rstat.us' code!</p>
+        <p>Rstat.us uses <a href="http://rubyonrails.org/">Ruby on Rails 3.1</a>. It follows the structure of a standard Rails app, so if you have not used Rails before, you may want to take a look at the <a href="http://guides.rubyonrails.org/getting_started.html">Getting Started Rails Guide</a>. Or feel free to dive in to rstat.us!</p>
+        <p>You can skip to the documentation for any file by using the "Jump to..." menu in the upper right of any documentation page.</p>
+        <p>This page is an index of the files in rstat.us' repository with a quick explanation of what each file is responsible for.</p>
+      </td>
+      <td class=code>
+      </td>
+    </tr>
+    <tr id='section-2'>
+      <td class=docs>
+        <div class="pilwrap">
+          <a class="pilcrow" href="#section-2">&#182;</a>
+        </div>
+        <hr />
+        <p>Most of the code for the logic of rstat.us lives in the <code>app</code> directory.</p>
+      </td>
+      <td class=code>
+        <div class='highlight'><pre>app/</pre></div>
+      </td>
+    </tr>
+    <tr id='section-3'>
+      <td class=docs>
+        <div class="pilwrap">
+          <a class="pilcrow" href="#section-3">&#182;</a>
+        </div>
+        <p>The <code>assets</code> directory contains rstat.us' images, uncompressed javascript (and <a href="http://coffeescript.org/">coffeescript</a>), and uncompiled <a href="http://sass-lang.com/">SCSS stylesheets</a>.</p>
+      </td>
+      <td class=code>
+        <div class='highlight'><pre>  |- assets/
+  |-- images/*        <span class="s1"># Not very interesting to document.</span>
+  |-- javascripts/*   <span class="s1"># Needs more documentation.</span>
+  |-- stylesheets/*   <span class="s1"># Not very interesting to document.</span>
+</pre></div>
+      </td>
+    </tr>
+    <tr id='section-4'>
+      <td class=docs>
+        <div class="pilwrap">
+          <a class="pilcrow" href="#section-4">&#182;</a>
+        </div>
+        <hr class="light" />
+        <p><a href="http://guides.rubyonrails.org/action_controller_overview.html">Controllers</a> do things like handling authentication, asking models for data, and providing that data to the appropriate view for the request.</p>
+      </td>
+      <td class=code>
+        <div class='highlight'><pre>  |- controllers/</pre></div>
+      </td>
+    </tr>
+    <tr id='section-4-a'>
+      <td class=docs>
+        <div class="pilwrap">
+          <a class="pilcrow" href="#section-4-a">&#182;</a>
+        </div>
+        <p>Application Controller defines controller methods that are useful for many of the other controllers, like <code>current_user</code> and <code>set_params_page</code></p>
+      </td>
+      <td class=code>
+        <div class='highlight'><pre>  |-- <a class="source" href="app/controllers/application_controller.html">application_controller.rb</a></pre></div>
+      </td>
+    </tr>
+    <tr id='section-4-b'>
+      <td class=docs>
+        <div class="pilwrap">
+          <a class="pilcrow" href="#section-4-b">&#182;</a>
+        </div>
+        <p>Auth Controller</p>
+      </td>
+      <td class=code>
+        <div class='highlight'><pre>  |-- <a class="source" href="app/controllers/auth_controller.html">auth_controller.rb</a></pre></div>
+      </td>
+    </tr>
+    <tr id='section-4-c'>
+      <td class=docs>
+        <div class="pilwrap">
+          <a class="pilcrow" href="#section-4-c">&#182;</a>
+        </div>
+        <p>Feeds Controller</p>
+      </td>
+      <td class=code>
+        <div class='highlight'><pre>  |-- <a class="source" href="app/controllers/feeds_controller.html">feeds_controller.rb</a></pre></div>
+      </td>
+    </tr>
+    <tr id='section-4-d'>
+      <td class=docs>
+        <div class="pilwrap">
+          <a class="pilcrow" href="#section-4-d">&#182;</a>
+        </div>
+        <p>Salmon Controller</p>
+      </td>
+      <td class=code>
+        <div class='highlight'><pre>  |-- <a class="source" href="app/controllers/salmon_controller.html">salmon_controller.rb</a></pre></div>
+      </td>
+    </tr>
+    <tr id='section-4-e'>
+      <td class=docs>
+        <div class="pilwrap">
+          <a class="pilcrow" href="#section-4-e">&#182;</a>
+        </div>
+        <p>Searches Controller</p>
+      </td>
+      <td class=code>
+        <div class='highlight'><pre>  |-- <a class="source" href="app/controllers/searches_controller.html">searches_controller.rb</a></pre></div>
+      </td>
+    </tr>
+    <tr id='section-4-d'>
+      <td class=docs>
+        <div class="pilwrap">
+          <a class="pilcrow" href="#section-4-d">&#182;</a>
+        </div>
+        <p>Sessions Controller</p>
+      </td>
+      <td class=code>
+        <div class='highlight'><pre>  |-- <a class="source" href="app/controllers/sessions_controller.html">sessions_controller.rb</a></pre></div>
+      </td>
+    </tr>
+    <tr id='section-4-e'>
+      <td class=docs>
+        <div class="pilwrap">
+          <a class="pilcrow" href="#section-e-a">&#182;</a>
+        </div>
+        <p>Static Controller</p>
+      </td>
+      <td class=code>
+        <div class='highlight'><pre>  |-- <a class="source" href="app/controllers/static_controller.html">static_controller.rb</a></pre></div>
+      </td>
+    </tr>
+    <tr id='section-4-f'>
+      <td class=docs>
+        <div class="pilwrap">
+          <a class="pilcrow" href="#section-4-f">&#182;</a>
+        </div>
+        <p>Subscriptions Controller</p>
+      </td>
+      <td class=code>
+        <div class='highlight'><pre>  |-- <a class="source" href="app/controllers/subscriptions_controller.html">subscriptions_controller.rb</a></pre></div>
+      </td>
+    </tr>
+    <tr id='section-4-g'>
+      <td class=docs>
+        <div class="pilwrap">
+          <a class="pilcrow" href="#section-4-g">&#182;</a>
+        </div>
+        <p>Updates Controller</p>
+      </td>
+      <td class=code>
+        <div class='highlight'><pre>  |-- <a class="source" href="app/controllers/updates_controller.html">updates_controller.rb</a></pre></div>
+      </td>
+    </tr>
+    <tr id='section-4-h'>
+      <td class=docs>
+        <div class="pilwrap">
+          <a class="pilcrow" href="#section-4-h">&#182;</a>
+        </div>
+        <p>Users Controller</p>
+      </td>
+      <td class=code>
+        <div class='highlight'><pre>  |-- <a class="source" href="app/controllers/users_controller.html">users_controller.rb</a></pre></div>
+      </td>
+    </tr>
+    <tr id='section-4-i'>
+      <td class=docs>
+        <div class="pilwrap">
+          <a class="pilcrow" href="#section-4-i">&#182;</a>
+        </div>
+        <p>Webfinger Controller</p>
+      </td>
+      <td class=code>
+        <div class='highlight'><pre>  |-- <a class="source" href="app/controllers/webfinger_controller.html">webfinger_controller.rb</a></pre></div>
+      </td>
+    </tr>
+    <tr id='section-5'>
+      <td class=docs>
+        <div class="pilwrap">
+          <a class="pilcrow" href="#section-5">&#182;</a>
+        </div>
+        <hr class="light" />
+        <p>Helpers only has one file with one method in it right now.</p>
+      </td>
+      <td class=code>
+        <div class='highlight'><pre>  |- helpers/
+  |-- application_helper.rb</pre></div>
+      </td>
+    </tr>
+    <tr id='section-6'>
+      <td class=docs>
+        <div class="pilwrap">
+          <a class="pilcrow" href="#section-6">&#182;</a>
+        </div>
+        <hr class="light" />
+        <p>Models</p>
+      </td>
+      <td class=code>
+        <div class='highlight'><pre>  |- models/</pre></div>
+      </td>
+    </tr>
+    <tr id='section-6-a'>
+      <td class=docs>
+        <div class="pilwrap">
+          <a class="pilcrow" href="#section-6-a">&#182;</a>
+        </div>
+        <p>Author</p>
+      </td>
+      <td class=code>
+        <div class='highlight'><pre>  |-- <a class="source" href="app/models/author.html">author.rb</a></pre></div>
+      </td>
+    </tr>
+    <tr id='section-6-b'>
+      <td class=docs>
+        <div class="pilwrap">
+          <a class="pilcrow" href="#section-6-b">&#182;</a>
+        </div>
+        <p>Authorization</p>
+      </td>
+      <td class=code>
+        <div class='highlight'><pre>  |-- <a class="source" href="app/models/authorization.html">authorization.rb</a></pre></div>
+      </td>
+    </tr>
+    <tr id='section-6-c'>
+      <td class=docs>
+        <div class="pilwrap">
+          <a class="pilcrow" href="#section-6-c">&#182;</a>
+        </div>
+        <p>Feed</p>
+      </td>
+      <td class=code>
+        <div class='highlight'><pre>  |-- <a class="source" href="app/models/feed.html">feed.rb</a></pre></div>
+      </td>
+    </tr>
+    <tr id='section-6-d'>
+      <td class=docs>
+        <div class="pilwrap">
+          <a class="pilcrow" href="#section-6-d">&#182;</a>
+        </div>
+        <p>Notifier</p>
+      </td>
+      <td class=code>
+        <div class='highlight'><pre>  |-- <a class="source" href="app/models/notifier.html">notifier.rb</a></pre></div>
+      </td>
+    </tr>
+    <tr id='section-6-e'>
+      <td class=docs>
+        <div class="pilwrap">
+          <a class="pilcrow" href="#section-6-e">&#182;</a>
+        </div>
+        <p>Update</p>
+      </td>
+      <td class=code>
+        <div class='highlight'><pre>  |-- <a class="source" href="app/models/update.html">update.rb</a></pre></div>
+      </td>
+    </tr>
+    <tr id='section-6-f'>
+      <td class=docs>
+        <div class="pilwrap">
+          <a class="pilcrow" href="#section-6-f">&#182;</a>
+        </div>
+        <p>User</p>
+      </td>
+      <td class=code>
+        <div class='highlight'><pre>  |-- <a class="source" href="app/models/user.html">user.rb</a></pre></div>
+      </td>
+    </tr>
+
+
+    <tr id='section-7'>
+      <td class=docs>
+        <div class="pilwrap">
+          <a class="pilcrow" href="#section-7">&#182;</a>
+        </div>
+        <hr class="light" />
+        <p>Views</p>
+      </td>
+      <td class=code>
+        <div class='highlight'><pre>  |- views/</pre></div>
+      </td>
+    </tr>
+
+    <tr id='section-8'>
+      <td class=docs>
+        <div class="pilwrap">
+          <a class="pilcrow" href="#section-8">&#182;</a>
+        </div>
+        <hr />
+        <p>config directory</p>
+      </td>
+      <td class=code>
+        <div class='highlight'><pre>config/*</pre></div>
+      </td>
+    </tr>
+    <tr id='section-9'>
+      <td class=docs>
+        <div class="pilwrap">
+          <a class="pilcrow" href="#section-9">&#182;</a>
+        </div>
+        <hr />
+        <p>db directory.</p>
+      </td>
+      <td class=code>
+        <div class='highlight'><pre>db/*</pre></div>
+      </td>
+    </tr>
+    <tr id='section-10'>
+      <td class=docs>
+        <div class="pilwrap">
+          <a class="pilcrow" href="#section-10">&#182;</a>
+        </div>
+        <hr />
+        <p>docs directory.</p>
+      </td>
+      <td class=code>
+        <div class='highlight'><pre>docs/*</pre></div>
+      </td>
+    </tr>
+    <tr id='section-11'>
+      <td class=docs>
+        <div class="pilwrap">
+          <a class="pilcrow" href="#section-11">&#182;</a>
+        </div>
+        <hr />
+        <p>lib directory.</p>
+      </td>
+      <td class=code>
+        <div class='highlight'><pre>lib/*</pre></div>
+      </td>
+    </tr>
+    <tr id='section-12'>
+      <td class=docs>
+        <div class="pilwrap">
+          <a class="pilcrow" href="#section-12">&#182;</a>
+        </div>
+        <hr />
+        <p>log directory.</p>
+      </td>
+      <td class=code>
+        <div class='highlight'><pre>log/*</pre></div>
+      </td>
+    </tr>
+    <tr id='section-13'>
+      <td class=docs>
+        <div class="pilwrap">
+          <a class="pilcrow" href="#section-13">&#182;</a>
+        </div>
+        <hr />
+        <p>public directory.</p>
+      </td>
+      <td class=code>
+        <div class='highlight'><pre>public/*</pre></div>
+      </td>
+    </tr>
+    <tr id='section-14'>
+      <td class=docs>
+        <div class="pilwrap">
+          <a class="pilcrow" href="#section-14">&#182;</a>
+        </div>
+        <hr />
+        <p>script directory.</p>
+      </td>
+      <td class=code>
+        <div class='highlight'><pre>script/*</pre></div>
+      </td>
+    </tr>
+    <tr id='section-15'>
+      <td class=docs>
+        <div class="pilwrap">
+          <a class="pilcrow" href="#section-15">&#182;</a>
+        </div>
+        <hr />
+        <p>test directory.</p>
+      </td>
+      <td class=code>
+        <div class='highlight'><pre>test/</pre></div>
+      </td>
+    </tr>
+    <tr id='section-15-a'>
+      <td class=docs>
+        <div class="pilwrap">
+          <a class="pilcrow" href="#section-15-a">&#182;</a>
+        </div>
+        <p>acceptance test directory.</p>
+      </td>
+      <td class=code>
+        <div class='highlight'><pre>  |- acceptance/*</pre></div>
+      </td>
+    </tr>
+    <tr id='section-15-b'>
+      <td class=docs>
+        <div class="pilwrap">
+          <a class="pilcrow" href="#section-15-b">&#182;</a>
+        </div>
+        <p>coverage directory.</p>
+      </td>
+      <td class=code>
+        <div class='highlight'><pre>  |- coverage/*</pre></div>
+      </td>
+    </tr>
+    <tr id='section-15-c'>
+      <td class=docs>
+        <div class="pilwrap">
+          <a class="pilcrow" href="#section-15-c">&#182;</a>
+        </div>
+        <p>test data directory.</p>
+      </td>
+      <td class=code>
+        <div class='highlight'><pre>  |- data/*</pre></div>
+      </td>
+    </tr>
+    <tr id='section-15-d'>
+      <td class=docs>
+        <div class="pilwrap">
+          <a class="pilcrow" href="#section-15-d">&#182;</a>
+        </div>
+        <p>factories</p>
+      </td>
+      <td class=code>
+        <div class='highlight'><pre>  |- factories.rb</pre></div>
+      </td>
+    </tr>
+    <tr id='section-15-e'>
+      <td class=docs>
+        <div class="pilwrap">
+          <a class="pilcrow" href="#section-15-e">&#182;</a>
+        </div>
+        <p>models test directory.</p>
+      </td>
+      <td class=code>
+        <div class='highlight'><pre>  |- models/*</pre></div>
+      </td>
+    </tr>
+    <tr id='section-15-f'>
+      <td class=docs>
+        <div class="pilwrap">
+          <a class="pilcrow" href="#section-15-">&#182;</a>
+        </div>
+        <p>test helper.</p>
+      </td>
+      <td class=code>
+        <div class='highlight'><pre>  |- test_helper.rb</pre></div>
+      </td>
+    </tr>
+    <tr id='section-16'>
+      <td class=docs>
+        <div class="pilwrap">
+          <a class="pilcrow" href="#section-16">&#182;</a>
+        </div>
+        <hr />
+        <p>tmp directory.</p>
+      </td>
+      <td class=code>
+        <div class='highlight'><pre>tmp/*</pre></div>
+      </td>
+    </tr>
+    <tr id='section-17'>
+      <td class=docs>
+        <div class="pilwrap">
+          <a class="pilcrow" href="#section-17">&#182;</a>
+        </div>
+        <hr />
+        <p>vendor directory.</p>
+      </td>
+      <td class=code>
+        <div class='highlight'><pre>vendor/*</pre></div>
+      </td>
+    </tr>
+
+  </table>
+</div>
+</body>
