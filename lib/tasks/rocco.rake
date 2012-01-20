@@ -1,19 +1,25 @@
+# Remove the rails-provided rake task for docs that we're not using
+Rake.application.instance_variable_get('@tasks').delete('doc:app')
+
 begin
   require 'rocco/tasks'
-  Rocco::make 'docs/', ["app/models/*.rb", "app/controllers/*.rb"]
 
   desc 'Build rocco docs'
-  task :docs => :rocco
-  directory 'docs/'
+  task :rocco
+  Rocco::make 'docs/', ["app/models/*.rb", "app/controllers/*.rb"]
 
   desc 'Build docs and open in browser for the reading'
-  task :read => :docs do
+  task :read => :rocco do
     sh 'open docs/index.html'
   end
 
-  # Alias for docs task
-  task :doc => :docs
+  # Convenient aliases
+  desc 'Build rocco docs'
+  task :doc => :rocco
+  desc 'Build rocco docs'
+  task :docs => :rocco
 
 rescue LoadError
   warn "#$! -- rocco tasks not loaded."
+  task :rocco
 end

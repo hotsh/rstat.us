@@ -1,5 +1,6 @@
 *.swp
-docs
+docs/*
+!docs/index.html
 config.yml
 .sass-cache
 tmp
