@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="content-type" content="text/html;charset=utf-8">
+  <title>static_controller.rb</title>
+  <link rel="stylesheet" href="http://jashkenas.github.com/docco/resources/docco.css">
+</head>
+<body>
+<div id='container'>
+  <div id="background"></div>
+  <div id="jump_to">
+    Jump To &hellip;
+    <div id="jump_wrapper">
+      <div id="jump_page">
+          <a class="source" href="application_controller.html">application_controller.rb</a>
+          <a class="source" href="auth_controller.html">auth_controller.rb</a>
+          <a class="source" href="feeds_controller.html">feeds_controller.rb</a>
+          <a class="source" href="salmon_controller.html">salmon_controller.rb</a>
+          <a class="source" href="searches_controller.html">searches_controller.rb</a>
+          <a class="source" href="sessions_controller.html">sessions_controller.rb</a>
+          <a class="source" href="static_controller.html">static_controller.rb</a>
+          <a class="source" href="subscriptions_controller.html">subscriptions_controller.rb</a>
+          <a class="source" href="updates_controller.html">updates_controller.rb</a>
+          <a class="source" href="users_controller.html">users_controller.rb</a>
+          <a class="source" href="webfinger_controller.html">webfinger_controller.rb</a>
+          <a class="source" href="../models/author.html">author.rb</a>
+          <a class="source" href="../models/authorization.html">authorization.rb</a>
+          <a class="source" href="../models/feed.html">feed.rb</a>
+          <a class="source" href="../models/notifier.html">notifier.rb</a>
+          <a class="source" href="../models/update.html">update.rb</a>
+          <a class="source" href="../models/user.html">user.rb</a>
+      </div>
+    </div>
+  </div>
+  <table cellspacing=0 cellpadding=0>
+  <thead>
+    <tr>
+      <th class=docs><h1>static_controller.rb</h1></th>
+      <th class=code></th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr id='section-1'>
+      <td class=docs>
+        <div class="pilwrap">
+          <a class="pilcrow" href="#section-1">&#182;</a>
+        </div>
+        
+
+      </td>
+      <td class=code>
+        <div class='highlight'><pre><span class="k">class</span> <span class="nc">StaticController</span> <span class="o">&lt;</span> <span class="no">ApplicationController</span>
+  <span class="k">def</span> <span class="nf">open_source</span>
+  <span class="k">end</span>
+
+  <span class="k">def</span> <span class="nf">follow</span>
+    <span class="n">render</span> <span class="s2">&quot;static/follow.html&quot;</span>
+  <span class="k">end</span>
+
+  <span class="k">def</span> <span class="nf">contact</span>
+  <span class="k">end</span>
+
+  <span class="k">def</span> <span class="nf">help</span>
+  <span class="k">end</span>
+
+  <span class="k">def</span> <span class="nf">homepage</span>
+    <span class="n">render</span> <span class="ss">:layout</span> <span class="o">=&gt;</span> <span class="kp">false</span>
+  <span class="k">end</span>
+
+<span class="k">end</span></pre></div>
+      </td>
+    </tr>
+  </table>
+</div>
+</body>

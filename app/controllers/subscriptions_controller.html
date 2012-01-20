@@ -1,0 +1,331 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="content-type" content="text/html;charset=utf-8">
+  <title>subscriptions_controller.rb</title>
+  <link rel="stylesheet" href="http://jashkenas.github.com/docco/resources/docco.css">
+</head>
+<body>
+<div id='container'>
+  <div id="background"></div>
+  <div id="jump_to">
+    Jump To &hellip;
+    <div id="jump_wrapper">
+      <div id="jump_page">
+          <a class="source" href="application_controller.html">application_controller.rb</a>
+          <a class="source" href="auth_controller.html">auth_controller.rb</a>
+          <a class="source" href="feeds_controller.html">feeds_controller.rb</a>
+          <a class="source" href="salmon_controller.html">salmon_controller.rb</a>
+          <a class="source" href="searches_controller.html">searches_controller.rb</a>
+          <a class="source" href="sessions_controller.html">sessions_controller.rb</a>
+          <a class="source" href="static_controller.html">static_controller.rb</a>
+          <a class="source" href="subscriptions_controller.html">subscriptions_controller.rb</a>
+          <a class="source" href="updates_controller.html">updates_controller.rb</a>
+          <a class="source" href="users_controller.html">users_controller.rb</a>
+          <a class="source" href="webfinger_controller.html">webfinger_controller.rb</a>
+          <a class="source" href="../models/author.html">author.rb</a>
+          <a class="source" href="../models/authorization.html">authorization.rb</a>
+          <a class="source" href="../models/feed.html">feed.rb</a>
+          <a class="source" href="../models/notifier.html">notifier.rb</a>
+          <a class="source" href="../models/update.html">update.rb</a>
+          <a class="source" href="../models/user.html">user.rb</a>
+      </div>
+    </div>
+  </div>
+  <table cellspacing=0 cellpadding=0>
+  <thead>
+    <tr>
+      <th class=docs><h1>subscriptions_controller.rb</h1></th>
+      <th class=code></th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr id='section-1'>
+      <td class=docs>
+        <div class="pilwrap">
+          <a class="pilcrow" href="#section-1">&#182;</a>
+        </div>
+        
+      </td>
+      <td class=code>
+        <div class='highlight'><pre><span class="k">class</span> <span class="nc">SubscriptionsController</span> <span class="o">&lt;</span> <span class="no">ApplicationController</span>
+  <span class="k">def</span> <span class="nf">show</span>
+
+    <span class="n">feed</span> <span class="o">=</span> <span class="no">Feed</span><span class="o">.</span><span class="n">first</span> <span class="ss">:id</span> <span class="o">=&gt;</span> <span class="n">params</span><span class="o">[</span><span class="ss">:id</span><span class="o">]</span>
+
+    <span class="k">if</span> <span class="n">params</span><span class="o">[</span><span class="s1">&#39;hub.challenge&#39;</span><span class="o">]</span>
+      <span class="nb">sub</span> <span class="o">=</span> <span class="no">OSub</span><span class="o">::</span><span class="no">Subscription</span><span class="o">.</span><span class="n">new</span><span class="p">(</span><span class="n">request</span><span class="o">.</span><span class="n">url</span><span class="p">,</span> <span class="n">feed</span><span class="o">.</span><span class="n">url</span><span class="p">,</span> <span class="kp">nil</span><span class="p">,</span> <span class="n">feed</span><span class="o">.</span><span class="n">verify_token</span><span class="p">)</span></pre></div>
+      </td>
+    </tr>
+    <tr id='section-2'>
+      <td class=docs>
+        <div class="pilwrap">
+          <a class="pilcrow" href="#section-2">&#182;</a>
+        </div>
+        <p>perform the hub&rsquo;s challenge</p>
+      </td>
+      <td class=code>
+        <div class='highlight'><pre>      <span class="n">respond</span> <span class="o">=</span> <span class="nb">sub</span><span class="o">.</span><span class="n">perform_challenge</span><span class="p">(</span><span class="n">params</span><span class="o">[</span><span class="s1">&#39;hub.challenge&#39;</span><span class="o">]</span><span class="p">)</span></pre></div>
+      </td>
+    </tr>
+    <tr id='section-3'>
+      <td class=docs>
+        <div class="pilwrap">
+          <a class="pilcrow" href="#section-3">&#182;</a>
+        </div>
+        <p>verify that the random token is the same as when we
+subscribed with the hub initially and that the topic
+url matches what we expect</p>
+      </td>
+      <td class=code>
+        <div class='highlight'><pre>      <span class="n">verified</span> <span class="o">=</span> <span class="n">params</span><span class="o">[</span><span class="s1">&#39;hub.topic&#39;</span><span class="o">]</span> <span class="o">==</span> <span class="n">feed</span><span class="o">.</span><span class="n">url</span>
+      <span class="k">if</span> <span class="n">verified</span> <span class="ow">and</span> <span class="nb">sub</span><span class="o">.</span><span class="n">verify_subscription</span><span class="p">(</span><span class="n">params</span><span class="o">[</span><span class="s1">&#39;hub.verify_token&#39;</span><span class="o">]</span><span class="p">)</span>
+        <span class="n">render</span> <span class="ss">:text</span> <span class="o">=&gt;</span> <span class="n">respond</span><span class="o">[</span><span class="ss">:body</span><span class="o">]</span><span class="p">,</span> <span class="ss">:status</span> <span class="o">=&gt;</span> <span class="n">respond</span><span class="o">[</span><span class="ss">:status</span><span class="o">]</span>
+      <span class="k">else</span></pre></div>
+      </td>
+    </tr>
+    <tr id='section-4'>
+      <td class=docs>
+        <div class="pilwrap">
+          <a class="pilcrow" href="#section-4">&#182;</a>
+        </div>
+        <p>if the verification fails, the specification forces us to
+return a 404 status</p>
+      </td>
+      <td class=code>
+        <div class='highlight'><pre>        <span class="k">raise</span> <span class="no">ActionController</span><span class="o">::</span><span class="no">RoutingError</span><span class="o">.</span><span class="n">new</span><span class="p">(</span><span class="s1">&#39;Not Found&#39;</span><span class="p">)</span>
+      <span class="k">end</span>
+    <span class="k">else</span>
+      <span class="k">raise</span> <span class="no">ActionController</span><span class="o">::</span><span class="no">RoutingError</span><span class="o">.</span><span class="n">new</span><span class="p">(</span><span class="s1">&#39;Not Found&#39;</span><span class="p">)</span>
+    <span class="k">end</span>
+  <span class="k">end</span></pre></div>
+      </td>
+    </tr>
+    <tr id='section-5'>
+      <td class=docs>
+        <div class="pilwrap">
+          <a class="pilcrow" href="#section-5">&#182;</a>
+        </div>
+        <p>A DELETE call will unsubscribe you from that particular feed. We make
+sure that you&rsquo;re logged in first, because otherwise, it&rsquo;s nonsensical.</p>
+      </td>
+      <td class=code>
+        <div class='highlight'><pre>  <span class="k">def</span> <span class="nf">destroy</span>
+    <span class="n">require_login!</span> <span class="ss">:return</span> <span class="o">=&gt;</span> <span class="n">request</span><span class="o">.</span><span class="n">referrer</span>
+
+    <span class="n">feed</span> <span class="o">=</span> <span class="no">Feed</span><span class="o">.</span><span class="n">first</span> <span class="ss">:id</span> <span class="o">=&gt;</span> <span class="n">params</span><span class="o">[</span><span class="ss">:id</span><span class="o">]</span>
+
+    <span class="vi">@author</span> <span class="o">=</span> <span class="n">feed</span><span class="o">.</span><span class="n">author</span>
+
+    <span class="k">if</span> <span class="vi">@author</span><span class="o">.</span><span class="n">user</span> <span class="o">==</span> <span class="n">current_user</span></pre></div>
+      </td>
+    </tr>
+    <tr id='section-6'>
+      <td class=docs>
+        <div class="pilwrap">
+          <a class="pilcrow" href="#section-6">&#182;</a>
+        </div>
+        <p>You&rsquo;re not allowed to follow yourself.</p>
+      </td>
+      <td class=code>
+        <div class='highlight'><pre>      <span class="n">redirect_to</span> <span class="n">request</span><span class="o">.</span><span class="n">referrer</span>
+    <span class="k">elsif</span> <span class="o">!</span><span class="n">current_user</span><span class="o">.</span><span class="n">following_url?</span> <span class="n">feed</span><span class="o">.</span><span class="n">url</span></pre></div>
+      </td>
+    </tr>
+    <tr id='section-7'>
+      <td class=docs>
+        <div class="pilwrap">
+          <a class="pilcrow" href="#section-7">&#182;</a>
+        </div>
+        <p>If we&rsquo;re not following them, noop.</p>
+      </td>
+      <td class=code>
+        <div class='highlight'><pre>      <span class="n">flash</span><span class="o">[</span><span class="ss">:notice</span><span class="o">]</span> <span class="o">=</span> <span class="s2">&quot;You&#39;re not following </span><span class="si">#{</span><span class="vi">@author</span><span class="o">.</span><span class="n">username</span><span class="si">}</span><span class="s2">.&quot;</span>
+      <span class="n">redirect_to</span> <span class="n">request</span><span class="o">.</span><span class="n">referrer</span>
+    <span class="k">else</span>
+      <span class="n">current_user</span><span class="o">.</span><span class="n">unfollow!</span> <span class="n">feed</span>
+
+      <span class="n">flash</span><span class="o">[</span><span class="ss">:notice</span><span class="o">]</span> <span class="o">=</span> <span class="s2">&quot;No longer following </span><span class="si">#{</span><span class="vi">@author</span><span class="o">.</span><span class="n">username</span><span class="si">}</span><span class="s2">.&quot;</span>
+      <span class="n">redirect_to</span> <span class="n">request</span><span class="o">.</span><span class="n">referrer</span>
+    <span class="k">end</span>
+  <span class="k">end</span></pre></div>
+      </td>
+    </tr>
+    <tr id='section-8'>
+      <td class=docs>
+        <div class="pilwrap">
+          <a class="pilcrow" href="#section-8">&#182;</a>
+        </div>
+        <p>subscriber receives updates
+should be &lsquo;put&rsquo;, PuSH sucks at REST</p>
+      </td>
+      <td class=code>
+        <div class='highlight'><pre>  <span class="k">def</span> <span class="nf">post_update</span>
+    <span class="n">feed</span> <span class="o">=</span> <span class="no">Feed</span><span class="o">.</span><span class="n">first</span> <span class="ss">:id</span> <span class="o">=&gt;</span> <span class="n">params</span><span class="o">[</span><span class="ss">:id</span><span class="o">]</span>
+    <span class="k">if</span> <span class="n">feed</span><span class="o">.</span><span class="n">nil?</span>
+      <span class="k">raise</span> <span class="no">ActionController</span><span class="o">::</span><span class="no">RoutingError</span><span class="o">.</span><span class="n">new</span><span class="p">(</span><span class="s1">&#39;Not Found&#39;</span><span class="p">)</span>
+    <span class="k">end</span>
+
+    <span class="n">feed</span><span class="o">.</span><span class="n">update_entries</span><span class="p">(</span><span class="n">request</span><span class="o">.</span><span class="n">body</span><span class="o">.</span><span class="n">read</span><span class="p">,</span> <span class="n">request</span><span class="o">.</span><span class="n">url</span><span class="p">,</span> <span class="n">feed</span><span class="o">.</span><span class="n">url</span><span class="p">,</span> <span class="n">request</span><span class="o">.</span><span class="n">env</span><span class="o">[</span><span class="s1">&#39;HTTP_X_HUB_SIGNATURE&#39;</span><span class="o">]</span><span class="p">)</span>
+    <span class="n">render</span> <span class="ss">:nothing</span> <span class="o">=&gt;</span> <span class="kp">true</span>
+  <span class="k">end</span></pre></div>
+      </td>
+    </tr>
+    <tr id='section-9'>
+      <td class=docs>
+        <div class="pilwrap">
+          <a class="pilcrow" href="#section-9">&#182;</a>
+        </div>
+        <p>A POST is how you subscribe to someone&rsquo;s feed. We want to make sure
+that you&rsquo;re logged in for this one, too.</p>
+      </td>
+      <td class=code>
+        <div class='highlight'><pre>  <span class="k">def</span> <span class="nf">create</span>
+    <span class="n">require_login!</span> <span class="ss">:return</span> <span class="o">=&gt;</span> <span class="n">request</span><span class="o">.</span><span class="n">referrer</span></pre></div>
+      </td>
+    </tr>
+    <tr id='section-10'>
+      <td class=docs>
+        <div class="pilwrap">
+          <a class="pilcrow" href="#section-10">&#182;</a>
+        </div>
+        <p>Find or create the Feed</p>
+      </td>
+      <td class=code>
+        <div class='highlight'><pre>    <span class="n">subscribe_to_feed</span> <span class="o">=</span> <span class="no">Feed</span><span class="o">.</span><span class="n">first</span><span class="p">(</span><span class="ss">:id</span> <span class="o">=&gt;</span> <span class="n">params</span><span class="o">[</span><span class="ss">:subscribe_to</span><span class="o">]</span><span class="p">)</span>
+
+    <span class="k">unless</span> <span class="n">subscribe_to_feed</span></pre></div>
+      </td>
+    </tr>
+    <tr id='section-11'>
+      <td class=docs>
+        <div class="pilwrap">
+          <a class="pilcrow" href="#section-11">&#182;</a>
+        </div>
+        <p>Allow for a variety of feed addresses</p>
+      </td>
+      <td class=code>
+        <div class='highlight'><pre>      <span class="k">case</span> <span class="n">params</span><span class="o">[</span><span class="ss">:subscribe_to</span><span class="o">]</span>
+      <span class="k">when</span><span class="sr"> /^feed:\/\//</span></pre></div>
+      </td>
+    </tr>
+    <tr id='section-12'>
+      <td class=docs>
+        <div class="pilwrap">
+          <a class="pilcrow" href="#section-12">&#182;</a>
+        </div>
+        <p>SAFARI!!!!1 /me shakes his first at the sky</p>
+      </td>
+      <td class=code>
+        <div class='highlight'><pre>        <span class="n">feed_url</span> <span class="o">=</span> <span class="s2">&quot;http&quot;</span> <span class="o">+</span> <span class="n">params</span><span class="o">[</span><span class="ss">:subscribe_to</span><span class="o">][</span><span class="mi">4</span><span class="o">.</span><span class="n">.</span><span class="o">-</span><span class="mi">1</span><span class="o">]</span>
+      <span class="k">when</span><span class="sr"> /@/</span></pre></div>
+      </td>
+    </tr>
+    <tr id='section-13'>
+      <td class=docs>
+        <div class="pilwrap">
+          <a class="pilcrow" href="#section-13">&#182;</a>
+        </div>
+        <p>XXX: ensure caching of finger lookup.</p>
+      </td>
+      <td class=code>
+        <div class='highlight'><pre>        <span class="n">redfinger_lookup</span> <span class="o">=</span> <span class="no">Redfinger</span><span class="o">.</span><span class="n">finger</span><span class="p">(</span><span class="n">params</span><span class="o">[</span><span class="ss">:subscribe_to</span><span class="o">]</span><span class="p">)</span>
+        <span class="n">feed_url</span> <span class="o">=</span> <span class="n">redfinger_lookup</span><span class="o">.</span><span class="n">links</span><span class="o">.</span><span class="n">find</span> <span class="p">{</span> <span class="o">|</span><span class="n">l</span><span class="o">|</span> <span class="n">l</span><span class="o">[</span><span class="s1">&#39;rel&#39;</span><span class="o">]</span> <span class="o">==</span> <span class="s1">&#39;http://schemas.google.com/g/2010#updates-from&#39;</span> <span class="p">}</span><span class="o">.</span><span class="n">to_s</span>
+      <span class="k">else</span>
+        <span class="n">feed_url</span> <span class="o">=</span> <span class="n">params</span><span class="o">[</span><span class="ss">:subscribe_to</span><span class="o">]</span>
+      <span class="k">end</span></pre></div>
+      </td>
+    </tr>
+    <tr id='section-14'>
+      <td class=docs>
+        <div class="pilwrap">
+          <a class="pilcrow" href="#section-14">&#182;</a>
+        </div>
+        <p>See if we already have a local feed for this remote</p>
+      </td>
+      <td class=code>
+        <div class='highlight'><pre>      <span class="n">subscribe_to_feed</span> <span class="o">=</span> <span class="no">Feed</span><span class="o">.</span><span class="n">first</span><span class="p">(</span><span class="ss">:remote_url</span> <span class="o">=&gt;</span> <span class="n">feed_url</span><span class="p">)</span>
+
+      <span class="k">unless</span> <span class="n">subscribe_to_feed</span></pre></div>
+      </td>
+    </tr>
+    <tr id='section-15'>
+      <td class=docs>
+        <div class="pilwrap">
+          <a class="pilcrow" href="#section-15">&#182;</a>
+        </div>
+        <p>create a feed</p>
+      </td>
+      <td class=code>
+        <div class='highlight'><pre>        <span class="n">subscribe_to_feed</span> <span class="o">=</span> <span class="no">Feed</span><span class="o">.</span><span class="n">create</span><span class="p">(</span><span class="ss">:remote_url</span> <span class="o">=&gt;</span> <span class="n">feed_url</span><span class="p">)</span></pre></div>
+      </td>
+    </tr>
+    <tr id='section-16'>
+      <td class=docs>
+        <div class="pilwrap">
+          <a class="pilcrow" href="#section-16">&#182;</a>
+        </div>
+        <p>Populate the Feed with Updates and Author from the remote site
+Pass along the redfinger information to build the Author if available</p>
+      </td>
+      <td class=code>
+        <div class='highlight'><pre>        <span class="n">subscribe_to_feed</span><span class="o">.</span><span class="n">populate</span> <span class="n">redfinger_lookup</span>
+      <span class="k">end</span>
+    <span class="k">end</span></pre></div>
+      </td>
+    </tr>
+    <tr id='section-17'>
+      <td class=docs>
+        <div class="pilwrap">
+          <a class="pilcrow" href="#section-17">&#182;</a>
+        </div>
+        <p>Stop and return a nice message if already following this feed</p>
+      </td>
+      <td class=code>
+        <div class='highlight'><pre>    <span class="k">if</span> <span class="n">current_user</span><span class="o">.</span><span class="n">following_feed?</span> <span class="n">subscribe_to_feed</span>
+      <span class="n">flash</span><span class="o">[</span><span class="ss">:notice</span><span class="o">]</span> <span class="o">=</span> <span class="s2">&quot;You&#39;re already following </span><span class="si">#{</span><span class="n">subscribe_to_feed</span><span class="o">.</span><span class="n">author</span><span class="o">.</span><span class="n">username</span><span class="si">}</span><span class="s2">.&quot;</span>
+      <span class="n">redirect_to</span> <span class="n">request</span><span class="o">.</span><span class="n">referrer</span>
+    <span class="k">end</span></pre></div>
+      </td>
+    </tr>
+    <tr id='section-18'>
+      <td class=docs>
+        <div class="pilwrap">
+          <a class="pilcrow" href="#section-18">&#182;</a>
+        </div>
+        <p>Actually follow!</p>
+      </td>
+      <td class=code>
+        <div class='highlight'><pre>    <span class="n">f</span> <span class="o">=</span> <span class="n">current_user</span><span class="o">.</span><span class="n">follow!</span> <span class="n">subscribe_to_feed</span>
+
+    <span class="k">unless</span> <span class="n">f</span>
+      <span class="n">flash</span><span class="o">[</span><span class="ss">:notice</span><span class="o">]</span> <span class="o">=</span> <span class="s2">&quot;There was a problem following </span><span class="si">#{</span><span class="n">params</span><span class="o">[</span><span class="ss">:subscribe_to_feed</span><span class="o">]</span><span class="si">}</span><span class="s2">.&quot;</span>
+      <span class="n">redirect_to</span> <span class="n">request</span><span class="o">.</span><span class="n">referrer</span>
+    <span class="k">end</span></pre></div>
+      </td>
+    </tr>
+    <tr id='section-19'>
+      <td class=docs>
+        <div class="pilwrap">
+          <a class="pilcrow" href="#section-19">&#182;</a>
+        </div>
+        <p>Attempt to inform the hub for remote feeds</p>
+
+      </td>
+      <td class=code>
+        <div class='highlight'><pre>    <span class="k">unless</span> <span class="n">f</span><span class="o">.</span><span class="n">local?</span> <span class="o">||</span> <span class="n">f</span><span class="o">.</span><span class="n">hubs</span><span class="o">.</span><span class="n">empty?</span>
+      <span class="n">hub_url</span> <span class="o">=</span> <span class="n">f</span><span class="o">.</span><span class="n">hubs</span><span class="o">.</span><span class="n">first</span>
+
+      <span class="nb">sub</span> <span class="o">=</span> <span class="no">OSub</span><span class="o">::</span><span class="no">Subscription</span><span class="o">.</span><span class="n">new</span><span class="p">(</span><span class="n">subscription_url</span><span class="p">(</span><span class="n">f</span><span class="o">.</span><span class="n">id</span><span class="p">,</span> <span class="ss">:format</span> <span class="o">=&gt;</span> <span class="s2">&quot;atom&quot;</span><span class="p">),</span> <span class="n">f</span><span class="o">.</span><span class="n">url</span><span class="p">,</span> <span class="n">f</span><span class="o">.</span><span class="n">secret</span><span class="p">)</span>
+      <span class="nb">sub</span><span class="o">.</span><span class="n">subscribe</span><span class="p">(</span><span class="n">hub_url</span><span class="p">,</span> <span class="kp">true</span><span class="p">,</span> <span class="n">f</span><span class="o">.</span><span class="n">verify_token</span><span class="p">)</span>
+    <span class="k">end</span>
+
+    <span class="n">flash</span><span class="o">[</span><span class="ss">:notice</span><span class="o">]</span> <span class="o">=</span> <span class="s2">&quot;Now following </span><span class="si">#{</span><span class="n">f</span><span class="o">.</span><span class="n">author</span><span class="o">.</span><span class="n">username</span><span class="si">}</span><span class="s2">.&quot;</span>
+    <span class="n">redirect_to</span> <span class="n">request</span><span class="o">.</span><span class="n">referrer</span>
+  <span class="k">end</span>
+<span class="k">end</span></pre></div>
+      </td>
+    </tr>
+  </table>
+</div>
+</body>

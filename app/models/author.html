@@ -1,0 +1,527 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="content-type" content="text/html;charset=utf-8">
+  <title>author.rb</title>
+  <link rel="stylesheet" href="http://jashkenas.github.com/docco/resources/docco.css">
+</head>
+<body>
+<div id='container'>
+  <div id="background"></div>
+  <div id="jump_to">
+    Jump To &hellip;
+    <div id="jump_wrapper">
+      <div id="jump_page">
+          <a class="source" href="../controllers/application_controller.html">application_controller.rb</a>
+          <a class="source" href="../controllers/auth_controller.html">auth_controller.rb</a>
+          <a class="source" href="../controllers/feeds_controller.html">feeds_controller.rb</a>
+          <a class="source" href="../controllers/salmon_controller.html">salmon_controller.rb</a>
+          <a class="source" href="../controllers/searches_controller.html">searches_controller.rb</a>
+          <a class="source" href="../controllers/sessions_controller.html">sessions_controller.rb</a>
+          <a class="source" href="../controllers/static_controller.html">static_controller.rb</a>
+          <a class="source" href="../controllers/subscriptions_controller.html">subscriptions_controller.rb</a>
+          <a class="source" href="../controllers/updates_controller.html">updates_controller.rb</a>
+          <a class="source" href="../controllers/users_controller.html">users_controller.rb</a>
+          <a class="source" href="../controllers/webfinger_controller.html">webfinger_controller.rb</a>
+          <a class="source" href="author.html">author.rb</a>
+          <a class="source" href="authorization.html">authorization.rb</a>
+          <a class="source" href="feed.html">feed.rb</a>
+          <a class="source" href="notifier.html">notifier.rb</a>
+          <a class="source" href="update.html">update.rb</a>
+          <a class="source" href="user.html">user.rb</a>
+      </div>
+    </div>
+  </div>
+  <table cellspacing=0 cellpadding=0>
+  <thead>
+    <tr>
+      <th class=docs><h1>author.rb</h1></th>
+      <th class=code></th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr id='section-1'>
+      <td class=docs>
+        <div class="pilwrap">
+          <a class="pilcrow" href="#section-1">&#182;</a>
+        </div>
+        <p>The Author model represents someone who creates information that&rsquo;s
+shared via a feed. It is decoupled from a User, since we can also have
+remote authors, from feeds that originate from outside of our site.</p>
+      </td>
+      <td class=code>
+        <div class='highlight'><pre><span class="k">class</span> <span class="nc">Author</span>
+  <span class="kp">include</span> <span class="no">MongoMapper</span><span class="o">::</span><span class="no">Document</span></pre></div>
+      </td>
+    </tr>
+    <tr id='section-2'>
+      <td class=docs>
+        <div class="pilwrap">
+          <a class="pilcrow" href="#section-2">&#182;</a>
+        </div>
+        <p>Constants that are useful for avatars using gravatar</p>
+      </td>
+      <td class=code>
+        <div class='highlight'><pre>  <span class="no">GRAVATAR</span>               <span class="o">=</span> <span class="s2">&quot;gravatar.com&quot;</span>
+  <span class="no">DEFAULT_AVATAR</span>         <span class="o">=</span> <span class="s2">&quot;avatar.png&quot;</span>
+  <span class="no">ENCODED_DEFAULT_AVATAR</span> <span class="o">=</span> <span class="no">URI</span><span class="o">.</span><span class="n">encode_www_form_component</span><span class="p">(</span><span class="no">DEFAULT_AVATAR</span><span class="p">)</span></pre></div>
+      </td>
+    </tr>
+    <tr id='section-3'>
+      <td class=docs>
+        <div class="pilwrap">
+          <a class="pilcrow" href="#section-3">&#182;</a>
+        </div>
+        <p>public keys are good for 4 weeks</p>
+      </td>
+      <td class=code>
+        <div class='highlight'><pre>  <span class="no">PUBLIC_KEY_LEASE_DAYS</span> <span class="o">=</span> <span class="mi">28</span></pre></div>
+      </td>
+    </tr>
+    <tr id='section-4'>
+      <td class=docs>
+        <div class="pilwrap">
+          <a class="pilcrow" href="#section-4">&#182;</a>
+        </div>
+        <p>We&rsquo;ve got a bunch of data that gets stored in Author. And basically none
+of it is val*idated right now. Fun. Then again, not all of it is neccesary.</p>
+      </td>
+      <td class=code>
+        <div class='highlight'><pre>  <span class="n">key</span> <span class="ss">:username</span><span class="p">,</span>  <span class="nb">String</span></pre></div>
+      </td>
+    </tr>
+    <tr id='section-5'>
+      <td class=docs>
+        <div class="pilwrap">
+          <a class="pilcrow" href="#section-5">&#182;</a>
+        </div>
+        <p>This contains the domain that the author&rsquo;s feed originates (nil for local)</p>
+      </td>
+      <td class=code>
+        <div class='highlight'><pre>  <span class="n">key</span> <span class="ss">:domain</span><span class="p">,</span>    <span class="nb">String</span></pre></div>
+      </td>
+    </tr>
+    <tr id='section-6'>
+      <td class=docs>
+        <div class="pilwrap">
+          <a class="pilcrow" href="#section-6">&#182;</a>
+        </div>
+        <p>We can get the domain from the remote_url</p>
+      </td>
+      <td class=code>
+        <div class='highlight'><pre>  <span class="n">before_save</span> <span class="ss">:get_domain</span></pre></div>
+      </td>
+    </tr>
+    <tr id='section-7'>
+      <td class=docs>
+        <div class="pilwrap">
+          <a class="pilcrow" href="#section-7">&#182;</a>
+        </div>
+        <p>The Author has a profile and with that various entries</p>
+      </td>
+      <td class=code>
+        <div class='highlight'><pre>  <span class="n">key</span> <span class="ss">:name</span><span class="p">,</span>      <span class="nb">String</span>
+  <span class="n">key</span> <span class="ss">:email</span><span class="p">,</span>     <span class="nb">String</span>
+  <span class="n">key</span> <span class="ss">:website</span><span class="p">,</span>   <span class="nb">String</span>
+  <span class="n">key</span> <span class="ss">:bio</span><span class="p">,</span>       <span class="nb">String</span>
+  <span class="n">key</span> <span class="ss">:image_url</span><span class="p">,</span> <span class="nb">String</span></pre></div>
+      </td>
+    </tr>
+    <tr id='section-8'>
+      <td class=docs>
+        <div class="pilwrap">
+          <a class="pilcrow" href="#section-8">&#182;</a>
+        </div>
+        <p>Authors MIGHT have a salmon endpoint</p>
+      </td>
+      <td class=code>
+        <div class='highlight'><pre>  <span class="n">key</span> <span class="ss">:salmon_url</span><span class="p">,</span> <span class="nb">String</span></pre></div>
+      </td>
+    </tr>
+    <tr id='section-9'>
+      <td class=docs>
+        <div class="pilwrap">
+          <a class="pilcrow" href="#section-9">&#182;</a>
+        </div>
+        <p>Authors have a public key that they use to sign salmon responses.
+ Leasing: To ensure that keys can only be compromised in a small window but
+ not require the server to retrieve a key per update, we store a lease.
+ When the lease expires, and a notification comes, we retrieve the key.</p>
+      </td>
+      <td class=code>
+        <div class='highlight'><pre>  <span class="n">key</span> <span class="ss">:public_key</span><span class="p">,</span> <span class="nb">String</span>
+  <span class="n">key</span> <span class="ss">:public_key_lease</span><span class="p">,</span> <span class="no">Date</span></pre></div>
+      </td>
+    </tr>
+    <tr id='section-10'>
+      <td class=docs>
+        <div class="pilwrap">
+          <a class="pilcrow" href="#section-10">&#182;</a>
+        </div>
+        <p>The url of their profile page</p>
+      </td>
+      <td class=code>
+        <div class='highlight'><pre>  <span class="n">key</span> <span class="ss">:remote_url</span><span class="p">,</span> <span class="nb">String</span></pre></div>
+      </td>
+    </tr>
+    <tr id='section-11'>
+      <td class=docs>
+        <div class="pilwrap">
+          <a class="pilcrow" href="#section-11">&#182;</a>
+        </div>
+        <p>For sorting by signup, Authors require timestamps</p>
+      </td>
+      <td class=code>
+        <div class='highlight'><pre>  <span class="n">timestamps!</span></pre></div>
+      </td>
+    </tr>
+    <tr id='section-12'>
+      <td class=docs>
+        <div class="pilwrap">
+          <a class="pilcrow" href="#section-12">&#182;</a>
+        </div>
+        <p>We cannot put a :unique tag above because of a MongoMapper bug</p>
+      </td>
+      <td class=code>
+        <div class='highlight'><pre>  <span class="n">validates_uniqueness_of</span> <span class="ss">:remote_url</span><span class="p">,</span> <span class="ss">:allow_nil</span> <span class="o">=&gt;</span> <span class="ss">:true</span></pre></div>
+      </td>
+    </tr>
+    <tr id='section-13'>
+      <td class=docs>
+        <div class="pilwrap">
+          <a class="pilcrow" href="#section-13">&#182;</a>
+        </div>
+        <p>Associations</p>
+      </td>
+      <td class=code>
+        <div class='highlight'><pre></pre></div>
+      </td>
+    </tr>
+    <tr id='section-14'>
+      <td class=docs>
+        <div class="pilwrap">
+          <a class="pilcrow" href="#section-14">&#182;</a>
+        </div>
+        <p>As we said, an Author has a Feed that they&rsquo;re the&hellip; author of. And if
+they&rsquo;re local, they also have a User, too.</p>
+      </td>
+      <td class=code>
+        <div class='highlight'><pre>  <span class="n">one</span> <span class="ss">:feed</span>
+  <span class="n">one</span> <span class="ss">:user</span></pre></div>
+      </td>
+    </tr>
+    <tr id='section-15'>
+      <td class=docs>
+        <div class="pilwrap">
+          <a class="pilcrow" href="#section-15">&#182;</a>
+        </div>
+        <p>This takes results from an omniauth reponse and generates an author</p>
+      </td>
+      <td class=code>
+        <div class='highlight'><pre>  <span class="k">def</span> <span class="nc">self</span><span class="o">.</span><span class="nf">create_from_hash!</span><span class="p">(</span><span class="nb">hash</span><span class="p">,</span> <span class="n">domain</span><span class="p">)</span></pre></div>
+      </td>
+    </tr>
+    <tr id='section-16'>
+      <td class=docs>
+        <div class="pilwrap">
+          <a class="pilcrow" href="#section-16">&#182;</a>
+        </div>
+        <p>Omniauth user information, as a hash</p>
+      </td>
+      <td class=code>
+        <div class='highlight'><pre>    <span class="n">user</span>  <span class="o">=</span> <span class="nb">hash</span><span class="o">[</span><span class="s1">&#39;user_info&#39;</span><span class="o">]</span></pre></div>
+      </td>
+    </tr>
+    <tr id='section-17'>
+      <td class=docs>
+        <div class="pilwrap">
+          <a class="pilcrow" href="#section-17">&#182;</a>
+        </div>
+        <p>Grabs each of the important user details</p>
+      </td>
+      <td class=code>
+        <div class='highlight'><pre>    <span class="nb">name</span>       <span class="o">=</span> <span class="n">user</span><span class="o">[</span><span class="s1">&#39;name&#39;</span><span class="o">]</span>
+    <span class="n">username</span>   <span class="o">=</span> <span class="n">user</span><span class="o">[</span><span class="s1">&#39;username&#39;</span><span class="o">]</span>
+    <span class="n">website</span>    <span class="o">=</span> <span class="n">user</span><span class="o">[</span><span class="s1">&#39;urls&#39;</span><span class="o">][</span><span class="s1">&#39;Website&#39;</span><span class="o">]</span>
+    <span class="n">bio</span>        <span class="o">=</span> <span class="n">user</span><span class="o">[</span><span class="s1">&#39;description&#39;</span><span class="o">]</span>
+    <span class="n">image</span>      <span class="o">=</span> <span class="n">user</span><span class="o">[</span><span class="s1">&#39;image&#39;</span><span class="o">]</span>
+    <span class="n">remote</span>     <span class="o">=</span> <span class="n">user</span><span class="o">[</span><span class="s1">&#39;url&#39;</span><span class="o">]</span></pre></div>
+      </td>
+    </tr>
+    <tr id='section-18'>
+      <td class=docs>
+        <div class="pilwrap">
+          <a class="pilcrow" href="#section-18">&#182;</a>
+        </div>
+        <p>Creates an Author object with the details</p>
+      </td>
+      <td class=code>
+        <div class='highlight'><pre>    <span class="n">create!</span><span class="p">(</span>
+      <span class="nb">name</span><span class="p">:</span>       <span class="nb">name</span><span class="p">,</span>
+      <span class="n">username</span><span class="p">:</span>   <span class="n">username</span><span class="p">,</span>
+      <span class="n">website</span><span class="p">:</span>    <span class="n">website</span><span class="p">,</span>
+      <span class="n">bio</span><span class="p">:</span>        <span class="n">bio</span><span class="p">,</span>
+      <span class="n">image_url</span><span class="p">:</span>  <span class="n">image</span><span class="p">,</span>
+      <span class="n">remote_url</span><span class="p">:</span> <span class="n">remote</span><span class="p">,</span>
+      <span class="n">domain</span><span class="p">:</span>     <span class="n">domain</span>
+    <span class="p">)</span>
+  <span class="k">end</span>
+
+  <span class="k">def</span> <span class="nc">self</span><span class="o">.</span><span class="nf">create_from_session!</span><span class="p">(</span><span class="n">session</span><span class="p">,</span> <span class="n">params</span><span class="p">,</span> <span class="n">domain</span><span class="p">)</span>
+    <span class="n">create!</span><span class="p">(</span>
+      <span class="ss">:name</span>     <span class="o">=&gt;</span> <span class="n">session</span><span class="o">[</span><span class="ss">:name</span><span class="o">]</span><span class="p">,</span>
+      <span class="ss">:username</span> <span class="o">=&gt;</span> <span class="n">params</span><span class="o">[</span><span class="ss">:username</span><span class="o">]</span><span class="p">,</span>
+      <span class="ss">:website</span>  <span class="o">=&gt;</span> <span class="n">session</span><span class="o">[</span><span class="ss">:website</span><span class="o">]</span><span class="p">,</span>
+      <span class="ss">:bio</span>      <span class="o">=&gt;</span> <span class="n">session</span><span class="o">[</span><span class="ss">:description</span><span class="o">]</span><span class="p">,</span>
+      <span class="ss">:image</span>    <span class="o">=&gt;</span> <span class="n">session</span><span class="o">[</span><span class="ss">:image</span><span class="o">]</span><span class="p">,</span>
+      <span class="ss">:domain</span>   <span class="o">=&gt;</span> <span class="n">domain</span>
+    <span class="p">)</span>
+  <span class="k">end</span></pre></div>
+      </td>
+    </tr>
+    <tr id='section-19'>
+      <td class=docs>
+        <div class="pilwrap">
+          <a class="pilcrow" href="#section-19">&#182;</a>
+        </div>
+        <p>Reset the public key lease, which will be called when the public key is
+retrieved from a trusted source.</p>
+      </td>
+      <td class=code>
+        <div class='highlight'><pre>  <span class="k">def</span> <span class="nf">reset_key_lease</span>
+    <span class="n">public_key_lease</span> <span class="o">=</span> <span class="p">(</span><span class="no">DateTime</span><span class="o">.</span><span class="n">now</span> <span class="o">+</span> <span class="no">PUBLIC_KEY_LEASE_DAYS</span><span class="p">)</span><span class="o">.</span><span class="n">to_date</span>
+  <span class="k">end</span></pre></div>
+      </td>
+    </tr>
+    <tr id='section-20'>
+      <td class=docs>
+        <div class="pilwrap">
+          <a class="pilcrow" href="#section-20">&#182;</a>
+        </div>
+        <p>Retrieves a valid RSA::KeyPair for the Author&rsquo;s public key</p>
+      </td>
+      <td class=code>
+        <div class='highlight'><pre>  <span class="k">def</span> <span class="nf">retrieve_public_key</span>
+    <span class="no">Crypto</span><span class="o">.</span><span class="n">make_rsa_keypair</span><span class="p">(</span><span class="n">public_key</span><span class="p">,</span> <span class="kp">nil</span><span class="p">)</span>
+  <span class="k">end</span></pre></div>
+      </td>
+    </tr>
+    <tr id='section-21'>
+      <td class=docs>
+        <div class="pilwrap">
+          <a class="pilcrow" href="#section-21">&#182;</a>
+        </div>
+        <p>Returns a locally useful url for the Author</p>
+      </td>
+      <td class=code>
+        <div class='highlight'><pre>  <span class="k">def</span> <span class="nf">url</span>
+    <span class="k">if</span> <span class="n">remote_url</span><span class="o">.</span><span class="n">present?</span>
+      <span class="n">remote_url</span>
+    <span class="k">else</span>
+      <span class="s2">&quot;/users/</span><span class="si">#{</span><span class="n">username</span><span class="si">}</span><span class="s2">&quot;</span>
+    <span class="k">end</span>
+  <span class="k">end</span></pre></div>
+      </td>
+    </tr>
+    <tr id='section-22'>
+      <td class=docs>
+        <div class="pilwrap">
+          <a class="pilcrow" href="#section-22">&#182;</a>
+        </div>
+        <p>Returns a locally useful url for the Author&rsquo;s avatar</p>
+      </td>
+      <td class=code>
+        <div class='highlight'><pre></pre></div>
+      </td>
+    </tr>
+    <tr id='section-23'>
+      <td class=docs>
+        <div class="pilwrap">
+          <a class="pilcrow" href="#section-23">&#182;</a>
+        </div>
+        <p>We&rsquo;ve got a couple of options here. If they have some sort of image from
+Twitter, we use that, and if they don&rsquo;t, we go with Gravatar.
+If none of that is around, then we show the DEFAULT_AVATAR</p>
+      </td>
+      <td class=code>
+        <div class='highlight'><pre>  <span class="k">def</span> <span class="nf">avatar_url</span></pre></div>
+      </td>
+    </tr>
+    <tr id='section-24'>
+      <td class=docs>
+        <div class="pilwrap">
+          <a class="pilcrow" href="#section-24">&#182;</a>
+        </div>
+        <p>If the user has a twitter image, return it</p>
+      </td>
+      <td class=code>
+        <div class='highlight'><pre>    <span class="k">if</span> <span class="n">image_url</span><span class="o">.</span><span class="n">present?</span>
+      <span class="n">image_url</span></pre></div>
+      </td>
+    </tr>
+    <tr id='section-25'>
+      <td class=docs>
+        <div class="pilwrap">
+          <a class="pilcrow" href="#section-25">&#182;</a>
+        </div>
+        <p>If the user has an email (Don&rsquo;t they have to?), look for a gravatar url.</p>
+      </td>
+      <td class=code>
+        <div class='highlight'><pre>    <span class="k">elsif</span> <span class="n">email</span><span class="o">.</span><span class="n">present?</span>
+      <span class="n">gravatar_url</span></pre></div>
+      </td>
+    </tr>
+    <tr id='section-26'>
+      <td class=docs>
+        <div class="pilwrap">
+          <a class="pilcrow" href="#section-26">&#182;</a>
+        </div>
+        <p>Otherwise return the default avatar</p>
+      </td>
+      <td class=code>
+        <div class='highlight'><pre>    <span class="k">else</span>
+      <span class="no">DEFAULT_AVATAR</span>
+    <span class="k">end</span>
+  <span class="k">end</span></pre></div>
+      </td>
+    </tr>
+    <tr id='section-27'>
+      <td class=docs>
+        <div class="pilwrap">
+          <a class="pilcrow" href="#section-27">&#182;</a>
+        </div>
+        <p>Determine the display name from the username or name</p>
+      </td>
+      <td class=code>
+        <div class='highlight'><pre>  <span class="k">def</span> <span class="nf">display_name</span></pre></div>
+      </td>
+    </tr>
+    <tr id='section-28'>
+      <td class=docs>
+        <div class="pilwrap">
+          <a class="pilcrow" href="#section-28">&#182;</a>
+        </div>
+        <p>If the user has a name, return it</p>
+      </td>
+      <td class=code>
+        <div class='highlight'><pre>    <span class="k">if</span> <span class="nb">name</span><span class="o">.</span><span class="n">present?</span>
+      <span class="nb">name</span></pre></div>
+      </td>
+    </tr>
+    <tr id='section-29'>
+      <td class=docs>
+        <div class="pilwrap">
+          <a class="pilcrow" href="#section-29">&#182;</a>
+        </div>
+        <p>Otherwise return the username</p>
+      </td>
+      <td class=code>
+        <div class='highlight'><pre>    <span class="k">else</span>
+      <span class="n">username</span>
+    <span class="k">end</span>
+  <span class="k">end</span></pre></div>
+      </td>
+    </tr>
+    <tr id='section-30'>
+      <td class=docs>
+        <div class="pilwrap">
+          <a class="pilcrow" href="#section-30">&#182;</a>
+        </div>
+        <p>Return the gravatar url
+Query described <a href="http://en.gravatar.com/site/implement/images/#default-image">here</a>.</p>
+      </td>
+      <td class=code>
+        <div class='highlight'><pre>  <span class="k">def</span> <span class="nf">gravatar_url</span>
+    <span class="n">email_digest</span> <span class="o">=</span> <span class="no">Digest</span><span class="o">::</span><span class="no">MD5</span><span class="o">.</span><span class="n">hexdigest</span> <span class="n">email</span>
+    <span class="s2">&quot;http://</span><span class="si">#{</span><span class="no">GRAVATAR</span><span class="si">}</span><span class="s2">/avatar/</span><span class="si">#{</span><span class="n">email_digest</span><span class="si">}</span><span class="s2">?s=48&amp;r=r&amp;d=</span><span class="si">#{</span><span class="no">ENCODED_DEFAULT_AVATAR</span><span class="si">}</span><span class="s2">&quot;</span>
+  <span class="k">end</span></pre></div>
+      </td>
+    </tr>
+    <tr id='section-31'>
+      <td class=docs>
+        <div class="pilwrap">
+          <a class="pilcrow" href="#section-31">&#182;</a>
+        </div>
+        <p>Returns an OStatus::Author instance describing this author model</p>
+      </td>
+      <td class=code>
+        <div class='highlight'><pre>  <span class="k">def</span> <span class="nf">to_atom</span></pre></div>
+      </td>
+    </tr>
+    <tr id='section-32'>
+      <td class=docs>
+        <div class="pilwrap">
+          <a class="pilcrow" href="#section-32">&#182;</a>
+        </div>
+        <p>Determine global url for this author</p>
+      </td>
+      <td class=code>
+        <div class='highlight'><pre>    <span class="n">author_url</span> <span class="o">=</span> <span class="n">url</span>
+    <span class="k">if</span> <span class="n">author_url</span><span class="o">.</span><span class="n">start_with?</span><span class="p">(</span><span class="s2">&quot;/&quot;</span><span class="p">)</span>
+      <span class="n">author_url</span> <span class="o">=</span> <span class="s2">&quot;http://</span><span class="si">#{</span><span class="n">domain</span><span class="si">}</span><span class="s2">/feeds/</span><span class="si">#{</span><span class="n">feed</span><span class="o">.</span><span class="n">id</span><span class="si">}</span><span class="s2">&quot;</span>
+    <span class="k">end</span></pre></div>
+      </td>
+    </tr>
+    <tr id='section-33'>
+      <td class=docs>
+        <div class="pilwrap">
+          <a class="pilcrow" href="#section-33">&#182;</a>
+        </div>
+        <p>Set up PortableContacts</p>
+      </td>
+      <td class=code>
+        <div class='highlight'><pre>    <span class="n">poco</span> <span class="o">=</span> <span class="no">OStatus</span><span class="o">::</span><span class="no">PortableContacts</span><span class="o">.</span><span class="n">new</span><span class="p">(</span><span class="ss">:id</span> <span class="o">=&gt;</span> <span class="n">author_url</span><span class="p">,</span>
+                                         <span class="ss">:preferred_username</span> <span class="o">=&gt;</span> <span class="n">username</span><span class="p">)</span>
+    <span class="n">poco</span><span class="o">.</span><span class="n">display_name</span> <span class="o">=</span> <span class="nb">name</span> <span class="k">unless</span> <span class="nb">name</span><span class="o">.</span><span class="n">nil?</span> <span class="o">||</span> <span class="nb">name</span><span class="o">.</span><span class="n">empty?</span></pre></div>
+      </td>
+    </tr>
+    <tr id='section-34'>
+      <td class=docs>
+        <div class="pilwrap">
+          <a class="pilcrow" href="#section-34">&#182;</a>
+        </div>
+        <p>Set up and return Author</p>
+
+      </td>
+      <td class=code>
+        <div class='highlight'><pre>    <span class="n">avatar_url_abs</span> <span class="o">=</span> <span class="n">avatar_url</span>
+    <span class="k">if</span> <span class="n">avatar_url_abs</span><span class="o">.</span><span class="n">start_with?</span><span class="p">(</span><span class="s2">&quot;/&quot;</span><span class="p">)</span>
+      <span class="n">avatar_url_abs</span> <span class="o">=</span> <span class="s2">&quot;http://</span><span class="si">#{</span><span class="n">domain</span><span class="si">}#{</span><span class="n">avatar_url_abs</span><span class="si">}</span><span class="s2">&quot;</span>
+    <span class="k">end</span>
+
+    <span class="n">author</span> <span class="o">=</span> <span class="no">OStatus</span><span class="o">::</span><span class="no">Author</span><span class="o">.</span><span class="n">new</span><span class="p">(</span><span class="ss">:name</span> <span class="o">=&gt;</span> <span class="n">username</span><span class="p">,</span>
+               <span class="ss">:uri</span> <span class="o">=&gt;</span> <span class="n">author_url</span><span class="p">,</span>
+               <span class="ss">:portable_contacts</span> <span class="o">=&gt;</span> <span class="n">poco</span><span class="p">,</span>
+               <span class="ss">:links</span> <span class="o">=&gt;</span> <span class="o">[</span><span class="no">Atom</span><span class="o">::</span><span class="no">Link</span><span class="o">.</span><span class="n">new</span><span class="p">(</span><span class="ss">:rel</span> <span class="o">=&gt;</span> <span class="s2">&quot;avatar&quot;</span><span class="p">,</span>
+                                        <span class="ss">:type</span> <span class="o">=&gt;</span> <span class="s2">&quot;image/png&quot;</span><span class="p">,</span>
+                                        <span class="ss">:href</span> <span class="o">=&gt;</span> <span class="n">avatar_url_abs</span><span class="p">)</span><span class="o">]</span><span class="p">)</span>
+
+    <span class="n">author</span>
+  <span class="k">end</span>
+
+  <span class="k">def</span> <span class="nf">get_domain</span>
+    <span class="k">if</span> <span class="nb">self</span><span class="o">.</span><span class="n">remote_url</span>
+      <span class="nb">self</span><span class="o">.</span><span class="n">domain</span> <span class="o">=</span> <span class="n">remote_url</span><span class="o">[/</span><span class="p">\:\</span><span class="o">/</span><span class="p">\</span><span class="o">/</span><span class="p">(</span><span class="o">.</span><span class="n">*</span><span class="sc">?)</span><span class="p">\</span><span class="o">//</span><span class="p">,</span> <span class="mi">1</span><span class="o">]</span>
+    <span class="k">end</span>
+  <span class="k">end</span>
+
+  <span class="k">def</span> <span class="nc">self</span><span class="o">.</span><span class="nf">search</span><span class="p">(</span><span class="n">params</span> <span class="o">=</span> <span class="p">{})</span>
+    <span class="k">if</span> <span class="n">params</span><span class="o">[</span><span class="ss">:search</span><span class="o">]</span> <span class="o">&amp;&amp;</span> <span class="o">!</span><span class="n">params</span><span class="o">[</span><span class="ss">:search</span><span class="o">].</span><span class="n">empty?</span>
+      <span class="vi">@authors</span> <span class="o">=</span> <span class="no">Author</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="ss">:username</span> <span class="o">=&gt;</span> <span class="sr">/</span><span class="si">#{</span><span class="n">params</span><span class="o">[</span><span class="ss">:search</span><span class="o">]</span><span class="si">}</span><span class="sr">/i</span><span class="p">)</span>
+    <span class="k">elsif</span> <span class="n">params</span><span class="o">[</span><span class="ss">:letter</span><span class="o">]</span>
+      <span class="k">if</span> <span class="n">params</span><span class="o">[</span><span class="ss">:letter</span><span class="o">]</span> <span class="o">==</span> <span class="s2">&quot;other&quot;</span>
+        <span class="vi">@authors</span> <span class="o">=</span> <span class="no">Author</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="ss">:username</span> <span class="o">=&gt;</span> <span class="sr">/^[^a-z0-9]/i</span><span class="p">)</span>
+      <span class="k">else</span>
+        <span class="vi">@authors</span> <span class="o">=</span> <span class="no">Author</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="ss">:username</span> <span class="o">=&gt;</span> <span class="sr">/^</span><span class="si">#{</span><span class="n">params</span><span class="o">[</span><span class="ss">:letter</span><span class="o">][</span><span class="mi">0</span><span class="o">].</span><span class="n">chr</span><span class="si">}</span><span class="sr">/i</span><span class="p">)</span>
+      <span class="k">end</span>
+      <span class="vi">@authors</span> <span class="o">=</span> <span class="vi">@authors</span><span class="o">.</span><span class="n">sort</span><span class="p">(</span><span class="ss">:username</span><span class="p">)</span>
+    <span class="k">else</span>
+      <span class="vi">@authors</span> <span class="o">=</span> <span class="no">Author</span><span class="o">.</span><span class="n">sort</span><span class="p">(</span><span class="ss">:created_at</span><span class="o">.</span><span class="n">desc</span><span class="p">)</span>
+    <span class="k">end</span>
+  <span class="k">end</span>
+<span class="k">end</span></pre></div>
+      </td>
+    </tr>
+  </table>
+</div>
+</body>

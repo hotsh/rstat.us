@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="content-type" content="text/html;charset=utf-8">
+  <title>updates_controller.rb</title>
+  <link rel="stylesheet" href="http://jashkenas.github.com/docco/resources/docco.css">
+</head>
+<body>
+<div id='container'>
+  <div id="background"></div>
+  <div id="jump_to">
+    Jump To &hellip;
+    <div id="jump_wrapper">
+      <div id="jump_page">
+          <a class="source" href="application_controller.html">application_controller.rb</a>
+          <a class="source" href="auth_controller.html">auth_controller.rb</a>
+          <a class="source" href="feeds_controller.html">feeds_controller.rb</a>
+          <a class="source" href="salmon_controller.html">salmon_controller.rb</a>
+          <a class="source" href="searches_controller.html">searches_controller.rb</a>
+          <a class="source" href="sessions_controller.html">sessions_controller.rb</a>
+          <a class="source" href="static_controller.html">static_controller.rb</a>
+          <a class="source" href="subscriptions_controller.html">subscriptions_controller.rb</a>
+          <a class="source" href="updates_controller.html">updates_controller.rb</a>
+          <a class="source" href="users_controller.html">users_controller.rb</a>
+          <a class="source" href="webfinger_controller.html">webfinger_controller.rb</a>
+          <a class="source" href="../models/author.html">author.rb</a>
+          <a class="source" href="../models/authorization.html">authorization.rb</a>
+          <a class="source" href="../models/feed.html">feed.rb</a>
+          <a class="source" href="../models/notifier.html">notifier.rb</a>
+          <a class="source" href="../models/update.html">update.rb</a>
+          <a class="source" href="../models/user.html">user.rb</a>
+      </div>
+    </div>
+  </div>
+  <table cellspacing=0 cellpadding=0>
+  <thead>
+    <tr>
+      <th class=docs><h1>updates_controller.rb</h1></th>
+      <th class=code></th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr id='section-1'>
+      <td class=docs>
+        <div class="pilwrap">
+          <a class="pilcrow" href="#section-1">&#182;</a>
+        </div>
+        
+      </td>
+      <td class=code>
+        <div class='highlight'><pre><span class="k">class</span> <span class="nc">UpdatesController</span> <span class="o">&lt;</span> <span class="no">ApplicationController</span>
+  <span class="n">before_filter</span> <span class="ss">:process_params</span>
+  <span class="n">before_filter</span> <span class="ss">:require_user</span><span class="p">,</span> <span class="ss">:only</span> <span class="o">=&gt;</span> <span class="o">[</span><span class="ss">:timeline</span><span class="p">,</span> <span class="ss">:replies</span><span class="o">]</span>
+
+  <span class="k">def</span> <span class="nf">index</span>
+    <span class="n">render_index</span><span class="p">(</span><span class="no">Update</span><span class="p">)</span>
+  <span class="k">end</span>
+
+  <span class="k">def</span> <span class="nf">timeline</span>
+    <span class="n">render_index</span><span class="p">(</span><span class="n">current_user</span><span class="o">.</span><span class="n">timeline</span><span class="p">(</span><span class="n">params</span><span class="p">))</span>
+  <span class="k">end</span>
+
+  <span class="k">def</span> <span class="nf">replies</span>
+    <span class="n">render_index</span><span class="p">(</span><span class="n">current_user</span><span class="o">.</span><span class="n">at_replies</span><span class="p">(</span><span class="n">params</span><span class="p">))</span>
+  <span class="k">end</span>
+
+  <span class="k">def</span> <span class="nf">show</span>
+    <span class="vi">@update</span> <span class="o">=</span> <span class="no">Update</span><span class="o">.</span><span class="n">first</span><span class="p">(</span><span class="ss">:id</span> <span class="o">=&gt;</span> <span class="n">params</span><span class="o">[</span><span class="ss">:id</span><span class="o">]</span><span class="p">)</span>
+    <span class="n">render</span> <span class="ss">:layout</span> <span class="o">=&gt;</span> <span class="s2">&quot;update&quot;</span>
+  <span class="k">end</span>
+
+  <span class="k">def</span> <span class="nf">create</span></pre></div>
+      </td>
+    </tr>
+    <tr id='section-2'>
+      <td class=docs>
+        <div class="pilwrap">
+          <a class="pilcrow" href="#section-2">&#182;</a>
+        </div>
+        <p>XXX: This should really be put into a model. Fat controller here!</p>
+      </td>
+      <td class=code>
+        <div class='highlight'><pre>    <span class="n">do_tweet</span> <span class="o">=</span> <span class="n">params</span><span class="o">[</span><span class="ss">:tweet</span><span class="o">]</span> <span class="o">==</span> <span class="s2">&quot;1&quot;</span>
+    <span class="n">u</span> <span class="o">=</span> <span class="no">Update</span><span class="o">.</span><span class="n">new</span><span class="p">(</span><span class="ss">:text</span> <span class="o">=&gt;</span> <span class="n">params</span><span class="o">[</span><span class="ss">:text</span><span class="o">]</span><span class="p">,</span>
+                   <span class="ss">:referral_id</span> <span class="o">=&gt;</span> <span class="n">params</span><span class="o">[</span><span class="ss">:referral_id</span><span class="o">]</span><span class="p">,</span>
+                   <span class="ss">:author</span> <span class="o">=&gt;</span> <span class="n">current_user</span><span class="o">.</span><span class="n">author</span><span class="p">,</span>
+                   <span class="ss">:twitter</span> <span class="o">=&gt;</span> <span class="n">do_tweet</span><span class="p">)</span></pre></div>
+      </td>
+    </tr>
+    <tr id='section-3'>
+      <td class=docs>
+        <div class="pilwrap">
+          <a class="pilcrow" href="#section-3">&#182;</a>
+        </div>
+        <p>add entry to user&rsquo;s feed</p>
+      </td>
+      <td class=code>
+        <div class='highlight'><pre>    <span class="n">current_user</span><span class="o">.</span><span class="n">feed</span><span class="o">.</span><span class="n">updates</span> <span class="o">&lt;&lt;</span> <span class="n">u</span>
+
+    <span class="k">unless</span> <span class="n">u</span><span class="o">.</span><span class="n">valid?</span>
+      <span class="n">flash</span><span class="o">[</span><span class="ss">:notice</span><span class="o">]</span> <span class="o">=</span> <span class="n">u</span><span class="o">.</span><span class="n">errors</span><span class="o">.</span><span class="n">values</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="k">else</span>
+      <span class="n">current_user</span><span class="o">.</span><span class="n">feed</span><span class="o">.</span><span class="n">save</span>
+      <span class="n">current_user</span><span class="o">.</span><span class="n">save</span></pre></div>
+      </td>
+    </tr>
+    <tr id='section-4'>
+      <td class=docs>
+        <div class="pilwrap">
+          <a class="pilcrow" href="#section-4">&#182;</a>
+        </div>
+        <p>tell hubs there is a new entry</p>
+      </td>
+      <td class=code>
+        <div class='highlight'><pre>      <span class="n">current_user</span><span class="o">.</span><span class="n">feed</span><span class="o">.</span><span class="n">ping_hubs</span>
+
+      <span class="n">flash</span><span class="o">[</span><span class="ss">:notice</span><span class="o">]</span> <span class="o">=</span> <span class="s2">&quot;Update created.&quot;</span>
+    <span class="k">end</span>
+
+    <span class="k">if</span> <span class="n">request</span><span class="o">.</span><span class="n">referrer</span>
+      <span class="n">redirect_to</span> <span class="n">request</span><span class="o">.</span><span class="n">referrer</span>
+    <span class="k">else</span>
+      <span class="n">redirect_to</span> <span class="n">root_path</span>
+    <span class="k">end</span>
+  <span class="k">end</span>
+
+  <span class="k">def</span> <span class="nf">destroy</span>
+    <span class="n">update</span> <span class="o">=</span> <span class="no">Update</span><span class="o">.</span><span class="n">first</span> <span class="ss">:id</span> <span class="o">=&gt;</span> <span class="n">params</span><span class="o">[</span><span class="ss">:id</span><span class="o">]</span></pre></div>
+      </td>
+    </tr>
+    <tr id='section-5'>
+      <td class=docs>
+        <div class="pilwrap">
+          <a class="pilcrow" href="#section-5">&#182;</a>
+        </div>
+        <p>lolsecurity.</p>
+      </td>
+      <td class=code>
+        <div class='highlight'><pre>    <span class="k">if</span> <span class="n">update</span><span class="o">.</span><span class="n">author</span> <span class="o">==</span> <span class="n">current_user</span><span class="o">.</span><span class="n">author</span>
+      <span class="n">update</span><span class="o">.</span><span class="n">destroy</span>
+
+      <span class="n">flash</span><span class="o">[</span><span class="ss">:notice</span><span class="o">]</span> <span class="o">=</span> <span class="s2">&quot;Update Baleeted!&quot;</span>
+      <span class="n">redirect_to</span> <span class="n">root_path</span>
+    <span class="k">else</span>
+      <span class="n">flash</span><span class="o">[</span><span class="ss">:notice</span><span class="o">]</span> <span class="o">=</span> <span class="s2">&quot;I&#39;m afraid I can&#39;t let you do that, </span><span class="si">#{</span><span class="n">current_user</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2">.&quot;</span>
+      <span class="n">redirect_to</span> <span class="n">back</span>
+    <span class="k">end</span>
+  <span class="k">end</span>
+
+  <span class="kp">protected</span></pre></div>
+      </td>
+    </tr>
+    <tr id='section-6'>
+      <td class=docs>
+        <div class="pilwrap">
+          <a class="pilcrow" href="#section-6">&#182;</a>
+        </div>
+        <p>Manage page state</p>
+      </td>
+      <td class=code>
+        <div class='highlight'><pre>  <span class="k">def</span> <span class="nf">set_pagination</span>
+    <span class="n">set_params_page</span>
+    <span class="vi">@updates</span> <span class="o">=</span> <span class="vi">@updates</span><span class="o">.</span><span class="n">paginate</span><span class="p">(</span><span class="ss">:page</span> <span class="o">=&gt;</span> <span class="n">params</span><span class="o">[</span><span class="ss">:page</span><span class="o">]</span><span class="p">,</span> <span class="ss">:per_page</span> <span class="o">=&gt;</span> <span class="n">params</span><span class="o">[</span><span class="ss">:per_page</span><span class="o">]</span><span class="p">,</span> <span class="ss">:order</span> <span class="o">=&gt;</span> <span class="ss">:created_at</span><span class="o">.</span><span class="n">desc</span><span class="p">)</span>
+    <span class="n">set_pagination_buttons</span><span class="p">(</span><span class="vi">@updates</span><span class="p">)</span>
+  <span class="k">end</span></pre></div>
+      </td>
+    </tr>
+    <tr id='section-7'>
+      <td class=docs>
+        <div class="pilwrap">
+          <a class="pilcrow" href="#section-7">&#182;</a>
+        </div>
+        <p>Render correct haml depending on request type</p>
+      </td>
+      <td class=code>
+        <div class='highlight'><pre>  <span class="k">def</span> <span class="nf">render_index</span><span class="p">(</span><span class="n">updates</span><span class="p">)</span>
+    <span class="vi">@updates</span> <span class="o">=</span> <span class="n">updates</span>
+    <span class="n">set_pagination</span>
+    <span class="n">render</span> <span class="ss">:index</span><span class="p">,</span> <span class="ss">:layout</span> <span class="o">=&gt;</span> <span class="n">show_layout?</span>
+  <span class="k">end</span>
+
+  <span class="k">def</span> <span class="nf">process_params</span>
+    <span class="vi">@update_id</span><span class="p">,</span> <span class="vi">@update_text</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span></pre></div>
+      </td>
+    </tr>
+    <tr id='section-8'>
+      <td class=docs>
+        <div class="pilwrap">
+          <a class="pilcrow" href="#section-8">&#182;</a>
+        </div>
+        <p>Set update form state correctly</p>
+
+      </td>
+      <td class=code>
+        <div class='highlight'><pre>    <span class="nb">id</span> <span class="o">=</span> <span class="n">params</span><span class="o">.</span><span class="n">fetch</span><span class="p">(</span><span class="s2">&quot;reply&quot;</span><span class="p">)</span> <span class="p">{</span> <span class="n">params</span><span class="o">[</span><span class="s2">&quot;share&quot;</span><span class="o">]</span> <span class="p">}</span>
+    <span class="k">if</span> <span class="nb">id</span>
+      <span class="n">u</span> <span class="o">=</span> <span class="no">Update</span><span class="o">.</span><span class="n">first</span><span class="p">(</span><span class="ss">:id</span> <span class="o">=&gt;</span> <span class="nb">id</span><span class="p">)</span>
+      <span class="vi">@update_id</span> <span class="o">=</span> <span class="nb">id</span>
+      <span class="vi">@update_text</span> <span class="o">=</span> <span class="s2">&quot;@</span><span class="si">#{</span><span class="n">u</span><span class="o">.</span><span class="n">author</span><span class="o">.</span><span class="n">username</span><span class="si">}</span><span class="s2"> &quot;</span> <span class="k">if</span> <span class="n">params</span><span class="o">[</span><span class="s2">&quot;reply&quot;</span><span class="o">]</span>
+      <span class="vi">@update_text</span> <span class="o">=</span> <span class="s2">&quot;RS @</span><span class="si">#{</span><span class="n">u</span><span class="o">.</span><span class="n">author</span><span class="o">.</span><span class="n">username</span><span class="si">}</span><span class="s2">: </span><span class="si">#{</span><span class="n">u</span><span class="o">.</span><span class="n">text</span><span class="si">}</span><span class="s2">&quot;</span> <span class="k">if</span> <span class="n">params</span><span class="o">[</span><span class="s2">&quot;share&quot;</span><span class="o">]</span>
+    <span class="k">elsif</span> <span class="n">params</span><span class="o">[</span><span class="s2">&quot;status&quot;</span><span class="o">]</span>
+      <span class="vi">@update_text</span> <span class="o">=</span> <span class="n">params</span><span class="o">[</span><span class="s2">&quot;status&quot;</span><span class="o">]</span>
+    <span class="k">end</span>
+  <span class="k">end</span>
+<span class="k">end</span></pre></div>
+      </td>
+    </tr>
+  </table>
+</div>
+</body>

@@ -1,0 +1,809 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="content-type" content="text/html;charset=utf-8">
+  <title>user.rb</title>
+  <link rel="stylesheet" href="http://jashkenas.github.com/docco/resources/docco.css">
+</head>
+<body>
+<div id='container'>
+  <div id="background"></div>
+  <div id="jump_to">
+    Jump To &hellip;
+    <div id="jump_wrapper">
+      <div id="jump_page">
+          <a class="source" href="../controllers/application_controller.html">application_controller.rb</a>
+          <a class="source" href="../controllers/auth_controller.html">auth_controller.rb</a>
+          <a class="source" href="../controllers/feeds_controller.html">feeds_controller.rb</a>
+          <a class="source" href="../controllers/salmon_controller.html">salmon_controller.rb</a>
+          <a class="source" href="../controllers/searches_controller.html">searches_controller.rb</a>
+          <a class="source" href="../controllers/sessions_controller.html">sessions_controller.rb</a>
+          <a class="source" href="../controllers/static_controller.html">static_controller.rb</a>
+          <a class="source" href="../controllers/subscriptions_controller.html">subscriptions_controller.rb</a>
+          <a class="source" href="../controllers/updates_controller.html">updates_controller.rb</a>
+          <a class="source" href="../controllers/users_controller.html">users_controller.rb</a>
+          <a class="source" href="../controllers/webfinger_controller.html">webfinger_controller.rb</a>
+          <a class="source" href="author.html">author.rb</a>
+          <a class="source" href="authorization.html">authorization.rb</a>
+          <a class="source" href="feed.html">feed.rb</a>
+          <a class="source" href="notifier.html">notifier.rb</a>
+          <a class="source" href="update.html">update.rb</a>
+          <a class="source" href="user.html">user.rb</a>
+      </div>
+    </div>
+  </div>
+  <table cellspacing=0 cellpadding=0>
+  <thead>
+    <tr>
+      <th class=docs><h1>user.rb</h1></th>
+      <th class=code></th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr id='section-1'>
+      <td class=docs>
+        <div class="pilwrap">
+          <a class="pilcrow" href="#section-1">&#182;</a>
+        </div>
+        <p>The User model contains all of the information that a particular user of our
+site needs: their username/password, etc. It all comes from here. Even users
+that sign up via Twitter get a User model, though it&rsquo;s a bit empty in that
+particular case.</p>
+      </td>
+      <td class=code>
+        <div class='highlight'><pre><span class="nb">require</span> <span class="s1">&#39;crypto&#39;</span>
+
+<span class="k">class</span> <span class="nc">User</span>
+  <span class="nb">require</span> <span class="s1">&#39;digest/md5&#39;</span>
+
+  <span class="kp">include</span> <span class="no">MongoMapper</span><span class="o">::</span><span class="no">Document</span></pre></div>
+      </td>
+    </tr>
+    <tr id='section-2'>
+      <td class=docs>
+        <div class="pilwrap">
+          <a class="pilcrow" href="#section-2">&#182;</a>
+        </div>
+        <p>Associations
+XXX: These don&rsquo;t seem to be getting set when you sign up with Twitter, etc?</p>
+      </td>
+      <td class=code>
+        <div class='highlight'><pre>  <span class="n">many</span> <span class="ss">:authorizations</span><span class="p">,</span> <span class="ss">:dependant</span> <span class="o">=&gt;</span> <span class="ss">:destroy</span>
+  <span class="n">belongs_to</span> <span class="ss">:author</span>
+  <span class="n">key</span> <span class="ss">:author_id</span><span class="p">,</span> <span class="no">ObjectId</span></pre></div>
+      </td>
+    </tr>
+    <tr id='section-3'>
+      <td class=docs>
+        <div class="pilwrap">
+          <a class="pilcrow" href="#section-3">&#182;</a>
+        </div>
+        <p>Users MUST have a username</p>
+      </td>
+      <td class=code>
+        <div class='highlight'><pre>  <span class="n">key</span> <span class="ss">:username</span><span class="p">,</span> <span class="nb">String</span><span class="p">,</span> <span class="ss">:required</span> <span class="o">=&gt;</span> <span class="kp">true</span></pre></div>
+      </td>
+    </tr>
+    <tr id='section-4'>
+      <td class=docs>
+        <div class="pilwrap">
+          <a class="pilcrow" href="#section-4">&#182;</a>
+        </div>
+        <p>Users MIGHT have an email</p>
+      </td>
+      <td class=code>
+        <div class='highlight'><pre>  <span class="n">key</span> <span class="ss">:email</span><span class="p">,</span> <span class="nb">String</span>
+  <span class="n">key</span> <span class="ss">:email_confirmed</span><span class="p">,</span> <span class="no">Boolean</span></pre></div>
+      </td>
+    </tr>
+    <tr id='section-5'>
+      <td class=docs>
+        <div class="pilwrap">
+          <a class="pilcrow" href="#section-5">&#182;</a>
+        </div>
+        <p>RSA for salmon usage</p>
+      </td>
+      <td class=code>
+        <div class='highlight'><pre>  <span class="n">key</span> <span class="ss">:private_key</span><span class="p">,</span> <span class="nb">String</span></pre></div>
+      </td>
+    </tr>
+    <tr id='section-6'>
+      <td class=docs>
+        <div class="pilwrap">
+          <a class="pilcrow" href="#section-6">&#182;</a>
+        </div>
+        <p>Required for confirmation</p>
+      </td>
+      <td class=code>
+        <div class='highlight'><pre>  <span class="n">key</span> <span class="ss">:perishable_token</span><span class="p">,</span> <span class="nb">String</span>
+
+  <span class="n">validate</span> <span class="ss">:email_already_confirmed</span>
+  <span class="n">validates_uniqueness_of</span> <span class="ss">:username</span><span class="p">,</span> <span class="ss">:allow_nil</span> <span class="o">=&gt;</span> <span class="ss">:true</span><span class="p">,</span> <span class="ss">:case_sensitive</span> <span class="o">=&gt;</span> <span class="kp">false</span></pre></div>
+      </td>
+    </tr>
+    <tr id='section-7'>
+      <td class=docs>
+        <div class="pilwrap">
+          <a class="pilcrow" href="#section-7">&#182;</a>
+        </div>
+        <p>The maximum is arbitrary
+Twitter has 15, let&rsquo;s be different</p>
+      </td>
+      <td class=code>
+        <div class='highlight'><pre>  <span class="n">validates_length_of</span> <span class="ss">:username</span><span class="p">,</span> <span class="ss">:maximum</span> <span class="o">=&gt;</span> <span class="mi">17</span><span class="p">,</span> <span class="ss">:message</span> <span class="o">=&gt;</span> <span class="s2">&quot;must be 17 characters or fewer.&quot;</span></pre></div>
+      </td>
+    </tr>
+    <tr id='section-8'>
+      <td class=docs>
+        <div class="pilwrap">
+          <a class="pilcrow" href="#section-8">&#182;</a>
+        </div>
+        <p>Validate users don&rsquo;t have special characters in their username</p>
+      </td>
+      <td class=code>
+        <div class='highlight'><pre>  <span class="n">validate</span> <span class="ss">:no_malformed_username</span></pre></div>
+      </td>
+    </tr>
+    <tr id='section-9'>
+      <td class=docs>
+        <div class="pilwrap">
+          <a class="pilcrow" href="#section-9">&#182;</a>
+        </div>
+        <p>This will establish other entities related to the User</p>
+      </td>
+      <td class=code>
+        <div class='highlight'><pre>  <span class="n">after_create</span> <span class="ss">:finalize</span>
+
+  <span class="k">def</span> <span class="nf">feed</span>
+    <span class="nb">self</span><span class="o">.</span><span class="n">author</span><span class="o">.</span><span class="n">feed</span>
+  <span class="k">end</span>
+
+  <span class="k">def</span> <span class="nf">updates</span>
+    <span class="nb">self</span><span class="o">.</span><span class="n">author</span><span class="o">.</span><span class="n">feed</span><span class="o">.</span><span class="n">updates</span><span class="o">.</span><span class="n">sort</span><span class="p">(</span><span class="ss">:created_at</span><span class="o">.</span><span class="n">desc</span><span class="p">)</span>
+  <span class="k">end</span></pre></div>
+      </td>
+    </tr>
+    <tr id='section-10'>
+      <td class=docs>
+        <div class="pilwrap">
+          <a class="pilcrow" href="#section-10">&#182;</a>
+        </div>
+        <p>Before a user is created, we will generate some RSA keys</p>
+      </td>
+      <td class=code>
+        <div class='highlight'><pre>  <span class="k">def</span> <span class="nf">generate_rsa_pair</span>
+    <span class="n">keypair</span> <span class="o">=</span> <span class="no">Crypto</span><span class="o">.</span><span class="n">generate_keypair</span>
+
+    <span class="nb">self</span><span class="o">.</span><span class="n">author</span><span class="o">.</span><span class="n">public_key</span> <span class="o">=</span> <span class="n">keypair</span><span class="o">.</span><span class="n">public_key</span>
+    <span class="nb">self</span><span class="o">.</span><span class="n">author</span><span class="o">.</span><span class="n">save</span>
+
+    <span class="nb">self</span><span class="o">.</span><span class="n">private_key</span> <span class="o">=</span> <span class="n">keypair</span><span class="o">.</span><span class="n">private_key</span>
+  <span class="k">end</span></pre></div>
+      </td>
+    </tr>
+    <tr id='section-11'>
+      <td class=docs>
+        <div class="pilwrap">
+          <a class="pilcrow" href="#section-11">&#182;</a>
+        </div>
+        <p>Retrieves a valid RSA::KeyPair for the User&rsquo;s private key</p>
+      </td>
+      <td class=code>
+        <div class='highlight'><pre>  <span class="k">def</span> <span class="nf">to_rsa_keypair</span>
+    <span class="no">Crypto</span><span class="o">.</span><span class="n">make_rsa_keypair</span><span class="p">(</span><span class="kp">nil</span><span class="p">,</span> <span class="n">private_key</span><span class="p">)</span>
+  <span class="k">end</span></pre></div>
+      </td>
+    </tr>
+    <tr id='section-12'>
+      <td class=docs>
+        <div class="pilwrap">
+          <a class="pilcrow" href="#section-12">&#182;</a>
+        </div>
+        <p>After a user is created, create the feed and reset the token</p>
+      </td>
+      <td class=code>
+        <div class='highlight'><pre>  <span class="k">def</span> <span class="nf">finalize</span>
+    <span class="n">create_feed</span>
+    <span class="n">generate_rsa_pair</span>
+    <span class="n">reset_perishable_token</span>
+  <span class="k">end</span></pre></div>
+      </td>
+    </tr>
+    <tr id='section-13'>
+      <td class=docs>
+        <div class="pilwrap">
+          <a class="pilcrow" href="#section-13">&#182;</a>
+        </div>
+        <p>Generate a multi-use token for account confirmation and password resets</p>
+      </td>
+      <td class=code>
+        <div class='highlight'><pre>  <span class="k">def</span> <span class="nf">set_perishable_token</span>
+    <span class="nb">self</span><span class="o">.</span><span class="n">perishable_token</span> <span class="o">=</span> <span class="no">Digest</span><span class="o">::</span><span class="no">MD5</span><span class="o">.</span><span class="n">hexdigest</span><span class="p">(</span> <span class="nb">rand</span><span class="o">.</span><span class="n">to_s</span> <span class="p">)</span>
+    <span class="n">save</span>
+  <span class="k">end</span></pre></div>
+      </td>
+    </tr>
+    <tr id='section-14'>
+      <td class=docs>
+        <div class="pilwrap">
+          <a class="pilcrow" href="#section-14">&#182;</a>
+        </div>
+        <p>Reset the perishable token</p>
+      </td>
+      <td class=code>
+        <div class='highlight'><pre>  <span class="k">def</span> <span class="nf">reset_perishable_token</span>
+    <span class="nb">self</span><span class="o">.</span><span class="n">perishable_token</span> <span class="o">=</span> <span class="kp">nil</span>
+    <span class="n">save</span>
+  <span class="k">end</span></pre></div>
+      </td>
+    </tr>
+    <tr id='section-15'>
+      <td class=docs>
+        <div class="pilwrap">
+          <a class="pilcrow" href="#section-15">&#182;</a>
+        </div>
+        <p>Determines a url that leads to the profile of this user</p>
+      </td>
+      <td class=code>
+        <div class='highlight'><pre>  <span class="k">def</span> <span class="nf">url</span>
+    <span class="s2">&quot;/users/</span><span class="si">#{</span><span class="n">feed</span><span class="o">.</span><span class="n">author</span><span class="o">.</span><span class="n">username</span><span class="si">}</span><span class="s2">&quot;</span>
+  <span class="k">end</span></pre></div>
+      </td>
+    </tr>
+    <tr id='section-16'>
+      <td class=docs>
+        <div class="pilwrap">
+          <a class="pilcrow" href="#section-16">&#182;</a>
+        </div>
+        <p>Returns true when this user has a twitter authorization</p>
+      </td>
+      <td class=code>
+        <div class='highlight'><pre>  <span class="k">def</span> <span class="nf">twitter?</span>
+    <span class="n">has_authorization?</span><span class="p">(</span><span class="ss">:twitter</span><span class="p">)</span>
+  <span class="k">end</span></pre></div>
+      </td>
+    </tr>
+    <tr id='section-17'>
+      <td class=docs>
+        <div class="pilwrap">
+          <a class="pilcrow" href="#section-17">&#182;</a>
+        </div>
+        <p>Returns the twitter authorization</p>
+      </td>
+      <td class=code>
+        <div class='highlight'><pre>  <span class="k">def</span> <span class="nf">twitter</span>
+    <span class="n">get_authorization</span><span class="p">(</span><span class="ss">:twitter</span><span class="p">)</span>
+  <span class="k">end</span></pre></div>
+      </td>
+    </tr>
+    <tr id='section-18'>
+      <td class=docs>
+        <div class="pilwrap">
+          <a class="pilcrow" href="#section-18">&#182;</a>
+        </div>
+        <p>Check if a a user has a certain authorization by providing the associated
+provider</p>
+      </td>
+      <td class=code>
+        <div class='highlight'><pre>  <span class="k">def</span> <span class="nf">has_authorization?</span><span class="p">(</span><span class="n">auth</span><span class="p">)</span>
+    <span class="n">a</span> <span class="o">=</span> <span class="no">Authorization</span><span class="o">.</span><span class="n">first</span><span class="p">(</span><span class="ss">:provider</span> <span class="o">=&gt;</span> <span class="n">auth</span><span class="o">.</span><span class="n">to_s</span><span class="p">,</span> <span class="ss">:user_id</span> <span class="o">=&gt;</span> <span class="nb">self</span><span class="o">.</span><span class="n">id</span><span class="p">)</span></pre></div>
+      </td>
+    </tr>
+    <tr id='section-19'>
+      <td class=docs>
+        <div class="pilwrap">
+          <a class="pilcrow" href="#section-19">&#182;</a>
+        </div>
+        <p>return false if not authenticated and true otherwise.</p>
+      </td>
+      <td class=code>
+        <div class='highlight'><pre>    <span class="o">!</span><span class="n">a</span><span class="o">.</span><span class="n">nil?</span>
+  <span class="k">end</span></pre></div>
+      </td>
+    </tr>
+    <tr id='section-20'>
+      <td class=docs>
+        <div class="pilwrap">
+          <a class="pilcrow" href="#section-20">&#182;</a>
+        </div>
+        <p>Get an authorization by providing the assoaciated provider</p>
+      </td>
+      <td class=code>
+        <div class='highlight'><pre>  <span class="k">def</span> <span class="nf">get_authorization</span><span class="p">(</span><span class="n">auth</span><span class="p">)</span>
+    <span class="no">Authorization</span><span class="o">.</span><span class="n">first</span><span class="p">(</span><span class="ss">:provider</span> <span class="o">=&gt;</span> <span class="n">auth</span><span class="o">.</span><span class="n">to_s</span><span class="p">,</span> <span class="ss">:user_id</span> <span class="o">=&gt;</span> <span class="nb">self</span><span class="o">.</span><span class="n">id</span><span class="p">)</span>
+  <span class="k">end</span></pre></div>
+      </td>
+    </tr>
+    <tr id='section-21'>
+      <td class=docs>
+        <div class="pilwrap">
+          <a class="pilcrow" href="#section-21">&#182;</a>
+        </div>
+        <p>Users follow many feeds</p>
+      </td>
+      <td class=code>
+        <div class='highlight'><pre>  <span class="n">key</span> <span class="ss">:following_ids</span><span class="p">,</span> <span class="nb">Array</span>
+  <span class="n">many</span> <span class="ss">:following</span><span class="p">,</span> <span class="ss">:in</span> <span class="o">=&gt;</span> <span class="ss">:following_ids</span><span class="p">,</span> <span class="ss">:class_name</span> <span class="o">=&gt;</span> <span class="s1">&#39;Feed&#39;</span></pre></div>
+      </td>
+    </tr>
+    <tr id='section-22'>
+      <td class=docs>
+        <div class="pilwrap">
+          <a class="pilcrow" href="#section-22">&#182;</a>
+        </div>
+        <p>Users have feeds that follow them</p>
+      </td>
+      <td class=code>
+        <div class='highlight'><pre>  <span class="n">key</span> <span class="ss">:followers_ids</span><span class="p">,</span> <span class="nb">Array</span>
+  <span class="n">many</span> <span class="ss">:followers</span><span class="p">,</span> <span class="ss">:in</span> <span class="o">=&gt;</span> <span class="ss">:followers_ids</span><span class="p">,</span> <span class="ss">:class_name</span> <span class="o">=&gt;</span> <span class="s1">&#39;Feed&#39;</span></pre></div>
+      </td>
+    </tr>
+    <tr id='section-23'>
+      <td class=docs>
+        <div class="pilwrap">
+          <a class="pilcrow" href="#section-23">&#182;</a>
+        </div>
+        <p>A particular feed follows this user</p>
+      </td>
+      <td class=code>
+        <div class='highlight'><pre>  <span class="k">def</span> <span class="nf">followed_by!</span><span class="p">(</span><span class="n">f</span><span class="p">)</span>
+    <span class="n">followers</span> <span class="o">&lt;&lt;</span> <span class="n">f</span>
+    <span class="n">save</span>
+  <span class="k">end</span></pre></div>
+      </td>
+    </tr>
+    <tr id='section-24'>
+      <td class=docs>
+        <div class="pilwrap">
+          <a class="pilcrow" href="#section-24">&#182;</a>
+        </div>
+        <p>A particular feed unfollows this user</p>
+      </td>
+      <td class=code>
+        <div class='highlight'><pre>  <span class="k">def</span> <span class="nf">unfollowed_by!</span><span class="p">(</span><span class="n">f</span><span class="p">)</span>
+    <span class="n">followers_ids</span><span class="o">.</span><span class="n">delete</span><span class="p">(</span><span class="n">f</span><span class="o">.</span><span class="n">id</span><span class="p">)</span>
+    <span class="n">save</span>
+  <span class="k">end</span></pre></div>
+      </td>
+    </tr>
+    <tr id='section-25'>
+      <td class=docs>
+        <div class="pilwrap">
+          <a class="pilcrow" href="#section-25">&#182;</a>
+        </div>
+        <p>Follow a particular feed</p>
+      </td>
+      <td class=code>
+        <div class='highlight'><pre>  <span class="k">def</span> <span class="nf">follow!</span><span class="p">(</span><span class="n">f</span><span class="p">)</span></pre></div>
+      </td>
+    </tr>
+    <tr id='section-26'>
+      <td class=docs>
+        <div class="pilwrap">
+          <a class="pilcrow" href="#section-26">&#182;</a>
+        </div>
+        <p>can&rsquo;t follow yourself</p>
+      </td>
+      <td class=code>
+        <div class='highlight'><pre>    <span class="k">if</span> <span class="n">f</span> <span class="o">==</span> <span class="nb">self</span><span class="o">.</span><span class="n">feed</span>
+      <span class="k">return</span>
+    <span class="k">end</span>
+
+    <span class="n">following</span> <span class="o">&lt;&lt;</span> <span class="n">f</span>
+    <span class="n">save</span>
+
+    <span class="k">if</span> <span class="n">f</span><span class="o">.</span><span class="n">local?</span></pre></div>
+      </td>
+    </tr>
+    <tr id='section-27'>
+      <td class=docs>
+        <div class="pilwrap">
+          <a class="pilcrow" href="#section-27">&#182;</a>
+        </div>
+        <p>Add the inverse relationship</p>
+      </td>
+      <td class=code>
+        <div class='highlight'><pre>      <span class="n">followee</span> <span class="o">=</span> <span class="no">User</span><span class="o">.</span><span class="n">first</span><span class="p">(</span><span class="ss">:author_id</span> <span class="o">=&gt;</span> <span class="n">f</span><span class="o">.</span><span class="n">author</span><span class="o">.</span><span class="n">id</span><span class="p">)</span>
+      <span class="n">followee</span><span class="o">.</span><span class="n">followed_by!</span> <span class="nb">self</span><span class="o">.</span><span class="n">feed</span>
+    <span class="k">else</span></pre></div>
+      </td>
+    </tr>
+    <tr id='section-28'>
+      <td class=docs>
+        <div class="pilwrap">
+          <a class="pilcrow" href="#section-28">&#182;</a>
+        </div>
+        <p>Queue a notification job</p>
+      </td>
+      <td class=code>
+        <div class='highlight'><pre>      <span class="nb">self</span><span class="o">.</span><span class="n">delay</span><span class="o">.</span><span class="n">send_follow_notification</span><span class="p">(</span><span class="n">f</span><span class="o">.</span><span class="n">id</span><span class="p">)</span>
+    <span class="k">end</span>
+    <span class="n">f</span>
+  <span class="k">end</span></pre></div>
+      </td>
+    </tr>
+    <tr id='section-29'>
+      <td class=docs>
+        <div class="pilwrap">
+          <a class="pilcrow" href="#section-29">&#182;</a>
+        </div>
+        <p>Send Salmon notification so that the remote user
+knows this user is following them</p>
+      </td>
+      <td class=code>
+        <div class='highlight'><pre>  <span class="k">def</span> <span class="nf">send_follow_notification</span><span class="p">(</span><span class="n">to_feed_id</span><span class="p">)</span>
+    <span class="n">f</span> <span class="o">=</span> <span class="no">Feed</span><span class="o">.</span><span class="n">first</span> <span class="ss">:id</span> <span class="o">=&gt;</span> <span class="n">to_feed_id</span>
+
+    <span class="n">salmon</span> <span class="o">=</span> <span class="no">OStatus</span><span class="o">::</span><span class="no">Salmon</span><span class="o">.</span><span class="n">from_follow</span><span class="p">(</span><span class="n">author</span><span class="o">.</span><span class="n">to_atom</span><span class="p">,</span> <span class="n">f</span><span class="o">.</span><span class="n">author</span><span class="o">.</span><span class="n">to_atom</span><span class="p">)</span>
+
+    <span class="n">envelope</span> <span class="o">=</span> <span class="n">salmon</span><span class="o">.</span><span class="n">to_xml</span> <span class="nb">self</span><span class="o">.</span><span class="n">to_rsa_keypair</span></pre></div>
+      </td>
+    </tr>
+    <tr id='section-30'>
+      <td class=docs>
+        <div class="pilwrap">
+          <a class="pilcrow" href="#section-30">&#182;</a>
+        </div>
+        <p>Send envelope to Author&rsquo;s Salmon endpoint</p>
+      </td>
+      <td class=code>
+        <div class='highlight'><pre>    <span class="n">uri</span> <span class="o">=</span> <span class="no">URI</span><span class="o">.</span><span class="n">parse</span><span class="p">(</span><span class="n">f</span><span class="o">.</span><span class="n">author</span><span class="o">.</span><span class="n">salmon_url</span><span class="p">)</span>
+    <span class="n">http</span> <span class="o">=</span> <span class="no">Net</span><span class="o">::</span><span class="no">HTTP</span><span class="o">.</span><span class="n">new</span><span class="p">(</span><span class="n">uri</span><span class="o">.</span><span class="n">host</span><span class="p">,</span> <span class="n">uri</span><span class="o">.</span><span class="n">port</span><span class="p">)</span>
+    <span class="n">res</span> <span class="o">=</span> <span class="n">http</span><span class="o">.</span><span class="n">post</span><span class="p">(</span><span class="n">uri</span><span class="o">.</span><span class="n">path</span><span class="p">,</span> <span class="n">envelope</span><span class="p">,</span> <span class="p">{</span><span class="s2">&quot;Content-Type&quot;</span> <span class="o">=&gt;</span> <span class="s2">&quot;application/magic-envelope+xml&quot;</span><span class="p">})</span>
+  <span class="k">end</span></pre></div>
+      </td>
+    </tr>
+    <tr id='section-31'>
+      <td class=docs>
+        <div class="pilwrap">
+          <a class="pilcrow" href="#section-31">&#182;</a>
+        </div>
+        <p>unfollow takes a feed (since it is guaranteed to exist)</p>
+      </td>
+      <td class=code>
+        <div class='highlight'><pre>  <span class="k">def</span> <span class="nf">unfollow!</span><span class="p">(</span><span class="n">followed_feed</span><span class="p">)</span>
+    <span class="n">following_ids</span><span class="o">.</span><span class="n">delete</span><span class="p">(</span><span class="n">followed_feed</span><span class="o">.</span><span class="n">id</span><span class="p">)</span>
+    <span class="n">save</span>
+    <span class="k">if</span> <span class="n">followed_feed</span><span class="o">.</span><span class="n">local?</span>
+      <span class="n">followee</span> <span class="o">=</span> <span class="no">User</span><span class="o">.</span><span class="n">first</span><span class="p">(</span><span class="ss">:author_id</span> <span class="o">=&gt;</span> <span class="n">followed_feed</span><span class="o">.</span><span class="n">author</span><span class="o">.</span><span class="n">id</span><span class="p">)</span>
+      <span class="n">followee</span><span class="o">.</span><span class="n">unfollowed_by!</span><span class="p">(</span><span class="nb">self</span><span class="o">.</span><span class="n">feed</span><span class="p">)</span>
+    <span class="k">else</span></pre></div>
+      </td>
+    </tr>
+    <tr id='section-32'>
+      <td class=docs>
+        <div class="pilwrap">
+          <a class="pilcrow" href="#section-32">&#182;</a>
+        </div>
+        <p>Queue a notification job</p>
+      </td>
+      <td class=code>
+        <div class='highlight'><pre>      <span class="nb">self</span><span class="o">.</span><span class="n">delay</span><span class="o">.</span><span class="n">send_unfollow_notification</span><span class="p">(</span><span class="n">followed_feed</span><span class="o">.</span><span class="n">id</span><span class="p">)</span>
+    <span class="k">end</span>
+  <span class="k">end</span></pre></div>
+      </td>
+    </tr>
+    <tr id='section-33'>
+      <td class=docs>
+        <div class="pilwrap">
+          <a class="pilcrow" href="#section-33">&#182;</a>
+        </div>
+        <p>Send Salmon notification so that the remote user
+knows this user has stopped following them</p>
+      </td>
+      <td class=code>
+        <div class='highlight'><pre>  <span class="k">def</span> <span class="nf">send_unfollow_notification</span><span class="p">(</span><span class="n">to_feed_id</span><span class="p">)</span>
+    <span class="n">f</span> <span class="o">=</span> <span class="no">Feed</span><span class="o">.</span><span class="n">first</span> <span class="ss">:id</span> <span class="o">=&gt;</span> <span class="n">to_feed_id</span>
+
+    <span class="n">salmon</span> <span class="o">=</span> <span class="no">OStatus</span><span class="o">::</span><span class="no">Salmon</span><span class="o">.</span><span class="n">from_unfollow</span><span class="p">(</span><span class="n">author</span><span class="o">.</span><span class="n">to_atom</span><span class="p">,</span> <span class="n">f</span><span class="o">.</span><span class="n">author</span><span class="o">.</span><span class="n">to_atom</span><span class="p">)</span>
+
+    <span class="n">envelope</span> <span class="o">=</span> <span class="n">salmon</span><span class="o">.</span><span class="n">to_xml</span> <span class="nb">self</span><span class="o">.</span><span class="n">to_rsa_keypair</span></pre></div>
+      </td>
+    </tr>
+    <tr id='section-34'>
+      <td class=docs>
+        <div class="pilwrap">
+          <a class="pilcrow" href="#section-34">&#182;</a>
+        </div>
+        <p>Send envelope to Author&rsquo;s Salmon endpoint</p>
+      </td>
+      <td class=code>
+        <div class='highlight'><pre>    <span class="n">uri</span> <span class="o">=</span> <span class="no">URI</span><span class="o">.</span><span class="n">parse</span><span class="p">(</span><span class="n">f</span><span class="o">.</span><span class="n">author</span><span class="o">.</span><span class="n">salmon_url</span><span class="p">)</span>
+    <span class="n">http</span> <span class="o">=</span> <span class="no">Net</span><span class="o">::</span><span class="no">HTTP</span><span class="o">.</span><span class="n">new</span><span class="p">(</span><span class="n">uri</span><span class="o">.</span><span class="n">host</span><span class="p">,</span> <span class="n">uri</span><span class="o">.</span><span class="n">port</span><span class="p">)</span>
+    <span class="n">res</span> <span class="o">=</span> <span class="n">http</span><span class="o">.</span><span class="n">post</span><span class="p">(</span><span class="n">uri</span><span class="o">.</span><span class="n">path</span><span class="p">,</span> <span class="n">envelope</span><span class="p">,</span> <span class="p">{</span><span class="s2">&quot;Content-Type&quot;</span> <span class="o">=&gt;</span> <span class="s2">&quot;application/magic-envelope+xml&quot;</span><span class="p">})</span>
+  <span class="k">end</span></pre></div>
+      </td>
+    </tr>
+    <tr id='section-35'>
+      <td class=docs>
+        <div class="pilwrap">
+          <a class="pilcrow" href="#section-35">&#182;</a>
+        </div>
+        <p>Send an update to a remote user as a Salmon notification</p>
+      </td>
+      <td class=code>
+        <div class='highlight'><pre>  <span class="k">def</span> <span class="nf">send_mention_notification</span><span class="p">(</span><span class="n">update_id</span><span class="p">,</span> <span class="n">to_feed_id</span><span class="p">)</span>
+    <span class="n">f</span> <span class="o">=</span> <span class="no">Feed</span><span class="o">.</span><span class="n">first</span> <span class="ss">:id</span> <span class="o">=&gt;</span> <span class="n">to_feed_id</span>
+    <span class="n">u</span> <span class="o">=</span> <span class="no">Update</span><span class="o">.</span><span class="n">first</span> <span class="ss">:id</span> <span class="o">=&gt;</span> <span class="n">update_id</span>
+
+    <span class="n">base_uri</span> <span class="o">=</span> <span class="s2">&quot;http://</span><span class="si">#{</span><span class="n">author</span><span class="o">.</span><span class="n">domain</span><span class="si">}</span><span class="s2">/&quot;</span>
+    <span class="n">salmon</span> <span class="o">=</span> <span class="no">OStatus</span><span class="o">::</span><span class="no">Salmon</span><span class="o">.</span><span class="n">new</span><span class="p">(</span><span class="n">u</span><span class="o">.</span><span class="n">to_atom</span><span class="p">(</span><span class="n">base_uri</span><span class="p">))</span>
+
+    <span class="n">envelope</span> <span class="o">=</span> <span class="n">salmon</span><span class="o">.</span><span class="n">to_xml</span> <span class="nb">self</span><span class="o">.</span><span class="n">to_rsa_keypair</span></pre></div>
+      </td>
+    </tr>
+    <tr id='section-36'>
+      <td class=docs>
+        <div class="pilwrap">
+          <a class="pilcrow" href="#section-36">&#182;</a>
+        </div>
+        <p>Send envelope to Author&rsquo;s Salmon endpoint</p>
+      </td>
+      <td class=code>
+        <div class='highlight'><pre>    <span class="n">uri</span> <span class="o">=</span> <span class="no">URI</span><span class="o">.</span><span class="n">parse</span><span class="p">(</span><span class="n">f</span><span class="o">.</span><span class="n">author</span><span class="o">.</span><span class="n">salmon_url</span><span class="p">)</span>
+    <span class="n">http</span> <span class="o">=</span> <span class="no">Net</span><span class="o">::</span><span class="no">HTTP</span><span class="o">.</span><span class="n">new</span><span class="p">(</span><span class="n">uri</span><span class="o">.</span><span class="n">host</span><span class="p">,</span> <span class="n">uri</span><span class="o">.</span><span class="n">port</span><span class="p">)</span>
+    <span class="n">res</span> <span class="o">=</span> <span class="n">http</span><span class="o">.</span><span class="n">post</span><span class="p">(</span><span class="n">uri</span><span class="o">.</span><span class="n">path</span><span class="p">,</span> <span class="n">envelope</span><span class="p">,</span> <span class="p">{</span><span class="s2">&quot;Content-Type&quot;</span> <span class="o">=&gt;</span> <span class="s2">&quot;application/magic-envelope+xml&quot;</span><span class="p">})</span>
+  <span class="k">end</span>
+
+  <span class="k">def</span> <span class="nf">followed_by?</span><span class="p">(</span><span class="n">f</span><span class="p">)</span>
+    <span class="n">followers</span><span class="o">.</span><span class="n">include?</span> <span class="n">f</span>
+  <span class="k">end</span>
+
+  <span class="k">def</span> <span class="nf">following_feed?</span><span class="p">(</span><span class="n">f</span><span class="p">)</span>
+    <span class="n">following</span><span class="o">.</span><span class="n">include?</span> <span class="n">f</span>
+  <span class="k">end</span>
+
+  <span class="k">def</span> <span class="nf">following_author?</span><span class="p">(</span><span class="n">author</span><span class="p">)</span>
+    <span class="n">following</span><span class="o">.</span><span class="n">include?</span><span class="p">(</span><span class="n">author</span><span class="o">.</span><span class="n">feed</span><span class="p">)</span>
+  <span class="k">end</span>
+
+  <span class="k">def</span> <span class="nf">following_url?</span><span class="p">(</span><span class="n">feed_url</span><span class="p">)</span></pre></div>
+      </td>
+    </tr>
+    <tr id='section-37'>
+      <td class=docs>
+        <div class="pilwrap">
+          <a class="pilcrow" href="#section-37">&#182;</a>
+        </div>
+        <p>Handle possibly created multiple feeds for the same remote_url</p>
+      </td>
+      <td class=code>
+        <div class='highlight'><pre>    <span class="n">existing_feeds</span> <span class="o">=</span> <span class="no">Feed</span><span class="o">.</span><span class="n">all</span><span class="p">(</span><span class="ss">:remote_url</span> <span class="o">=&gt;</span> <span class="n">feed_url</span><span class="p">)</span></pre></div>
+      </td>
+    </tr>
+    <tr id='section-38'>
+      <td class=docs>
+        <div class="pilwrap">
+          <a class="pilcrow" href="#section-38">&#182;</a>
+        </div>
+        <p>local feed?</p>
+      </td>
+      <td class=code>
+        <div class='highlight'><pre>    <span class="k">if</span> <span class="n">existing_feeds</span><span class="o">.</span><span class="n">empty?</span> <span class="ow">and</span> <span class="n">feed_url</span><span class="o">.</span><span class="n">start_with?</span><span class="p">(</span><span class="s2">&quot;http://</span><span class="si">#{</span><span class="n">author</span><span class="o">.</span><span class="n">domain</span><span class="si">}</span><span class="s2">/&quot;</span><span class="p">)</span>
+      <span class="n">feed_id</span> <span class="o">=</span> <span class="n">feed_url</span><span class="o">[/</span><span class="p">\</span><span class="o">/</span><span class="n">feeds</span><span class="p">\</span><span class="o">/</span><span class="p">(</span><span class="o">.</span><span class="n">+</span><span class="p">)</span><span class="vg">$/</span><span class="p">,</span><span class="mi">1</span><span class="o">]</span>
+      <span class="n">existing_feeds</span> <span class="o">=</span> <span class="o">[</span><span class="no">Feed</span><span class="o">.</span><span class="n">first</span><span class="p">(</span><span class="ss">:id</span> <span class="o">=&gt;</span> <span class="n">feed_id</span><span class="p">)</span><span class="o">]</span>
+    <span class="k">end</span>
+
+    <span class="k">if</span> <span class="n">existing_feeds</span><span class="o">.</span><span class="n">empty?</span>
+      <span class="kp">false</span>
+    <span class="k">else</span></pre></div>
+      </td>
+    </tr>
+    <tr id='section-39'>
+      <td class=docs>
+        <div class="pilwrap">
+          <a class="pilcrow" href="#section-39">&#182;</a>
+        </div>
+        <p>Intersect the feeds we&rsquo;re following and the possibly
+created multiple feeds for the remote</p>
+      </td>
+      <td class=code>
+        <div class='highlight'><pre>      <span class="o">!</span><span class="p">(</span><span class="n">following</span> <span class="o">&amp;</span> <span class="n">existing_feeds</span><span class="p">)</span><span class="o">.</span><span class="n">empty?</span>
+    <span class="k">end</span>
+  <span class="k">end</span>
+
+  <span class="n">timestamps!</span></pre></div>
+      </td>
+    </tr>
+    <tr id='section-40'>
+      <td class=docs>
+        <div class="pilwrap">
+          <a class="pilcrow" href="#section-40">&#182;</a>
+        </div>
+        <p>Retrieve the list of Updates in the user&rsquo;s timeline</p>
+      </td>
+      <td class=code>
+        <div class='highlight'><pre>  <span class="k">def</span> <span class="nf">timeline</span><span class="p">(</span><span class="n">params</span> <span class="o">=</span> <span class="kp">nil</span><span class="p">)</span>
+    <span class="n">following_plus_me</span> <span class="o">=</span> <span class="n">following</span><span class="o">.</span><span class="n">map</span><span class="p">(</span><span class="o">&amp;</span><span class="ss">:author_id</span><span class="p">)</span>
+    <span class="n">following_plus_me</span> <span class="o">&lt;&lt;</span> <span class="nb">self</span><span class="o">.</span><span class="n">author</span><span class="o">.</span><span class="n">id</span>
+    <span class="no">Update</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="ss">:author_id</span> <span class="o">=&gt;</span> <span class="n">following_plus_me</span><span class="p">)</span><span class="o">.</span><span class="n">order</span><span class="p">(</span><span class="o">[</span><span class="s1">&#39;created_at&#39;</span><span class="p">,</span> <span class="s1">&#39;descending&#39;</span><span class="o">]</span><span class="p">)</span>
+  <span class="k">end</span></pre></div>
+      </td>
+    </tr>
+    <tr id='section-41'>
+      <td class=docs>
+        <div class="pilwrap">
+          <a class="pilcrow" href="#section-41">&#182;</a>
+        </div>
+        <p>Retrieve the list of Updates that are replies to this user</p>
+      </td>
+      <td class=code>
+        <div class='highlight'><pre>  <span class="k">def</span> <span class="nf">at_replies</span><span class="p">(</span><span class="n">params</span><span class="p">)</span>
+    <span class="no">Update</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="ss">:text</span> <span class="o">=&gt;</span> <span class="sr">/^@</span><span class="si">#{</span><span class="no">Regexp</span><span class="o">.</span><span class="n">quote</span><span class="p">(</span><span class="n">username</span><span class="p">)</span><span class="si">}</span><span class="sr">\b/</span><span class="p">)</span><span class="o">.</span><span class="n">order</span><span class="p">(</span><span class="o">[</span><span class="s1">&#39;created_at&#39;</span><span class="p">,</span> <span class="s1">&#39;descending&#39;</span><span class="o">]</span><span class="p">)</span>
+  <span class="k">end</span></pre></div>
+      </td>
+    </tr>
+    <tr id='section-42'>
+      <td class=docs>
+        <div class="pilwrap">
+          <a class="pilcrow" href="#section-42">&#182;</a>
+        </div>
+        <p>User MUST be confirmed</p>
+      </td>
+      <td class=code>
+        <div class='highlight'><pre>  <span class="n">key</span> <span class="ss">:status</span></pre></div>
+      </td>
+    </tr>
+    <tr id='section-43'>
+      <td class=docs>
+        <div class="pilwrap">
+          <a class="pilcrow" href="#section-43">&#182;</a>
+        </div>
+        <p>Users have a passwork</p>
+      </td>
+      <td class=code>
+        <div class='highlight'><pre>  <span class="n">key</span> <span class="ss">:hashed_password</span><span class="p">,</span> <span class="nb">String</span>
+  <span class="n">key</span> <span class="ss">:password_reset_sent</span><span class="p">,</span> <span class="no">DateTime</span><span class="p">,</span> <span class="ss">:default</span> <span class="o">=&gt;</span> <span class="kp">nil</span></pre></div>
+      </td>
+    </tr>
+    <tr id='section-44'>
+      <td class=docs>
+        <div class="pilwrap">
+          <a class="pilcrow" href="#section-44">&#182;</a>
+        </div>
+        <p>Store the hash of the password</p>
+      </td>
+      <td class=code>
+        <div class='highlight'><pre>  <span class="k">def</span> <span class="nf">password</span><span class="o">=</span><span class="p">(</span><span class="n">pass</span><span class="p">)</span>
+    <span class="nb">self</span><span class="o">.</span><span class="n">hashed_password</span> <span class="o">=</span> <span class="no">BCrypt</span><span class="o">::</span><span class="no">Password</span><span class="o">.</span><span class="n">create</span><span class="p">(</span><span class="n">pass</span><span class="p">,</span> <span class="ss">:cost</span> <span class="o">=&gt;</span> <span class="mi">10</span><span class="p">)</span>
+  <span class="k">end</span></pre></div>
+      </td>
+    </tr>
+    <tr id='section-45'>
+      <td class=docs>
+        <div class="pilwrap">
+          <a class="pilcrow" href="#section-45">&#182;</a>
+        </div>
+        <p>Create a new perishable token and set the date the password reset token was
+sent so tokens can be expired after 2 days</p>
+      </td>
+      <td class=code>
+        <div class='highlight'><pre>  <span class="k">def</span> <span class="nf">set_password_reset_token</span>
+    <span class="nb">self</span><span class="o">.</span><span class="n">password_reset_sent</span> <span class="o">=</span> <span class="no">DateTime</span><span class="o">.</span><span class="n">now</span>
+    <span class="n">set_perishable_token</span>
+    <span class="nb">self</span><span class="o">.</span><span class="n">perishable_token</span>
+  <span class="k">end</span></pre></div>
+      </td>
+    </tr>
+    <tr id='section-46'>
+      <td class=docs>
+        <div class="pilwrap">
+          <a class="pilcrow" href="#section-46">&#182;</a>
+        </div>
+        <p>Set a new password, clear the date the password reset token was sent and
+reset the perishable token</p>
+      </td>
+      <td class=code>
+        <div class='highlight'><pre>  <span class="k">def</span> <span class="nf">reset_password</span><span class="p">(</span><span class="n">pass</span><span class="p">)</span>
+    <span class="nb">self</span><span class="o">.</span><span class="n">password</span> <span class="o">=</span> <span class="n">pass</span>
+    <span class="nb">self</span><span class="o">.</span><span class="n">password_reset_sent</span> <span class="o">=</span> <span class="kp">nil</span>
+    <span class="n">reset_perishable_token</span>
+  <span class="k">end</span></pre></div>
+      </td>
+    </tr>
+    <tr id='section-47'>
+      <td class=docs>
+        <div class="pilwrap">
+          <a class="pilcrow" href="#section-47">&#182;</a>
+        </div>
+        <p>Authenticate the user by checking their credentials</p>
+      </td>
+      <td class=code>
+        <div class='highlight'><pre>  <span class="k">def</span> <span class="nc">self</span><span class="o">.</span><span class="nf">authenticate</span><span class="p">(</span><span class="n">username</span><span class="p">,</span> <span class="n">pass</span><span class="p">)</span>
+    <span class="n">user</span> <span class="o">=</span> <span class="no">User</span><span class="o">.</span><span class="n">first</span><span class="p">(</span><span class="ss">:username</span> <span class="o">=&gt;</span> <span class="n">username</span><span class="p">)</span>
+    <span class="k">return</span> <span class="kp">nil</span> <span class="k">if</span> <span class="n">user</span><span class="o">.</span><span class="n">nil?</span>
+    <span class="k">return</span> <span class="n">user</span> <span class="k">if</span> <span class="no">BCrypt</span><span class="o">::</span><span class="no">Password</span><span class="o">.</span><span class="n">new</span><span class="p">(</span><span class="n">user</span><span class="o">.</span><span class="n">hashed_password</span><span class="p">)</span> <span class="o">==</span> <span class="n">pass</span>
+    <span class="kp">nil</span>
+  <span class="k">end</span></pre></div>
+      </td>
+    </tr>
+    <tr id='section-48'>
+      <td class=docs>
+        <div class="pilwrap">
+          <a class="pilcrow" href="#section-48">&#182;</a>
+        </div>
+        <p>Edit profile information</p>
+      </td>
+      <td class=code>
+        <div class='highlight'><pre>  <span class="k">def</span> <span class="nf">edit_user_profile</span><span class="p">(</span><span class="n">params</span><span class="p">)</span>
+    <span class="k">unless</span> <span class="n">params</span><span class="o">[</span><span class="ss">:password</span><span class="o">].</span><span class="n">nil?</span> <span class="ow">or</span> <span class="n">params</span><span class="o">[</span><span class="ss">:password</span><span class="o">].</span><span class="n">empty?</span>
+      <span class="k">if</span> <span class="n">params</span><span class="o">[</span><span class="ss">:password</span><span class="o">]</span> <span class="o">==</span> <span class="n">params</span><span class="o">[</span><span class="ss">:password_confirm</span><span class="o">]</span>
+        <span class="nb">self</span><span class="o">.</span><span class="n">password</span> <span class="o">=</span> <span class="n">params</span><span class="o">[</span><span class="ss">:password</span><span class="o">]</span>
+        <span class="nb">self</span><span class="o">.</span><span class="n">save</span>
+      <span class="k">else</span>
+        <span class="k">return</span> <span class="s2">&quot;Passwords must match&quot;</span>
+      <span class="k">end</span>
+    <span class="k">end</span>
+
+    <span class="nb">self</span><span class="o">.</span><span class="n">email_confirmed</span> <span class="o">=</span> <span class="nb">self</span><span class="o">.</span><span class="n">email</span> <span class="o">==</span> <span class="n">params</span><span class="o">[</span><span class="ss">:email</span><span class="o">]</span>
+    <span class="nb">self</span><span class="o">.</span><span class="n">email</span> <span class="o">=</span> <span class="n">params</span><span class="o">[</span><span class="ss">:email</span><span class="o">]</span>
+
+    <span class="nb">self</span><span class="o">.</span><span class="n">save</span>
+
+    <span class="n">author</span><span class="o">.</span><span class="n">name</span>    <span class="o">=</span> <span class="n">params</span><span class="o">[</span><span class="ss">:name</span><span class="o">]</span>
+    <span class="n">author</span><span class="o">.</span><span class="n">email</span>   <span class="o">=</span> <span class="n">params</span><span class="o">[</span><span class="ss">:email</span><span class="o">]</span>
+    <span class="n">author</span><span class="o">.</span><span class="n">website</span> <span class="o">=</span> <span class="n">params</span><span class="o">[</span><span class="ss">:website</span><span class="o">]</span>
+    <span class="n">author</span><span class="o">.</span><span class="n">bio</span>     <span class="o">=</span> <span class="n">params</span><span class="o">[</span><span class="ss">:bio</span><span class="o">]</span>
+    <span class="n">author</span><span class="o">.</span><span class="n">save</span></pre></div>
+      </td>
+    </tr>
+    <tr id='section-49'>
+      <td class=docs>
+        <div class="pilwrap">
+          <a class="pilcrow" href="#section-49">&#182;</a>
+        </div>
+        <p>TODO: Send out notice to other nodes
+To each remote domain that is following you via hub
+and to each remote domain that you follow via salmon</p>
+      </td>
+      <td class=code>
+        <div class='highlight'><pre>    <span class="n">author</span><span class="o">.</span><span class="n">feed</span><span class="o">.</span><span class="n">ping_hubs</span>
+
+    <span class="k">return</span> <span class="kp">true</span>
+  <span class="k">end</span></pre></div>
+      </td>
+    </tr>
+    <tr id='section-50'>
+      <td class=docs>
+        <div class="pilwrap">
+          <a class="pilcrow" href="#section-50">&#182;</a>
+        </div>
+        <p>A better name would be very welcome.</p>
+
+      </td>
+      <td class=code>
+        <div class='highlight'><pre>  <span class="k">def</span> <span class="nc">self</span><span class="o">.</span><span class="nf">find_by_case_insensitive_username</span><span class="p">(</span><span class="n">username</span><span class="p">)</span>
+    <span class="no">User</span><span class="o">.</span><span class="n">first</span><span class="p">(</span><span class="ss">:username</span> <span class="o">=&gt;</span> <span class="sr">/^</span><span class="si">#{</span><span class="no">Regexp</span><span class="o">.</span><span class="n">escape</span><span class="p">(</span><span class="n">username</span><span class="p">)</span><span class="si">}</span><span class="sr">$/i</span><span class="p">)</span>
+  <span class="k">end</span>
+
+  <span class="kp">private</span>
+
+  <span class="k">def</span> <span class="nf">create_feed</span>
+    <span class="n">f</span> <span class="o">=</span> <span class="no">Feed</span><span class="o">.</span><span class="n">create</span><span class="p">(</span>
+      <span class="ss">:author</span> <span class="o">=&gt;</span> <span class="nb">self</span><span class="o">.</span><span class="n">author</span>
+    <span class="p">)</span>
+
+    <span class="nb">self</span><span class="o">.</span><span class="n">author</span><span class="o">.</span><span class="n">save</span>
+
+    <span class="n">save</span>
+  <span class="k">end</span>
+
+  <span class="k">def</span> <span class="nf">no_malformed_username</span>
+    <span class="k">unless</span> <span class="p">(</span><span class="n">username</span> <span class="o">=~</span> <span class="sr">/[@!&quot;#$\%&amp;&#39;()*,^~{}|`=:;\\\/\[\]\s?]/</span><span class="p">)</span><span class="o">.</span><span class="n">nil?</span> <span class="o">&amp;&amp;</span> <span class="p">(</span><span class="n">username</span> <span class="o">=~</span> <span class="sr">/^[.]/</span><span class="p">)</span><span class="o">.</span><span class="n">nil?</span> <span class="o">&amp;&amp;</span> <span class="p">(</span><span class="n">username</span> <span class="o">=~</span> <span class="sr">/[.]$/</span><span class="p">)</span><span class="o">.</span><span class="n">nil?</span> <span class="o">&amp;&amp;</span> <span class="p">(</span><span class="n">username</span> <span class="o">=~</span> <span class="sr">/[.]{2,}/</span><span class="p">)</span><span class="o">.</span><span class="n">nil?</span>
+      <span class="n">errors</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="ss">:username</span><span class="p">,</span> <span class="s2">&quot;contains restricted characters. Try sticking to letters, numbers, hyphens and underscores.&quot;</span><span class="p">)</span>
+    <span class="k">end</span>
+  <span class="k">end</span>
+
+  <span class="k">def</span> <span class="nf">email_already_confirmed</span>
+    <span class="k">if</span> <span class="no">User</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="ss">:email</span> <span class="o">=&gt;</span> <span class="nb">self</span><span class="o">.</span><span class="n">email</span><span class="p">,</span>
+      <span class="ss">:email_confirmed</span> <span class="o">=&gt;</span> <span class="kp">true</span><span class="p">,</span>
+      <span class="ss">:username</span><span class="o">.</span><span class="n">ne</span> <span class="o">=&gt;</span> <span class="nb">self</span><span class="o">.</span><span class="n">username</span><span class="p">)</span><span class="o">.</span><span class="n">count</span> <span class="o">&gt;</span> <span class="mi">0</span>
+      <span class="n">errors</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="ss">:email</span><span class="p">,</span> <span class="s2">&quot;is already taken.&quot;</span><span class="p">)</span>
+    <span class="k">end</span>
+  <span class="k">end</span>
+<span class="k">end</span></pre></div>
+      </td>
+    </tr>
+  </table>
+</div>
+</body>
