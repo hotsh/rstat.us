@@ -1,5 +1,14 @@
 #rake tasks to update stored data
 namespace :fixdb do
+  desc "Set nil Author domains and normalize all domains"
+  task :author_domains => :environment do
+    Author.all.each do |a|
+      a.domain = a.domain || "rstat.us" # Set any nil domains to us
+      a.normalize_domain
+      a.save!
+    end
+  end
+
   desc "Set nil Author usernames"
   task :set_nil_usernames => :environment do
     messed_up_authors = Author.where(:username => nil)

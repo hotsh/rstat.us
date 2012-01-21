@@ -56,6 +56,7 @@ class Feed
                                 :username => a.name,
                                 :email => a.email,
                                 :remote_url => a.uri,
+                                :domain => a.uri,
                                 :salmon_url => ostatus_feed.salmon,
                                 :bio => a.portable_contacts.note,
                                 :image_url => avatar_url)
