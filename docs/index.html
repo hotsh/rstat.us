@@ -8,8 +8,44 @@
     hr.light { color: #fefefe; }
     table tbody tr { display: none; }
     table tbody tr.toplevel-dir,
-    table tbody tr.intro { display: block; }
+    table tbody tr.intro { display: table-row; }
+    table tbody tr.closed, table tbody tr.open { cursor: pointer; }
+    table tbody tr.open,
+    table tbody tr.open td,
+    table tbody tr.closed:hover,
+    table tbody tr.closed:hover td { background-color: #FFFFEB; }
   </style>
+  <script type="text/javascript" src="https://www.google.com/jsapi?key=ABQIAAAAabBpI2NWdOQQ88JkjvfYvxTbJmkTZigc5kHRomvftpLfPYfatxS9Io1VmGVmlYHarQswoz1Vjjy5gw"></script>
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
+  <script type="text/javascript">
+  $(function(){
+    $(document).ready(function(){
+
+      $("tr.closed").on("click", function(event) {
+        if( $(this).hasClass("closed") ) {
+          $(".child-of-" + $(this).attr("id").replace("section-", '')).show();
+        } else {
+          hideChildren($(this).attr("id"));
+        }
+        $(this).toggleClass("closed open");
+      });
+
+    });
+  });
+
+  function hideChildren(id) {
+    var children = $(".child-of-" + id.replace("section-", ''));
+    children.each(function (){
+      hideChildren($(this).attr("id"));
+      if($(this).hasClass("open")) {
+        $(this).removeClass("open");
+        $(this).addClass("closed");
+      }
+    });
+    children.hide();
+  }
+
+  </script>
 </head>
 <body>
 <div id='container'>
@@ -64,14 +100,14 @@
         <div class="pilwrap">
           <a class="pilcrow" href="#section-app">&#182;</a>
         </div>
-        <hr />
-        <p>Most of the code for the logic of rstat.us lives in the <code>app</code> directory.</p>
+        <p>
+          Most of the code for the logic of rstat.us lives in the <code>app</code> directory.</p>
       </td>
       <td class=code>
         <div class='highlight'><pre>app/</pre></div>
       </td>
     </tr>
-    <tr id='section-assets'>
+    <tr id='section-assets' class="child-of-app">
       <td class=docs>
         <div class="pilwrap">
           <a class="pilcrow" href="#section-assets">&#182;</a>
@@ -86,19 +122,18 @@
 </pre></div>
       </td>
     </tr>
-    <tr id='section-controllers'>
+    <tr id='section-controllers' class="child-of-app closed">
       <td class=docs>
         <div class="pilwrap">
           <a class="pilcrow" href="#section-controllers">&#182;</a>
         </div>
-        <hr class="light" />
         <p><a href="http://guides.rubyonrails.org/action_controller_overview.html">Controllers</a> do things like handling authentication, asking models for data, and providing that data to the appropriate view for the request.</p>
       </td>
       <td class=code>
         <div class='highlight'><pre>  |- controllers/</pre></div>
       </td>
     </tr>
-    <tr id='section-controllers-application'>
+    <tr id='section-controllers-application' class="child-of-controllers">
       <td class=docs>
         <div class="pilwrap">
           <a class="pilcrow" href="#section-controllers-application">&#182;</a>
@@ -109,7 +144,7 @@
         <div class='highlight'><pre>  |-- <a class="source" href="app/controllers/application_controller.html">application_controller.rb</a></pre></div>
       </td>
     </tr>
-    <tr id='section-controllers-auth'>
+    <tr id='section-controllers-auth' class="child-of-controllers">
       <td class=docs>
         <div class="pilwrap">
           <a class="pilcrow" href="#section-controllers-auth">&#182;</a>
@@ -120,7 +155,7 @@
         <div class='highlight'><pre>  |-- <a class="source" href="app/controllers/auth_controller.html">auth_controller.rb</a></pre></div>
       </td>
     </tr>
-    <tr id='section-controllers-feeds'>
+    <tr id='section-controllers-feeds' class="child-of-controllers">
       <td class=docs>
         <div class="pilwrap">
           <a class="pilcrow" href="#section-controllers-feeds">&#182;</a>
@@ -131,7 +166,7 @@
         <div class='highlight'><pre>  |-- <a class="source" href="app/controllers/feeds_controller.html">feeds_controller.rb</a></pre></div>
       </td>
     </tr>
-    <tr id='section-controllers-salmon'>
+    <tr id='section-controllers-salmon' class="child-of-controllers">
       <td class=docs>
         <div class="pilwrap">
           <a class="pilcrow" href="#section-controllers-salmon">&#182;</a>
@@ -142,7 +177,7 @@
         <div class='highlight'><pre>  |-- <a class="source" href="app/controllers/salmon_controller.html">salmon_controller.rb</a></pre></div>
       </td>
     </tr>
-    <tr id='section-controllers-searches'>
+    <tr id='section-controllers-searches' class="child-of-controllers">
       <td class=docs>
         <div class="pilwrap">
           <a class="pilcrow" href="#section-controllers-searches">&#182;</a>
@@ -153,7 +188,7 @@
         <div class='highlight'><pre>  |-- <a class="source" href="app/controllers/searches_controller.html">searches_controller.rb</a></pre></div>
       </td>
     </tr>
-    <tr id='section-controllers-sessions'>
+    <tr id='section-controllers-sessions' class="child-of-controllers">
       <td class=docs>
         <div class="pilwrap">
           <a class="pilcrow" href="#section-controllers-sessions">&#182;</a>
@@ -164,7 +199,7 @@
         <div class='highlight'><pre>  |-- <a class="source" href="app/controllers/sessions_controller.html">sessions_controller.rb</a></pre></div>
       </td>
     </tr>
-    <tr id='section-controllers-static'>
+    <tr id='section-controllers-static' class="child-of-controllers">
       <td class=docs>
         <div class="pilwrap">
           <a class="pilcrow" href="#section-controllers-static">&#182;</a>
@@ -175,7 +210,7 @@
         <div class='highlight'><pre>  |-- <a class="source" href="app/controllers/static_controller.html">static_controller.rb</a></pre></div>
       </td>
     </tr>
-    <tr id='section-controllers-subscriptions'>
+    <tr id='section-controllers-subscriptions' class="child-of-controllers">
       <td class=docs>
         <div class="pilwrap">
           <a class="pilcrow" href="#section-controllers-subscriptions">&#182;</a>
@@ -186,7 +221,7 @@
         <div class='highlight'><pre>  |-- <a class="source" href="app/controllers/subscriptions_controller.html">subscriptions_controller.rb</a></pre></div>
       </td>
     </tr>
-    <tr id='section-controllers-updates'>
+    <tr id='section-controllers-updates' class="child-of-controllers">
       <td class=docs>
         <div class="pilwrap">
           <a class="pilcrow" href="#section-controllers-updates">&#182;</a>
@@ -197,7 +232,7 @@
         <div class='highlight'><pre>  |-- <a class="source" href="app/controllers/updates_controller.html">updates_controller.rb</a></pre></div>
       </td>
     </tr>
-    <tr id='section-controllers-users'>
+    <tr id='section-controllers-users' class="child-of-controllers">
       <td class=docs>
         <div class="pilwrap">
           <a class="pilcrow" href="#section-controllers-users">&#182;</a>
@@ -208,7 +243,7 @@
         <div class='highlight'><pre>  |-- <a class="source" href="app/controllers/users_controller.html">users_controller.rb</a></pre></div>
       </td>
     </tr>
-    <tr id='section-controllers-webfinger'>
+    <tr id='section-controllers-webfinger' class="child-of-controllers">
       <td class=docs>
         <div class="pilwrap">
           <a class="pilcrow" href="#section-controllers-webfinger">&#182;</a>
@@ -219,12 +254,11 @@
         <div class='highlight'><pre>  |-- <a class="source" href="app/controllers/webfinger_controller.html">webfinger_controller.rb</a></pre></div>
       </td>
     </tr>
-    <tr id='section-helpers'>
+    <tr id='section-helpers' class="child-of-app">
       <td class=docs>
         <div class="pilwrap">
           <a class="pilcrow" href="#section-helpers">&#182;</a>
         </div>
-        <hr class="light" />
         <p>Helpers only has one file with one method in it right now.</p>
       </td>
       <td class=code>
@@ -232,92 +266,88 @@
   |-- application_helper.rb</pre></div>
       </td>
     </tr>
-    <tr id='section-models'>
+    <tr id='section-models' class="child-of-app closed">
       <td class=docs>
         <div class="pilwrap">
           <a class="pilcrow" href="#section-models">&#182;</a>
         </div>
-        <hr class="light" />
-        <p>Models</p>
+        <p>Models are the business objects of the system.</p>
       </td>
       <td class=code>
         <div class='highlight'><pre>  |- models/</pre></div>
       </td>
     </tr>
-    <tr id='section-models-author'>
+    <tr id='section-models-author' class="child-of-models">
       <td class=docs>
         <div class="pilwrap">
           <a class="pilcrow" href="#section-models-author">&#182;</a>
         </div>
-        <p>Author</p>
+        <p>An Author is an entity that produces Updates. Authors <strong>may</strong> have corresponding rstat.us Users as well, but they may also be users on another OStatus site.</p>
       </td>
       <td class=code>
         <div class='highlight'><pre>  |-- <a class="source" href="app/models/author.html">author.rb</a></pre></div>
       </td>
     </tr>
-    <tr id='section-models-authorization'>
+    <tr id='section-models-authorization' class="child-of-models">
       <td class=docs>
         <div class="pilwrap">
           <a class="pilcrow" href="#section-models-authorization">&#182;</a>
         </div>
-        <p>Authorization</p>
+        <p>An Authorization is an ability of a User to log in to rstat.us. Currently, the only ways an Authorization is created are if a User logs in to rstat.us with Twitter or a User associates their Twitter account with their existing rstat.us email account.</p>
       </td>
       <td class=code>
         <div class='highlight'><pre>  |-- <a class="source" href="app/models/authorization.html">authorization.rb</a></pre></div>
       </td>
     </tr>
-    <tr id='section-models-feed'>
+    <tr id='section-models-feed' class="child-of-models">
       <td class=docs>
         <div class="pilwrap">
           <a class="pilcrow" href="#section-models-feed">&#182;</a>
         </div>
-        <p>Feed</p>
+        <p>Feeds are representations of <a href="http://ostatus.org/sites/default/files/ostatus-1.0-draft-2-specification.html">PuSH enabled Atom feeds</a>. Each rstat.us User has a Feed of their updates, and rstat.us keeps a local Feed for each remote Feed that an rstat.us User subscribes to.</p>
       </td>
       <td class=code>
         <div class='highlight'><pre>  |-- <a class="source" href="app/models/feed.html">feed.rb</a></pre></div>
       </td>
     </tr>
-    <tr id='section-models-notifier'>
+    <tr id='section-models-notifier' class="child-of-models">
       <td class=docs>
         <div class="pilwrap">
           <a class="pilcrow" href="#section-models-notifier">&#182;</a>
         </div>
-        <p>Notifier</p>
+        <p>Notifier is a class that sends emails to Users such as password reset links or email confirmation links.</p>
       </td>
       <td class=code>
         <div class='highlight'><pre>  |-- <a class="source" href="app/models/notifier.html">notifier.rb</a></pre></div>
       </td>
     </tr>
-    <tr id='section-models-update'>
+    <tr id='section-models-update' class="child-of-models">
       <td class=docs>
         <div class="pilwrap">
           <a class="pilcrow" href="#section-models-update">&#182;</a>
         </div>
-        <p>Update</p>
+        <p>An Update is an individual status posted either by an rstat.us User or a remote user being followed by someone on rstat.us.</p>
       </td>
       <td class=code>
         <div class='highlight'><pre>  |-- <a class="source" href="app/models/update.html">update.rb</a></pre></div>
       </td>
     </tr>
-    <tr id='section-models-user'>
+    <tr id='section-models-user' class="child-of-models">
       <td class=docs>
         <div class="pilwrap">
           <a class="pilcrow" href="#section-models-user">&#182;</a>
         </div>
-        <p>User</p>
+        <p>A User is someone who has signed in to rstat.us. All Users have Authors and Feeds associated with them.</p>
       </td>
       <td class=code>
         <div class='highlight'><pre>  |-- <a class="source" href="app/models/user.html">user.rb</a></pre></div>
       </td>
     </tr>
-
-
-    <tr id='section-views'>
+    <tr id='section-views' class="child-of-app">
       <td class=docs>
         <div class="pilwrap">
           <a class="pilcrow" href="#section-views">&#182;</a>
         </div>
-        <hr class="light" />
         <p>Views</p>
       </td>
       <td class=code>
@@ -330,7 +360,6 @@
         <div class="pilwrap">
           <a class="pilcrow" href="#section-config">&#182;</a>
         </div>
-        <hr />
         <p>config directory</p>
       </td>
       <td class=code>
@@ -342,7 +371,6 @@
         <div class="pilwrap">
           <a class="pilcrow" href="#section-docs">&#182;</a>
         </div>
-        <hr />
         <p>The <code>docs</code> directory is where this file lives! It's also where the documentation generated from the code ends up after you run <code>rake rocco</code>.</p>
       </td>
       <td class=code>
@@ -354,7 +382,6 @@
         <div class="pilwrap">
           <a class="pilcrow" href="#section-lib">&#182;</a>
         </div>
-        <hr />
         <p>The <code>lib</code> directory contains a cryptography module and a directory <code>tasks</code> that contains all the rstat.us-specific rake task definitions.</p>
       </td>
       <td class=code>
@@ -366,7 +393,6 @@
         <div class="pilwrap">
           <a class="pilcrow" href="#section-log">&#182;</a>
         </div>
-        <hr />
         <p>Rails creates log files when you run a server or the tests. The <code>log</code> directory is where they end up.</p>
       </td>
       <td class=code>
@@ -378,7 +404,6 @@
         <div class="pilwrap">
           <a class="pilcrow" href="#section-public">&#182;</a>
         </div>
-        <hr />
         <p>The <code>public</code> directory is where compiled assets end up. It also holds a few error pages, the site favicon, and the robots.txt.</p>
       </td>
       <td class=code>
@@ -390,7 +415,6 @@
         <div class="pilwrap">
           <a class="pilcrow" href="#section-script">&#182;</a>
         </div>
-        <hr />
         <p>The <code>script</code> directory just holds the script for the <code>rails</code> command. See the <a href="http://guides.rubyonrails.org/command_line.html#command-line-basics">Rails Guide on command line tools</a> for more information.</p>
       </td>
       <td class=code>
@@ -402,14 +426,13 @@
         <div class="pilwrap">
           <a class="pilcrow" href="#section-test">&#182;</a>
         </div>
-        <hr />
         <p>test directory.</p>
       </td>
       <td class=code>
         <div class='highlight'><pre>test/</pre></div>
       </td>
     </tr>
-    <tr id='section-test-acceptance'>
+    <tr id='section-test-acceptance' class="child-of-test">
       <td class=docs>
         <div class="pilwrap">
           <a class="pilcrow" href="#section-test-acceptance">&#182;</a>
@@ -420,7 +443,7 @@
         <div class='highlight'><pre>  |- acceptance/*</pre></div>
       </td>
     </tr>
-    <tr id='section-test-coverage'>
+    <tr id='section-test-coverage' class="child-of-test">
       <td class=docs>
         <div class="pilwrap">
           <a class="pilcrow" href="#section-test-coverage">&#182;</a>
@@ -431,7 +454,7 @@
         <div class='highlight'><pre>  |- coverage/*</pre></div>
       </td>
     </tr>
-    <tr id='section-test-data'>
+    <tr id='section-test-data' class="child-of-test">
       <td class=docs>
         <div class="pilwrap">
           <a class="pilcrow" href="#section-test-data">&#182;</a>
@@ -442,7 +465,7 @@
         <div class='highlight'><pre>  |- data/*</pre></div>
       </td>
     </tr>
-    <tr id='section-test-factories'>
+    <tr id='section-test-factories' class="child-of-test">
       <td class=docs>
         <div class="pilwrap">
           <a class="pilcrow" href="#section-test-factories">&#182;</a>
@@ -453,7 +476,7 @@
         <div class='highlight'><pre>  |- factories.rb</pre></div>
       </td>
     </tr>
-    <tr id='section-test-models'>
+    <tr id='section-test-models' class="child-of-test">
       <td class=docs>
         <div class="pilwrap">
           <a class="pilcrow" href="#section-test-models">&#182;</a>
@@ -464,7 +487,7 @@
         <div class='highlight'><pre>  |- models/*</pre></div>
       </td>
     </tr>
-    <tr id='section-test-test_helper'>
+    <tr id='section-test-test_helper' class="child-of-test">
       <td class=docs>
         <div class="pilwrap">
           <a class="pilcrow" href="#section-test-test_helper">&#182;</a>
@@ -480,7 +503,6 @@
         <div class="pilwrap">
           <a class="pilcrow" href="#section-tmp">&#182;</a>
         </div>
-        <hr />
         <p>The <code>tmp</code> directory contains temporary files like cache or capybara screenshots from the <code>save_and_open_page</code> method. Everything in here is ignored by git.</p>
       </td>
       <td class=code>
