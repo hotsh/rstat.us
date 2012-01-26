@@ -7,6 +7,17 @@
   <style type="text/css">
     hr.light { color: #fefefe; }
   </style>
+  <script type="text/javascript" src="https://www.google.com/jsapi?key=ABQIAAAAabBpI2NWdOQQ88JkjvfYvxTbJmkTZigc5kHRomvftpLfPYfatxS9Io1VmGVmlYHarQswoz1Vjjy5gw"></script>
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
+  <script type="text/javascript">
+  $(function(){
+    $(document).ready(function(){
+
+
+    });
+  });
+
+  </script>
 </head>
 <body>
 <div id='container'>
@@ -43,472 +54,122 @@
     </tr>
   </thead>
   <tbody>
-    <tr id='section-1'>
+    <tr id='section-intro' class="intro">
       <td class=docs>
         <div class="pilwrap">
-          <a class="pilcrow" href="#section-1">&#182;</a>
+          <a class="pilcrow" href="#section-intro">&#182;</a>
         </div>
         <p>Welcome to rstat.us' code!</p>
         <p>Rstat.us uses <a href="http://rubyonrails.org/">Ruby on Rails 3.1</a>. It follows the structure of a standard Rails app, so if you have not used Rails before, you may want to take a look at the <a href="http://guides.rubyonrails.org/getting_started.html">Getting Started Rails Guide</a>. Or feel free to dive in to rstat.us!</p>
-        <p>You can skip to the documentation for any file by using the "Jump to..." menu in the upper right of any documentation page.</p>
-        <p>This page is an index of the files in rstat.us' repository with a quick explanation of what each file is responsible for.</p>
+        <p>You can skip to the documentation for any individual code file that has documentation by using the "Jump to..." menu in the upper right of any documentation page.</p>
+        <p>This page is an index of the directories in rstat.us' repository with a quick explanation of what each directory is responsible for.</p>
       </td>
       <td class=code>
       </td>
     </tr>
-    <tr id='section-2'>
+    <tr id='section-app'>
       <td class=docs>
         <div class="pilwrap">
-          <a class="pilcrow" href="#section-2">&#182;</a>
+          <a class="pilcrow" href="#section-app">&#182;</a>
         </div>
-        <hr />
-        <p>Most of the code for the logic of rstat.us lives in the <code>app</code> directory.</p>
+        <p>
+          Most of the code for the logic of rstat.us lives in the <code>app</code> directory. All of the files in the Jump To... menu are in here. There's so much that the <code>app</code> directory gets <a href="app_index.html">its own index page!</a></p>
       </td>
       <td class=code>
-        <div class='highlight'><pre>app/</pre></div>
-      </td>
-    </tr>
-    <tr id='section-3'>
-      <td class=docs>
-        <div class="pilwrap">
-          <a class="pilcrow" href="#section-3">&#182;</a>
-        </div>
-        <p>The <code>assets</code> directory contains rstat.us' images, uncompressed javascript (and <a href="http://coffeescript.org/">coffeescript</a>), and uncompiled <a href="http://sass-lang.com/">SCSS stylesheets</a>.</p>
-      </td>
-      <td class=code>
-        <div class='highlight'><pre>  |- assets/
-  |-- images/*        <span class="s1"># Not very interesting to document.</span>
-  |-- javascripts/*   <span class="s1"># Needs more documentation.</span>
-  |-- stylesheets/*   <span class="s1"># Not very interesting to document.</span>
-</pre></div>
-      </td>
-    </tr>
-    <tr id='section-4'>
-      <td class=docs>
-        <div class="pilwrap">
-          <a class="pilcrow" href="#section-4">&#182;</a>
-        </div>
-        <hr class="light" />
-        <p><a href="http://guides.rubyonrails.org/action_controller_overview.html">Controllers</a> do things like handling authentication, asking models for data, and providing that data to the appropriate view for the request.</p>
-      </td>
-      <td class=code>
-        <div class='highlight'><pre>  |- controllers/</pre></div>
-      </td>
-    </tr>
-    <tr id='section-4-a'>
-      <td class=docs>
-        <div class="pilwrap">
-          <a class="pilcrow" href="#section-4-a">&#182;</a>
-        </div>
-        <p>Application Controller defines controller methods that are useful for many of the other controllers, like <code>current_user</code> and <code>set_params_page</code></p>
-      </td>
-      <td class=code>
-        <div class='highlight'><pre>  |-- <a class="source" href="app/controllers/application_controller.html">application_controller.rb</a></pre></div>
-      </td>
-    </tr>
-    <tr id='section-4-b'>
-      <td class=docs>
-        <div class="pilwrap">
-          <a class="pilcrow" href="#section-4-b">&#182;</a>
-        </div>
-        <p>Auth Controller</p>
-      </td>
-      <td class=code>
-        <div class='highlight'><pre>  |-- <a class="source" href="app/controllers/auth_controller.html">auth_controller.rb</a></pre></div>
-      </td>
-    </tr>
-    <tr id='section-4-c'>
-      <td class=docs>
-        <div class="pilwrap">
-          <a class="pilcrow" href="#section-4-c">&#182;</a>
-        </div>
-        <p>Feeds Controller</p>
-      </td>
-      <td class=code>
-        <div class='highlight'><pre>  |-- <a class="source" href="app/controllers/feeds_controller.html">feeds_controller.rb</a></pre></div>
-      </td>
-    </tr>
-    <tr id='section-4-d'>
-      <td class=docs>
-        <div class="pilwrap">
-          <a class="pilcrow" href="#section-4-d">&#182;</a>
-        </div>
-        <p>Salmon Controller</p>
-      </td>
-      <td class=code>
-        <div class='highlight'><pre>  |-- <a class="source" href="app/controllers/salmon_controller.html">salmon_controller.rb</a></pre></div>
-      </td>
-    </tr>
-    <tr id='section-4-e'>
-      <td class=docs>
-        <div class="pilwrap">
-          <a class="pilcrow" href="#section-4-e">&#182;</a>
-        </div>
-        <p>Searches Controller</p>
-      </td>
-      <td class=code>
-        <div class='highlight'><pre>  |-- <a class="source" href="app/controllers/searches_controller.html">searches_controller.rb</a></pre></div>
-      </td>
-    </tr>
-    <tr id='section-4-d'>
-      <td class=docs>
-        <div class="pilwrap">
-          <a class="pilcrow" href="#section-4-d">&#182;</a>
-        </div>
-        <p>Sessions Controller</p>
-      </td>
-      <td class=code>
-        <div class='highlight'><pre>  |-- <a class="source" href="app/controllers/sessions_controller.html">sessions_controller.rb</a></pre></div>
-      </td>
-    </tr>
-    <tr id='section-4-e'>
-      <td class=docs>
-        <div class="pilwrap">
-          <a class="pilcrow" href="#section-e-a">&#182;</a>
-        </div>
-        <p>Static Controller</p>
-      </td>
-      <td class=code>
-        <div class='highlight'><pre>  |-- <a class="source" href="app/controllers/static_controller.html">static_controller.rb</a></pre></div>
-      </td>
-    </tr>
-    <tr id='section-4-f'>
-      <td class=docs>
-        <div class="pilwrap">
-          <a class="pilcrow" href="#section-4-f">&#182;</a>
-        </div>
-        <p>Subscriptions Controller</p>
-      </td>
-      <td class=code>
-        <div class='highlight'><pre>  |-- <a class="source" href="app/controllers/subscriptions_controller.html">subscriptions_controller.rb</a></pre></div>
-      </td>
-    </tr>
-    <tr id='section-4-g'>
-      <td class=docs>
-        <div class="pilwrap">
-          <a class="pilcrow" href="#section-4-g">&#182;</a>
-        </div>
-        <p>Updates Controller</p>
-      </td>
-      <td class=code>
-        <div class='highlight'><pre>  |-- <a class="source" href="app/controllers/updates_controller.html">updates_controller.rb</a></pre></div>
-      </td>
-    </tr>
-    <tr id='section-4-h'>
-      <td class=docs>
-        <div class="pilwrap">
-          <a class="pilcrow" href="#section-4-h">&#182;</a>
-        </div>
-        <p>Users Controller</p>
-      </td>
-      <td class=code>
-        <div class='highlight'><pre>  |-- <a class="source" href="app/controllers/users_controller.html">users_controller.rb</a></pre></div>
-      </td>
-    </tr>
-    <tr id='section-4-i'>
-      <td class=docs>
-        <div class="pilwrap">
-          <a class="pilcrow" href="#section-4-i">&#182;</a>
-        </div>
-        <p>Webfinger Controller</p>
-      </td>
-      <td class=code>
-        <div class='highlight'><pre>  |-- <a class="source" href="app/controllers/webfinger_controller.html">webfinger_controller.rb</a></pre></div>
-      </td>
-    </tr>
-    <tr id='section-5'>
-      <td class=docs>
-        <div class="pilwrap">
-          <a class="pilcrow" href="#section-5">&#182;</a>
-        </div>
-        <hr class="light" />
-        <p>Helpers only has one file with one method in it right now.</p>
-      </td>
-      <td class=code>
-        <div class='highlight'><pre>  |- helpers/
-  |-- application_helper.rb</pre></div>
-      </td>
-    </tr>
-    <tr id='section-6'>
-      <td class=docs>
-        <div class="pilwrap">
-          <a class="pilcrow" href="#section-6">&#182;</a>
-        </div>
-        <hr class="light" />
-        <p>Models</p>
-      </td>
-      <td class=code>
-        <div class='highlight'><pre>  |- models/</pre></div>
-      </td>
-    </tr>
-    <tr id='section-6-a'>
-      <td class=docs>
-        <div class="pilwrap">
-          <a class="pilcrow" href="#section-6-a">&#182;</a>
-        </div>
-        <p>Author</p>
-      </td>
-      <td class=code>
-        <div class='highlight'><pre>  |-- <a class="source" href="app/models/author.html">author.rb</a></pre></div>
-      </td>
-    </tr>
-    <tr id='section-6-b'>
-      <td class=docs>
-        <div class="pilwrap">
-          <a class="pilcrow" href="#section-6-b">&#182;</a>
-        </div>
-        <p>Authorization</p>
-      </td>
-      <td class=code>
-        <div class='highlight'><pre>  |-- <a class="source" href="app/models/authorization.html">authorization.rb</a></pre></div>
-      </td>
-    </tr>
-    <tr id='section-6-c'>
-      <td class=docs>
-        <div class="pilwrap">
-          <a class="pilcrow" href="#section-6-c">&#182;</a>
-        </div>
-        <p>Feed</p>
-      </td>
-      <td class=code>
-        <div class='highlight'><pre>  |-- <a class="source" href="app/models/feed.html">feed.rb</a></pre></div>
-      </td>
-    </tr>
-    <tr id='section-6-d'>
-      <td class=docs>
-        <div class="pilwrap">
-          <a class="pilcrow" href="#section-6-d">&#182;</a>
-        </div>
-        <p>Notifier</p>
-      </td>
-      <td class=code>
-        <div class='highlight'><pre>  |-- <a class="source" href="app/models/notifier.html">notifier.rb</a></pre></div>
-      </td>
-    </tr>
-    <tr id='section-6-e'>
-      <td class=docs>
-        <div class="pilwrap">
-          <a class="pilcrow" href="#section-6-e">&#182;</a>
-        </div>
-        <p>Update</p>
-      </td>
-      <td class=code>
-        <div class='highlight'><pre>  |-- <a class="source" href="app/models/update.html">update.rb</a></pre></div>
-      </td>
-    </tr>
-    <tr id='section-6-f'>
-      <td class=docs>
-        <div class="pilwrap">
-          <a class="pilcrow" href="#section-6-f">&#182;</a>
-        </div>
-        <p>User</p>
-      </td>
-      <td class=code>
-        <div class='highlight'><pre>  |-- <a class="source" href="app/models/user.html">user.rb</a></pre></div>
+        <div class='highlight'><pre><a href="app_index.html">app/</a></pre></div>
       </td>
     </tr>
 
-
-    <tr id='section-7'>
+    <tr id='section-config'>
       <td class=docs>
         <div class="pilwrap">
-          <a class="pilcrow" href="#section-7">&#182;</a>
+          <a class="pilcrow" href="#section-config">&#182;</a>
         </div>
-        <hr class="light" />
-        <p>Views</p>
+        <p>The <code>config</code> directory holds a lot of settings and configuration. A lot of this is standard <a href="http://guides.rubyonrails.org/configuring.html">Rails configuration</a>. You probably won't have to change very much in here.</p>
       </td>
       <td class=code>
-        <div class='highlight'><pre>  |- views/</pre></div>
+        <div class='highlight'><pre>config/</pre></div>
       </td>
     </tr>
-
-    <tr id='section-8'>
+    <tr id='section-docs'>
       <td class=docs>
         <div class="pilwrap">
-          <a class="pilcrow" href="#section-8">&#182;</a>
+          <a class="pilcrow" href="#section-docs">&#182;</a>
         </div>
-        <hr />
-        <p>config directory</p>
+        <p>The <code>docs</code> directory is where this file lives! It's also where the documentation generated from the code ends up after you run <code>rake rocco</code>.</p>
       </td>
       <td class=code>
-        <div class='highlight'><pre>config/*</pre></div>
+        <div class='highlight'><pre>docs/</pre></div>
       </td>
     </tr>
-    <tr id='section-9'>
+    <tr id='section-lib'>
       <td class=docs>
         <div class="pilwrap">
-          <a class="pilcrow" href="#section-9">&#182;</a>
+          <a class="pilcrow" href="#section-lib">&#182;</a>
         </div>
-        <hr />
-        <p>db directory.</p>
+        <p>The <code>lib</code> directory contains a cryptography module and a directory <code>tasks</code> that contains all the rstat.us-specific rake task definitions.</p>
       </td>
       <td class=code>
-        <div class='highlight'><pre>db/*</pre></div>
+        <div class='highlight'><pre>lib/</pre></div>
       </td>
     </tr>
-    <tr id='section-10'>
+    <tr id='section-log'>
       <td class=docs>
         <div class="pilwrap">
-          <a class="pilcrow" href="#section-10">&#182;</a>
+          <a class="pilcrow" href="#section-log">&#182;</a>
         </div>
-        <hr />
-        <p>docs directory.</p>
+        <p>Rails creates log files when you run a server or the tests. The <code>log</code> directory is where they end up.</p>
       </td>
       <td class=code>
-        <div class='highlight'><pre>docs/*</pre></div>
+        <div class='highlight'><pre>log/</pre></div>
       </td>
     </tr>
-    <tr id='section-11'>
+    <tr id='section-public'>
       <td class=docs>
         <div class="pilwrap">
-          <a class="pilcrow" href="#section-11">&#182;</a>
+          <a class="pilcrow" href="#section-public">&#182;</a>
         </div>
-        <hr />
-        <p>lib directory.</p>
+        <p>The <code>public</code> directory is where compiled assets end up. It also holds a few error pages, the site favicon, and the robots.txt.</p>
       </td>
       <td class=code>
-        <div class='highlight'><pre>lib/*</pre></div>
+        <div class='highlight'><pre>public/</pre></div>
       </td>
     </tr>
-    <tr id='section-12'>
+    <tr id='section-script'>
       <td class=docs>
         <div class="pilwrap">
-          <a class="pilcrow" href="#section-12">&#182;</a>
+          <a class="pilcrow" href="#section-script">&#182;</a>
         </div>
-        <hr />
-        <p>log directory.</p>
+        <p>The <code>script</code> directory just holds the script for the <code>rails</code> command. See the <a href="http://guides.rubyonrails.org/command_line.html#command-line-basics">Rails Guide on command line tools</a> for more information.</p>
       </td>
       <td class=code>
-        <div class='highlight'><pre>log/*</pre></div>
+        <div class='highlight'><pre>script/</pre></div>
       </td>
     </tr>
-    <tr id='section-13'>
+    <tr id='section-test'>
       <td class=docs>
         <div class="pilwrap">
-          <a class="pilcrow" href="#section-13">&#182;</a>
+          <a class="pilcrow" href="#section-test">&#182;</a>
         </div>
-        <hr />
-        <p>public directory.</p>
+        <p>Tests are a very important part of rstat.us! The <code>test</code> directory is full of them. See the <a href="test_index.html">test directory index</a> for more information.</p>
       </td>
       <td class=code>
-        <div class='highlight'><pre>public/*</pre></div>
+        <div class='highlight'><pre><a href="test_index.html">test/</a></pre></div>
       </td>
     </tr>
-    <tr id='section-14'>
+    <tr id='section-tmp'>
       <td class=docs>
         <div class="pilwrap">
-          <a class="pilcrow" href="#section-14">&#182;</a>
+          <a class="pilcrow" href="#section-tmp">&#182;</a>
         </div>
-        <hr />
-        <p>script directory.</p>
+        <p>The <code>tmp</code> directory contains temporary files like cache or capybara screenshots from the <code>save_and_open_page</code> method. Everything in here is ignored by git.</p>
       </td>
       <td class=code>
-        <div class='highlight'><pre>script/*</pre></div>
+        <div class='highlight'><pre>tmp/</pre></div>
       </td>
     </tr>
-    <tr id='section-15'>
-      <td class=docs>
-        <div class="pilwrap">
-          <a class="pilcrow" href="#section-15">&#182;</a>
-        </div>
-        <hr />
-        <p>test directory.</p>
-      </td>
-      <td class=code>
-        <div class='highlight'><pre>test/</pre></div>
-      </td>
-    </tr>
-    <tr id='section-15-a'>
-      <td class=docs>
-        <div class="pilwrap">
-          <a class="pilcrow" href="#section-15-a">&#182;</a>
-        </div>
-        <p>acceptance test directory.</p>
-      </td>
-      <td class=code>
-        <div class='highlight'><pre>  |- acceptance/*</pre></div>
-      </td>
-    </tr>
-    <tr id='section-15-b'>
-      <td class=docs>
-        <div class="pilwrap">
-          <a class="pilcrow" href="#section-15-b">&#182;</a>
-        </div>
-        <p>coverage directory.</p>
-      </td>
-      <td class=code>
-        <div class='highlight'><pre>  |- coverage/*</pre></div>
-      </td>
-    </tr>
-    <tr id='section-15-c'>
-      <td class=docs>
-        <div class="pilwrap">
-          <a class="pilcrow" href="#section-15-c">&#182;</a>
-        </div>
-        <p>test data directory.</p>
-      </td>
-      <td class=code>
-        <div class='highlight'><pre>  |- data/*</pre></div>
-      </td>
-    </tr>
-    <tr id='section-15-d'>
-      <td class=docs>
-        <div class="pilwrap">
-          <a class="pilcrow" href="#section-15-d">&#182;</a>
-        </div>
-        <p>factories</p>
-      </td>
-      <td class=code>
-        <div class='highlight'><pre>  |- factories.rb</pre></div>
-      </td>
-    </tr>
-    <tr id='section-15-e'>
-      <td class=docs>
-        <div class="pilwrap">
-          <a class="pilcrow" href="#section-15-e">&#182;</a>
-        </div>
-        <p>models test directory.</p>
-      </td>
-      <td class=code>
-        <div class='highlight'><pre>  |- models/*</pre></div>
-      </td>
-    </tr>
-    <tr id='section-15-f'>
-      <td class=docs>
-        <div class="pilwrap">
-          <a class="pilcrow" href="#section-15-">&#182;</a>
-        </div>
-        <p>test helper.</p>
-      </td>
-      <td class=code>
-        <div class='highlight'><pre>  |- test_helper.rb</pre></div>
-      </td>
-    </tr>
-    <tr id='section-16'>
-      <td class=docs>
-        <div class="pilwrap">
-          <a class="pilcrow" href="#section-16">&#182;</a>
-        </div>
-        <hr />
-        <p>tmp directory.</p>
-      </td>
-      <td class=code>
-        <div class='highlight'><pre>tmp/*</pre></div>
-      </td>
-    </tr>
-    <tr id='section-17'>
-      <td class=docs>
-        <div class="pilwrap">
-          <a class="pilcrow" href="#section-17">&#182;</a>
-        </div>
-        <hr />
-        <p>vendor directory.</p>
-      </td>
-      <td class=code>
-        <div class='highlight'><pre>vendor/*</pre></div>
-      </td>
-    </tr>
-
+  </tbody>
   </table>
 </div>
 </body>
+</html>
