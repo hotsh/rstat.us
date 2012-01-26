@@ -68,7 +68,7 @@ Source code documentation
 -------------------------
 
 We have documentation that explains our source code using rocco.
-You can view it [here](http://hotsh.github.com/rstat.us/rstatus.html).
+You can view it [here](http://hotsh.github.com/rstat.us/).
 
 
 Setting up a development environment

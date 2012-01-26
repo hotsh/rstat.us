@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="content-type" content="text/html;charset=utf-8">
+  <title>Rstat.us Code Walkthrough</title>
+  <link rel="stylesheet" href="http://jashkenas.github.com/docco/resources/docco.css">
+  <style type="text/css">
+    hr.light { color: #fefefe; }
+  </style>
+  <script type="text/javascript" src="https://www.google.com/jsapi?key=ABQIAAAAabBpI2NWdOQQ88JkjvfYvxTbJmkTZigc5kHRomvftpLfPYfatxS9Io1VmGVmlYHarQswoz1Vjjy5gw"></script>
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
+  <script type="text/javascript">
+  $(function(){
+    $(document).ready(function(){
+
+
+    });
+  });
+
+  </script>
+</head>
+<body>
+<div id='container'>
+  <div id="background"></div>
+  <div id="jump_to">
+    Jump To &hellip;
+    <div id="jump_wrapper">
+      <div id="jump_page">
+          <a class="source" href="app/controllers/application_controller.html">application_controller.rb</a>
+          <a class="source" href="app/controllers/auth_controller.html">auth_controller.rb</a>
+          <a class="source" href="app/controllers/feeds_controller.html">feeds_controller.rb</a>
+          <a class="source" href="app/controllers/salmon_controller.html">salmon_controller.rb</a>
+          <a class="source" href="app/controllers/searches_controller.html">searches_controller.rb</a>
+          <a class="source" href="app/controllers/sessions_controller.html">sessions_controller.rb</a>
+          <a class="source" href="app/controllers/static_controller.html">static_controller.rb</a>
+          <a class="source" href="app/controllers/subscriptions_controller.html">subscriptions_controller.rb</a>
+          <a class="source" href="app/controllers/updates_controller.html">updates_controller.rb</a>
+          <a class="source" href="app/controllers/users_controller.html">users_controller.rb</a>
+          <a class="source" href="app/controllers/webfinger_controller.html">webfinger_controller.rb</a>
+          <a class="source" href="app/models/author.html">author.rb</a>
+          <a class="source" href="app/models/authorization.html">authorization.rb</a>
+          <a class="source" href="app/models/feed.html">feed.rb</a>
+          <a class="source" href="app/models/notifier.html">notifier.rb</a>
+          <a class="source" href="app/models/update.html">update.rb</a>
+          <a class="source" href="app/models/user.html">user.rb</a>
+      </div>
+    </div>
+  </div>
+  <table cellspacing=0 cellpadding=0>
+  <thead>
+    <tr>
+      <th class=docs><h1>Rstat.us Code Walkthrough</h1></th>
+      <th class=code></th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr id='section-intro' class="intro">
+      <td class=docs>
+        <div class="pilwrap">
+          <a class="pilcrow" href="#section-intro">&#182;</a>
+        </div>
+        <p>Welcome to rstat.us' code!</p>
+        <p>Rstat.us uses <a href="http://rubyonrails.org/">Ruby on Rails 3.1</a>. It follows the structure of a standard Rails app, so if you have not used Rails before, you may want to take a look at the <a href="http://guides.rubyonrails.org/getting_started.html">Getting Started Rails Guide</a>. Or feel free to dive in to rstat.us!</p>
+        <p>You can skip to the documentation for any individual code file that has documentation by using the "Jump to..." menu in the upper right of any documentation page.</p>
+        <p>This page is an index of the directories in rstat.us' repository with a quick explanation of what each directory is responsible for.</p>
+      </td>
+      <td class=code>
+      </td>
+    </tr>
+    <tr id='section-app'>
+      <td class=docs>
+        <div class="pilwrap">
+          <a class="pilcrow" href="#section-app">&#182;</a>
+        </div>
+        <p>
+          Most of the code for the logic of rstat.us lives in the <code>app</code> directory. All of the files in the Jump To... menu are in here. There's so much that the <code>app</code> directory gets <a href="app_index.html">its own index page!</a></p>
+      </td>
+      <td class=code>
+        <div class='highlight'><pre><a href="app_index.html">app/</a></pre></div>
+      </td>
+    </tr>
+
+    <tr id='section-config'>
+      <td class=docs>
+        <div class="pilwrap">
+          <a class="pilcrow" href="#section-config">&#182;</a>
+        </div>
+        <p>The <code>config</code> directory holds a lot of settings and configuration. A lot of this is standard <a href="http://guides.rubyonrails.org/configuring.html">Rails configuration</a>. You probably won't have to change very much in here.</p>
+      </td>
+      <td class=code>
+        <div class='highlight'><pre>config/</pre></div>
+      </td>
+    </tr>
+    <tr id='section-docs'>
+      <td class=docs>
+        <div class="pilwrap">
+          <a class="pilcrow" href="#section-docs">&#182;</a>
+        </div>
+        <p>The <code>docs</code> directory is where this file lives! It's also where the documentation generated from the code ends up after you run <code>rake rocco</code>.</p>
+      </td>
+      <td class=code>
+        <div class='highlight'><pre>docs/</pre></div>
+      </td>
+    </tr>
+    <tr id='section-lib'>
+      <td class=docs>
+        <div class="pilwrap">
+          <a class="pilcrow" href="#section-lib">&#182;</a>
+        </div>
+        <p>The <code>lib</code> directory contains a cryptography module and a directory <code>tasks</code> that contains all the rstat.us-specific rake task definitions.</p>
+      </td>
+      <td class=code>
+        <div class='highlight'><pre>lib/</pre></div>
+      </td>
+    </tr>
+    <tr id='section-log'>
+      <td class=docs>
+        <div class="pilwrap">
+          <a class="pilcrow" href="#section-log">&#182;</a>
+        </div>
+        <p>Rails creates log files when you run a server or the tests. The <code>log</code> directory is where they end up.</p>
+      </td>
+      <td class=code>
+        <div class='highlight'><pre>log/</pre></div>
+      </td>
+    </tr>
+    <tr id='section-public'>
+      <td class=docs>
+        <div class="pilwrap">
+          <a class="pilcrow" href="#section-public">&#182;</a>
+        </div>
+        <p>The <code>public</code> directory is where compiled assets end up. It also holds a few error pages, the site favicon, and the robots.txt.</p>
+      </td>
+      <td class=code>
+        <div class='highlight'><pre>public/</pre></div>
+      </td>
+    </tr>
+    <tr id='section-script'>
+      <td class=docs>
+        <div class="pilwrap">
+          <a class="pilcrow" href="#section-script">&#182;</a>
+        </div>
+        <p>The <code>script</code> directory just holds the script for the <code>rails</code> command. See the <a href="http://guides.rubyonrails.org/command_line.html#command-line-basics">Rails Guide on command line tools</a> for more information.</p>
+      </td>
+      <td class=code>
+        <div class='highlight'><pre>script/</pre></div>
+      </td>
+    </tr>
+    <tr id='section-test'>
+      <td class=docs>
+        <div class="pilwrap">
+          <a class="pilcrow" href="#section-test">&#182;</a>
+        </div>
+        <p>Tests are a very important part of rstat.us! The <code>test</code> directory is full of them. See the <a href="test_index.html">test directory index</a> for more information.</p>
+      </td>
+      <td class=code>
+        <div class='highlight'><pre><a href="test_index.html">test/</a></pre></div>
+      </td>
+    </tr>
+    <tr id='section-tmp'>
+      <td class=docs>
+        <div class="pilwrap">
+          <a class="pilcrow" href="#section-tmp">&#182;</a>
+        </div>
+        <p>The <code>tmp</code> directory contains temporary files like cache or capybara screenshots from the <code>save_and_open_page</code> method. Everything in here is ignored by git.</p>
+      </td>
+      <td class=code>
+        <div class='highlight'><pre>tmp/</pre></div>
+      </td>
+    </tr>
+  </tbody>
+  </table>
+</div>
+</body>
+</html>

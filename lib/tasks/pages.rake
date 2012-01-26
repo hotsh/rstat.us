@@ -1,7 +1,7 @@
 require 'rake/clean'
 
 desc 'Update gh-pages branch'
-task :pages => ['docs/.git', :docs] do
+task :pages => ['docs/.git', :rocco] do
   rev = `git rev-parse --short HEAD`.strip
   Dir.chdir 'docs' do
     sh "git add *.html"
