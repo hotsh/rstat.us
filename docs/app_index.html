@@ -1,0 +1,314 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="content-type" content="text/html;charset=utf-8">
+  <title>app | Rstat.us Code Walkthrough</title>
+  <link rel="stylesheet" href="http://jashkenas.github.com/docco/resources/docco.css">
+  <style type="text/css">
+    hr.light { color: #fefefe; }
+  </style>
+  <script type="text/javascript" src="https://www.google.com/jsapi?key=ABQIAAAAabBpI2NWdOQQ88JkjvfYvxTbJmkTZigc5kHRomvftpLfPYfatxS9Io1VmGVmlYHarQswoz1Vjjy5gw"></script>
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
+  <script type="text/javascript">
+  $(function(){
+    $(document).ready(function(){
+
+
+    });
+  });
+
+  </script>
+</head>
+<body>
+<div id='container'>
+  <div id="background"></div>
+  <div id="jump_to">
+    Jump To &hellip;
+    <div id="jump_wrapper">
+      <div id="jump_page">
+          <a class="source" href="app/controllers/application_controller.html">application_controller.rb</a>
+          <a class="source" href="app/controllers/auth_controller.html">auth_controller.rb</a>
+          <a class="source" href="app/controllers/feeds_controller.html">feeds_controller.rb</a>
+          <a class="source" href="app/controllers/salmon_controller.html">salmon_controller.rb</a>
+          <a class="source" href="app/controllers/searches_controller.html">searches_controller.rb</a>
+          <a class="source" href="app/controllers/sessions_controller.html">sessions_controller.rb</a>
+          <a class="source" href="app/controllers/static_controller.html">static_controller.rb</a>
+          <a class="source" href="app/controllers/subscriptions_controller.html">subscriptions_controller.rb</a>
+          <a class="source" href="app/controllers/updates_controller.html">updates_controller.rb</a>
+          <a class="source" href="app/controllers/users_controller.html">users_controller.rb</a>
+          <a class="source" href="app/controllers/webfinger_controller.html">webfinger_controller.rb</a>
+          <a class="source" href="app/models/author.html">author.rb</a>
+          <a class="source" href="app/models/authorization.html">authorization.rb</a>
+          <a class="source" href="app/models/feed.html">feed.rb</a>
+          <a class="source" href="app/models/notifier.html">notifier.rb</a>
+          <a class="source" href="app/models/update.html">update.rb</a>
+          <a class="source" href="app/models/user.html">user.rb</a>
+      </div>
+    </div>
+  </div>
+  <table cellspacing=0 cellpadding=0>
+  <thead>
+    <tr>
+      <th class=docs><h1>The app directory</h1></th>
+      <th class=code></th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr id='section-intro' class="intro">
+      <td class=docs>
+        <div class="pilwrap">
+          <a class="pilcrow" href="#section-intro">&#182;</a>
+        </div>
+        <p><a href="index.html">Return to the main rstat.us index</a></p>
+        <p>The <code>app</code> directory contains so much that it gets its own index. Rails uses the <a href="http://guides.rubyonrails.org/getting_started.html#the-mvc-architecture">MVC architecture</a> so there are directories for the <code>controllers</code>, <code>models</code>, and <code>views</code>.</p>
+      </td>
+      <td class=code>
+      </td>
+    </tr>
+    <tr id='section-assets'>
+      <td class=docs>
+        <div class="pilwrap">
+          <a class="pilcrow" href="#section-assets">&#182;</a>
+        </div>
+        <p>The <code>assets</code> directory contains rstat.us' images, uncompressed javascript (and <a href="http://coffeescript.org/">coffeescript</a>), and uncompiled <a href="http://sass-lang.com/">SCSS stylesheets</a>.</p>
+      </td>
+      <td class=code>
+        <div class='highlight'><pre>assets/</pre></div>
+      </td>
+    </tr>
+    <tr id='section-controllers'>
+      <td class=docs>
+        <div class="pilwrap">
+          <a class="pilcrow" href="#section-controllers">&#182;</a>
+        </div>
+        <p><a href="http://guides.rubyonrails.org/action_controller_overview.html">Controllers</a> do things like handling authentication, asking models for data, and providing that data to the appropriate view for the request.</p>
+      </td>
+      <td class=code>
+        <div class='highlight'><pre>controllers/</pre></div>
+      </td>
+    </tr>
+    <tr id='section-controllers-application'>
+      <td class=docs>
+        <div class="pilwrap">
+          <a class="pilcrow" href="#section-controllers-application">&#182;</a>
+        </div>
+        <p>The Application Controller defines controller methods that are useful for many of the other controllers, like <code>current_user</code> and <code>set_params_page</code>.</p>
+      </td>
+      <td class=code>
+        <div class='highlight'><pre>|- <a class="source" href="app/controllers/application_controller.html">application_controller.rb</a></pre></div>
+      </td>
+    </tr>
+    <tr id='section-controllers-auth'>
+      <td class=docs>
+        <div class="pilwrap">
+          <a class="pilcrow" href="#section-controllers-auth">&#182;</a>
+        </div>
+        <p>The Auth Controller handles external OAuth requests.</p>
+      </td>
+      <td class=code>
+        <div class='highlight'><pre>|- <a class="source" href="app/controllers/auth_controller.html">auth_controller.rb</a></pre></div>
+      </td>
+    </tr>
+    <tr id='section-controllers-feeds'>
+      <td class=docs>
+        <div class="pilwrap">
+          <a class="pilcrow" href="#section-controllers-feeds">&#182;</a>
+        </div>
+        <p>The Feeds Controller shows a Feed, which is important for PubSubHubbub support.</p>
+      </td>
+      <td class=code>
+        <div class='highlight'><pre>|- <a class="source" href="app/controllers/feeds_controller.html">feeds_controller.rb</a></pre></div>
+      </td>
+    </tr>
+    <tr id='section-controllers-salmon'>
+      <td class=docs>
+        <div class="pilwrap">
+          <a class="pilcrow" href="#section-controllers-salmon">&#182;</a>
+        </div>
+        <p>The Salmon Controller helps implement the <a href="https://salmon-protocol.googlecode.com/svn/trunk/draft-panzer-salmon-00.html">Salmon Protocol</a> for distribution of non-content-based interaction, such as following someone or replying to someone.</p>
+      </td>
+      <td class=code>
+        <div class='highlight'><pre>|- <a class="source" href="app/controllers/salmon_controller.html">salmon_controller.rb</a></pre></div>
+      </td>
+    </tr>
+    <tr id='section-controllers-searches'>
+      <td class=docs>
+        <div class="pilwrap">
+          <a class="pilcrow" href="#section-controllers-searches">&#182;</a>
+        </div>
+        <p>The Searches Controller handles searching.</p>
+      </td>
+      <td class=code>
+        <div class='highlight'><pre>|- <a class="source" href="app/controllers/searches_controller.html">searches_controller.rb</a></pre></div>
+      </td>
+    </tr>
+    <tr id='section-controllers-sessions'>
+      <td class=docs>
+        <div class="pilwrap">
+          <a class="pilcrow" href="#section-controllers-sessions">&#182;</a>
+        </div>
+        <p>The Sessions Controller is for logging in and logging out with a username and password.</p>
+      </td>
+      <td class=code>
+        <div class='highlight'><pre>|- <a class="source" href="app/controllers/sessions_controller.html">sessions_controller.rb</a></pre></div>
+      </td>
+    </tr>
+    <tr id='section-controllers-static'>
+      <td class=docs>
+        <div class="pilwrap">
+          <a class="pilcrow" href="#section-controllers-static">&#182;</a>
+        </div>
+        <p>The Static Controller just goes to the pages on rstat.us that just show information and don't have much interactivity to them.</p>
+      </td>
+      <td class=code>
+        <div class='highlight'><pre>|- <a class="source" href="app/controllers/static_controller.html">static_controller.rb</a></pre></div>
+      </td>
+    </tr>
+    <tr id='section-controllers-subscriptions'>
+      <td class=docs>
+        <div class="pilwrap">
+          <a class="pilcrow" href="#section-controllers-subscriptions">&#182;</a>
+        </div>
+        <p>The Subscriptions Controller is in charge of following and unfollowing.</p>
+      </td>
+      <td class=code>
+        <div class='highlight'><pre>|- <a class="source" href="app/controllers/subscriptions_controller.html">subscriptions_controller.rb</a></pre></div>
+      </td>
+    </tr>
+    <tr id='section-controllers-updates'>
+      <td class=docs>
+        <div class="pilwrap">
+          <a class="pilcrow" href="#section-controllers-updates">&#182;</a>
+        </div>
+        <p>The Updates Controller is what does the posting and displaying of statuses.</p>
+      </td>
+      <td class=code>
+        <div class='highlight'><pre>|- <a class="source" href="app/controllers/updates_controller.html">updates_controller.rb</a></pre></div>
+      </td>
+    </tr>
+    <tr id='section-controllers-users'>
+      <td class=docs>
+        <div class="pilwrap">
+          <a class="pilcrow" href="#section-controllers-users">&#182;</a>
+        </div>
+        <p>The Users Controller is what gets called when someone signs up for an account, edits their profile, requests a password reset, or resets their password. It also shows an individual user profile as well as a user's following and followers pages.</p>
+      </td>
+      <td class=code>
+        <div class='highlight'><pre>|- <a class="source" href="app/controllers/users_controller.html">users_controller.rb</a></pre></div>
+      </td>
+    </tr>
+    <tr id='section-controllers-webfinger'>
+      <td class=docs>
+        <div class="pilwrap">
+          <a class="pilcrow" href="#section-controllers-webfinger">&#182;</a>
+        </div>
+        <p>The Webfinger Controller is what implements the <a href="https://code.google.com/p/webfinger/wiki/WebFingerProtocol">Webfinger protocol</a>, which is a way to figure out user information from an identifier like <em>username@rstat.us</em>.</p>
+      </td>
+      <td class=code>
+        <div class='highlight'><pre>|- <a class="source" href="app/controllers/webfinger_controller.html">webfinger_controller.rb</a></pre></div>
+      </td>
+    </tr>
+    <tr id='section-helpers'>
+      <td class=docs>
+        <div class="pilwrap">
+          <a class="pilcrow" href="#section-helpers">&#182;</a>
+        </div>
+        <p>The <code>helpers</code> directory only has one file, which only has one method, in it right now. Helpers have gone out of style of late.</p>
+      </td>
+      <td class=code>
+        <div class='highlight'><pre>helpers/</pre></div>
+      </td>
+    </tr>
+    <tr id='section-models'>
+      <td class=docs>
+        <div class="pilwrap">
+          <a class="pilcrow" href="#section-models">&#182;</a>
+        </div>
+        <p>The classes in <code>models</code> are the business objects of the system. If you are familiar with Rails, you will notice that these objects do not inherit from <code>ActiveRecord::Base</code> like most Rails models do-- instead, they <code>include MongoMapper::Document</code>. This is because rstat.us uses <a href="http://www.mongodb.org/">MongoDB</a> (a NoSQL database) and <a href="http://mongomapper.com/">MongoMapper</a> to interface with Rails.</p>
+      </td>
+      <td class=code>
+        <div class='highlight'><pre>models/</pre></div>
+      </td>
+    </tr>
+    <tr id='section-models-author'>
+      <td class=docs>
+        <div class="pilwrap">
+          <a class="pilcrow" href="#section-models-author">&#182;</a>
+        </div>
+        <p>An Author is an entity that produces Updates. Authors <strong>may</strong> have corresponding rstat.us Users as well, but they may also be users on another OStatus site.</p>
+      </td>
+      <td class=code>
+        <div class='highlight'><pre>|- <a class="source" href="app/models/author.html">author.rb</a></pre></div>
+      </td>
+    </tr>
+    <tr id='section-models-authorization'>
+      <td class=docs>
+        <div class="pilwrap">
+          <a class="pilcrow" href="#section-models-authorization">&#182;</a>
+        </div>
+        <p>An Authorization is an ability of a User to log in to rstat.us. Currently, the only ways an Authorization is created are if a User logs in to rstat.us with Twitter or a User associates their Twitter account with their existing rstat.us email account.</p>
+      </td>
+      <td class=code>
+        <div class='highlight'><pre>|- <a class="source" href="app/models/authorization.html">authorization.rb</a></pre></div>
+      </td>
+    </tr>
+    <tr id='section-models-feed'>
+      <td class=docs>
+        <div class="pilwrap">
+          <a class="pilcrow" href="#section-models-feed">&#182;</a>
+        </div>
+        <p>Feeds are representations of <a href="http://ostatus.org/sites/default/files/ostatus-1.0-draft-2-specification.html">PuSH enabled Atom feeds</a>. Each rstat.us User has a Feed of their updates, and rstat.us keeps a local Feed for each remote Feed that an rstat.us User subscribes to.</p>
+      </td>
+      <td class=code>
+        <div class='highlight'><pre>|- <a class="source" href="app/models/feed.html">feed.rb</a></pre></div>
+      </td>
+    </tr>
+    <tr id='section-models-notifier'>
+      <td class=docs>
+        <div class="pilwrap">
+          <a class="pilcrow" href="#section-models-notifier">&#182;</a>
+        </div>
+        <p>Notifier is a class that sends emails to Users such as password reset links or email confirmation links.</p>
+      </td>
+      <td class=code>
+        <div class='highlight'><pre>|- <a class="source" href="app/models/notifier.html">notifier.rb</a></pre></div>
+      </td>
+    </tr>
+    <tr id='section-models-update'>
+      <td class=docs>
+        <div class="pilwrap">
+          <a class="pilcrow" href="#section-models-update">&#182;</a>
+        </div>
+        <p>An Update is an individual status posted either by an rstat.us User or a remote user being followed by someone on rstat.us.</p>
+      </td>
+      <td class=code>
+        <div class='highlight'><pre>|- <a class="source" href="app/models/update.html">update.rb</a></pre></div>
+      </td>
+    </tr>
+    <tr id='section-models-user'>
+      <td class=docs>
+        <div class="pilwrap">
+          <a class="pilcrow" href="#section-models-user">&#182;</a>
+        </div>
+        <p>A User is someone who has signed in to rstat.us. All Users have Authors and Feeds associated with them.</p>
+      </td>
+      <td class=code>
+        <div class='highlight'><pre>|- <a class="source" href="app/models/user.html">user.rb</a></pre></div>
+      </td>
+    </tr>
+    <tr id='section-views'>
+      <td class=docs>
+        <div class="pilwrap">
+          <a class="pilcrow" href="#section-views">&#182;</a>
+        </div>
+        <p><a href="http://guides.rubyonrails.org/layouts_and_rendering.html">Views</a> are templates for rendering HTML. Rstat.us uses <a href="http://haml-lang.com/">haml</a> as its templating language instead of the Rails default of erb. The subdirectories loosely correspond to the controllers' actions, plus common outer HTML in <code>layouts</code> and common repeated HTML in <code>shared</code>.</p>
+      </td>
+      <td class=code>
+        <div class='highlight'><pre>views/</pre></div>
+      </td>
+    </tr>
+  </tbody>
+  </table>
+</div>
+</body>
+</html>

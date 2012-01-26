@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="content-type" content="text/html;charset=utf-8">
+  <title>Rstat.us Code Walkthrough</title>
+  <link rel="stylesheet" href="http://jashkenas.github.com/docco/resources/docco.css">
+  <style type="text/css">
+    hr.light { color: #fefefe; }
+  </style>
+  <script type="text/javascript" src="https://www.google.com/jsapi?key=ABQIAAAAabBpI2NWdOQQ88JkjvfYvxTbJmkTZigc5kHRomvftpLfPYfatxS9Io1VmGVmlYHarQswoz1Vjjy5gw"></script>
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
+  <script type="text/javascript">
+  $(function(){
+    $(document).ready(function(){
+
+
+    });
+  });
+
+  </script>
+</head>
+<body>
+<div id='container'>
+  <div id="background"></div>
+  <div id="jump_to">
+    Jump To &hellip;
+    <div id="jump_wrapper">
+      <div id="jump_page">
+          <a class="source" href="app/controllers/application_controller.html">application_controller.rb</a>
+          <a class="source" href="app/controllers/auth_controller.html">auth_controller.rb</a>
+          <a class="source" href="app/controllers/feeds_controller.html">feeds_controller.rb</a>
+          <a class="source" href="app/controllers/salmon_controller.html">salmon_controller.rb</a>
+          <a class="source" href="app/controllers/searches_controller.html">searches_controller.rb</a>
+          <a class="source" href="app/controllers/sessions_controller.html">sessions_controller.rb</a>
+          <a class="source" href="app/controllers/static_controller.html">static_controller.rb</a>
+          <a class="source" href="app/controllers/subscriptions_controller.html">subscriptions_controller.rb</a>
+          <a class="source" href="app/controllers/updates_controller.html">updates_controller.rb</a>
+          <a class="source" href="app/controllers/users_controller.html">users_controller.rb</a>
+          <a class="source" href="app/controllers/webfinger_controller.html">webfinger_controller.rb</a>
+          <a class="source" href="app/models/author.html">author.rb</a>
+          <a class="source" href="app/models/authorization.html">authorization.rb</a>
+          <a class="source" href="app/models/feed.html">feed.rb</a>
+          <a class="source" href="app/models/notifier.html">notifier.rb</a>
+          <a class="source" href="app/models/update.html">update.rb</a>
+          <a class="source" href="app/models/user.html">user.rb</a>
+      </div>
+    </div>
+  </div>
+  <table cellspacing=0 cellpadding=0>
+  <thead>
+    <tr>
+      <th class=docs><h1>The test directory</h1></th>
+      <th class=code></th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr id='section-intro' class="intro">
+      <td class=docs>
+        <div class="pilwrap">
+          <a class="pilcrow" href="#section-intro">&#182;</a>
+        </div>
+        <p><a href="index.html">Return to the main rstat.us index</a></p>
+        <p>We like tests a lot. They give us confidence to change the code and know that we haven't broken anything known to have worked before. We use <a href="http://bfts.rubyforge.org/minitest/">minitest/minispec</a>-- we tend to use minispec's <code>describe</code> and <code>it</code> for organization and minitest's <code>assert</code>s. To run all the tests, you can run <code>rake test</code>. Run <code>rake -T</code> and look for test to see ways you can run subsets of tests.
+      </td>
+      <td class=code>
+      </td>
+    </tr>
+    <tr id='section-test-acceptance'>
+      <td class=docs>
+        <div class="pilwrap">
+          <a class="pilcrow" href="#section-test-acceptance">&#182;</a>
+        </div>
+        <p>The <code>acceptance</code> test directory contains tests that use the whole stack. They make use of <a href="https://github.com/jnicklas/capybara">capybara</a> to simulate visiting pages, clicking links, and other browser-based behaviors. If you have found a bug while using rstat.us, it is often easiest to write an acceptance test first to reproduce it in exactly the way that you did as a user. These typically take a while to run.</p>
+      </td>
+      <td class=code>
+        <div class='highlight'><pre>acceptance/</pre></div>
+      </td>
+    </tr>
+    <tr id='section-test-data'>
+      <td class=docs>
+        <div class="pilwrap">
+          <a class="pilcrow" href="#section-test-data">&#182;</a>
+        </div>
+        <p>The test <code>data</code> directory, right now, just contains <a href="http://relishapp.com/myronmarston/vcr">VCR</a> cassettes. No, not the precursors to DVDs-- it's a way to "record" and "replay" interactions with 3rd party resources such as hubs. This enables us to have consistently reproducible test cases, as well as not actually making updates all over the internet.</p>
+      </td>
+      <td class=code>
+        <div class='highlight'><pre>data/</pre></div>
+      </td>
+    </tr>
+    <tr id='section-test-factories'>
+      <td class=docs>
+        <div class="pilwrap">
+          <a class="pilcrow" href="#section-test-factories">&#182;</a>
+        </div>
+        <p>Factories are ways to easily create objects in tests without having to specify every attribute every time. Rstat.us uses <a href="https://github.com/thoughtbot/factory_girl">factory_girl</a> for this.</p>
+      </td>
+      <td class=code>
+        <div class='highlight'><pre>factories.rb</pre></div>
+      </td>
+    </tr>
+    <tr id='section-test-models'>
+      <td class=docs>
+        <div class="pilwrap">
+          <a class="pilcrow" href="#section-test-models">&#182;</a>
+        </div>
+        <p>The <code>models</code> test directory contains unit tests. We don't have unit tests for controllers or views-- most of the logic is (or should be) in the models. If you've isolated a problem to something you can reproduce with just objects, it would be best to create a unit test. They are faster to run and easier to be sure that no other component is involved with what's being tested.</p>
+      </td>
+      <td class=code>
+        <div class='highlight'><pre>models/</pre></div>
+      </td>
+    </tr>
+    <tr id='section-test-test_helper'>
+      <td class=docs>
+        <div class="pilwrap">
+          <a class="pilcrow" href="#section-test-test_helper">&#182;</a>
+        </div>
+        <p>The test helper file has some configuration and methods that are useful for many of the tests.</p>
+      </td>
+      <td class=code>
+        <div class='highlight'><pre>test_helper.rb</pre></div>
+      </td>
+    </tr>
+  </tbody>
+  </table>
+</div>
+</body>
+</html>
