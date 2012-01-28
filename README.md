@@ -57,6 +57,7 @@ If you'd like to contribute, we'd love to have you! Here are some details:
 ## Development Roadmap
 
 In the first half of 2012, we plan to work on:
+
 - Fixing user-facing bugs or cutting buggy parts of the app
 - Fixing OStatus support
 - Implementing a RESTful API
