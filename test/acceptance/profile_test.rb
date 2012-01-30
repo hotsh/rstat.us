@@ -12,12 +12,11 @@ describe "profile" do
   end
 
   it "allows viewing of profiles when username contains a dot" do
-    u1 = Factory(:user, :username => "foo")
-    u2 = Factory(:user, :username => "foo.bar")
-    visit "/users/#{u2.username}"
+    u = Factory(:user, :username => "foo.bar")
+    visit "/users/#{u.username}"
 
     page.within('div.nickname') do
-      assert_match /@foo.bar/, text
+      assert_match /@foo\.bar/, text
     end
   end
 
