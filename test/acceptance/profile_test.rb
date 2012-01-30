@@ -11,6 +11,16 @@ describe "profile" do
     assert_equal url, page.current_url
   end
 
+  it "allows viewing of profiles when username contains a dot" do
+    u1 = Factory(:user, :username => "foo")
+    u2 = Factory(:user, :username => "foo.bar")
+    visit "/users/#{u2.username}"
+
+    page.within('div.nickname') do
+      assert_match /@foo.bar/, text
+    end
+  end
+
   it "has the user's updates on the page in reverse chronological order" do
     skip "This is failing on Travis but not locally and we don't know why"
     u = Factory(:user)

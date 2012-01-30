@@ -22,11 +22,12 @@ RstatUs::Application.routes.draw do
   match '/users/:username/auth/:provider', :via => :delete, :to => "auth#destroy"
 
   # Users
-  resources :users
-  match "users/:id/feed", :to => "users#feed", :as => "user_feed"
+  resources :users, :constraints => { :id => /[^\/]+/ }
+  match "users/:id/feed", :to => "users#feed", :as => "user_feed", :constraints => { :id => /[^\/]+/ }
+
   # other new route?
-  match 'users/:id/followers', :to => "users#followers"
-  match 'users/:id/following', :to => "users#following"
+  match 'users/:id/followers', :to => "users#followers", :constraints => { :id => /[^\/]+/ }
+  match 'users/:id/following', :to => "users#following", :constraints => { :id => /[^\/]+/ }
   match 'confirm_email/:token', :to => "users#confirm_email"
   match 'forgot_password', :to => "users#forgot_password_new", :via => :get
   match 'forgot_password', :to => "users#forgot_password_create", :via => :post
@@ -48,7 +49,7 @@ RstatUs::Application.routes.draw do
 
   # Webfinger
   match '.well-known/host-meta', :to => "webfinger#host_meta"
-  match 'users/:username/xrd.xml', :to => "webfinger#xrd", :as => "user_xrd"
+  match 'users/:username/xrd.xml', :to => "webfinger#xrd", :as => "user_xrd", :constraints => { :username => /[^\/]+/ }
 
   # Salmon
   match 'feeds/:id/salmon', :to => "salmon#feeds"
