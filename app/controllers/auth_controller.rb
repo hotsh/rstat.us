@@ -86,6 +86,8 @@ class AuthController < ApplicationController
     if user
       auth = Authorization.first(:provider => params[:provider], :user_id => user.id)
       auth.destroy if auth
+      # Without re-setting the session[:user_id] we're logged out
+      session[:user_id] = user.id
     end
     redirect_to "/users/#{params[:username]}/edit"
   end
