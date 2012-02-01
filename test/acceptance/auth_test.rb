@@ -30,6 +30,16 @@ describe "Authorization" do
 
   # -- The real tests begin here:
   describe "associating users and authorizations" do
+    describe "username" do
+      it "username is case insensitive" do
+        u = Factory(:user)
+        u.username = u.username.upcase
+        log_in_email(u)
+
+        assert page.has_content?("Login successful")
+      end
+    end
+
     describe "twitter" do
       it "can add twitter to an account" do
         u = Factory(:user)
