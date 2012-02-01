@@ -10,7 +10,7 @@ class SessionsController < ApplicationController
   # check if you're there, which is the first half of the `if`. The `else`
   # is your run-of-the-mill login procedure.
   def create
-    u = User.first :username => params[:username]
+    u = User.find_by_case_insensitive_username(params[:username])
     if u.nil?
       # Grab the domain for this author from the request url
       params[:domain] = root_url

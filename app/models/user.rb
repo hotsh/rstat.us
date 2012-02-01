@@ -287,7 +287,7 @@ class User
 
   # Authenticate the user by checking their credentials
   def self.authenticate(username, pass)
-    user = User.first(:username => username)
+    user = User.find_by_case_insensitive_username(username)
     return nil if user.nil?
     return user if BCrypt::Password.new(user.hashed_password) == pass
     nil
