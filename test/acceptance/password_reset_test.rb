@@ -7,7 +7,7 @@ describe "password reset" do
   describe "token" do
     it "has a reset password link with a token" do
       u = Fabricate(:user, :email => "someone@somewhere.com")
-      token = u.set_password_reset_token
+      token = u.create_token
       visit "/reset_password/#{token}"
 
       assert_match "Set Password", page.body
@@ -23,8 +23,8 @@ describe "password reset" do
 
     it "rejects an expired token" do
       u = Fabricate(:user, :email => "someone@somewhere.com")
-      token = u.set_password_reset_token
-      u.password_reset_sent = 5.days.ago
+      token = u.create_token
+      u.perishable_token_set = 5.days.ago
       u.save
 
       visit "/reset_password/#{token}"
@@ -35,7 +35,7 @@ describe "password reset" do
 
     it "requires a new password" do
       u = Fabricate(:user, :email => "someone@somewhere.com")
-      token = u.set_password_reset_token
+      token = u.create_token
       visit "/reset_password/#{token}"
 
       fill_in "password", :with => ""
@@ -47,7 +47,7 @@ describe "password reset" do
 
     it "requires the password and confirmation to match" do
       u = Fabricate(:user, :email => "someone@somewhere.com")
-      token = u.set_password_reset_token
+      token = u.create_token
       visit "/reset_password/#{token}"
 
       fill_in "password", :with => "password"
@@ -60,7 +60,7 @@ describe "password reset" do
 
     it "resets the password" do
       u = Fabricate(:user, :email => "someone@somewhere.com")
-      token = u.set_password_reset_token
+      token = u.create_token
       visit "/reset_password/#{token}"
 
       fill_in "password", :with => "password"
