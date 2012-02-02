@@ -3,11 +3,11 @@ require_relative '../test_helper'
 describe Authorization do
   include TestHelper
   before do
-    @u = Factory(:user)
+    @u = Fabricate(:user)
   end
 
   it "can be found from a hash" do
-    a = Factory(:authorization, :user => @u)
+    a = Fabricate(:authorization, :user => @u)
 
     assert_equal a, Authorization.find_from_hash(auth_response(@u.username, {:uid => a.uid}))
   end

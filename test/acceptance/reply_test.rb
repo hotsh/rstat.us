@@ -5,11 +5,11 @@ describe "replies" do
   include AcceptanceHelper
 
   it "shows replies" do
-    u = Factory(:user)
-    a = Factory(:authorization, :user => u)
+    u = Fabricate(:user)
+    a = Fabricate(:authorization, :user => u)
 
-    u2 = Factory(:user)
-    u2.feed.updates << Factory(:update, :text => "@#{u.username} Hey man.")
+    u2 = Fabricate(:user)
+    u2.feed.updates << Fabricate(:update, :text => "@#{u.username} Hey man.")
 
     log_in(u, a.uid)
 
@@ -19,13 +19,13 @@ describe "replies" do
   end
 
   it "shows replies with css class mention" do
-    u = Factory(:user)
-    a = Factory(:authorization, :user => u)
+    u = Fabricate(:user)
+    a = Fabricate(:authorization, :user => u)
 
-    u2 = Factory(:user)
-    a2 = Factory(:authorization, :user => u2)
-    u2.feed.updates << Factory(:update, :text => "@#{u.username} Hey man.")
-    u.feed.updates << Factory(:update, :text => "some text @someone, @#{u2.username} Hey man.")
+    u2 = Fabricate(:user)
+    a2 = Fabricate(:authorization, :user => u2)
+    u2.feed.updates << Fabricate(:update, :text => "@#{u.username} Hey man.")
+    u.feed.updates << Fabricate(:update, :text => "some text @someone, @#{u2.username} Hey man.")
     log_in(u, a.uid)
     visit "/updates"
 

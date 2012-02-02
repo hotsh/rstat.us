@@ -10,27 +10,27 @@ describe "basic access" do
   end
 
   it "visits feeds" do
-    author = Factory(:author)
+    author = Fabricate(:author)
     feed = author.feed
     visit "/feeds/#{feed.id}.atom"
     assert_equal 200, page.status_code
   end
 
   it "visits my user feed" do
-    u = Factory(:user)
+    u = Fabricate(:user)
     visit "/users/#{u.username}/feed"
     assert_equal 200, page.status_code
   end
 
   it "visits my profile" do
-    u = Factory(:user)
+    u = Fabricate(:user)
     visit "/users/#{u.username}"
     assert_equal 200, page.status_code
   end
 
   it "edits my profile" do
-    u = Factory(:user)
-    a = Factory(:authorization, :user => u)
+    u = Fabricate(:user)
+    a = Fabricate(:authorization, :user => u)
     log_in(u, a.uid)
     visit "/users/#{u.username}"
     click_link "Edit"

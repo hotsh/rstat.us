@@ -6,12 +6,12 @@ describe "following" do
 
   describe "yourself" do
     it "doesn't make you follow yourself after signing up" do
-      u = Factory(:user)
+      u = Fabricate(:user)
       refute u.following_url? u.feed.url
     end
 
     it "disallows following yourself" do
-      u = Factory(:user)
+      u = Fabricate(:user)
       u.follow! u.feed
       refute u.following_url? u.feed.url
     end
@@ -19,8 +19,8 @@ describe "following" do
 
   describe "other sites" do
     before do
-      @u = Factory(:user)
-      @a = Factory(:authorization, :user => @u)
+      @u = Fabricate(:user)
+      @a = Fabricate(:authorization, :user => @u)
       log_in(@u, @a.uid)
       visit "/"
       click_link "Follow Remote User"
@@ -53,8 +53,8 @@ describe "following" do
     end
 
     it "only creates one Feed per remote_url" do
-      u2 = Factory(:user)
-      a2 = Factory(:authorization, :user => u2)
+      u2 = Fabricate(:user)
+      a2 = Fabricate(:authorization, :user => u2)
       log_in(u2, a2.uid)
       visit "/"
       click_link "Follow Remote User"
@@ -74,10 +74,10 @@ describe "following" do
 
   describe "on rstat.us" do
     it "follows another user" do
-      u = Factory(:user)
-      a = Factory(:authorization, :user => u)
+      u = Fabricate(:user)
+      a = Fabricate(:authorization, :user => u)
 
-      u2 = Factory(:user)
+      u2 = Fabricate(:user)
 
       log_in(u, a.uid)
 
@@ -88,11 +88,11 @@ describe "following" do
     end
 
     it "unfollows another user" do
-      u = Factory(:user)
-      a = Factory(:authorization, :user => u)
+      u = Fabricate(:user)
+      a = Fabricate(:authorization, :user => u)
 
-      u2 = Factory(:user)
-      a2 = Factory(:authorization, :user => u2)
+      u2 = Fabricate(:user)
+      a2 = Fabricate(:authorization, :user => u2)
 
       log_in(u, a.uid)
       u.follow! u2.feed
@@ -108,10 +108,10 @@ describe "following" do
 
   describe "/following" do
     it "maintains the order in which you follow people" do
-      aardvark = Factory(:user, :username => "aardvark")
-      zebra    = Factory(:user, :username => "zebra")
-      leopard  = Factory(:user, :username => "leopard")
-      a = Factory(:authorization, :user => aardvark)
+      aardvark = Fabricate(:user, :username => "aardvark")
+      zebra    = Fabricate(:user, :username => "zebra")
+      leopard  = Fabricate(:user, :username => "leopard")
+      a = Fabricate(:authorization, :user => aardvark)
 
       aardvark.follow! zebra.feed
       aardvark.follow! leopard.feed
@@ -123,12 +123,12 @@ describe "following" do
     end
 
     it "outputs json" do
-      u = Factory(:user)
-      a = Factory(:authorization, :user => u)
+      u = Fabricate(:user)
+      a = Fabricate(:authorization, :user => u)
 
       log_in(u, a.uid)
 
-      u2 = Factory(:user, :username => "user1")
+      u2 = Fabricate(:user, :username => "user1")
       u.follow! u2.feed
 
       visit "/users/#{u.username}/following.json"
@@ -138,8 +138,8 @@ describe "following" do
     end
 
     it "properly displays title on your following page when logged in" do
-      u = Factory(:user, :username => "dfnkt")
-      a = Factory(:authorization, :user => u)
+      u = Fabricate(:user, :username => "dfnkt")
+      a = Fabricate(:authorization, :user => u)
 
       log_in(u, a.uid)
 
@@ -149,14 +149,14 @@ describe "following" do
     end
 
     it "uses your username if not logged in" do
-      u = Factory(:user, :username => "dfnkt")
+      u = Fabricate(:user, :username => "dfnkt")
 
       visit "/users/#{u.username}/following"
       assert_match "#{u.username} is following", page.body
     end
 
     it "redirects to the correct case" do
-      u = Factory(:user, :username => "dfnkt")
+      u = Fabricate(:user, :username => "dfnkt")
 
       visit "/users/#{u.username.upcase}/following"
       assert_match "#{u.username} is following", page.body
@@ -169,7 +169,7 @@ describe "following" do
     end
 
     it "has a nice message if not following anyone" do
-      u = Factory(:user, :username => "dfnkt")
+      u = Fabricate(:user, :username => "dfnkt")
 
       visit "/users/#{u.username}/following"
 
@@ -178,13 +178,13 @@ describe "following" do
 
     describe "pagination" do
       before do
-        @u = Factory(:user)
-        a = Factory(:authorization, :user => @u)
+        @u = Fabricate(:user)
+        a = Fabricate(:authorization, :user => @u)
 
         log_in(@u, a.uid)
 
         5.times do
-          u2 = Factory(:user)
+          u2 = Fabricate(:user)
           @u.follow! u2.feed
         end
       end
@@ -224,11 +224,11 @@ describe "following" do
 
   describe "/followers" do
     it "maintains the order in which people follow you" do
-      aardvark = Factory(:user, :username => "aardvark")
-      zebra    = Factory(:user, :username => "zebra")
-      leopard  = Factory(:user, :username => "leopard")
+      aardvark = Fabricate(:user, :username => "aardvark")
+      zebra    = Fabricate(:user, :username => "zebra")
+      leopard  = Fabricate(:user, :username => "leopard")
 
-      aardvark_auth = Factory(:authorization, :user => aardvark)
+      aardvark_auth = Fabricate(:authorization, :user => aardvark)
 
       zebra.follow! aardvark.feed
       leopard.follow! aardvark.feed
@@ -239,8 +239,8 @@ describe "following" do
     end
 
     it "properly displays title on your followers page when logged in" do
-      u = Factory(:user, :username => "dfnkt")
-      a = Factory(:authorization, :user => u)
+      u = Fabricate(:user, :username => "dfnkt")
+      a = Fabricate(:authorization, :user => u)
 
       log_in(u, a.uid)
 
@@ -250,14 +250,14 @@ describe "following" do
     end
 
     it "uses your username if not logged in" do
-      u = Factory(:user, :username => "dfnkt")
+      u = Fabricate(:user, :username => "dfnkt")
 
       visit "/users/#{u.username}/followers"
       assert_match "#{u.username}'s followers", page.body
     end
 
     it "redirects to the correct case" do
-      u = Factory(:user, :username => "dfnkt")
+      u = Fabricate(:user, :username => "dfnkt")
 
       visit "/users/#{u.username.upcase}/followers"
       assert_match "#{u.username}'s followers", page.body
@@ -270,7 +270,7 @@ describe "following" do
     end
 
     it "has a nice message if not followed by anyone" do
-      u = Factory(:user, :username => "dfnkt")
+      u = Fabricate(:user, :username => "dfnkt")
 
       visit "/users/#{u.username}/followers"
 
@@ -279,13 +279,13 @@ describe "following" do
 
     describe "pagination" do
       before do
-        @u = Factory(:user)
-        a = Factory(:authorization, :user => @u)
+        @u = Fabricate(:user)
+        a = Fabricate(:authorization, :user => @u)
 
         log_in(@u, a.uid)
 
         5.times do
-          u2 = Factory(:user)
+          u2 = Fabricate(:user)
           u2.follow! @u.feed
         end
       end

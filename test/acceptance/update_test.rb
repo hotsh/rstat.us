@@ -5,12 +5,12 @@ describe "update" do
   include AcceptanceHelper
 
   it "renders your feed" do
-    author = Factory(:author)
+    author = Fabricate(:author)
     feed = author.feed
 
     updates = []
     5.times do
-      updates << Factory(:update)
+      updates << Fabricate(:update)
     end
 
     feed.updates = updates
@@ -24,11 +24,11 @@ describe "update" do
   end
 
   it "renders the world's updates" do
-    u = Factory(:user)
-    a = Factory(:authorization, :user => u)
+    u = Fabricate(:user)
+    a = Fabricate(:authorization, :user => u)
 
-    u2 = Factory(:user)
-    update = Factory(:update)
+    u2 = Fabricate(:user)
+    update = Fabricate(:update)
     u2.feed.updates << update
 
     log_in(u, a.uid)
@@ -39,8 +39,8 @@ describe "update" do
   end
 
   it "makes an update" do
-    u = Factory(:user)
-    a = Factory(:authorization, :user => u)
+    u = Fabricate(:user)
+    a = Fabricate(:authorization, :user => u)
     update_text = "Testing, testing"
     params = {
       :text => update_text
@@ -57,8 +57,8 @@ describe "update" do
   end
 
   it "makes a short update" do
-    u = Factory(:user)
-    a = Factory(:authorization, :user => u)
+    u = Fabricate(:user)
+    a = Fabricate(:authorization, :user => u)
     update_text = "Q"
     params = {
       :text => update_text
@@ -75,8 +75,8 @@ describe "update" do
   end
 
   it "stays on the same page after updating" do
-    u = Factory(:user)
-    a = Factory(:authorization, :user => u)
+    u = Fabricate(:user)
+    a = Fabricate(:authorization, :user => u)
 
     log_in(u, a.uid)
 
@@ -100,15 +100,15 @@ describe "update" do
   end
 
   it "shows one update" do
-    update = Factory(:update)
+    update = Fabricate(:update)
 
     visit "/updates/#{update.id}"
     assert_match page.body, /#{update.text}/
   end
 
   it "shows an update in reply to another update" do
-    update = Factory(:update)
-    update2 = Factory(:update)
+    update = Fabricate(:update)
+    update2 = Fabricate(:update)
     update2.referral_id = update.id
     update2.save
 
@@ -119,8 +119,8 @@ describe "update" do
 
   describe "update with hashtag" do
     it "creates a working hashtag link" do
-      u = Factory(:user)
-      a = Factory(:authorization, :user => u)
+      u = Fabricate(:user)
+      a = Fabricate(:authorization, :user => u)
 
       log_in(u, a.uid)
 
@@ -139,11 +139,11 @@ describe "update" do
     update = nil
     u2 = nil
     before do
-      u = Factory(:user)
-      a = Factory(:authorization, :user => u)
+      u = Fabricate(:user)
+      a = Fabricate(:authorization, :user => u)
 
-      u2 = Factory(:user)
-      update = Factory(
+      u2 = Fabricate(:user)
+      update = Fabricate(
            :update,
            :author => u2.author)
       u2.feed.updates << update
@@ -168,10 +168,10 @@ describe "update" do
   describe "pagination" do
     it "does not paginate when there are too few" do
       5.times do
-        Factory(:update)
+        Fabricate(:update)
       end
 
-      u = Factory(:user)
+      u = Fabricate(:user)
       log_in_email(u)
       visit "/updates"
 
@@ -181,10 +181,10 @@ describe "update" do
 
     it "paginates forward only if on the first page" do
       30.times do
-        Factory(:update)
+        Fabricate(:update)
       end
 
-      u = Factory(:user)
+      u = Fabricate(:user)
       log_in_email(u)
       visit "/updates"
 
@@ -193,11 +193,11 @@ describe "update" do
     end
 
     it "paginates backward only if on the last page" do
-      u = Factory(:user)
+      u = Fabricate(:user)
       log_in_email(u)
 
       30.times do
-        Factory(:update)
+        Fabricate(:update)
       end
 
       visit "/updates"
@@ -209,10 +209,10 @@ describe "update" do
 
     it "paginates forward and backward if on a middle page" do
       54.times do
-        Factory(:update)
+        Fabricate(:update)
       end
 
-      u = Factory(:user)
+      u = Fabricate(:user)
       log_in_email(u)
       visit "/updates"
       click_link "next_button"
@@ -224,8 +224,8 @@ describe "update" do
 
   describe "Post to message" do
     it "displays for a twitter user" do
-      u = Factory(:user)
-      a = Factory(:authorization, :user => u, :provider => "twitter")
+      u = Fabricate(:user)
+      a = Fabricate(:authorization, :user => u, :provider => "twitter")
       log_in(u, a.uid)
       visit "/updates"
 
@@ -233,7 +233,7 @@ describe "update" do
     end
 
     it "does not display for an email user" do
-      u = Factory(:user)
+      u = Fabricate(:user)
       log_in_email(u)
       visit "/updates"
 
@@ -243,7 +243,7 @@ describe "update" do
 
   describe "no update messages" do
     it "renders tagline default for timeline" do
-      u = Factory(:user)
+      u = Fabricate(:user)
       log_in_email(u)
       visit "/timeline"
 
@@ -251,7 +251,7 @@ describe "update" do
     end
 
     it "renders tagline default for replies" do
-      u = Factory(:user)
+      u = Fabricate(:user)
       log_in_email(u)
       visit "/replies"
 
@@ -259,7 +259,7 @@ describe "update" do
     end
 
     it "renders locals[:tagline] for search" do
-      u = Factory(:user)
+      u = Fabricate(:user)
       log_in_email(u)
       visit "/search"
 
@@ -269,10 +269,10 @@ describe "update" do
 
   describe "timeline" do
     it "has a status of myself in my timeline" do
-      u = Factory(:user)
-      a = Factory(:authorization, :user => u)
+      u = Fabricate(:user)
+      a = Fabricate(:authorization, :user => u)
 
-      update = Factory(
+      update = Fabricate(
                  :update,
                  :author => u.author)
       u.feed.updates << update
@@ -283,11 +283,11 @@ describe "update" do
     end
 
     it "has a status of someone i'm following in my timeline" do
-      u = Factory(:user)
-      a = Factory(:authorization, :user => u)
+      u = Fabricate(:user)
+      a = Fabricate(:authorization, :user => u)
 
-      u2 = Factory(:user)
-      update = Factory(
+      u2 = Fabricate(:user)
+      update = Fabricate(
                  :update,
                  :author => u2.author)
       u2.feed.updates << update
@@ -299,11 +299,11 @@ describe "update" do
     end
 
     it "does not have a status of someone i'm not following in my timeline" do
-      u = Factory(:user)
-      a = Factory(:authorization, :user => u)
+      u = Fabricate(:user)
+      a = Fabricate(:authorization, :user => u)
 
-      u2 = Factory(:user)
-      update = Factory(
+      u2 = Fabricate(:user)
+      update = Fabricate(
                  :update,
                  :author => u2.author)
       u2.feed.updates << update
@@ -316,10 +316,10 @@ describe "update" do
 
   describe "world" do
     it "has my updates in the world view" do
-      u = Factory(:user)
-      a = Factory(:authorization, :user => u)
+      u = Fabricate(:user)
+      a = Fabricate(:authorization, :user => u)
 
-      update = Factory(
+      update = Fabricate(
                  :update,
                  :author => u.author)
       u.feed.updates << update
@@ -330,11 +330,11 @@ describe "update" do
     end
 
     it "has someone i'm following in the world view" do
-      u = Factory(:user)
-      a = Factory(:authorization, :user => u)
+      u = Fabricate(:user)
+      a = Fabricate(:authorization, :user => u)
 
-      u2 = Factory(:user)
-      update = Factory(
+      u2 = Fabricate(:user)
+      update = Fabricate(
                  :update,
                  :author => u2.author)
       u2.feed.updates << update
@@ -346,11 +346,11 @@ describe "update" do
     end
 
     it "has someone i'm not following in the world view" do
-      u = Factory(:user)
-      a = Factory(:authorization, :user => u)
+      u = Fabricate(:user)
+      a = Fabricate(:authorization, :user => u)
 
-      u2 = Factory(:user)
-      update = Factory(
+      u2 = Fabricate(:user)
+      update = Fabricate(
                  :update,
                  :author => u2.author)
       u2.feed.updates << update

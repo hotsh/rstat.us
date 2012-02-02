@@ -5,7 +5,7 @@ describe "feeds" do
   include AcceptanceHelper
 
   it "redirects to the username's atom feed with the right case" do
-    u = Factory(:user)
+    u = Fabricate(:user)
     url = "http://www.example.com/feeds/#{u.feed.id}.atom"
     visit "/users/#{u.username.upcase}/feed"
     assert_equal url, page.current_url

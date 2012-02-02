@@ -5,7 +5,7 @@ describe "user search" do
   include AcceptanceHelper
 
   before do
-    zebra = Factory(:user, :username => "zebra")
+    zebra = Fabricate(:user, :username => "zebra")
   end
 
   it "can search for users" do

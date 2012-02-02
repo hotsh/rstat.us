@@ -77,7 +77,7 @@ describe "signup" do
 
   describe "twitter" do
     it "prompts for a new username if it clashes" do
-      existing_user = Factory(:user, :username => "taken")
+      existing_user = Fabricate(:user, :username => "taken")
 
       log_in("taken")
 
