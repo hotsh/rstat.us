@@ -109,6 +109,34 @@ class Update
     to_atom(base_uri).to_xml
   end
 
+  def self.create_from_ostatus(entry, feed)
+    u = new(:author     => feed.author,
+            :created_at => entry.published,
+            :remote_url => entry.url,
+            :feed       => feed,
+            :updated_at => entry.updated)
+
+    u.sanitize_external_text(entry.content, entry.url)
+    u.save
+    u
+  end
+
+  def sanitize_external_text(entry_text, entry_url)
+    # Strip HTML
+    self.text = Nokogiri::HTML::Document.parse(entry_text).text
+
+    # Truncate text
+    truncation_necessary = self.text.length > 140
+    if truncation_necessary
+      self.text = self.text[0..138]
+    end
+
+    # Generate HTML
+    if truncation_necessary
+      self.html = "#{self.to_html}<a href='#{entry_url}'>\u2026</a>"
+    end
+  end
+
   protected
 
   def get_mentions
