@@ -1,0 +1,2 @@
+Fabricator(:feed) do
+end

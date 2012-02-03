@@ -43,7 +43,7 @@ gem "whenever"
 group :development, :test do
   gem 'rack-test'
   gem "database_cleaner"
-  gem "factory_girl"
+  gem "fabrication"
   gem "capybara"
   gem "rocco", :git => "git://github.com/rtomayko/rocco.git"
   gem "pygmentize"

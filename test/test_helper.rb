@@ -27,7 +27,9 @@ rescue Mongo::ConnectionFailure => e
   exit 1
 end
 
-require_relative "factories"
+Fabrication.configure do |config|
+  fabricator_dir = "test/fabricators"
+end
 
 module TestHelper
   def setup

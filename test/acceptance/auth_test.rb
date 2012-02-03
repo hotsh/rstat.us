@@ -17,14 +17,14 @@ describe "Authorization" do
   end
 
   def log_in_new_twitter_user
-    @u = Factory(:user)
-    a = Factory(:authorization, :user => @u)
+    @u = Fabricate(:user)
+    a = Fabricate(:authorization, :user => @u)
 
     log_in(@u, a.uid)
   end
 
   def log_in_new_email_user
-    @u = Factory(:user)
+    @u = Fabricate(:user)
     log_in_email(@u)
   end
 
@@ -42,7 +42,7 @@ describe "Authorization" do
 
     describe "twitter" do
       it "can add twitter to an account" do
-        u = Factory(:user)
+        u = Fabricate(:user)
         omni_mock(u.username, {:uid => 78654, :token => "1111", :secret => "2222"})
 
         log_in_email(u)
@@ -158,8 +158,8 @@ describe "Authorization" do
     end
 
     it "shows twitter nickname if twitter auth" do
-      u = Factory(:user)
-      a = Factory(:authorization, :user => u, :nickname => "Awesomeo the Great")
+      u = Fabricate(:user)
+      a = Fabricate(:authorization, :user => u, :nickname => "Awesomeo the Great")
       log_in(u, a.uid, :nickname => a.nickname)
       visit "/users/#{u.username}/edit"
 
@@ -213,8 +213,8 @@ describe "Authorization" do
   end
 
   it "migrates your token" do
-    u = Factory(:user)
-    a = Factory(:authorization, :user => u, :oauth_token => nil, :oauth_secret => nil, :nickname => nil)
+    u = Fabricate(:user)
+    a = Fabricate(:authorization, :user => u, :oauth_token => nil, :oauth_secret => nil, :nickname => nil)
     log_in(u, a.uid)
 
     assert_equal "1234", u.twitter.oauth_token

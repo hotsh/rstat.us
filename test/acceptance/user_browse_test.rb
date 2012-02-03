@@ -5,9 +5,9 @@ describe "user browse" do
   include AcceptanceHelper
 
   it "can browse users" do
-    zebra    = Factory(:user, :username => "zebra")
-    aardvark = Factory(:user, :username => "aardvark")
-    a = Factory(:authorization, :user => aardvark)
+    zebra    = Fabricate(:user, :username => "zebra")
+    aardvark = Fabricate(:user, :username => "aardvark")
+    a = Fabricate(:authorization, :user => aardvark)
     log_in(aardvark, a.uid)
 
     visit "/users"
@@ -18,9 +18,9 @@ describe "user browse" do
 
   describe "sorted by creation date (default)" do
     it "sorts by latest users by default" do
-      aardvark = Factory(:user, :username => "aardvark", :created_at => Date.new(2010, 10, 23))
-      zebra    = Factory(:user, :username => "zebra", :created_at => Date.new(2011, 10, 24))
-      a = Factory(:authorization, :user => aardvark)
+      aardvark = Fabricate(:user, :username => "aardvark", :created_at => Date.new(2010, 10, 23))
+      zebra    = Fabricate(:user, :username => "zebra", :created_at => Date.new(2011, 10, 24))
+      a = Fabricate(:authorization, :user => aardvark)
 
       log_in(aardvark, a.uid)
 
@@ -30,13 +30,13 @@ describe "user browse" do
 
     describe "pagination" do
       before do
-        u = Factory(:user)
-        a = Factory(:authorization, :user => u)
+        u = Fabricate(:user)
+        a = Fabricate(:authorization, :user => u)
 
         log_in(u, a.uid)
 
         5.times do
-          u2 = Factory(:user)
+          u2 = Fabricate(:user)
         end
       end
 
@@ -76,11 +76,11 @@ describe "user browse" do
 
   describe "by letter" do
     it "filters to usernames starting with that letter" do
-      alpha = Factory(:user, :username => "alpha")
-      a = Factory(:authorization, :user => alpha)
+      alpha = Fabricate(:user, :username => "alpha")
+      a = Fabricate(:authorization, :user => alpha)
 
       ["aardvark", "beta", "BANANAS"].each do |u|
-        u2 = Factory(:user, :username => u)
+        u2 = Fabricate(:user, :username => u)
       end
 
       log_in(alpha, a.uid)
@@ -94,11 +94,11 @@ describe "user browse" do
     end
 
     it "filters usernames starting with nonletters into Other" do
-      alpha = Factory(:user, :username => "alpha")
-      a = Factory(:authorization, :user => alpha)
+      alpha = Fabricate(:user, :username => "alpha")
+      a = Fabricate(:authorization, :user => alpha)
 
       ["flop", "__FILE__"].each do |u|
-        u2 = Factory(:user, :username => u)
+        u2 = Fabricate(:user, :username => u)
       end
 
       log_in(alpha, a.uid)
@@ -111,8 +111,8 @@ describe "user browse" do
     end
 
     it "displays a message if there are no users for that letter" do
-      alpha = Factory(:user, :username => "alpha")
-      a = Factory(:authorization, :user => alpha)
+      alpha = Fabricate(:user, :username => "alpha")
+      a = Fabricate(:authorization, :user => alpha)
 
       log_in(alpha, a.uid)
 
@@ -124,13 +124,13 @@ describe "user browse" do
 
     describe "pagination" do
       before do
-        u = Factory(:user, :username => "alpha")
-        a = Factory(:authorization, :user => u)
+        u = Fabricate(:user, :username => "alpha")
+        a = Fabricate(:authorization, :user => u)
 
         log_in(u, a.uid)
 
         5.times do
-          u2 = Factory(:user)
+          u2 = Fabricate(:user)
         end
       end
 
@@ -149,7 +149,7 @@ describe "user browse" do
       end
 
       it "paginates backward only if on the last page" do
-        u2 = Factory(:user, :username => "uzzzzz")
+        u2 = Fabricate(:user, :username => "uzzzzz")
 
         visit "/users?letter=U&per_page=3"
         click_link "next_button"

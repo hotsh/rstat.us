@@ -10,7 +10,7 @@ describe "email change" do
       Notifier.expects(:send_confirm_email_notification)
 
       # Log in to system
-      u = Factory(:user, :email => "some@email.com")
+      u = Fabricate(:user, :email => "some@email.com")
       u.password = "password"
       u.save
       pass_hash = u.hashed_password
@@ -32,7 +32,7 @@ describe "email change" do
 
   describe "token" do
     it "has a confirm email link with a token" do
-      u = Factory(:user, :email => "someone@somewhere.com")
+      u = Fabricate(:user, :email => "someone@somewhere.com")
       token = u.set_password_reset_token
       visit "/confirm_email/#{token}"
 

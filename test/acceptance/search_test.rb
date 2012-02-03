@@ -6,12 +6,12 @@ describe "search" do
 
   before do
     @update_text = "These aren't the droids you're looking for!"
-    Factory(:update, :text => @update_text)
+    Fabricate(:update, :text => @update_text)
   end
 
   describe "logged in" do
     it "has a link to search when you're logged in" do
-      u = Factory(:user, :email => "some@email.com", :hashed_password => "blerg")
+      u = Fabricate(:user, :email => "some@email.com", :hashed_password => "blerg")
       log_in_email(u)
 
       visit "/"
@@ -93,7 +93,7 @@ describe "search" do
 
     it "gets a match for hashtag search" do
       @hashtag_update_text = "This is a test #hashtag"
-      Factory(:update, :text => @hashtag_update_text)
+      Fabricate(:update, :text => @hashtag_update_text)
       visit "/search"
       fill_in "q", :with => "#hashtag"
       click_button "Search"

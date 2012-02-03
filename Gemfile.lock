@@ -136,7 +136,7 @@ GEM
       rack
     execjs (1.2.4)
       multi_json (~> 1.0)
-    factory_girl (2.0.3)
+    fabrication (1.2.0)
     faraday (0.7.4)
       addressable (~> 2.2.6)
       multipart-post (~> 1.1.0)
@@ -309,7 +309,7 @@ DEPENDENCIES
   delayed_job!
   delayed_job_mongo_mapper!
   exceptional
-  factory_girl
+  fabrication
   haml-rails
   i18n
   jquery-rails
