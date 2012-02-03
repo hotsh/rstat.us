@@ -19,7 +19,7 @@ RstatUs::Application.routes.draw do
   # External Auth
   match '/auth/:provider/callback', :to => 'auth#auth'
   match '/auth/failure', :to => 'auth#failure'
-  match '/users/:username/auth/:provider', :via => :delete, :to => "auth#destroy"
+  match '/users/:username/auth/:provider', :via => :delete, :to => "auth#destroy", :constraints => {:username => /[^\/]+/ }
 
   # Users
   resources :users, :constraints => { :id => /[^\/]+/ }

@@ -67,6 +67,19 @@ describe "Authorization" do
         assert a.nil?
       end
 
+      it "can remove twitter from account when username contains dot" do
+        u = Factory(:user, :username => 'foo.bar')
+        omni_mock(u.username, {:uid => 78654, :token => "1111", :secret => "2222"})
+
+        log_in_email(u)
+        visit "/users/#{u.username}/edit"
+        click_button "Add Twitter Account"
+
+        auth = Authorization.first(:provider => "twitter", :uid => 78654)
+        click_button "Remove"
+        assert_match /Add Twitter Account/, page.body
+      end
+
       # TODO: Add one for logging in with twitter
       it "signs up with twitter" do
         omni_mock("twitter_user", {
