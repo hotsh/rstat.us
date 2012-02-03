@@ -13,7 +13,7 @@ form {
   .last {
     border: none;
   }
-
+  
   .form-field {
     @include clearfix;
     label {
@@ -132,6 +132,26 @@ form#update-form {
     .submit {
 
     }
+    .button{
+    	line-height:15px;
+    }
+    input[type=text]{
+ 			display: inline-block; 
+ 			padding: 7px 9px; 
+ 			font-size: 12px; 
+ 			line-height:15px; 
+ 			color: #3C3C3D; 
+ 			overflow: visible; 
+ 			border: 1px solid #CACACA; 
+ 			-webkit-border-radius: 2px; 
+ 			-moz-border-radius: 2px; 
+ 			-webkit-background-clip: padding-box; 
+ 			border-radius: 2px; 
+ 			outline: none; 
+ 			position: relative; 
+ 			zoom: 1; 
+ 			*display: inline; 
+    }
   }
 }
 
@@ -144,3 +164,5 @@ form#update-form {
     color: #888;
   }
 }
+
+
