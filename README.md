@@ -58,10 +58,10 @@ If you'd like to contribute, we'd love to have you! Here are some details:
 
 In the first half of 2012, we plan to work on:
 
-- Fixing user-facing bugs or cutting buggy parts of the app
-- Fixing OStatus support
-- Implementing a RESTful API
-- Supporting and documenting running your own node
+- [Fixing user-facing bugs or cutting buggy parts of the app](https://github.com/hotsh/rstat.us/issues?state=open&milestone=11)
+- [Fixing OStatus support](https://github.com/hotsh/rstat.us/issues?state=open&milestone=6)
+- [Implementing a RESTful API](https://github.com/hotsh/rstat.us/issues?milestone=8&state=open)
+- [Supporting and documenting running your own node](https://github.com/hotsh/rstat.us/issues?milestone=7&state=open)
 
 Please see the [Issues](http://github.com/hotsh/rstat.us/issues), anything without an assignee is up for grabs! Don't hesitate to ask for help or clarification either on an issue itself or through one of the contact methods listed above.
 
