@@ -32,7 +32,7 @@ describe "Authorization" do
   describe "associating users and authorizations" do
     describe "username" do
       it "username is case insensitive" do
-        u = Factory(:user)
+        u = Fabricate(:user)
         u.username = u.username.upcase
         log_in_email(u)
 
