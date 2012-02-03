@@ -75,6 +75,8 @@ You can view it [here](http://hotsh.github.com/rstat.us/).
 Setting up a development environment
 ------------------------------------
 
+### Getting a local version running
+
 First off: you will need MongoDB (www.mongodb.org).  They have a [quickstart
 guide][mongo-quickstart] for getting it installed and running.
 
@@ -93,22 +95,30 @@ And start the server:
 
 Bam! Visit <http://localhost:3000/> in your browser, and you'll be good.
 
+### Local Twitter configuration
+
 Rstat.us allows you to sign in using a Twitter account or link a Twitter
 account to your Rstat.us account.  If you'd like to enable that
 functionality in your dev environment, you'll need to obtain a consumer key and consumer
-secret from Twitter.  Here are the steps to do that.
+secret from Twitter.  Here are the steps to do that:
 
 - Go to https://dev.twitter.com
 - Sign in using a valid Twitter account
-- Hover over your username in the top right and select My applications
-- Select Create a new application
+- Hover over your username in the top right and select "My applications"
+- Select "Create a new application"
 - Fill in all the required fields (you can use made up information if
-  you'd like) and add Callback URL - e.g. http://rstat.us
-- Go to the settings tab and select Read and Write for the application's
+  you'd like) and be sure to add a "Callback URL" - e.g. http://rstat.us
+- Go to the settings tab and select "Read and Write" for the application's
   access type
+- If you haven't already, create a personal `config/config.yml` by copying
+  `config/config.yml.sample`
 - Copy the consumer key and consumer secret (found on the details tab)
-  and put them in config/config.yml in the development section
+  and put them in `config/config.yml` in the development section
 - Restart your rails server
+
+Now you should be able to sign in to your development version with Twitter!
+
+### Running the tests
 
 To run the tests you may want to make use of `bundle exec` so you don't get
 mixed up with different versions of gems that might or might not work with
