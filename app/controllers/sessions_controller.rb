@@ -20,7 +20,6 @@ class SessionsController < ApplicationController
       @user = User.new params.merge({:author => author})
       if @user.valid?
         if params[:password].length > 0
-          author.save
           @user.save
           session[:user_id] = @user.id
           flash[:notice] = "Thanks for signing up!"
@@ -32,7 +31,6 @@ class SessionsController < ApplicationController
       end
 
       render :new
-      return
     else
       if user = User.authenticate(params[:username], params[:password])
         session[:user_id] = user.id
@@ -44,7 +42,6 @@ class SessionsController < ApplicationController
 
       If you are trying to create a new account, please choose a different username."
       render :new
-      return
     end
   end
 
