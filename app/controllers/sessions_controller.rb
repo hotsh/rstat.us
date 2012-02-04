@@ -39,7 +39,6 @@ class SessionsController < ApplicationController
         flash[:notice] = "Login successful."
         redirect_to "/"
         return
-        return
       end
       flash[:error] = "The password given for username \"#{params[:username]}\" is incorrect.
 
