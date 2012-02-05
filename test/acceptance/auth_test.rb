@@ -38,6 +38,13 @@ describe "Authorization" do
 
         assert page.has_content?("Login successful")
       end
+
+      it "keeps you logged in for a week" do
+        u = Fabricate(:user)
+        log_in_email(u)
+
+        assert_equal (Date.today + 1.week), get_me_the_cookie("_rstat.us_session")[:expires].to_date
+      end
     end
 
     describe "twitter" do
