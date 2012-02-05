@@ -28,7 +28,7 @@ describe "finding or creating a new feed" do
       Feed.expects(:first).with(:id => @subscriber_id).returns(nil)
       
       @feed_url = "http://some.url"
-      @feed_data = FeedData.new(@feed_url, "xrd")
+      @feed_data = FeedData.new(@feed_url, nil)
 
       ConvertsSubscriberToFeedData.expects(:get_feed_data)
         .with(@subscriber_id)
