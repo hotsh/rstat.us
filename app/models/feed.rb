@@ -122,40 +122,24 @@ class Feed
 
   def populate_entries(os_entries)
     os_entries.each do |entry|
-      u = Update.first(:url => entry.url)
-      new_update = false
-      if u.nil?
-        new_update = true
-        u = Update.new(:author => self.author,
-                       :created_at => entry.published,
-                       :url => entry.url,
-                       :feed => self,
-                       :updated_at => entry.updated)
+      if entry.url # This will drop some RTs from identica until ostatus
+                   # issue #4 is fixed, but at least this'll fix issue #458
+        existing_update = Update.first(:remote_url => entry.url)
+
+        if existing_update
+          # Don't change anything about an existing update unless this
+          # is an update event.
+          if entry.activity && entry.activity.verb == "update"
+            existing_update.sanitize_external_text(entry.content, entry.url)
+            existing_update.save
+            self.updates << existing_update
+          end
+        else
+          u = Update.create_from_ostatus(entry, self)
+          self.updates << u
+        end
       end
-
-      # Strip HTML
-      u.text = Nokogiri::HTML::Document.parse(entry.content).text
-
-      # Truncate text
-      truncation_necessary = u.text.length > 140
-      if truncation_necessary
-        u.text = u.text[0..138]
-      end
-
-      # Generate HTML
-      if truncation_necessary
-        u.html = "#{u.to_html}<a href='#{entry.url}'>\u2026</a>"
-      end
-
-      # Commit
-      u.save
-
-      if new_update
-        self.updates << u
-      end
-
     end
-
     save
   end
 

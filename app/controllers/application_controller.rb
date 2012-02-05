@@ -34,19 +34,13 @@ class ApplicationController < ActionController::Base
   # they're not an admin, we redirect them to either / or the page that we
   # specified when we called it.
   def admin_only!(opts = {:return => "/"})
-    unless logged_in? && current_user.admin?
-      flash[:error] = "Sorry, buddy"
-      redirect_to opts[:return]
-    end
+    redirect_with_sorry(opts) unless logged_in? && current_user.admin?
   end
 
   # Similar to `admin_only!`, `require_login!` only lets logged in users access
   # a particular page, and redirects them if they're not.
   def require_login!(opts = {:return => "/"})
-    unless logged_in?
-      flash[:error] = "Sorry, buddy"
-      redirect_to opts[:return]
-    end
+    redirect_with_sorry(opts) unless logged_in?
   end
 
   def menu_item(name, url, options = {})
@@ -58,7 +52,7 @@ class ApplicationController < ActionController::Base
 
     "<li class='#{classes.join(" ")}'>
       <a href='#{url}'>" +
-      (icon ? "<div class='icon'></div>" : "") + 
+      (icon ? "<div class='icon'></div>" : "") +
       "#{name}</a>
     </li>"
   end
@@ -71,33 +65,26 @@ class ApplicationController < ActionController::Base
   # different routes we have this handy helper that either picks up
   # the previous setting or resets it to a default value.
   def set_params_page
-    params[:page] = params.fetch("page"){1}.to_i
+    params[:page]     = params.fetch("page"){1}.to_i
     params[:per_page] = params.fetch("per_page"){20}.to_i
   end
 
   # Similar to the set_params_page helper this one creates the links
   # for the previous and the next page on all routes that display
   # stuff on more than one page.
-  #If needed it can also take options for more parameters
+  # If needed it can also take options for more parameters
   def set_pagination_buttons(data, options = {})
-    return if data.nil? || data.empty?
+    return if data.blank?
 
-    if data.next_page
-      params = {
-        :page     => data.next_page,
-        :per_page => data.per_page
-      }.merge(options)
+    %w[next previous].each do |type|
+      if data.send("#{type}_page")
+        params = {
+          :page     => data.send("#{type}_page"),
+          :per_page => data.per_page
+        }.merge(options)
 
-      @next_page = "?#{Rack::Utils.build_query params}"
-    end
-
-    if data.previous_page
-      params = {
-        :page     => data.previous_page,
-        :per_page => data.per_page
-      }.merge(options)
-
-      @prev_page = "?#{Rack::Utils.build_query params}"
+        instance_variable_set(:"@#{type}_page", "?#{Rack::Utils.build_query params}")
+      end
     end
   end
 
@@ -113,17 +100,23 @@ class ApplicationController < ActionController::Base
   def show_layout?
     !pjax_request?
   end
-  
+
 private
-  
+
   MOBILE_BROWSERS = ["android", "ipod", "opera mini", "blackberry", "palm","hiptop","avantgo","plucker", "xiino","blazer","elaine", "windows ce; ppc;", "windows ce; smartphone;","windows ce; iemobile", "up.browser","up.link","mmp","symbian","smartphone", "midp","wap","vodafone","o2","pocket","kindle", "mobile","pda","psp","treo"]
 
   def detect_browser
     agent = request.headers["HTTP_USER_AGENT"].downcase
-    MOBILE_BROWSERS.each do |m|
-      return "mobile" if agent.match(m)
+    if MOBILE_BROWSERS.find { |m| agent.match(m) }
+      'mobile'
+    else
+      'application'
     end
-    return "application"
   end
-  
+
+  def redirect_with_sorry(opts)
+    flash[:error] = "Sorry, buddy"
+    redirect_to opts[:return]
+  end
+
 end
