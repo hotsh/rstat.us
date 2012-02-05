@@ -1,33 +1,40 @@
 class FindsOrCreatesFeeds
   def self.find_or_create(subscribe_to)
-    subscribe_to_feed = Feed.first(:id => subscribe_to)
+    feed = Feed.first(:id => subscribe_to)
 
-    unless subscribe_to_feed
-      # Allow for a variety of feed addresses
-      case subscribe_to
-      when /^feed:\/\//
-        # SAFARI!!!!1 /me shakes his first at the sky
-        feed_url = "http" + subscribe_to[4..-1]
-      when /@/
-        # XXX: ensure caching of finger lookup.
-        redfinger_lookup = Redfinger.finger(subscribe_to)
-        feed_url = redfinger_lookup.links.find { |l| l['rel'] == 'http://schemas.google.com/g/2010#updates-from' }.to_s
-      else
-        feed_url = subscribe_to
-      end
+    unless feed
+      feed_data = ConvertsSubscriberToFeedData.get_feed_data(subscribe_to)
 
       # See if we already have a local feed for this remote
-      subscribe_to_feed = Feed.first(:remote_url => feed_url)
+      feed = Feed.first(:remote_url => feed_data.url)
 
-      unless subscribe_to_feed
-        # create a feed
-        subscribe_to_feed = Feed.create(:remote_url => feed_url)
-        # Populate the Feed with Updates and Author from the remote site
-        # Pass along the redfinger information to build the Author if available
-        subscribe_to_feed.populate redfinger_lookup
+      unless feed
+        feed = Feed.create_from_feed_data(feed_data)
       end
     end
 
-    subscribe_to_feed
+    feed
+  end
+end
+
+FeedData = Struct.new(:url, :xrd)
+
+class ConvertsSubscriberToFeedData
+  def self.get_feed_data(subscribe_to)
+    feed_data = FeedData.new
+
+    case subscribe_to
+    when /^feed:\/\//
+      # SAFARI!!!!1 /me shakes his first at the sky
+      feed_data.url = "http" + subscribe_to[4..-1]
+    when /@/
+      # XXX: ensure caching of finger lookup.
+      feed_data.xrd = Redfinger.finger(subscribe_to)
+      feed_data.url= feed_data.xrd.links.find { |l| l['rel'] == 'http://schemas.google.com/g/2010#updates-from' }.to_s
+    else
+      feed_data.url = subscribe_to
+    end
+
+    feed_data
   end
 end

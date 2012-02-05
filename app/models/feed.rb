@@ -38,6 +38,12 @@ class Feed
     FindsOrCreatesFeeds.find_or_create(subscribe_to)
   end
 
+  def self.create_from_feed_data(feed_data)
+    feed = Feed.create(:remote_url => feed_data.url)
+    feed.populate(feed_data.xrd)
+    feed
+  end
+
    # This is because sometimes the mongomapper association returns nil
   # even though there is an author_id and the Author exists; see Issue #421
   def author
