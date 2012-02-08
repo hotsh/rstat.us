@@ -13,6 +13,7 @@ module AcceptanceHelper
   include Capybara::DSL
   include Rack::Test::Methods
   include TestHelper
+  include ShowMeTheCookies
 
   OmniAuth.config.test_mode = true
 
