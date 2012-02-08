@@ -108,7 +108,7 @@ describe User do
     end
 
     it "sets the token" do
-      u = Factory.create(:user)
+      u = Fabricate(:user)
       assert_nil u.perishable_token
       u.create_token
       refute u.perishable_token.nil?
