@@ -50,6 +50,18 @@ module AcceptanceHelper
     visit '/auth/twitter'
   end
 
+  def log_in_with_user
+    @u = Fabricate(:user)
+    @a = Fabricate(:authorization, :user => @u)
+
+    log_in(@u, @a.uid)
+  end
+
+  def log_in_email_with_user
+    @u = Fabricate(:user)
+    log_in_email(@u)
+  end
+
   def log_in_email(user)
     User.stubs(:authenticate).returns(user)
 

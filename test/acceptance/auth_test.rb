@@ -16,32 +16,20 @@ describe "Authorization" do
     assert_match /Update created/, page.body
   end
 
-  def log_in_new_twitter_user
-    @u = Fabricate(:user)
-    a = Fabricate(:authorization, :user => @u)
-
-    log_in(@u, a.uid)
-  end
-
-  def log_in_new_email_user
-    @u = Fabricate(:user)
-    log_in_email(@u)
-  end
-
   # -- The real tests begin here:
   describe "associating users and authorizations" do
     describe "username" do
       it "username is case insensitive" do
         u = Fabricate(:user)
         u.username = u.username.upcase
+
         log_in_email(u)
 
         assert page.has_content?("Login successful")
       end
 
       it "keeps you logged in for a week" do
-        u = Fabricate(:user)
-        log_in_email(u)
+        log_in_with_user
 
         assert_equal (Date.today + 1.week), get_me_the_cookie("_rstat.us_session")[:expires].to_date
       end
@@ -63,7 +51,7 @@ describe "Authorization" do
       end
 
       it "can remove twitter from an account" do
-        log_in_new_twitter_user
+        log_in_with_user
 
         visit "/users/#{@u.username}/edit"
 
@@ -79,6 +67,7 @@ describe "Authorization" do
         a = Fabricate(:authorization, :user => u)
 
         log_in_email(u)
+
         visit "/users/#{u.username}/edit"
         click_button "Remove"
 
@@ -169,7 +158,7 @@ describe "Authorization" do
 
   describe "profile" do
     it "has an add twitter account button if no twitter auth" do
-      log_in_new_email_user
+      log_in_email_with_user
       visit "/users/#{@u.username}/edit"
 
       assert_match page.body, /Add Twitter Account/
@@ -188,7 +177,7 @@ describe "Authorization" do
   describe "updates" do
     describe "twitter" do
       it "has the twitter send checkbox" do
-        log_in_new_twitter_user
+        log_in_with_user
 
         assert_match page.body, /Twitter/
         assert find_field('tweet').checked?
@@ -197,7 +186,7 @@ describe "Authorization" do
       it "sends updates to twitter" do
         Twitter.expects(:update)
 
-        log_in_new_twitter_user
+        log_in_with_user
 
         assert_publish_succeeds "Test Twitter Text"
       end
@@ -205,7 +194,7 @@ describe "Authorization" do
       it "does not send updates to twitter if the checkbox is unchecked" do
         Twitter.expects(:update).never
 
-        log_in_new_twitter_user
+        log_in_with_user
         uncheck("tweet")
 
         assert_publish_succeeds "Test Twitter Text"
@@ -214,7 +203,7 @@ describe "Authorization" do
 
     describe "only email" do
       it "logs in with email and no twitter login" do
-        log_in_new_email_user
+        log_in_email_with_user
 
         assert_match /Login successful/, page.body
         assert_match @u.username, page.body
@@ -223,7 +212,7 @@ describe "Authorization" do
       it "does not send updates to twitter" do
         Twitter.expects(:update).never
 
-        log_in_new_email_user
+        log_in_email_with_user
 
         assert_publish_succeeds "Test Twitter Text"
       end

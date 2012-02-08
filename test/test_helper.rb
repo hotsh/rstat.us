@@ -43,7 +43,7 @@ module TestHelper
   end
 
   def auth_response(username, options={})
-    hsh = {
+    {
       "provider" => options[:provider] || "twitter",
       "uid" => options[:uid] || 12345,
       "user_info" => {
@@ -59,7 +59,6 @@ module TestHelper
         "secret" => options[:secret] || "4567"
       }
     }
-    return hsh
   end
 end
 

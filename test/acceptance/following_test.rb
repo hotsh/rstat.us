@@ -19,9 +19,7 @@ describe "following" do
 
   describe "other sites" do
     before do
-      @u = Fabricate(:user)
-      @a = Fabricate(:authorization, :user => @u)
-      log_in(@u, @a.uid)
+      log_in_with_user
       visit "/"
       click_link "Follow Remote User"
 
@@ -75,12 +73,9 @@ describe "following" do
   describe "on rstat.us" do
     it "follows another user" do
       skip "This is failing on Travis but not locally and we don't know why"
-      u = Fabricate(:user)
-      a = Fabricate(:authorization, :user => u)
+      log_in_with_user
 
       u2 = Fabricate(:user)
-
-      log_in(u, a.uid)
 
       visit "/users/#{u2.username}"
 
@@ -89,16 +84,14 @@ describe "following" do
     end
 
     it "unfollows another user" do
-      u = Fabricate(:user)
-      a = Fabricate(:authorization, :user => u)
+      log_in_with_user
 
       u2 = Fabricate(:user)
       a2 = Fabricate(:authorization, :user => u2)
 
-      log_in(u, a.uid)
-      u.follow! u2.feed
+      @u.follow! u2.feed
 
-      visit "/users/#{u.username}/following"
+      visit "/users/#{@u.username}/following"
       click_button "unfollow-#{u2.feed.id}"
 
       within flash do
@@ -124,15 +117,12 @@ describe "following" do
     end
 
     it "outputs json" do
-      u = Fabricate(:user)
-      a = Fabricate(:authorization, :user => u)
-
-      log_in(u, a.uid)
+      log_in_with_user
 
       u2 = Fabricate(:user, :username => "user1")
-      u.follow! u2.feed
+      @u.follow! u2.feed
 
-      visit "/users/#{u.username}/following.json"
+      visit "/users/#{@u.username}/following.json"
 
       json = JSON.parse(page.source)
       assert_equal "user1", json.last["username"]
@@ -179,10 +169,7 @@ describe "following" do
 
     describe "pagination" do
       before do
-        @u = Fabricate(:user)
-        a = Fabricate(:authorization, :user => @u)
-
-        log_in(@u, a.uid)
+        log_in_with_user
 
         5.times do
           u2 = Fabricate(:user)
@@ -280,10 +267,7 @@ describe "following" do
 
     describe "pagination" do
       before do
-        @u = Fabricate(:user)
-        a = Fabricate(:authorization, :user => @u)
-
-        log_in(@u, a.uid)
+        log_in_with_user
 
         5.times do
           u2 = Fabricate(:user)
