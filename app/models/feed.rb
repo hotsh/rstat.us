@@ -1,3 +1,5 @@
+require_relative '../../lib/finds_or_creates_feeds'
+
 # Feeds are pretty central to everything. They're a representation of a PuSH
 # enabled Atom feed. Every user has a feed of their updates, we keep feeds
 # for remote users that our users are subscribed to, and maybe even other
@@ -32,13 +34,23 @@ class Feed
 
   after_create :default_hubs
 
+  def self.find_or_create(subscribe_to)
+    FindsOrCreatesFeeds.find_or_create(subscribe_to)
+  end
+
+  def self.create_from_feed_data(feed_data)
+    feed = Feed.create(:remote_url => feed_data.url)
+    feed.populate(feed_data.finger_data)
+    feed
+  end
+
    # This is because sometimes the mongomapper association returns nil
   # even though there is an author_id and the Author exists; see Issue #421
   def author
     Author.find(author_id)
   end
 
-  def populate(xrd = nil)
+  def populate(finger_data)
     # TODO: More entropy would be nice
     self.verify_token = Digest::MD5.hexdigest(rand.to_s)
     self.secret = Digest::MD5.hexdigest(rand.to_s)
@@ -61,15 +73,11 @@ class Feed
                                 :bio => a.portable_contacts.note,
                                 :image_url => avatar_url)
 
-    if xrd
-      # Retrieve the public key
-      public_key = xrd.links.find { |l| l['rel'].downcase == 'magic-public-key' }
-      public_key = public_key.href[/^.*?,(.*)$/,1]
-      self.author.public_key = public_key
+    if(finger_data)
+      self.author.public_key = finger_data.public_key
       self.author.reset_key_lease
 
-      # Salmon URL
-      self.author.salmon_url = xrd.links.find { |l| l['rel'].downcase == 'salmon' }
+      self.author.salmon_url = finger_data.salmon_url 
       self.author.save
     end
 
