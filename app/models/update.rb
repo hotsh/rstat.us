@@ -235,6 +235,10 @@ class Update
   end
 
   def do_not_repeat_yourself
-    errors.add(:text, "You already posted this update.") if feed.last_update && feed.last_update.id != id && feed.last_update.text == text && feed.last_update.author.id == author.id
+    errors.add(:text, "You already posted this update.") if already_posted?
+  end
+
+  def already_posted?
+    feed.last_update && feed.last_update.id != id && feed.last_update.text == text
   end
 end
