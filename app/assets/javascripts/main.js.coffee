@@ -1,6 +1,6 @@
 MAX_LENGTH = 140
 
-$(document).ready ->
+jQuery $ ->
 
   # Turn on JS styles
   $("html").removeClass("no-js").addClass("js")
