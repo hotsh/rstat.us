@@ -4,8 +4,6 @@ require_relative 'acceptance_helper'
 describe "Authorization" do
   include AcceptanceHelper
 
-  # -- Extra assertions and helper methods:
-
   # publish an update and verify that the app responds successfully
   def assert_publish_succeeds update_text
     VCR.use_cassette('publish_to_hub') do
