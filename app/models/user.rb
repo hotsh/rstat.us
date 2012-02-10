@@ -4,6 +4,7 @@
 # particular case.
 
 require 'crypto'
+require 'bcrypt'
 
 class User
   require 'digest/md5'
