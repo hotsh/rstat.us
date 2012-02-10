@@ -77,7 +77,9 @@ class UsersController < ApplicationController
   def create
     params[:author] = Author.create_from_session!(session, params, root_url)
 
-    @user = User.new params
+    @user = User.new :email    => params[:email],
+                     :author   => params[:author],
+                     :username => params[:username]
 
     if @user.save
       Authorization.create_from_session!(session, @user)
