@@ -15,9 +15,13 @@ class SessionsController < ApplicationController
       # Grab the domain for this author from the request url
       params[:domain] = root_url
 
-      author = Author.create_from_session!(session, params, root_url)
+      author = Author.new_from_session!(session, params, root_url)
 
-      @user = User.new params.merge({:author => author})
+      @user = User.new :author => author,
+                       :username => params[:username],
+                       :email => params[:email],
+                       :password => params[:password]
+
       if @user.valid?
         if params[:password].length > 0
           @user.save
@@ -26,7 +30,6 @@ class SessionsController < ApplicationController
           redirect_to "/"
           return
         else
-          author.destroy
           @user.errors.add(:password, "can't be empty")
         end
       end
