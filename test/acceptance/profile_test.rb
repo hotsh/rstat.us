@@ -44,7 +44,7 @@ describe "profile" do
   end
 
   it "has a link to edit your own profile" do
-    log_in_with_twitter
+    log_in_as_some_user
     visit "/users/#{@u.username}"
 
     assert has_link? "Edit"
@@ -53,7 +53,7 @@ describe "profile" do
   describe "updating" do
     before do
       Pony.deliveries.clear
-      log_in_with_twitter
+      log_in_as_some_user
     end
 
     attributes_without_confirmation = {"name"    => "Mark Zuckerberg",

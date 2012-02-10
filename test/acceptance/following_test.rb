@@ -19,7 +19,7 @@ describe "following" do
 
   describe "other sites" do
     before do
-      log_in_with_twitter
+      log_in_as_some_user
       visit "/"
       click_link "Follow Remote User"
 
@@ -51,9 +51,7 @@ describe "following" do
     end
 
     it "only creates one Feed per remote_url" do
-      u2 = Fabricate(:user)
-      a2 = Fabricate(:authorization, :user => u2)
-      log_in(u2, a2.uid)
+      log_in_as_some_user
       visit "/"
       click_link "Follow Remote User"
 
@@ -64,7 +62,7 @@ describe "following" do
         click_button "Follow"
       end
 
-      visit "/users/#{u2.username}/following"
+      visit "/users/#{@u.username}/following"
 
       assert_match "Unfollow", page.body
     end
@@ -73,7 +71,7 @@ describe "following" do
   describe "on rstat.us" do
     it "follows another user" do
       skip "This is failing on Travis but not locally and we don't know why"
-      log_in_with_twitter
+      log_in_as_some_user
 
       u2 = Fabricate(:user)
 
@@ -84,7 +82,7 @@ describe "following" do
     end
 
     it "unfollows another user" do
-      log_in_with_twitter
+      log_in_as_some_user
 
       u2 = Fabricate(:user)
       a2 = Fabricate(:authorization, :user => u2)
@@ -102,22 +100,20 @@ describe "following" do
 
   describe "/following" do
     it "maintains the order in which you follow people" do
-      aardvark = Fabricate(:user, :username => "aardvark")
+      log_in_as_some_user
+
       zebra    = Fabricate(:user, :username => "zebra")
       leopard  = Fabricate(:user, :username => "leopard")
-      a = Fabricate(:authorization, :user => aardvark)
 
-      aardvark.follow! zebra.feed
-      aardvark.follow! leopard.feed
+      @u.follow! zebra.feed
+      @u.follow! leopard.feed
 
-      log_in(aardvark, a.uid)
-
-      visit "/users/#{aardvark.username}/following"
+      visit "/users/#{@u.username}/following"
       assert_match /leopard.*zebra/m, page.body
     end
 
     it "outputs json" do
-      log_in_with_twitter
+      log_in_as_some_user
 
       u2 = Fabricate(:user, :username => "user1")
       @u.follow! u2.feed
@@ -129,12 +125,9 @@ describe "following" do
     end
 
     it "properly displays title on your following page when logged in" do
-      u = Fabricate(:user, :username => "dfnkt")
-      a = Fabricate(:authorization, :user => u)
+      log_in_as_some_user
 
-      log_in(u, a.uid)
-
-      visit "/users/#{u.username}/following"
+      visit "/users/#{@u.username}/following"
       assert_match /You're following/, page.body
 
     end
@@ -169,7 +162,7 @@ describe "following" do
 
     describe "pagination" do
       before do
-        log_in_with_twitter
+        log_in_as_some_user
 
         5.times do
           u2 = Fabricate(:user)
@@ -212,27 +205,22 @@ describe "following" do
 
   describe "/followers" do
     it "maintains the order in which people follow you" do
-      aardvark = Fabricate(:user, :username => "aardvark")
+      log_in_as_some_user
+
       zebra    = Fabricate(:user, :username => "zebra")
       leopard  = Fabricate(:user, :username => "leopard")
 
-      aardvark_auth = Fabricate(:authorization, :user => aardvark)
+      zebra.follow! @u.feed
+      leopard.follow! @u.feed
 
-      zebra.follow! aardvark.feed
-      leopard.follow! aardvark.feed
-
-      log_in(aardvark, aardvark_auth.uid)
-      visit "/users/#{aardvark.username}/followers"
+      visit "/users/#{@u.username}/followers"
       assert_match /leopard.*zebra/m, page.body
     end
 
     it "properly displays title on your followers page when logged in" do
-      u = Fabricate(:user, :username => "dfnkt")
-      a = Fabricate(:authorization, :user => u)
+      log_in_as_some_user
 
-      log_in(u, a.uid)
-
-      visit "/users/#{u.username}/followers"
+      visit "/users/#{@u.username}/followers"
       assert_match /Your followers/, page.body
 
     end
@@ -267,7 +255,7 @@ describe "following" do
 
     describe "pagination" do
       before do
-        log_in_with_twitter
+        log_in_as_some_user
 
         5.times do
           u2 = Fabricate(:user)

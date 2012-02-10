@@ -19,7 +19,7 @@ describe "update" do
   end
 
   it "renders the world's updates" do
-    log_in_with_twitter
+    log_in_as_some_user
 
     u2 = Fabricate(:user)
     update = Fabricate(:update)
@@ -31,7 +31,7 @@ describe "update" do
   end
 
   it "makes an update" do
-    log_in_with_twitter
+    log_in_as_some_user
 
     update_text = "Testing, testing"
     params = {
@@ -48,7 +48,7 @@ describe "update" do
   end
 
   it "makes a short update" do
-    log_in_with_twitter
+    log_in_as_some_user
 
     update_text = "Q"
     params = {
@@ -65,7 +65,7 @@ describe "update" do
   end
 
   it "stays on the same page after updating" do
-    log_in_with_twitter
+    log_in_as_some_user
 
     visit "/updates"
     fill_in "text", :with => "Teststring fuer die Ewigkeit ohne UTF-8 Charakter"
@@ -106,7 +106,7 @@ describe "update" do
 
   describe "update with hashtag" do
     it "creates a working hashtag link" do
-      log_in_with_twitter
+      log_in_as_some_user
 
       visit "/updates"
       fill_in "text", :with => "So this one time #coolstorybro"
@@ -121,7 +121,7 @@ describe "update" do
 
   describe "reply and share links for each update" do
     before do
-      log_in_with_twitter
+      log_in_as_some_user
 
       @u2 = Fabricate(:user)
       @u2.feed.updates << Fabricate(:update, :author => @u2.author)
@@ -201,17 +201,16 @@ describe "update" do
 
   describe "Post to message" do
     it "displays for a twitter user" do
-      u = Fabricate(:user)
-      a = Fabricate(:authorization, :user => u, :provider => "twitter")
-      log_in(u, a.uid)
+      log_in_as_some_user(:with => :twitter)
+
       visit "/updates"
 
       assert_match page.body, /Post to/
     end
 
-    it "does not display for an email user" do
-      u = Fabricate(:user)
-      log_in_username(u)
+    it "does not display for a username user" do
+      log_in_as_some_user(:with => :username)
+
       visit "/updates"
 
       refute_match page.body, /Post to/
@@ -220,7 +219,7 @@ describe "update" do
 
   describe "no update messages" do
     before do
-      log_in_username(Fabricate(:user))
+      log_in_as_some_user
     end
 
     it "renders tagline default for timeline" do
@@ -241,7 +240,7 @@ describe "update" do
 
   describe "timeline" do
     before do
-      log_in_with_twitter
+      log_in_as_some_user
     end
 
     it "has a status of myself in my timeline" do
@@ -273,7 +272,7 @@ describe "update" do
 
   describe "world" do
     before do
-      log_in_with_twitter
+      log_in_as_some_user
     end
 
     it "has my updates in the world view" do

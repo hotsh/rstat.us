@@ -51,7 +51,7 @@ describe "Authorization" do
       end
 
       it "can remove twitter from an account" do
-        log_in_with_twitter
+        log_in_as_some_user(:with => :twitter)
 
         visit "/users/#{@u.username}/edit"
 
@@ -158,7 +158,7 @@ describe "Authorization" do
 
   describe "profile" do
     it "has an add twitter account button if no twitter auth" do
-      log_in_with_username
+      log_in_as_some_user(:with => :username)
       visit "/users/#{@u.username}/edit"
 
       assert_match page.body, /Add Twitter Account/
@@ -177,7 +177,7 @@ describe "Authorization" do
   describe "updates" do
     describe "twitter" do
       it "has the twitter send checkbox" do
-        log_in_with_twitter
+        log_in_as_some_user(:with => :twitter)
 
         assert_match page.body, /Twitter/
         assert find_field('tweet').checked?
@@ -186,7 +186,7 @@ describe "Authorization" do
       it "sends updates to twitter" do
         Twitter.expects(:update)
 
-        log_in_with_twitter
+        log_in_as_some_user(:with => :twitter)
 
         assert_publish_succeeds "Test Twitter Text"
       end
@@ -194,16 +194,16 @@ describe "Authorization" do
       it "does not send updates to twitter if the checkbox is unchecked" do
         Twitter.expects(:update).never
 
-        log_in_with_twitter
+        log_in_as_some_user(:with => :twitter)
         uncheck("tweet")
 
         assert_publish_succeeds "Test Twitter Text"
       end
     end
 
-    describe "only email" do
-      it "logs in with email and no twitter login" do
-        log_in_with_username
+    describe "only username" do
+      it "logs in with username and no twitter login" do
+        log_in_as_some_user(:with => :username)
 
         assert_match /Login successful/, page.body
         assert_match @u.username, page.body
@@ -212,7 +212,7 @@ describe "Authorization" do
       it "does not send updates to twitter" do
         Twitter.expects(:update).never
 
-        log_in_with_username
+        log_in_as_some_user(:with => :username)
 
         assert_publish_succeeds "Test Twitter Text"
       end

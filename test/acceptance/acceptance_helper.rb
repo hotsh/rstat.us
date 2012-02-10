@@ -50,14 +50,22 @@ module AcceptanceHelper
     visit '/auth/twitter'
   end
 
-  def log_in_with_twitter
+  def log_in_as_some_user(params = {:with => :twitter})
+    if params[:with] == :twitter
+      log_in_with_some_twitter
+    elsif params[:with] == :username
+      log_in_with_some_username
+    end
+  end
+
+  def log_in_with_some_twitter
     @u = Fabricate(:user)
     @a = Fabricate(:authorization, :user => @u)
 
     log_in(@u, @a.uid)
   end
 
-  def log_in_with_username
+  def log_in_with_some_username
     @u = Fabricate(:user)
     log_in_username(@u)
   end
