@@ -27,7 +27,7 @@ describe "Authorization" do
       end
 
       it "keeps you logged in for a week" do
-        log_in_with_twitter
+        log_in_as_some_user(:with => :username)
 
         assert_equal (Date.today + 1.week), get_me_the_cookie("_rstat.us_session")[:expires].to_date
       end
@@ -46,6 +46,12 @@ describe "Authorization" do
         assert_equal "1111", auth.oauth_token
         assert_equal "2222", auth.oauth_secret
         assert_match "/users/#{u.username}/edit", page.current_url
+      end
+
+      it "keeps you logged in for a week" do
+        log_in_as_some_user(:with => :twitter)
+
+        assert_equal (Date.today + 1.week), get_me_the_cookie("_rstat.us_session")[:expires].to_date
       end
 
       it "can remove twitter from an account" do
