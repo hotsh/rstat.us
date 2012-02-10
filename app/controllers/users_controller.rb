@@ -4,11 +4,8 @@ class UsersController < ApplicationController
     set_params_page
     @authors = Author.search(params)
 
-    @authors = @authors.paginate(:page => params[:page], :per_page => params[:per_page])
-
-    if params[:letter] && !params[:letter].empty?
-      set_pagination_buttons(@authors, :letter => params[:letter])
-    else
+    unless @authors.empty?
+      @authors = @authors.paginate(:page => params[:page], :per_page => params[:per_page])
       set_pagination_buttons(@authors)
     end
   end
