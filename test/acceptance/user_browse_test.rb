@@ -7,8 +7,6 @@ describe "user browse" do
   it "can browse users" do
     zebra    = Fabricate(:user, :username => "zebra")
     aardvark = Fabricate(:user, :username => "aardvark")
-    a = Fabricate(:authorization, :user => aardvark)
-    log_in(aardvark, a.uid)
 
     visit "/users"
 
@@ -20,9 +18,6 @@ describe "user browse" do
     it "sorts by latest users by default" do
       aardvark = Fabricate(:user, :username => "aardvark", :created_at => Date.new(2010, 10, 23))
       zebra    = Fabricate(:user, :username => "zebra", :created_at => Date.new(2011, 10, 24))
-      a = Fabricate(:authorization, :user => aardvark)
-
-      log_in(aardvark, a.uid)
 
       visit "/users"
       assert_match /zebra.*aardvark/m, page.body
@@ -30,11 +25,6 @@ describe "user browse" do
 
     describe "pagination" do
       before do
-        u = Fabricate(:user)
-        a = Fabricate(:authorization, :user => u)
-
-        log_in(u, a.uid)
-
         5.times do
           u2 = Fabricate(:user)
         end
@@ -76,14 +66,9 @@ describe "user browse" do
 
   describe "by letter" do
     it "filters to usernames starting with that letter" do
-      alpha = Fabricate(:user, :username => "alpha")
-      a = Fabricate(:authorization, :user => alpha)
-
       ["aardvark", "beta", "BANANAS"].each do |u|
-        u2 = Fabricate(:user, :username => u)
+        Fabricate(:user, :username => u)
       end
-
-      log_in(alpha, a.uid)
 
       visit "/users"
       click_link "B"
@@ -94,14 +79,9 @@ describe "user browse" do
     end
 
     it "filters usernames starting with nonletters into Other" do
-      alpha = Fabricate(:user, :username => "alpha")
-      a = Fabricate(:authorization, :user => alpha)
-
       ["flop", "__FILE__"].each do |u|
-        u2 = Fabricate(:user, :username => u)
+        Fabricate(:user, :username => u)
       end
-
-      log_in(alpha, a.uid)
 
       visit "/users"
       click_link "Other"
@@ -111,11 +91,6 @@ describe "user browse" do
     end
 
     it "displays a message if there are no users for that letter" do
-      alpha = Fabricate(:user, :username => "alpha")
-      a = Fabricate(:authorization, :user => alpha)
-
-      log_in(alpha, a.uid)
-
       visit "/users"
       click_link "B"
 
@@ -124,11 +99,6 @@ describe "user browse" do
 
     describe "pagination" do
       before do
-        u = Fabricate(:user, :username => "alpha")
-        a = Fabricate(:authorization, :user => u)
-
-        log_in(u, a.uid)
-
         5.times do
           u2 = Fabricate(:user)
         end

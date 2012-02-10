@@ -148,8 +148,6 @@ describe "update" do
         Fabricate(:update)
       end
 
-      u = Fabricate(:user)
-      log_in_username(u)
       visit "/updates"
 
       refute_match "Previous", page.body
@@ -161,8 +159,6 @@ describe "update" do
         Fabricate(:update)
       end
 
-      u = Fabricate(:user)
-      log_in_username(u)
       visit "/updates"
 
       refute_match "Previous", page.body
@@ -170,9 +166,6 @@ describe "update" do
     end
 
     it "paginates backward only if on the last page" do
-      u = Fabricate(:user)
-      log_in_username(u)
-
       30.times do
         Fabricate(:update)
       end
@@ -189,8 +182,6 @@ describe "update" do
         Fabricate(:update)
       end
 
-      u = Fabricate(:user)
-      log_in_username(u)
       visit "/updates"
       click_link "next_button"
 
