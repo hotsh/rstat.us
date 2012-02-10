@@ -19,7 +19,7 @@ describe "update" do
   end
 
   it "renders the world's updates" do
-    log_in_with_user
+    log_in_with_twitter
 
     u2 = Fabricate(:user)
     update = Fabricate(:update)
@@ -31,7 +31,7 @@ describe "update" do
   end
 
   it "makes an update" do
-    log_in_with_user
+    log_in_with_twitter
 
     update_text = "Testing, testing"
     params = {
@@ -48,7 +48,7 @@ describe "update" do
   end
 
   it "makes a short update" do
-    log_in_with_user
+    log_in_with_twitter
 
     update_text = "Q"
     params = {
@@ -65,7 +65,7 @@ describe "update" do
   end
 
   it "stays on the same page after updating" do
-    log_in_with_user
+    log_in_with_twitter
 
     visit "/updates"
     fill_in "text", :with => "Teststring fuer die Ewigkeit ohne UTF-8 Charakter"
@@ -106,7 +106,7 @@ describe "update" do
 
   describe "update with hashtag" do
     it "creates a working hashtag link" do
-      log_in_with_user
+      log_in_with_twitter
 
       visit "/updates"
       fill_in "text", :with => "So this one time #coolstorybro"
@@ -121,7 +121,7 @@ describe "update" do
 
   describe "reply and share links for each update" do
     before do
-      log_in_with_user
+      log_in_with_twitter
 
       @u2 = Fabricate(:user)
       @u2.feed.updates << Fabricate(:update, :author => @u2.author)
@@ -241,7 +241,7 @@ describe "update" do
 
   describe "timeline" do
     before do
-      log_in_with_user
+      log_in_with_twitter
     end
 
     it "has a status of myself in my timeline" do
@@ -273,7 +273,7 @@ describe "update" do
 
   describe "world" do
     before do
-      log_in_with_user
+      log_in_with_twitter
     end
 
     it "has my updates in the world view" do

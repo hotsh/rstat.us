@@ -5,7 +5,7 @@ describe "replies" do
   include AcceptanceHelper
 
   it "shows replies" do
-    log_in_with_user
+    log_in_with_twitter
 
     u2 = Fabricate(:user)
     u2.feed.updates << Fabricate(:update, :text => "@#{@u.username} Hey man.")
@@ -16,7 +16,7 @@ describe "replies" do
   end
 
   it "shows replies with css class mention" do
-    log_in_with_user
+    log_in_with_twitter
 
     u2 = Fabricate(:user)
     a2 = Fabricate(:authorization, :user => u2)

@@ -29,7 +29,7 @@ describe "basic access" do
   end
 
   it "edits my profile" do
-    log_in_with_user
+    log_in_with_twitter
     visit "/users/#{@u.username}"
     click_link "Edit"
 

@@ -19,7 +19,7 @@ describe "following" do
 
   describe "other sites" do
     before do
-      log_in_with_user
+      log_in_with_twitter
       visit "/"
       click_link "Follow Remote User"
 
@@ -73,7 +73,7 @@ describe "following" do
   describe "on rstat.us" do
     it "follows another user" do
       skip "This is failing on Travis but not locally and we don't know why"
-      log_in_with_user
+      log_in_with_twitter
 
       u2 = Fabricate(:user)
 
@@ -84,7 +84,7 @@ describe "following" do
     end
 
     it "unfollows another user" do
-      log_in_with_user
+      log_in_with_twitter
 
       u2 = Fabricate(:user)
       a2 = Fabricate(:authorization, :user => u2)
@@ -117,7 +117,7 @@ describe "following" do
     end
 
     it "outputs json" do
-      log_in_with_user
+      log_in_with_twitter
 
       u2 = Fabricate(:user, :username => "user1")
       @u.follow! u2.feed
@@ -169,7 +169,7 @@ describe "following" do
 
     describe "pagination" do
       before do
-        log_in_with_user
+        log_in_with_twitter
 
         5.times do
           u2 = Fabricate(:user)
@@ -267,7 +267,7 @@ describe "following" do
 
     describe "pagination" do
       before do
-        log_in_with_user
+        log_in_with_twitter
 
         5.times do
           u2 = Fabricate(:user)

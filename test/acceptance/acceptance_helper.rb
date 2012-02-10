@@ -50,7 +50,7 @@ module AcceptanceHelper
     visit '/auth/twitter'
   end
 
-  def log_in_with_user
+  def log_in_with_twitter
     @u = Fabricate(:user)
     @a = Fabricate(:authorization, :user => @u)
 

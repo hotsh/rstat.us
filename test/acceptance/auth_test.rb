@@ -29,7 +29,7 @@ describe "Authorization" do
       end
 
       it "keeps you logged in for a week" do
-        log_in_with_user
+        log_in_with_twitter
 
         assert_equal (Date.today + 1.week), get_me_the_cookie("_rstat.us_session")[:expires].to_date
       end
@@ -51,7 +51,7 @@ describe "Authorization" do
       end
 
       it "can remove twitter from an account" do
-        log_in_with_user
+        log_in_with_twitter
 
         visit "/users/#{@u.username}/edit"
 
@@ -177,7 +177,7 @@ describe "Authorization" do
   describe "updates" do
     describe "twitter" do
       it "has the twitter send checkbox" do
-        log_in_with_user
+        log_in_with_twitter
 
         assert_match page.body, /Twitter/
         assert find_field('tweet').checked?
@@ -186,7 +186,7 @@ describe "Authorization" do
       it "sends updates to twitter" do
         Twitter.expects(:update)
 
-        log_in_with_user
+        log_in_with_twitter
 
         assert_publish_succeeds "Test Twitter Text"
       end
@@ -194,7 +194,7 @@ describe "Authorization" do
       it "does not send updates to twitter if the checkbox is unchecked" do
         Twitter.expects(:update).never
 
-        log_in_with_user
+        log_in_with_twitter
         uncheck("tweet")
 
         assert_publish_succeeds "Test Twitter Text"
