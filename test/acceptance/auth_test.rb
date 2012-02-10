@@ -15,6 +15,28 @@ describe "Authorization" do
   end
 
   # -- The real tests begin here:
+  describe "passwords" do
+    it "does not place password into the User model" do
+      visit '/login'
+      fill_in "username", :with => "new_user"
+      fill_in "password", :with => "baseball"
+      click_button "Log in"
+
+      u = User.first(:username => "new_user")
+      refute_respond_to u, :password
+    end
+
+    it "does not place password into the Author model" do
+      visit '/login'
+      fill_in "username", :with => "new_user"
+      fill_in "password", :with => "baseball"
+      click_button "Log in"
+
+      u = User.first(:username => "new_user")
+      refute_respond_to u.author, :password
+    end
+  end
+
   describe "associating users and authorizations" do
     describe "username" do
       it "treats the username as being case insensitive" do
