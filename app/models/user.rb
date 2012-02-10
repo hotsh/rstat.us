@@ -266,7 +266,6 @@ class User
 
   # Users have a password
   key :hashed_password, String
-  key :perishable_token_set, DateTime, :default => nil
 
   # Store the hash of the password
   def password=(pass)
