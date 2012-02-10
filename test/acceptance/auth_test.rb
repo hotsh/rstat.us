@@ -23,7 +23,7 @@ describe "Authorization" do
         u = Fabricate(:user)
         u.username = u.username.upcase
 
-        log_in_email(u)
+        log_in_username(u)
 
         assert page.has_content?("Login successful")
       end
@@ -40,7 +40,7 @@ describe "Authorization" do
         u = Fabricate(:user)
         omni_mock(u.username, {:uid => 78654, :token => "1111", :secret => "2222"})
 
-        log_in_email(u)
+        log_in_username(u)
         visit "/users/#{u.username}/edit"
         click_button "Add Twitter Account"
 
@@ -66,7 +66,7 @@ describe "Authorization" do
         u = Fabricate(:user, :username => 'foo.bar')
         a = Fabricate(:authorization, :user => u)
 
-        log_in_email(u)
+        log_in_username(u)
 
         visit "/users/#{u.username}/edit"
         click_button "Remove"

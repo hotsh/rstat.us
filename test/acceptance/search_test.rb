@@ -12,7 +12,7 @@ describe "search" do
   describe "logged in" do
     it "has a link to search when you're logged in" do
       u = Fabricate(:user, :email => "some@email.com", :hashed_password => "blerg")
-      log_in_email(u)
+      log_in_username(u)
 
       visit "/"
 

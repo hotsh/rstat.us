@@ -14,7 +14,7 @@ describe "email change" do
       u.password = "password"
       u.save
       pass_hash = u.hashed_password
-      log_in_email(u)
+      log_in_username(u)
 
       visit "/users/#{u.username}/edit"
       fill_in 'email', :with => 'team@jackhq.com'

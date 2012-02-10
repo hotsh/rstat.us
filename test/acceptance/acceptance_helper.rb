@@ -59,10 +59,10 @@ module AcceptanceHelper
 
   def log_in_with_username
     @u = Fabricate(:user)
-    log_in_email(@u)
+    log_in_username(@u)
   end
 
-  def log_in_email(user)
+  def log_in_username(user)
     User.stubs(:authenticate).returns(user)
 
     visit "/login"

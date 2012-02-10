@@ -149,7 +149,7 @@ describe "update" do
       end
 
       u = Fabricate(:user)
-      log_in_email(u)
+      log_in_username(u)
       visit "/updates"
 
       refute_match "Previous", page.body
@@ -162,7 +162,7 @@ describe "update" do
       end
 
       u = Fabricate(:user)
-      log_in_email(u)
+      log_in_username(u)
       visit "/updates"
 
       refute_match "Previous", page.body
@@ -171,7 +171,7 @@ describe "update" do
 
     it "paginates backward only if on the last page" do
       u = Fabricate(:user)
-      log_in_email(u)
+      log_in_username(u)
 
       30.times do
         Fabricate(:update)
@@ -190,7 +190,7 @@ describe "update" do
       end
 
       u = Fabricate(:user)
-      log_in_email(u)
+      log_in_username(u)
       visit "/updates"
       click_link "next_button"
 
@@ -211,7 +211,7 @@ describe "update" do
 
     it "does not display for an email user" do
       u = Fabricate(:user)
-      log_in_email(u)
+      log_in_username(u)
       visit "/updates"
 
       refute_match page.body, /Post to/
@@ -220,7 +220,7 @@ describe "update" do
 
   describe "no update messages" do
     before do
-      log_in_email(Fabricate(:user))
+      log_in_username(Fabricate(:user))
     end
 
     it "renders tagline default for timeline" do
