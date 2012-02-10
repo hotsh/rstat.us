@@ -79,7 +79,8 @@ class UsersController < ApplicationController
 
     @user = User.new :email    => params[:email],
                      :author   => params[:author],
-                     :username => params[:username]
+                     :username => params[:username],
+                     :password => params[:password]
 
     if @user.save
       Authorization.create_from_session!(session, @user)

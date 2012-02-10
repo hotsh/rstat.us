@@ -84,6 +84,17 @@ class Author
     )
   end
 
+  def self.new_from_session!(session, params, domain)
+    new(
+      :name     => session[:name],
+      :username => params[:username],
+      :website  => session[:website],
+      :bio      => session[:description],
+      :image    => session[:image],
+      :domain   => domain
+    )
+  end
+
   def self.create_from_session!(session, params, domain)
     create!(
       :name     => session[:name],
