@@ -32,7 +32,6 @@ class User
   # Tokens are valid for 2 days, they're checked against this
   key :perishable_token_set, DateTime, :default => nil
 
-
   validate :email_already_confirmed
   validates_uniqueness_of :username, :allow_nil => :true, :case_sensitive => false
 
