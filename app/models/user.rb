@@ -333,7 +333,7 @@ class User
   end
 
   def token_expired?
-    self.perishable_token_set < 2.days.ago
+    self.perishable_token_set.to_time < 2.days.ago
   end
 
   private
