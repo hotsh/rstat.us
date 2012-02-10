@@ -158,7 +158,7 @@ describe "Authorization" do
 
   describe "profile" do
     it "has an add twitter account button if no twitter auth" do
-      log_in_email_with_user
+      log_in_with_username
       visit "/users/#{@u.username}/edit"
 
       assert_match page.body, /Add Twitter Account/
@@ -203,7 +203,7 @@ describe "Authorization" do
 
     describe "only email" do
       it "logs in with email and no twitter login" do
-        log_in_email_with_user
+        log_in_with_username
 
         assert_match /Login successful/, page.body
         assert_match @u.username, page.body
@@ -212,7 +212,7 @@ describe "Authorization" do
       it "does not send updates to twitter" do
         Twitter.expects(:update).never
 
-        log_in_email_with_user
+        log_in_with_username
 
         assert_publish_succeeds "Test Twitter Text"
       end

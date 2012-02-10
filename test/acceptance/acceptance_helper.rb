@@ -57,7 +57,7 @@ module AcceptanceHelper
     log_in(@u, @a.uid)
   end
 
-  def log_in_email_with_user
+  def log_in_with_username
     @u = Fabricate(:user)
     log_in_email(@u)
   end
