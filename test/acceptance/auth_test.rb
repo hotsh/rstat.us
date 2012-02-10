@@ -17,7 +17,7 @@ describe "Authorization" do
   # -- The real tests begin here:
   describe "associating users and authorizations" do
     describe "username" do
-      it "username is case insensitive" do
+      it "treats the username as being case insensitive" do
         u = Fabricate(:user)
         u.username = u.username.upcase
 

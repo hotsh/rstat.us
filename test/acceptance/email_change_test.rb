@@ -5,7 +5,7 @@ describe "email change" do
   include AcceptanceHelper
 
   describe "edit profile" do
-    it "update email address" do
+    it "updates the email address" do
 
       Notifier.expects(:send_confirm_email_notification)
 
