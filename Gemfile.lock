@@ -261,9 +261,6 @@ GEM
     simplecov (0.4.2)
       simplecov-html (~> 0.4.4)
     simplecov-html (0.4.5)
-    sinatra (1.2.6)
-      rack (~> 1.1)
-      tilt (>= 1.2.2, < 2.0)
     sprockets (2.0.0)
       hike (~> 1.2)
       rack (~> 1.0)
@@ -302,7 +299,6 @@ PLATFORMS
   ruby
 
 DEPENDENCIES
-  bcrypt-ruby
   bson_ext
   capybara
   coffee-rails (~> 3.1.0)
@@ -326,7 +322,6 @@ DEPENDENCIES
   osub (~> 0.0.6)
   pony
   pygmentize
-  rack-test
   rails (= 3.1.0)
   rdiscount
   redfinger
@@ -335,7 +330,6 @@ DEPENDENCIES
   sass-rails (~> 3.1.0)
   show_me_the_cookies
   simplecov (~> 0.4.0)
-  sinatra
   twitter
   tzinfo
   uglifier
