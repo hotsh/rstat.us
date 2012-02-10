@@ -16,8 +16,11 @@ describe "user browse" do
 
   describe "sorted by creation date (default)" do
     it "sorts by latest users by default" do
-      aardvark = Fabricate(:user, :username => "aardvark", :created_at => Date.new(2010, 10, 23))
-      zebra    = Fabricate(:user, :username => "zebra", :created_at => Date.new(2011, 10, 24))
+      zebra    = Fabricate(:user, :username => "zebra")
+      zebra.author.created_at = Date.new(2010, 10, 24)
+
+      aardvark = Fabricate(:user, :username => "aardvark")
+      aardvark.author.created_at = Date.new(2010, 10, 23)
 
       visit "/users"
       assert_match /zebra.*aardvark/m, page.body
