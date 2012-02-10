@@ -29,6 +29,10 @@ class User
   # Required for confirmation
   key :perishable_token, String
 
+  # Tokens are valid for 2 days, they're checked against this
+  key :perishable_token_set, DateTime, :default => nil
+
+
   validate :email_already_confirmed
   validates_uniqueness_of :username, :allow_nil => :true, :case_sensitive => false
 
@@ -78,9 +82,10 @@ class User
     save
   end
 
-  # Reset the perishable token
+  # Reset the perishable token and the date it was set to nil
   def reset_perishable_token
     self.perishable_token = nil
+    self.perishable_token_set = nil
     save
   end
 
@@ -260,7 +265,7 @@ class User
   # User MUST be confirmed
   key :status
 
-  # Users have a passwork
+  # Users have a password
   key :hashed_password, String
   key :perishable_token_set, DateTime, :default => nil
 
@@ -282,7 +287,6 @@ class User
   # reset the perishable token
   def reset_password(pass)
     self.password = pass
-    self.perishable_token_set = nil
     reset_perishable_token
   end
 
@@ -327,6 +331,10 @@ class User
   # A better name would be very welcome.
   def self.find_by_case_insensitive_username(username)
     User.first(:username => /^#{Regexp.escape(username)}$/i)
+  end
+
+  def token_expired?
+    self.perishable_token_set < 2.days.ago
   end
 
   private
