@@ -8,6 +8,9 @@ jQuery $ ->
   # Hide flash messages
   $("#flash").delay(2000).slideUp('slow')
 
+  $("img").error ->
+    $(this).attr("src", "<%= asset_path Author::DEFAULT_AVATAR %>")
+
   #########################################
   # Updates
   #########################################
@@ -20,11 +23,15 @@ jQuery $ ->
 
   $('.pagination a').pjax('#content')
 
-  $("#content").bind("start.pjax", pjaxStart = ->
-    loading = $("<div class='loading' />")
-    $("#content").append(loading)
-    window.scrollTo(0,0)
-  )
+  $("#content")
+    .bind("start.pjax", pjaxStart = ->
+      loading = $("<div class='loading' />")
+      $("#content").append(loading)
+      window.scrollTo(0,0))
+    .bind("end.pjax", pjaxEnd = ->
+      $("img").error ->
+        $(this).attr("src", "<%= asset_path Author::DEFAULT_AVATAR %>")
+    )
 
   #########################################
   # Update Form
