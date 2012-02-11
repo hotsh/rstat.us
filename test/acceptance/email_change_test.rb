@@ -38,6 +38,9 @@ describe "email change" do
 
       assert_match "Email successfully confirmed.", page.body
       assert_match "/", page.current_url
+
+      u.reload
+      assert u.email_confirmed
     end
 
     it "rejects an invalid token" do
