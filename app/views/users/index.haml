@@ -5,7 +5,7 @@
 - content_for :top do
   #users-search.search
     %form{:method => :get, :action => "/users"}
-      %input{:name => "search", :type => "text"}
+      %input{:name => "search", :type => "text", :value => params[:search]}
       %input{:type => "submit", :value => "Search", :class => "button"}
 
 - if @authors.empty?

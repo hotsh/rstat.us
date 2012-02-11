@@ -5,7 +5,7 @@
 - content_for :top do
   #updates-search.search
     %form#search-form.search{:action => "search", :method => "GET", :name => "search_form"}
-      %input#search-input{:name => "q", :type => "text"}
+      %input#search-input{:name => "q", :type => "text", :value => params[:q]}
       %input#search-button.button{:type => "submit", :value => "Search"}
 
 = render :partial => "updates/list", :locals => {:updates => @updates, :tagline => "No statuses match your search."}
