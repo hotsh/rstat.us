@@ -84,10 +84,6 @@ jQuery $ ->
       textarea.text(shareText(update))
       focusTextArea(update)
 
-  # Delete update check
-  $(".remove-update").click ->
-    confirm "Are you sure you want to delete this update?"
-
   # Manage reply state and service share checkboxes
   updateTickyboxes = ->
     return if(userTickiedBox)
