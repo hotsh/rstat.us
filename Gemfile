@@ -17,13 +17,11 @@ gem 'jquery-rails'
 
 gem 'unicorn'
 gem 'omniauth', :git => 'git://github.com/intridea/omniauth.git'
-gem "sinatra", :require => "sinatra/base"
 gem "mongo_mapper"
 gem "bson_ext"
 gem "i18n"
 gem "twitter"
 gem "pony"
-gem "bcrypt-ruby", :require => "bcrypt"
 gem "rdiscount"
 gem "ostatus", "~>0.0.9"
 gem "osub", "~>0.0.6"
@@ -41,10 +39,10 @@ gem "delayed_job_mongo_mapper", :git => "git://github.com/earbits/delayed_job_mo
 gem "whenever"
 
 group :development, :test do
-  gem 'rack-test'
   gem "database_cleaner"
   gem "fabrication"
   gem "capybara"
+  gem "show_me_the_cookies"
   gem "rocco", :git => "git://github.com/rtomayko/rocco.git"
   gem "pygmentize"
   gem "mocha"

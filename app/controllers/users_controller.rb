@@ -4,11 +4,8 @@ class UsersController < ApplicationController
     set_params_page
     @authors = Author.search(params)
 
-    @authors = @authors.paginate(:page => params[:page], :per_page => params[:per_page])
-
-    if params[:letter] && !params[:letter].empty?
-      set_pagination_buttons(@authors, :letter => params[:letter])
-    else
+    unless @authors.empty?
+      @authors = @authors.paginate(:page => params[:page], :per_page => params[:per_page])
       set_pagination_buttons(@authors)
     end
   end
@@ -52,8 +49,7 @@ class UsersController < ApplicationController
       if response == true
 
         unless @user.email.blank? || @user.email_confirmed
-          # Generate same token as password reset....
-          Notifier.send_confirm_email_notification(@user.email, @user.set_perishable_token)
+          Notifier.send_confirm_email_notification(@user.email, @user.create_token)
           flash[:notice] = "A link to confirm your updated email address has been sent to #{@user.email}."
         else
           flash[:notice] = "Profile saved!"
@@ -78,7 +74,10 @@ class UsersController < ApplicationController
   def create
     params[:author] = Author.create_from_session!(session, params, root_url)
 
-    @user = User.new params
+    @user = User.new :email    => params[:email],
+                     :author   => params[:author],
+                     :username => params[:username],
+                     :password => params[:password]
 
     if @user.save
       Authorization.create_from_session!(session, @user)
@@ -215,7 +214,7 @@ class UsersController < ApplicationController
       flash[:notice] = "Your account could not be found, please check your email and try again."
       render "login/forgot_password"
     else
-      Notifier.send_forgot_password_notification(user.email, user.set_password_reset_token)
+      Notifier.send_forgot_password_notification(user.email, user.create_token)
       # Redirect to try to avoid repost issues
       session[:fp_email] = user.email
       redirect_to '/forgot_password_confirm'
@@ -245,7 +244,7 @@ class UsersController < ApplicationController
 
     if params[:token]
       user = User.first(:perishable_token => params[:token])
-      if user and user.password_reset_sent.to_time < 2.days.ago
+      if user and user.perishable_token_set.to_time < 2.days.ago
         user = nil
       end
     end
@@ -289,7 +288,7 @@ class UsersController < ApplicationController
   # token and the reset password page is rendered
   def reset_password_with_token
     user = User.first(:perishable_token => params[:token])
-    if user.nil? || user.password_reset_sent.to_time < 2.days.ago
+    if user.nil? || user.perishable_token_set.to_time < 2.days.ago
       flash[:notice] = "Your link is no longer valid, please request a new one."
       redirect_to "/forgot_password"
     else

@@ -1,12 +1,15 @@
 MAX_LENGTH = 140
 
-$(document).ready ->
+jQuery $ ->
 
   # Turn on JS styles
   $("html").removeClass("no-js").addClass("js")
 
   # Hide flash messages
   $("#flash").delay(2000).slideUp('slow')
+
+  $("img").error ->
+    $(this).attr("src", "<%= asset_path Author::DEFAULT_AVATAR %>")
 
   #########################################
   # Updates
@@ -20,11 +23,15 @@ $(document).ready ->
 
   $('.pagination a').pjax('#content')
 
-  $("#content").bind("start.pjax", pjaxStart = ->
-    loading = $("<div class='loading' />")
-    $("#content").append(loading)
-    window.scrollTo(0,0)
-  )
+  $("#content")
+    .bind("start.pjax", pjaxStart = ->
+      loading = $("<div class='loading' />")
+      $("#content").append(loading)
+      window.scrollTo(0,0))
+    .bind("end.pjax", pjaxEnd = ->
+      $("img").error ->
+        $(this).attr("src", "<%= asset_path Author::DEFAULT_AVATAR %>")
+    )
 
   #########################################
   # Update Form
@@ -76,10 +83,6 @@ $(document).ready ->
       ev.preventDefault()
       textarea.text(shareText(update))
       focusTextArea(update)
-
-  # Delete update check
-  $(".remove-update").click ->
-    confirm "Are you sure you want to delete this update?"
 
   # Manage reply state and service share checkboxes
   updateTickyboxes = ->

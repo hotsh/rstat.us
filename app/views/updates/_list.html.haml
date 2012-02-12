@@ -1,5 +1,5 @@
 - unless defined?(id)
-  - id = (request.path_info.gsub("/", "_")[1..-1]) 
+  - id = (request.path_info.gsub("/", "_")[1..-1])
 
 %ul.updates{:class => (controller.controller_name == "updates" ? "has-update-form" : ""), :id => id}
   - updates.each do |update|
@@ -42,7 +42,7 @@
         - if current_user and update.author.id == current_user.author.id
           = form_tag "/updates/#{update.id}" do
             %input{:type => "hidden", :name => "_method", :value => "delete"}
-            %input.remove-update{:type => "submit", :value => "I Regret This"}
+            = submit_tag "I Regret This", :class => "remove-update", :confirm => t(:remove_update, :scope => :confirms)
 
 != render :partial => "shared/pagination"
 

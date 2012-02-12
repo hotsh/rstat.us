@@ -8,30 +8,22 @@ describe "update" do
     author = Fabricate(:author)
     feed = author.feed
 
-    updates = []
-    5.times do
-      updates << Fabricate(:update)
-    end
-
-    feed.updates = updates
+    feed.updates = (1..5).map { Fabricate(:update) }
     feed.save
 
     visit "/feeds/#{feed.id}.atom"
 
-    updates.each do |update|
+    feed.updates.each do |update|
       assert_match page.body, /#{update.text}/
     end
   end
 
   it "renders the world's updates" do
-    u = Fabricate(:user)
-    a = Fabricate(:authorization, :user => u)
+    log_in_as_some_user
 
     u2 = Fabricate(:user)
     update = Fabricate(:update)
     u2.feed.updates << update
-
-    log_in(u, a.uid)
 
     visit "/updates"
 
@@ -39,13 +31,12 @@ describe "update" do
   end
 
   it "makes an update" do
-    u = Fabricate(:user)
-    a = Fabricate(:authorization, :user => u)
+    log_in_as_some_user
+
     update_text = "Testing, testing"
     params = {
       :text => update_text
     }
-    log_in(u, a.uid)
 
     VCR.use_cassette('publish_update') do
       visit "/"
@@ -57,13 +48,12 @@ describe "update" do
   end
 
   it "makes a short update" do
-    u = Fabricate(:user)
-    a = Fabricate(:authorization, :user => u)
+    log_in_as_some_user
+
     update_text = "Q"
     params = {
       :text => update_text
     }
-    log_in(u, a.uid)
 
     VCR.use_cassette('publish_short_update') do
       visit "/"
@@ -75,10 +65,7 @@ describe "update" do
   end
 
   it "stays on the same page after updating" do
-    u = Fabricate(:user)
-    a = Fabricate(:authorization, :user => u)
-
-    log_in(u, a.uid)
+    log_in_as_some_user
 
     visit "/updates"
     fill_in "text", :with => "Teststring fuer die Ewigkeit ohne UTF-8 Charakter"
@@ -119,10 +106,7 @@ describe "update" do
 
   describe "update with hashtag" do
     it "creates a working hashtag link" do
-      u = Fabricate(:user)
-      a = Fabricate(:authorization, :user => u)
-
-      log_in(u, a.uid)
+      log_in_as_some_user
 
       visit "/updates"
       fill_in "text", :with => "So this one time #coolstorybro"
@@ -136,32 +120,25 @@ describe "update" do
   end
 
   describe "reply and share links for each update" do
-    update = nil
-    u2 = nil
     before do
-      u = Fabricate(:user)
-      a = Fabricate(:authorization, :user => u)
+      log_in_as_some_user
 
-      u2 = Fabricate(:user)
-      update = Fabricate(
-           :update,
-           :author => u2.author)
-      u2.feed.updates << update
-      log_in(u, a.uid)
+      @u2 = Fabricate(:user)
+      @u2.feed.updates << Fabricate(:update, :author => @u2.author)
     end
 
     it "clicks the reply link from update on a user's page" do
-      visit "/users/#{u2.username}"
+      visit "/users/#{@u2.username}"
       click_link "reply"
       assert_match "What's Going On?", page.body
       assert_match "foo", page.body
     end
 
     it "clicks the share link from update on a user's page" do
-      visit "/users/#{u2.username}"
+      visit "/users/#{@u2.username}"
       click_link "share"
       assert_match "What's Going On?", page.body
-      assert_match "RS @#{u2.username}: #{update.text}", page.body
+      assert_match "RS @#{@u2.username}: #{@u2.feed.updates.last.text}", page.body
     end
   end
 
@@ -171,8 +148,6 @@ describe "update" do
         Fabricate(:update)
       end
 
-      u = Fabricate(:user)
-      log_in_email(u)
       visit "/updates"
 
       refute_match "Previous", page.body
@@ -184,8 +159,6 @@ describe "update" do
         Fabricate(:update)
       end
 
-      u = Fabricate(:user)
-      log_in_email(u)
       visit "/updates"
 
       refute_match "Previous", page.body
@@ -193,9 +166,6 @@ describe "update" do
     end
 
     it "paginates backward only if on the last page" do
-      u = Fabricate(:user)
-      log_in_email(u)
-
       30.times do
         Fabricate(:update)
       end
@@ -212,8 +182,6 @@ describe "update" do
         Fabricate(:update)
       end
 
-      u = Fabricate(:user)
-      log_in_email(u)
       visit "/updates"
       click_link "next_button"
 
@@ -224,17 +192,16 @@ describe "update" do
 
   describe "Post to message" do
     it "displays for a twitter user" do
-      u = Fabricate(:user)
-      a = Fabricate(:authorization, :user => u, :provider => "twitter")
-      log_in(u, a.uid)
+      log_in_as_some_user(:with => :twitter)
+
       visit "/updates"
 
       assert_match page.body, /Post to/
     end
 
-    it "does not display for an email user" do
-      u = Fabricate(:user)
-      log_in_email(u)
+    it "does not display for a username user" do
+      log_in_as_some_user(:with => :username)
+
       visit "/updates"
 
       refute_match page.body, /Post to/
@@ -242,120 +209,86 @@ describe "update" do
   end
 
   describe "no update messages" do
-    it "renders tagline default for timeline" do
-      u = Fabricate(:user)
-      log_in_email(u)
-      visit "/timeline"
+    before do
+      log_in_as_some_user
+    end
 
+    it "renders tagline default for timeline" do
+      visit "/timeline"
       assert_match page.body, /There are no updates here yet/
     end
 
     it "renders tagline default for replies" do
-      u = Fabricate(:user)
-      log_in_email(u)
       visit "/replies"
-
       assert_match page.body, /There are no updates here yet/
     end
 
     it "renders locals[:tagline] for search" do
-      u = Fabricate(:user)
-      log_in_email(u)
       visit "/search"
-
       assert_match page.body, /No statuses match your search/
     end
   end
 
   describe "timeline" do
+    before do
+      log_in_as_some_user
+    end
+
     it "has a status of myself in my timeline" do
-      u = Fabricate(:user)
-      a = Fabricate(:authorization, :user => u)
-
-      update = Fabricate(
-                 :update,
-                 :author => u.author)
-      u.feed.updates << update
-
-      log_in(u, a.uid)
+      update = Fabricate(:update, :author => @u.author)
+      @u.feed.updates << update
       visit "/"
       assert_match page.body, /#{update.text}/
     end
 
     it "has a status of someone i'm following in my timeline" do
-      u = Fabricate(:user)
-      a = Fabricate(:authorization, :user => u)
-
       u2 = Fabricate(:user)
-      update = Fabricate(
-                 :update,
-                 :author => u2.author)
+      update = Fabricate(:update, :author => @u.author)
       u2.feed.updates << update
-      u.follow! u2.feed
+      @u.follow! u2.feed
 
-      log_in(u, a.uid)
       visit "/"
       assert_match page.body, /#{update.text}/
     end
 
     it "does not have a status of someone i'm not following in my timeline" do
-      u = Fabricate(:user)
-      a = Fabricate(:authorization, :user => u)
-
       u2 = Fabricate(:user)
-      update = Fabricate(
-                 :update,
-                 :author => u2.author)
+      update = Fabricate(:update, :author => u2.author)
       u2.feed.updates << update
 
-      log_in(u, a.uid)
       visit "/"
       refute_match page.body, /#{update.text}/
     end
   end
 
   describe "world" do
+    before do
+      log_in_as_some_user
+    end
+
     it "has my updates in the world view" do
-      u = Fabricate(:user)
-      a = Fabricate(:authorization, :user => u)
+      update = Fabricate(:update, :author => @u.author)
+      @u.feed.updates << update
 
-      update = Fabricate(
-                 :update,
-                 :author => u.author)
-      u.feed.updates << update
-
-      log_in(u, a.uid)
       visit "/updates"
       assert_match page.body, /#{update.text}/
     end
 
     it "has someone i'm following in the world view" do
-      u = Fabricate(:user)
-      a = Fabricate(:authorization, :user => u)
-
       u2 = Fabricate(:user)
-      update = Fabricate(
-                 :update,
-                 :author => u2.author)
+      update = Fabricate(:update, :author => u2.author)
       u2.feed.updates << update
-      u.follow! u2.feed
+      @u.follow! u2.feed
 
-      log_in(u, a.uid)
       visit "/updates"
       assert_match page.body, /#{update.text}/
     end
 
     it "has someone i'm not following in the world view" do
-      u = Fabricate(:user)
-      a = Fabricate(:authorization, :user => u)
-
       u2 = Fabricate(:user)
-      update = Fabricate(
-                 :update,
-                 :author => u2.author)
+      update = Fabricate(:update, :author => u2.author)
       u2.feed.updates << update
 
-      log_in(u, a.uid)
       visit "/updates"
       assert_match page.body, /#{update.text}/
     end

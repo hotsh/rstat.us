@@ -29,10 +29,8 @@ describe "basic access" do
   end
 
   it "edits my profile" do
-    u = Fabricate(:user)
-    a = Fabricate(:authorization, :user => u)
-    log_in(u, a.uid)
-    visit "/users/#{u.username}"
+    log_in_as_some_user
+    visit "/users/#{@u.username}"
     click_link "Edit"
 
     assert_equal 200, page.status_code

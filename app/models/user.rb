@@ -4,6 +4,7 @@
 # particular case.
 
 require 'crypto'
+require 'bcrypt'
 
 class User
   require 'digest/md5'
@@ -262,17 +263,18 @@ class User
 
   # Users have a passwork
   key :hashed_password, String
-  key :password_reset_sent, DateTime, :default => nil
+  key :perishable_token_set, DateTime, :default => nil
 
   # Store the hash of the password
   def password=(pass)
     self.hashed_password = BCrypt::Password.create(pass, :cost => 10)
   end
 
-  # Create a new perishable token and set the date the password reset token was
-  # sent so tokens can be expired after 2 days
-  def set_password_reset_token
-    self.password_reset_sent = DateTime.now
+  # Create a new perishable token and set the date the token was
+  # sent so tokens can be expired after 2 days. This is used for
+  # password resets and email confirmations
+  def create_token
+    self.perishable_token_set = DateTime.now
     set_perishable_token
     self.perishable_token
   end
@@ -281,7 +283,7 @@ class User
   # reset the perishable token
   def reset_password(pass)
     self.password = pass
-    self.password_reset_sent = nil
+    self.perishable_token_set = nil
     reset_perishable_token
   end
 

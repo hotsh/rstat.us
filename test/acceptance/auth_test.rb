@@ -4,8 +4,6 @@ require_relative 'acceptance_helper'
 describe "Authorization" do
   include AcceptanceHelper
 
-  # -- Extra assertions and helper methods:
-
   # publish an update and verify that the app responds successfully
   def assert_publish_succeeds update_text
     VCR.use_cassette('publish_to_hub') do
@@ -16,27 +14,44 @@ describe "Authorization" do
     assert_match /Update created/, page.body
   end
 
-  def log_in_new_twitter_user
-    @u = Fabricate(:user)
-    a = Fabricate(:authorization, :user => @u)
-
-    log_in(@u, a.uid)
-  end
-
-  def log_in_new_email_user
-    @u = Fabricate(:user)
-    log_in_email(@u)
-  end
-
   # -- The real tests begin here:
+  describe "passwords" do
+    it "does not place password into the User model" do
+      visit '/login'
+      fill_in "username", :with => "new_user"
+      fill_in "password", :with => "baseball"
+      click_button "Log in"
+
+      u = User.first(:username => "new_user")
+      refute_respond_to u, :password
+    end
+
+    it "does not place password into the Author model" do
+      visit '/login'
+      fill_in "username", :with => "new_user"
+      fill_in "password", :with => "baseball"
+      click_button "Log in"
+
+      u = User.first(:username => "new_user")
+      refute_respond_to u.author, :password
+    end
+  end
+
   describe "associating users and authorizations" do
     describe "username" do
-      it "username is case insensitive" do
+      it "treats the username as being case insensitive" do
         u = Fabricate(:user)
         u.username = u.username.upcase
-        log_in_email(u)
+
+        log_in_username(u)
 
         assert page.has_content?("Login successful")
+      end
+
+      it "keeps you logged in for a week" do
+        log_in_as_some_user(:with => :username)
+
+        assert_equal (Date.today + 1.week), get_me_the_cookie("_rstat.us_session")[:expires].to_date
       end
     end
 
@@ -45,7 +60,7 @@ describe "Authorization" do
         u = Fabricate(:user)
         omni_mock(u.username, {:uid => 78654, :token => "1111", :secret => "2222"})
 
-        log_in_email(u)
+        log_in_username(u)
         visit "/users/#{u.username}/edit"
         click_button "Add Twitter Account"
 
@@ -55,8 +70,14 @@ describe "Authorization" do
         assert_match "/users/#{u.username}/edit", page.current_url
       end
 
+      it "keeps you logged in for a week" do
+        log_in_as_some_user(:with => :twitter)
+
+        assert_equal (Date.today + 1.week), get_me_the_cookie("_rstat.us_session")[:expires].to_date
+      end
+
       it "can remove twitter from an account" do
-        log_in_new_twitter_user
+        log_in_as_some_user(:with => :twitter)
 
         visit "/users/#{@u.username}/edit"
 
@@ -71,7 +92,8 @@ describe "Authorization" do
         u = Fabricate(:user, :username => 'foo.bar')
         a = Fabricate(:authorization, :user => u)
 
-        log_in_email(u)
+        log_in_username(u)
+
         visit "/users/#{u.username}/edit"
         click_button "Remove"
 
@@ -162,7 +184,7 @@ describe "Authorization" do
 
   describe "profile" do
     it "has an add twitter account button if no twitter auth" do
-      log_in_new_email_user
+      log_in_as_some_user(:with => :username)
       visit "/users/#{@u.username}/edit"
 
       assert_match page.body, /Add Twitter Account/
@@ -181,7 +203,7 @@ describe "Authorization" do
   describe "updates" do
     describe "twitter" do
       it "has the twitter send checkbox" do
-        log_in_new_twitter_user
+        log_in_as_some_user(:with => :twitter)
 
         assert_match page.body, /Twitter/
         assert find_field('tweet').checked?
@@ -190,7 +212,7 @@ describe "Authorization" do
       it "sends updates to twitter" do
         Twitter.expects(:update)
 
-        log_in_new_twitter_user
+        log_in_as_some_user(:with => :twitter)
 
         assert_publish_succeeds "Test Twitter Text"
       end
@@ -198,16 +220,16 @@ describe "Authorization" do
       it "does not send updates to twitter if the checkbox is unchecked" do
         Twitter.expects(:update).never
 
-        log_in_new_twitter_user
+        log_in_as_some_user(:with => :twitter)
         uncheck("tweet")
 
         assert_publish_succeeds "Test Twitter Text"
       end
     end
 
-    describe "only email" do
-      it "logs in with email and no twitter login" do
-        log_in_new_email_user
+    describe "only username" do
+      it "logs in with username and no twitter login" do
+        log_in_as_some_user(:with => :username)
 
         assert_match /Login successful/, page.body
         assert_match @u.username, page.body
@@ -216,7 +238,7 @@ describe "Authorization" do
       it "does not send updates to twitter" do
         Twitter.expects(:update).never
 
-        log_in_new_email_user
+        log_in_as_some_user(:with => :username)
 
         assert_publish_succeeds "Test Twitter Text"
       end

@@ -59,9 +59,9 @@ describe Author do
         assert_equal @authors.first.username, "james"
       end
 
-      it "returns all if search param is empty" do
+      it "returns none if search param is empty" do
         @authors = Author.search(:search => nil)
-        assert_equal 2, @authors.size
+        assert_equal 0, @authors.size
       end
 
       it "returns none if no matches" do
@@ -70,73 +70,6 @@ describe Author do
       end
 
       # TODO: it "sorts in no particular order?" is this what we want?
-    end
-
-    describe "letter param" do
-      before do
-        Fabricate :author, :username => "9000OVER", :email => nil, :image_url => nil
-        Fabricate :author, :username => "_______a", :email => nil, :image_url => nil
-        Fabricate :author, :username => "hacker", :email => nil, :image_url => nil
-      end
-
-      it "uses param[:letter] to filter by first letter" do
-        @authors = Author.search(:letter => "j")
-        assert_equal 1, @authors.size
-        assert_equal @authors.first.username, "james"
-      end
-
-      it "returns all if letter param is empty" do
-        @authors = Author.search(:letter => nil)
-        assert_equal 5, @authors.size
-      end
-
-      it "returns usernames starting with numbers" do
-        @authors = Author.search(:letter => "9")
-        assert_equal 1, @authors.size
-        assert_equal @authors.first.username, "9000OVER"
-      end
-
-      it "returns usernames starting with other chars if passed other" do
-        @authors = Author.search(:letter => "other")
-        assert_equal 1, @authors.size
-        assert_equal @authors.first.username, "_______a"
-      end
-
-      it "returns none if no matches" do
-        @authors = Author.search(:letter => "b")
-        assert_equal 0, @authors.size
-      end
-
-      it "sorts alphabetically" do
-        @authors = Author.search(:letter => "h")
-        names = @authors.map(&:username)
-        assert_equal ["hacker", "hipster"], names
-      end
-    end
-
-    describe "param precedence" do
-      it "uses search first" do
-        @authors = Author.search(:search => "ame", :letter => "h")
-        assert_equal 1, @authors.size
-        assert_equal @authors.first.username, "james"
-      end
-
-      it "uses letter if search is empty" do
-        @authors = Author.search(:search => "", :letter => "h")
-        assert_equal 1, @authors.size
-        assert_equal @authors.first.username, "hipster"
-      end
-
-      it "returns all if search and letter are empty" do
-        @authors = Author.search(:search => nil, :letter => nil)
-        assert_equal 2, @authors.size
-      end
-
-      it "sorts by reverse chronological if search and letter not present" do
-        @authors = Author.search
-        names = @authors.map(&:username)
-        assert_equal ["hipster", "james"], names
-      end
     end
   end
 end

@@ -5,7 +5,7 @@ describe "email change" do
   include AcceptanceHelper
 
   describe "edit profile" do
-    it "update email address" do
+    it "updates the email address" do
 
       Notifier.expects(:send_confirm_email_notification)
 
@@ -14,7 +14,7 @@ describe "email change" do
       u.password = "password"
       u.save
       pass_hash = u.hashed_password
-      log_in_email(u)
+      log_in_username(u)
 
       visit "/users/#{u.username}/edit"
       fill_in 'email', :with => 'team@jackhq.com'
@@ -33,7 +33,7 @@ describe "email change" do
   describe "token" do
     it "has a confirm email link with a token" do
       u = Fabricate(:user, :email => "someone@somewhere.com")
-      token = u.set_password_reset_token
+      token = u.create_token
       visit "/confirm_email/#{token}"
 
       assert_match "Email successfully confirmed.", page.body
