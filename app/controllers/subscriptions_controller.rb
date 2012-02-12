@@ -73,6 +73,7 @@ class SubscriptionsController < ApplicationController
     if current_user.following_feed? subscribe_to_feed
       flash[:notice] = "You're already following #{subscribe_to_feed.author.username}."
       redirect_to request.referrer
+      return
     end
 
     # Actually follow!
@@ -81,6 +82,7 @@ class SubscriptionsController < ApplicationController
     unless f
       flash[:notice] = "There was a problem following #{params[:subscribe_to_feed]}."
       redirect_to request.referrer
+      return
     end
 
     # Attempt to inform the hub for remote feeds
