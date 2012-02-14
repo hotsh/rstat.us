@@ -50,6 +50,21 @@ describe "email change" do
       assert_match "/", page.current_url
 
     end
+
+    it "rejects an expired token" do
+      u = Fabricate(:user, :email => "someone@somewhere.com")
+      token = u.create_token
+      refute_nil u.perishable_token
+      u.perishable_token_set = 5.days.ago
+      u.save
+      u.reload
+
+      visit "/confirm_email/#{token}"
+
+      assert_match "Your link is no longer valid, please request a new one.", page.body
+      assert_match "/", page.current_url
+
+    end
   end
 
 
