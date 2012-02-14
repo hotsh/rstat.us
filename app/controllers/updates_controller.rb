@@ -59,7 +59,7 @@ class UpdatesController < ApplicationController
       redirect_to root_path
     else
       flash[:notice] = "I'm afraid I can't let you do that, #{current_user.name}."
-      redirect_to back
+      redirect_to :back
     end
   end
 
