@@ -46,7 +46,7 @@ describe "email change" do
     it "rejects an invalid token" do
       visit "/confirm_email/abcd"
 
-      assert_match "Your link is no longer valid, please request a new one.", page.body
+      assert_match "Can't find User Account for this link.", page.body
       assert_match "/", page.current_url
 
     end

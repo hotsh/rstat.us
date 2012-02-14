@@ -190,7 +190,10 @@ class UsersController < ApplicationController
   # save so we don't need to do that anymore
   def confirm_email
     user = User.first(:perishable_token => params[:token])
-    if user.nil? || user.token_expired?
+    if user.nil?
+      flash[:notice] = "Can't find User Account for this link."
+      redirect_to "/"
+    elsif user.token_expired?
       flash[:notice] = "Your link is no longer valid, please request a new one."
       redirect_to "/"
     else
