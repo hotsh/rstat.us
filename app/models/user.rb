@@ -330,6 +330,10 @@ class User
     User.first(:username => /^#{Regexp.escape(username)}$/i)
   end
 
+  def to_param
+    username
+  end
+
   private
 
   def create_feed

@@ -9,7 +9,7 @@ class FeedsController < ApplicationController
         feed = Feed.first :id => params[:id]
         if feed.local?
           # Redirect to the local profile page
-          redirect_to "/users/#{feed.author.username}"
+          redirect_to user_path(feed.author)
         else
           # Why not...
           # While weird, to render the view for this model, one
