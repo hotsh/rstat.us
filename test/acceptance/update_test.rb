@@ -119,6 +119,36 @@ describe "update" do
     end
   end
 
+  describe "destroy" do
+    before do
+      log_in_as_some_user
+
+      @u.feed.updates << Fabricate(:update, :author => @u.author)
+    end
+
+    it "destroys own update" do
+      visit "/users/#{@u.username}"
+      click_button "I Regret This"
+
+      within 'div.flash' do
+        assert has_content? "Update Deleted!"
+      end
+    end
+
+    it "doesn't destroy not own update" do
+      author = Fabricate(:author)
+      visit "/users/#{@u.username}"
+
+      Update.any_instance.stubs(:author).returns(author)
+
+      click_button "I Regret This"
+
+      within 'div.flash' do
+        assert has_content? "I'm afraid I can't let you do that, #{@u.username}."
+      end
+    end
+  end
+
   describe "reply and share links for each update" do
     before do
       log_in_as_some_user
