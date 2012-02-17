@@ -24,8 +24,9 @@ describe "email change" do
 
       # Need to figure out the best way to do this, expects is swallowing up token generation...
       # refute u.perishable_token.nil?
-      assert_match "A link to confirm your updated email address has been sent to team@jackhq.com", page.body
-
+      within 'div.flash' do
+        assert has_content? "A link to confirm your updated email address has been sent to team@jackhq.com"
+      end
     end
 
   end
@@ -36,14 +37,41 @@ describe "email change" do
       token = u.create_token
       visit "/confirm_email/#{token}"
 
-      assert_match "Email successfully confirmed.", page.body
+      within 'div.flash' do
+        assert has_content? "Email successfully confirmed."
+      end
+
       assert_match "/", page.current_url
+
+      u.reload
+      assert u.email_confirmed
     end
 
     it "rejects an invalid token" do
       visit "/confirm_email/abcd"
 
-      assert_match "Can't find User Account for this link.", page.body
+      within 'div.flash' do
+        assert has_content? "Can't find User Account for this link."
+      end
+
+      assert_match "/", page.current_url
+
+    end
+
+    it "rejects an expired token" do
+      u = Fabricate(:user, :email => "someone@somewhere.com")
+      token = u.create_token
+      refute_nil u.perishable_token
+      u.perishable_token_set = 5.days.ago
+      u.save
+      u.reload
+
+      visit "/confirm_email/#{token}"
+
+      within 'div.flash' do
+        assert has_content? "Your link is no longer valid, please request a new one."
+      end
+
       assert_match "/", page.current_url
 
     end

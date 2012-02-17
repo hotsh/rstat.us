@@ -99,19 +99,29 @@ describe User do
 
       u.edit_user_profile(:email => 'team@jackhq.com')
       u.save
-      assert_equal u.email_confirmed, false
+      refute u.email_confirmed
     end
 
     it "does not change email" do
       u = Fabricate(:user)
-      assert_equal u.email_confirmed.nil?, true
+      assert_nil u.email_confirmed
     end
 
     it "sets the token" do
       u = Fabricate(:user)
       assert_nil u.perishable_token
       u.create_token
-      refute u.perishable_token.nil?
+      refute_nil u.perishable_token
+    end
+
+    it "resets the token" do
+      u = Fabricate(:user)
+      u.create_token
+      refute_nil u.perishable_token
+      refute_nil u.perishable_token_set
+      u.reset_perishable_token
+      assert_nil u.perishable_token
+      assert_nil u.perishable_token_set
     end
   end
 
@@ -121,8 +131,8 @@ describe User do
       assert_nil u.perishable_token
       assert_nil u.perishable_token_set
       u.create_token
-      refute u.perishable_token.nil?
-      refute u.perishable_token_set.nil?
+      refute_nil u.perishable_token
+      refute_nil u.perishable_token_set
     end
 
     it "changes the password" do

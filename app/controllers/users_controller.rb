@@ -182,14 +182,23 @@ class UsersController < ApplicationController
     end
   end
 
+  # If we can't find a user in mongo or the token is expired give
+  # them some information and redirect.
+  #
+  # Once an email has been confirmed there is no reason to leave
+  # the token set so let's nil it out. The reset token method runs
+  # save so we don't need to do that anymore
   def confirm_email
     user = User.first(:perishable_token => params[:token])
     if user.nil?
       flash[:notice] = "Can't find User Account for this link."
       redirect_to "/"
+    elsif user.token_expired?
+      flash[:notice] = "Your link is no longer valid, please request a new one."
+      redirect_to "/"
     else
       user.email_confirmed = true
-      user.save
+      user.reset_perishable_token
       # Register a session for the user
       session[:user_id] = user.id
       flash[:notice] = "Email successfully confirmed."
@@ -244,7 +253,7 @@ class UsersController < ApplicationController
 
     if params[:token]
       user = User.first(:perishable_token => params[:token])
-      if user and user.perishable_token_set.to_time < 2.days.ago
+      if user and user.token_expired?
         user = nil
       end
     end
@@ -288,7 +297,7 @@ class UsersController < ApplicationController
   # token and the reset password page is rendered
   def reset_password_with_token
     user = User.first(:perishable_token => params[:token])
-    if user.nil? || user.perishable_token_set.to_time < 2.days.ago
+    if user.nil? || user.token_expired?
       flash[:notice] = "Your link is no longer valid, please request a new one."
       redirect_to "/forgot_password"
     else
