@@ -206,6 +206,10 @@ class Author
     self.domain = norm
   end
 
+  def to_param
+    username
+  end
+
   def self.search(params = {})
     if params[:search] && !params[:search].empty?
       Author.where(:username => /#{params[:search]}/i)

@@ -27,7 +27,7 @@ class SessionsController < ApplicationController
           @user.save
           session[:user_id] = @user.id
           flash[:notice] = "Thanks for signing up!"
-          redirect_to "/"
+          redirect_to root_path
           return
         else
           @user.errors.add(:password, "can't be empty")
@@ -39,7 +39,7 @@ class SessionsController < ApplicationController
       if user = User.authenticate(params[:username], params[:password])
         session[:user_id] = user.id
         flash[:notice] = "Login successful."
-        redirect_to "/"
+        redirect_to root_path
         return
       end
       flash[:error] = "The password given for username \"#{params[:username]}\" is incorrect.
@@ -52,7 +52,7 @@ class SessionsController < ApplicationController
   def destroy
     session[:user_id] = nil
     flash[:notice] = "You've been logged out."
-    redirect_to '/'
+    redirect_to root_path
   end
 
 end

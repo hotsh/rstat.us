@@ -18,7 +18,7 @@ class AuthController < ApplicationController
     unless @auth = Authorization.find_from_hash(auth)
       if logged_in?
         Authorization.create_from_hash!(auth, root_url, current_user)
-        redirect_to "/users/#{current_user.username}/edit" and return
+        redirect_to [:edit, current_user] and return
       else
 
         # This situation here really sucks. I'd like to do something better,
@@ -43,7 +43,7 @@ class AuthController < ApplicationController
           flash[:error] = "Sorry, someone else has that username. Please pick another."
         end
 
-        redirect_to '/users/new'
+        redirect_to new_user_path
 
         return
       end
@@ -61,7 +61,8 @@ class AuthController < ApplicationController
     session[:user_id] = @auth.user.id
 
     flash[:notice] = "You're now logged in."
-    redirect_to '/'
+
+    redirect_to root_path
   end
 
   def failure
@@ -82,13 +83,13 @@ class AuthController < ApplicationController
 
   # This lets someone remove a particular Authorization from their account.
   def destroy
-    user = User.first(:username => params[:username])
-    if user
+    if user = User.first(:username => params[:username])
       auth = Authorization.first(:provider => params[:provider], :user_id => user.id)
       auth.destroy if auth
       # Without re-setting the session[:user_id] we're logged out
       session[:user_id] = user.id
     end
-    redirect_to "/users/#{params[:username]}/edit"
+
+    redirect_to [:edit, user]
   end
 end

@@ -1,10 +1,9 @@
 class SubscriptionsController < ApplicationController
+  before_filter :find_feed, :except => :create
+
   def show
-
-    feed = Feed.first :id => params[:id]
-
     if params['hub.challenge']
-      sub = OSub::Subscription.new(request.url, feed.url, nil, feed.verify_token)
+      sub = OSub::Subscription.new(request.url, @feed.url, nil, @feed.verify_token)
 
       # perform the hub's challenge
       respond = sub.perform_challenge(params['hub.challenge'])
@@ -12,8 +11,8 @@ class SubscriptionsController < ApplicationController
       # verify that the random token is the same as when we
       # subscribed with the hub initially and that the topic
       # url matches what we expect
-      verified = params['hub.topic'] == feed.url
-      if verified and sub.verify_subscription(params['hub.verify_token'])
+      verified = params['hub.topic'] == @feed.url
+      if verified && sub.verify_subscription(params['hub.verify_token'])
         render :text => respond[:body], :status => respond[:status]
       else
         # if the verification fails, the specification forces us to
@@ -30,19 +29,17 @@ class SubscriptionsController < ApplicationController
   def destroy
     require_login! :return => request.referrer
 
-    feed = Feed.first :id => params[:id]
-
-    @author = feed.author
+    @author = @feed.author
 
     if @author.user == current_user
       # You're not allowed to follow yourself.
       redirect_to request.referrer
-    elsif !current_user.following_url? feed.url
+    elsif !current_user.following_url? @feed.url
       # If we're not following them, noop.
       flash[:notice] = "You're not following #{@author.username}."
       redirect_to request.referrer
     else
-      current_user.unfollow! feed
+      current_user.unfollow! @feed
 
       flash[:notice] = "No longer following #{@author.username}."
       redirect_to request.referrer
@@ -52,12 +49,9 @@ class SubscriptionsController < ApplicationController
   # subscriber receives updates
   # should be 'put', PuSH sucks at REST
   def post_update
-    feed = Feed.first :id => params[:id]
-    if feed.nil?
-      raise ActionController::RoutingError.new('Not Found')
-    end
+    raise ActionController::RoutingError.new('Not Found') if @feed.nil?
 
-    feed.update_entries(request.body.read, request.url, feed.url, request.env['HTTP_X_HUB_SIGNATURE'])
+    @feed.update_entries(request.body.read, request.url, @feed.url, request.env['HTTP_X_HUB_SIGNATURE'])
     render :nothing => true
   end
 
@@ -95,5 +89,11 @@ class SubscriptionsController < ApplicationController
 
     flash[:notice] = "Now following #{f.author.username}."
     redirect_to request.referrer
+  end
+
+  private
+
+  def find_feed
+    @feed = Feed.first :id => params[:id]
   end
 end

@@ -1,4 +1,5 @@
 class UsersController < ApplicationController
+  before_filter :find_user, :only => [:show, :edit, :update, :feed, :following, :followers]
 
   def index
     set_params_page
@@ -11,28 +12,24 @@ class UsersController < ApplicationController
   end
 
   def show
-    user = User.find_by_case_insensitive_username(params[:id])
-
-    if user.nil?
+    if @user.nil?
       render :file => "#{Rails.root}/public/404.html", :status => 404
-    elsif user.username != params[:id] # case difference
-      redirect_to "/users/#{user.username}"
+    elsif @user.username != params[:id] # case difference
+      redirect_to user_path(@user)
     else
       set_params_page
 
-      @author  = user.author
-      @updates = user.updates
+      @author  = @user.author
+      @updates = @user.updates
       @updates = @updates.paginate(:page => params[:page], :per_page => params[:per_page])
 
       set_pagination_buttons(@updates)
 
-      headers['Link'] = "<#{user_xrd_path(user.author.username)}>; rel=\"lrdd\"; type=\"application/xrd+xml\""
+      headers['Link'] = "<#{user_xrd_path(@user.author)}>; rel=\"lrdd\"; type=\"application/xrd+xml\""
     end
   end
 
   def edit
-    @user = User.find_by_case_insensitive_username(params[:id])
-
     # While it might be cool to edit other people's profiles, we probably
     # shouldn't let you do that. We're no fun.
     if @user == current_user
@@ -43,7 +40,6 @@ class UsersController < ApplicationController
   end
 
   def update
-    @user = User.find_by_case_insensitive_username(params[:id])
     if @user == current_user
       response = @user.edit_user_profile(params)
       if response == true
@@ -110,9 +106,8 @@ class UsersController < ApplicationController
   # Whatevs.
   # Except we ARE doing a redirect??? /me shakes fist at steve
   def feed
-    user = User.find_by_case_insensitive_username(params[:id])
-    if user
-      redirect_to "/feeds/#{user.feed.id}.atom"
+    if @user
+      redirect_to "/feeds/#{@user.feed.id}.atom"
     else
       render :file => "#{Rails.root}/public/404.html", :status => 404
     end
@@ -121,8 +116,6 @@ class UsersController < ApplicationController
   # Who do you think is a really neat person? This page will show it to the
   # world, so pick wisely!
   def following
-    @user = User.find_by_case_insensitive_username(params[:id])
-
     if @user.nil?
       render :file => "#{Rails.root}/public/404.html", :status => 404
     elsif @user.username != params[:id] # case difference
@@ -154,8 +147,6 @@ class UsersController < ApplicationController
   # This shows off how cool you are: I hope you've got the biggest number of
   # followers. Only one way to find out...
   def followers
-    @user = User.find_by_case_insensitive_username(params[:id])
-
     if @user.nil?
       render :file => "#{Rails.root}/public/404.html", :status => 404
     elsif @user.username != params[:id] # case difference
@@ -305,5 +296,11 @@ class UsersController < ApplicationController
       @user = user
       render "login/password_reset"
     end
+  end
+
+  private
+
+  def find_user
+    @user = User.find_by_case_insensitive_username(params[:id])
   end
 end

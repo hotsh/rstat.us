@@ -336,6 +336,10 @@ class User
     self.perishable_token_set.to_time < 2.days.ago
   end
 
+  def to_param
+    username
+  end
+
   private
 
   def create_feed
