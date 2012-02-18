@@ -99,15 +99,11 @@ class UsersController < ApplicationController
     end
   end
 
-  # This is pretty much the same thing as /feeds/your_feed_id, but we
+  # This is pretty much the same thing as /feeds/your_feed_id.atom, but we
   # wanted to have a really nice URL for it, and not just the ugly one.
-  # Since it's only two lines, we don't bother to do a redirect, and
-  # it's arguably better to display them as two different resources.
-  # Whatevs.
-  # Except we ARE doing a redirect??? /me shakes fist at steve
   def feed
     if @user
-      redirect_to "/feeds/#{@user.feed.id}.atom"
+      redirect_to feed_path(@user.feed, :format => :atom)
     else
       render :file => "#{Rails.root}/public/404.html", :status => 404
     end
@@ -118,8 +114,10 @@ class UsersController < ApplicationController
   def following
     if @user.nil?
       render :file => "#{Rails.root}/public/404.html", :status => 404
-    elsif @user.username != params[:id] # case difference
-      redirect_to "/users/#{@user.username}/following"
+    # If the username's case entered in the URL is different than the case
+    # specified by that user, redirect to the case that the user prefers
+    elsif @user.username != params[:id]
+      redirect_to following_path(@user.username)
     else
       set_params_page
 
@@ -149,8 +147,10 @@ class UsersController < ApplicationController
   def followers
     if @user.nil?
       render :file => "#{Rails.root}/public/404.html", :status => 404
-    elsif @user.username != params[:id] # case difference
-      redirect_to "/users/#{@user.username}/followers"
+    # If the username's case entered in the URL is different than the case
+    # specified by that user, redirect to the case that the user prefers
+    elsif @user.username != params[:id]
+      redirect_to followers_path(@user.username)
     else
       set_params_page
 
@@ -183,17 +183,17 @@ class UsersController < ApplicationController
     user = User.first(:perishable_token => params[:token])
     if user.nil?
       flash[:notice] = "Can't find User Account for this link."
-      redirect_to "/"
+      redirect_to root_path
     elsif user.token_expired?
       flash[:notice] = "Your link is no longer valid, please request a new one."
-      redirect_to "/"
+      redirect_to root_path
     else
       user.email_confirmed = true
       user.reset_perishable_token
       # Register a session for the user
       session[:user_id] = user.id
       flash[:notice] = "Email successfully confirmed."
-      redirect_to "/"
+      redirect_to root_path
     end
   end
 
@@ -217,7 +217,7 @@ class UsersController < ApplicationController
       Notifier.send_forgot_password_notification(user.email, user.create_token)
       # Redirect to try to avoid repost issues
       session[:fp_email] = user.email
-      redirect_to '/forgot_password_confirm'
+      redirect_to forgot_password_confirm_path
     end
   end
 
@@ -230,7 +230,7 @@ class UsersController < ApplicationController
 
   def reset_password_new
     if not logged_in?
-      redirect_to "/forgot_password"
+      redirect_to forgot_password_path
     else
       render "login/password_reset"
     end
@@ -254,20 +254,20 @@ class UsersController < ApplicationController
 
       if params[:password].size == 0
         flash[:notice] = "Password must be present"
-        redirect_to "/reset_password/#{params[:token]}"
+        redirect_to reset_password_path(params[:token])
         return
       end
 
       if params[:password] != params[:password_confirm]
         flash[:notice] = "Passwords do not match"
-        redirect_to "/reset_password/#{params[:token]}"
+        redirect_to reset_password_path(params[:token])
         return
       end
 
       if user.email.nil?
         if params[:email].empty?
           flash[:notice] = "Email must be provided"
-          redirect_to "/reset_password/#{params[:token]}"
+          redirect_to reset_password_path(params[:token])
           return
         else
           user.email = params[:email]
@@ -277,9 +277,9 @@ class UsersController < ApplicationController
       user.password = params[:password]
       user.save
       flash[:notice] = "Password successfully set"
-      redirect_to "/"
+      redirect_to root_path
     else
-      redirect_to "/forgot_password"
+      redirect_to forgot_password_path
     end
   end
 
@@ -290,10 +290,10 @@ class UsersController < ApplicationController
     user = User.first(:perishable_token => params[:token])
     if user.nil? || user.token_expired?
       flash[:notice] = "Your link is no longer valid, please request a new one."
-      redirect_to "/forgot_password"
+      redirect_to forgot_password_path
     else
       @token = params[:token]
-      @user = user
+      @user  = user
       render "login/password_reset"
     end
   end
