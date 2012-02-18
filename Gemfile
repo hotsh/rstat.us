@@ -15,6 +15,7 @@ end
 gem "haml-rails"
 gem 'jquery-rails'
 
+gem 'airbrake'
 gem 'unicorn'
 gem 'omniauth', :git => 'git://github.com/intridea/omniauth.git'
 gem "mongo_mapper"
