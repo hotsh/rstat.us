@@ -8,8 +8,12 @@ jQuery $ ->
   # Hide flash messages
   $("#flash").delay(2000).slideUp('slow')
 
-  $("img").error ->
-    $(this).attr("src", "<%= asset_path Author::DEFAULT_AVATAR %>")
+  # Replace images that 404 with the default avatar
+  replaceBrokenImages = ->
+    $("img").error ->
+      $(this).attr("src", "<%= asset_path Author::DEFAULT_AVATAR %>")
+
+  replaceBrokenImages()
 
   #########################################
   # Updates
@@ -29,8 +33,7 @@ jQuery $ ->
       $("#content").append(loading)
       window.scrollTo(0,0))
     .bind("end.pjax", pjaxEnd = ->
-      $("img").error ->
-        $(this).attr("src", "<%= asset_path Author::DEFAULT_AVATAR %>")
+      replaceBrokenImages()
     )
 
   #########################################
