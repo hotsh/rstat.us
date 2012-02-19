@@ -15,6 +15,13 @@ jQuery $ ->
 
   replaceBrokenImages()
 
+  # Use the timeago plugin to convert an update's time to time ago format
+  # and update it once a minute
+  convertToTimeAgo = ->
+    $(".timeago").timeago()
+
+  convertToTimeAgo()
+
   #########################################
   # Updates
   #########################################
@@ -34,6 +41,7 @@ jQuery $ ->
       window.scrollTo(0,0))
     .bind("end.pjax", pjaxEnd = ->
       replaceBrokenImages()
+      convertToTimeAgo()
     )
 
   #########################################
