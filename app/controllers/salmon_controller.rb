@@ -3,14 +3,14 @@ class SalmonController < ApplicationController
     feed = Feed.first :id => params[:id]
 
     if feed.nil?
-      status 404
+      render :file => "#{Rails.root}/public/404.html", :status => 404
       return
     end
 
     body = request.body.read
     salmon = OStatus::Salmon.from_xml body
     if salmon.nil?
-      status 404
+      render :file => "#{Rails.root}/public/404.html", :status => 404
       return
     end
 
