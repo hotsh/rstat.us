@@ -8,6 +8,11 @@ class SalmonController < ApplicationController
     end
 
     body = request.body.read
+    if body.length == 0
+      render :file => "#{Rails.root}/public/404.html", :status => 404
+      return
+    end
+
     salmon = OStatus::Salmon.from_xml body
     if salmon.nil?
       render :file => "#{Rails.root}/public/404.html", :status => 404

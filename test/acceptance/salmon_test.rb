@@ -9,6 +9,12 @@ describe "Salmon" do
     page.status_code.must_equal(404)
   end
 
+  it "404s if there is no request body" do
+    feed = Fabricate(:feed)
+    visit "/feeds/#{feed.id}/salmon"
+    page.status_code.must_equal(404)
+  end
+
   it "404s if the request body does not contain a magic envelope" do
     feed = Fabricate(:feed)
     page.driver.post "/feeds/#{feed.id}/salmon", "<?xml version='1.0' encoding='UTF-8'?><bogus-xml />"
