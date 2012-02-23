@@ -16,7 +16,11 @@ class UpdatesController < ApplicationController
 
   def show
     @update = Update.first(:id => params[:id])
-    render :layout => "update"
+    if @update
+      render :layout => "update"
+    else
+      render :file => "#{Rails.root}/public/404.html", :status => 404
+    end
   end
 
   def create
