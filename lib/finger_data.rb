@@ -16,11 +16,3 @@ class FingerData
     @xrd.links.find { |l| l['rel'].downcase == 'salmon' }.href
   end
 end
-
-class QueriesWebFinger
-  def self.query(email)
-    # XXX: ensure caching of finger lookup.
-    xrd = Redfinger.finger(email)
-    FingerData.new(xrd)
-  end
-end

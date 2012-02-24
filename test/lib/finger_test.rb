@@ -1,7 +1,7 @@
 require 'minitest/autorun'
 require 'mocha'
 
-require_relative '../../lib/finger'
+require_relative '../../lib/finger_data'
 
 describe "when querying web finger" do
 
@@ -24,7 +24,7 @@ describe "when querying web finger" do
 
   module Redfinger
   end
-  
+
   before do
     url_link = Link.new('http://schemas.google.com/g/2010#updates-from', 'http://feed.url')
     public_key_link = Link.new('magic-public-key', 'ignored,key')
@@ -41,7 +41,7 @@ describe "when querying web finger" do
   it "should get the remote url" do
     assert_equal "http://feed.url", @finger_data.url
   end
-  
+
   it "should get public key " do
     assert_equal "key", @finger_data.public_key
   end
