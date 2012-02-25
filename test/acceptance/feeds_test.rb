@@ -15,4 +15,19 @@ describe "feeds" do
     visit "/users/nonexistent/feed"
     assert_match "The page you were looking for doesn't exist.", page.body
   end
+
+  describe "atom for the hub" do
+    it "returns 20 updates if no cache header info is supplied" do
+      f = Fabricate(:feed)
+      21.times do
+        Fabricate(:update, :feed => f)
+      end
+
+      get "/feeds/#{f.id}.atom"
+      atom = Nokogiri.XML(last_response.body)
+      entries = atom.xpath("//xmlns:entry")
+
+      entries.length.must_equal(20)
+    end
+  end
 end
