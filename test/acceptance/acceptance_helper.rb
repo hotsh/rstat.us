@@ -17,7 +17,9 @@ module AcceptanceHelper
 
   OmniAuth.config.test_mode = true
 
-  def app() Rstatus end
+  def app
+    RstatUs::Application
+  end
 
   def setup
     DatabaseCleaner.strategy = :truncation
