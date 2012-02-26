@@ -85,4 +85,18 @@ describe Feed do
       end
     end
   end
+
+  describe "#atom" do
+    it "sorts updates in reverse chronological order by created_at" do
+      f = Fabricate(:feed)
+      later = Fabricate(:update, :feed => f, :created_at => 1.day.ago)
+      earlier = Fabricate(:update, :feed => f, :created_at => 2.days.ago)
+
+      xml = Nokogiri.XML(f.atom("http://example.com"))
+      entries = xml.xpath("//xmlns:entry")
+
+      entries.first.at_xpath("xmlns:id").content.must_match(/#{later.id}/)
+      entries.last.at_xpath("xmlns:id").content.must_match(/#{earlier.id}/)
+    end
+  end
 end
