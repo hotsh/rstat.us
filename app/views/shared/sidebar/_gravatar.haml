@@ -1,8 +1,14 @@
 .gravatar.block
   %h5.title
     Profile Picture
-
-  %p
-    Signed up with email? Create a
-    %a{:href => "http://gravatar.com"} Gravatar
-    account to set and update your avatar.
+    - unless user.email.blank?
+      %p
+        Create a
+        = link_to 'Gravatar', Author::GRAVATAR_SIGNUP
+        account to set and update your avatar.
+    - else
+      %p
+        = link_to 'Add an email address', edit_user_path(user)
+        to your account and create a
+        = link_to 'Gravatar', Author::GRAVATAR_SIGNUP
+        account to set and update your avatar.
