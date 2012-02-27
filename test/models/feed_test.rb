@@ -99,4 +99,14 @@ describe Feed do
       entries.last.at_xpath("xmlns:id").content.must_match(/#{earlier.id}/)
     end
   end
+
+  describe "#last_update" do
+    it "returns the most recently created update" do
+      f = Fabricate(:feed)
+      later = Fabricate(:update, :feed => f, :created_at => 1.day.ago)
+      earlier = Fabricate(:update, :feed => f, :created_at => 2.days.ago)
+
+      f.last_update.must_equal(later)
+    end
+  end
 end
