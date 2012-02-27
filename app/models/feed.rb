@@ -28,7 +28,7 @@ class Feed
   belongs_to :author
   key :author_id, ObjectId
 
-  many :updates
+  many :updates, :order => 'created_at desc'
 
   timestamps!
 
@@ -77,7 +77,7 @@ class Feed
       self.author.public_key = finger_data.public_key
       self.author.reset_key_lease
 
-      self.author.salmon_url = finger_data.salmon_url 
+      self.author.salmon_url = finger_data.salmon_url
       self.author.save
     end
 
@@ -160,7 +160,7 @@ class Feed
     os_auth = author.to_atom
 
     # Gather entries as OStatus::Entry objects
-    entries = updates.to_a.sort{|a, b| b.created_at <=> a.created_at}.map do |update|
+    entries = updates.map do |update|
       update.to_atom(base_uri)
     end
 
