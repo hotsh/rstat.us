@@ -1,7 +1,7 @@
 .gravatar.block
   %h5.title
     Profile Picture
-    - unless user.email.blank?
+    - unless user.email.present?
       %p
         Create a
         = link_to 'Gravatar', Author::GRAVATAR_SIGNUP
