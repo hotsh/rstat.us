@@ -25,7 +25,7 @@ class FeedsController < ApplicationController
         feed = Feed.first :id => params[:id]
 
         # TODO: Abide by headers that supply cache information
-        render :text => feed.atom(root_url)
+        render :text => feed.atom(root_url, :since => request.if_modified_since)
       end
     end
   end

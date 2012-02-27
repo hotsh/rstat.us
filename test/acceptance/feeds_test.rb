@@ -29,5 +29,18 @@ describe "feeds" do
 
       entries.length.must_equal(20)
     end
+
+    it "returns updates respecting If-Modified-Since cache header if used" do
+      f = Fabricate(:feed)
+      later = Fabricate(:update, :feed => f, :created_at => 1.day.ago)
+      earlier = Fabricate(:update, :feed => f, :created_at => 2.weeks.ago)
+
+      get "/feeds/#{f.id}.atom", {}, "HTTP_IF_MODIFIED_SINCE" => 3.days.ago.httpdate
+      atom = Nokogiri.XML(last_response.body)
+      entries = atom.xpath("//xmlns:entry")
+
+      entries.length.must_equal(1)
+      entries.first.at_xpath("xmlns:id").content.must_match(/#{later.id}/)
+    end
   end
 end
