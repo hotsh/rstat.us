@@ -155,12 +155,20 @@ class Feed
 
   # create atom feed
   # need base_uri since urls outgoing should be absolute
-  def atom(base_uri)
+  def atom(base_uri, params = {})
+    if params[:since]
+      atom_updates = updates.where(:created_at => {:$gt => params[:since]})
+    elsif params[:num]
+      atom_updates = updates.limit(params[:num])
+    else
+      atom_updates = updates.limit(20)
+    end
+
     # Create the OStatus::Author object
     os_auth = author.to_atom
 
     # Gather entries as OStatus::Entry objects
-    entries = updates.map do |update|
+    entries = atom_updates.map do |update|
       update.to_atom(base_uri)
     end
 

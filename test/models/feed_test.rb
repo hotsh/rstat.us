@@ -87,16 +87,37 @@ describe Feed do
   end
 
   describe "#atom" do
-    it "sorts updates in reverse chronological order by created_at" do
-      f = Fabricate(:feed)
-      later = Fabricate(:update, :feed => f, :created_at => 1.day.ago)
-      earlier = Fabricate(:update, :feed => f, :created_at => 2.days.ago)
+    before do
+      @f = Fabricate(:feed)
+      @later = Fabricate(:update, :feed => @f, :created_at => 1.day.ago)
+      @earlier = Fabricate(:update, :feed => @f, :created_at => 2.days.ago)
+    end
 
-      xml = Nokogiri.XML(f.atom("http://example.com"))
+    it "sorts updates in reverse chronological order by created_at" do
+      atom = @f.atom("http://example.com")
+      xml = Nokogiri.XML(atom)
       entries = xml.xpath("//xmlns:entry")
 
-      entries.first.at_xpath("xmlns:id").content.must_match(/#{later.id}/)
-      entries.last.at_xpath("xmlns:id").content.must_match(/#{earlier.id}/)
+      entries.first.at_xpath("xmlns:id").content.must_match(/#{@later.id}/)
+      entries.last.at_xpath("xmlns:id").content.must_match(/#{@earlier.id}/)
+    end
+
+    it "can limit the number of entries returned" do
+      atom = @f.atom("http://example.com", :num => 1)
+      xml = Nokogiri.XML(atom)
+      entries = xml.xpath("//xmlns:entry")
+
+      entries.length.must_equal(1)
+      entries.first.at_xpath("xmlns:id").content.must_match(/#{@later.id}/)
+    end
+
+    it "can limit the entries returned by date" do
+      atom = @f.atom("http://example.com", :since => 36.hours.ago)
+      xml = Nokogiri.XML(atom)
+      entries = xml.xpath("//xmlns:entry")
+
+      entries.length.must_equal(1)
+      entries.first.at_xpath("xmlns:id").content.must_match(/#{@later.id}/)
     end
   end
 
