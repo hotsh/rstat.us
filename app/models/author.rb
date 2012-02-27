@@ -7,6 +7,7 @@ class Author
 
   # Constants that are useful for avatars using gravatar
   GRAVATAR               = "gravatar.com"
+  GRAVATAR_SIGNUP        = "http://gravatar.com/site/signup"
   DEFAULT_AVATAR         = "avatar.png"
   ENCODED_DEFAULT_AVATAR = URI.encode_www_form_component(DEFAULT_AVATAR)
 
