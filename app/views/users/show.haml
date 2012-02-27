@@ -3,7 +3,7 @@
 
 - content_for :sidebar do
   - if @author.user == current_user
-    = render :partial => "shared/sidebar/gravatar"
+    = render :partial => "shared/sidebar/gravatar", :locals => {:user => @author.user}
 
 - content_for :top do
   #profile.vcard
