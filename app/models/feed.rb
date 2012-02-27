@@ -179,21 +179,27 @@ class Feed
 
     # Create a Feed representation which we can generate
     # the Atom feed and send out.
-    feed = OStatus::Feed.from_data("#{base_uri}feeds/#{id}.atom",
-                             :title => "#{author.username}'s Updates",
-                             :logo => avatar_url_abs,
-                             :id => "#{base_uri}feeds/#{id}.atom",
-                             :author => os_auth,
-                             :updated => updated_at,
-                             :entries => entries,
-                             :links => {
-                               :hub => [{:href => hubs.first}],
-                               :salmon => [{:href => "#{base_uri}feeds/#{id}/salmon"}],
-                               :"http://salmon-protocol.org/ns/salmon-replies" =>
-                                 [{:href => "#{base_uri}feeds/#{id}/salmon"}],
-                               :"http://salmon-protocol.org/ns/salmon-mention" =>
-                                 [{:href => "#{base_uri}feeds/#{id}/salmon"}]
-                             })
+    atom_url   = "#{base_uri}feeds/#{id}.atom"
+    salmon_url = "#{base_uri}feeds/#{id}/salmon"
+
+    feed = OStatus::Feed.from_data(
+      atom_url,
+      :title   => "#{author.username}'s Updates",
+      :logo    => avatar_url_abs,
+      :id      => atom_url,
+      :author  => os_auth,
+      :updated => updated_at,
+      :entries => entries,
+      :links   => {
+        :hub    => [{:href => hubs.first}],
+        :salmon => [{:href => salmon_url}],
+        :"http://salmon-protocol.org/ns/salmon-replies" =>
+          [{:href => salmon_url}],
+        :"http://salmon-protocol.org/ns/salmon-mention" =>
+          [{:href => salmon_url}]
+      }
+    )
+
     feed.atom
   end
 
