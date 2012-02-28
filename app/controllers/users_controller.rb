@@ -236,8 +236,7 @@ class UsersController < ApplicationController
     end
   end
 
-  # Submitted passwords are checked for length and confirmation. If the user
-  # does not have an email address they are required to provide one. Once the
+  # Submitted passwords are checked for length and confirmation. Once the
   # password has been reset the user is redirected to /
   def reset_password_create
     user = nil
@@ -264,6 +263,8 @@ class UsersController < ApplicationController
         return
       end
 
+      # TODO: This may be unreachable, since we don't allow password reset
+      # without an email... look into this and remove this code if so.
       if user.email.nil?
         if params[:email].empty?
           flash[:notice] = "Email must be provided"

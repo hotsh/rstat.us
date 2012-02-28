@@ -138,7 +138,7 @@ class Author
     if image_url.present?
       image_url
 
-    # If the user has an email (Don't they have to?), look for a gravatar url.
+    # If the user has an email, look for a gravatar url.
     elsif email.present?
       gravatar_url
 
