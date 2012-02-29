@@ -1,5 +1,6 @@
 class WebfingerController < ApplicationController
-  # Webfinger base xml, describes how to find user xrds
+  # [Webfinger](http://hueniverse.com/webfinger/) base xml, describes how to
+  # find a user's Extensible Resource Descriptor (xrd)
   def host_meta
     @base_url = root_url
     @hostname = request.host
@@ -9,14 +10,7 @@ class WebfingerController < ApplicationController
 
   # User xrd generation
   def xrd
-    # webfinger likes to give fully qualified names
-    # For example: "acct:wilkie@rstat.us"
-
-    # This is rather redundant, but what can you do?
-    # here we strip off the extra foo:
-    username = params[:username][/^([^@\:]+\:)?([^@\:]*?)(@[^@\:]+)?$/, 2] || params[:username]
-
-    @user = User.first :username => /^#{username}$/i
+    @user = Webfinger.find_user(params[:username])
 
     if @user
       @base_url = root_url
