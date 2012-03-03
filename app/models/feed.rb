@@ -28,7 +28,7 @@ class Feed
   belongs_to :author
   key :author_id, ObjectId
 
-  many :updates
+  many :updates, :order => 'created_at desc'
 
   timestamps!
 
@@ -77,7 +77,7 @@ class Feed
       self.author.public_key = finger_data.public_key
       self.author.reset_key_lease
 
-      self.author.salmon_url = finger_data.salmon_url 
+      self.author.salmon_url = finger_data.salmon_url
       self.author.save
     end
 
@@ -155,12 +155,20 @@ class Feed
 
   # create atom feed
   # need base_uri since urls outgoing should be absolute
-  def atom(base_uri)
+  def atom(base_uri, params = {})
+    if params[:since]
+      atom_updates = updates.where(:created_at => {:$gt => params[:since]})
+    elsif params[:num]
+      atom_updates = updates.limit(params[:num])
+    else
+      atom_updates = updates.limit(20)
+    end
+
     # Create the OStatus::Author object
     os_auth = author.to_atom
 
     # Gather entries as OStatus::Entry objects
-    entries = updates.to_a.sort{|a, b| b.created_at <=> a.created_at}.map do |update|
+    entries = atom_updates.map do |update|
       update.to_atom(base_uri)
     end
 
@@ -171,25 +179,31 @@ class Feed
 
     # Create a Feed representation which we can generate
     # the Atom feed and send out.
-    feed = OStatus::Feed.from_data("#{base_uri}feeds/#{id}.atom",
-                             :title => "#{author.username}'s Updates",
-                             :logo => avatar_url_abs,
-                             :id => "#{base_uri}feeds/#{id}.atom",
-                             :author => os_auth,
-                             :updated => updated_at,
-                             :entries => entries,
-                             :links => {
-                               :hub => [{:href => hubs.first}],
-                               :salmon => [{:href => "#{base_uri}feeds/#{id}/salmon"}],
-                               :"http://salmon-protocol.org/ns/salmon-replies" =>
-                                 [{:href => "#{base_uri}feeds/#{id}/salmon"}],
-                               :"http://salmon-protocol.org/ns/salmon-mention" =>
-                                 [{:href => "#{base_uri}feeds/#{id}/salmon"}]
-                             })
+    atom_url   = "#{base_uri}feeds/#{id}.atom"
+    salmon_url = "#{base_uri}feeds/#{id}/salmon"
+
+    feed = OStatus::Feed.from_data(
+      atom_url,
+      :title   => "#{author.username}'s Updates",
+      :logo    => avatar_url_abs,
+      :id      => atom_url,
+      :author  => os_auth,
+      :updated => updated_at,
+      :entries => entries,
+      :links   => {
+        :hub    => [{:href => hubs.first}],
+        :salmon => [{:href => salmon_url}],
+        :"http://salmon-protocol.org/ns/salmon-replies" =>
+          [{:href => salmon_url}],
+        :"http://salmon-protocol.org/ns/salmon-mention" =>
+          [{:href => salmon_url}]
+      }
+    )
+
     feed.atom
   end
 
   def last_update
-    Update.where(:feed_id => id).order(['created_at', 'descending']).first
+    updates.first
   end
 end

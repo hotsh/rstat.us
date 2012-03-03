@@ -19,12 +19,13 @@ class FeedsController < ApplicationController
       end
 
       format.atom do
-        # We do have to provide a rendered feed to the hub, and this controller does
-        # it. Publishers will also view a feed in order to verify their subscription.
+        # We do have to provide a rendered feed to the hub, and this controller
+        # does it. Publishers will also view a feed in order to verify their
+        # subscription.
         feed = Feed.first :id => params[:id]
 
         # TODO: Abide by headers that supply cache information
-        render :text => feed.atom(root_url)
+        render :text => feed.atom(root_url, :since => request.if_modified_since)
       end
     end
   end
