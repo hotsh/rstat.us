@@ -86,19 +86,6 @@ class UsersController < ApplicationController
     end
   end
 
-  #uuuhhhh
-  def create_from_email
-    u = User.create(:email => params[:email],
-                    :status => "unconfirmed")
-    u.set_perishable_token
-
-    if development?
-      puts root_url + "/confirm/#{u.perishable_token}"
-    else
-      Notifier.send_signup_notification(params[:email], u.perishable_token)
-    end
-  end
-
   # This is pretty much the same thing as /feeds/your_feed_id.atom, but we
   # wanted to have a really nice URL for it, and not just the ugly one.
   def feed
