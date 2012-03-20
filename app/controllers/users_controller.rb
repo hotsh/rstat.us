@@ -2,6 +2,7 @@ class UsersController < ApplicationController
   before_filter :find_user, :only => [:show, :edit, :update, :feed, :following, :followers]
 
   def index
+    @title = "users"
     set_params_page
     @authors = Author.search(params)
 
