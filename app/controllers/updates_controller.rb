@@ -3,6 +3,7 @@ class UpdatesController < ApplicationController
   before_filter :require_user, :only => [:timeline, :replies]
 
   def index
+    @title = "updates"
     render_index(Update)
   end
 

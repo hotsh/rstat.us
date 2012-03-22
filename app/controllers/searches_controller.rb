@@ -1,5 +1,6 @@
 class SearchesController < ApplicationController
   def show
+    @title = "search"
     @updates = []
     if params[:q]
       set_params_page

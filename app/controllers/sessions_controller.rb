@@ -1,5 +1,6 @@
 class SessionsController < ApplicationController
   def new
+    @title = "sign in"
     redirect_to root_path && return if logged_in?
   end
 
