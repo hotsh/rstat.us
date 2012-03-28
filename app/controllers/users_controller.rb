@@ -16,10 +16,11 @@ class UsersController < ApplicationController
     if @user.nil?
       render :file => "#{Rails.root}/public/404.html", :status => 404
     elsif @user.username != params[:id] # case difference
+      @title = @user.username
       redirect_to user_path(@user)
     else
       set_params_page
-
+      @title = @user.username
       @author  = @user.author
       @updates = @user.updates
       @updates = @updates.paginate(:page => params[:page], :per_page => params[:per_page])
