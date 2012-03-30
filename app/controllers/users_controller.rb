@@ -291,6 +291,8 @@ class UsersController < ApplicationController
   private
 
   def find_user
-    @user = User.find_by_case_insensitive_username(params[:id])
+    if @user = User.find_by_case_insensitive_username(params[:id])
+      @user = UserDecorator.decorate(@user)
+    end
   end
 end

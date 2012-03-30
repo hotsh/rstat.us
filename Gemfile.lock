@@ -134,6 +134,8 @@ GEM
     crack (0.1.8)
     daemons (1.1.4)
     database_cleaner (0.6.7)
+    draper (0.11.1)
+      activesupport (>= 2.3.10)
     erubis (2.7.0)
     exceptional (2.0.32)
       rack
@@ -310,6 +312,7 @@ DEPENDENCIES
   database_cleaner
   delayed_job!
   delayed_job_mongo_mapper!
+  draper
   exceptional
   fabrication
   haml-rails
