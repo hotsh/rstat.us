@@ -15,9 +15,9 @@ describe "user search" do
 
     assert has_content?("zebra")
   end
-  
+
   it "copes with bad input" do
-    %w[* ?].each do |n|
+    %w[* ? + {1} {1,} {1,2}].each do |n|
       visit "/users?search=#{n}"
       assert_equal 200, page.status_code
       assert has_content?("Please enter a valid search term")
