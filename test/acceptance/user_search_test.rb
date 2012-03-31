@@ -19,8 +19,8 @@ describe "user search" do
   it "copes with bad input" do
     %w[* ? + {1} {1,} {1,2}].each do |n|
       visit "/users?search=#{n}"
-      assert_equal 200, page.status_code
-      assert has_content?("Please enter a valid search term")
+      assert_equal 200, page.status_code, "search input #{n} caused a #{page.status_code} response"
+      assert has_content?("Please enter a valid search term"), "search input #{n} did not cause a flash message"
     end
   end
 
