@@ -16,7 +16,7 @@ The differences between rstat.us and other microblogging networks are *simplicit
 
 *Openness* means the programming code that makes up rstat.us is available for anyone to download, free of charge. Programmers can use that code to run their own websites just like rstat.us, and you can subscribe to your friends on any site that supports the OStatus protocol, like identi.ca. This also means that you can own your data; we'll never stop you from having full access to everything you've put into rstat.us.
 
-[![Build Status](https://secure.travis-ci.org/hotsh/rstat.us.png)](http://travis-ci.org/hotsh/rstat.us)
+[![Build Status](https://secure.travis-ci.org/hotsh/rstat.us.png?branch=master)](http://travis-ci.org/hotsh/rstat.us)
 
 How to get help
 ---------------
