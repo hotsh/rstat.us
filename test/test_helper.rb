@@ -36,6 +36,8 @@ module TestHelper
     DatabaseCleaner.strategy = :truncation
     DatabaseCleaner.clean_with(:truncation)
     DatabaseCleaner.start
+
+    ApplicationController.new.set_current_view_context
   end
 
   def teardown
