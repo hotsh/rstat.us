@@ -23,12 +23,16 @@
           <a class="source" href="updates_controller.html">updates_controller.rb</a>
           <a class="source" href="users_controller.html">users_controller.rb</a>
           <a class="source" href="webfinger_controller.html">webfinger_controller.rb</a>
+          <a class="source" href="../decorators/application_decorator.html">application_decorator.rb</a>
+          <a class="source" href="../decorators/author_decorator.html">author_decorator.rb</a>
+          <a class="source" href="../decorators/user_decorator.html">user_decorator.rb</a>
           <a class="source" href="../models/author.html">author.rb</a>
           <a class="source" href="../models/authorization.html">authorization.rb</a>
           <a class="source" href="../models/feed.html">feed.rb</a>
           <a class="source" href="../models/notifier.html">notifier.rb</a>
           <a class="source" href="../models/update.html">update.rb</a>
           <a class="source" href="../models/user.html">user.rb</a>
+          <a class="source" href="../models/webfinger.html">webfinger.rb</a>
       </div>
     </div>
   </div>
@@ -53,14 +57,19 @@
     <span class="n">feed</span> <span class="o">=</span> <span class="no">Feed</span><span class="o">.</span><span class="n">first</span> <span class="ss">:id</span> <span class="o">=&gt;</span> <span class="n">params</span><span class="o">[</span><span class="ss">:id</span><span class="o">]</span>
 
     <span class="k">if</span> <span class="n">feed</span><span class="o">.</span><span class="n">nil?</span>
-      <span class="n">status</span> <span class="mi">404</span>
+      <span class="n">render</span> <span class="ss">:file</span> <span class="o">=&gt;</span> <span class="s2">&quot;</span><span class="si">#{</span><span class="no">Rails</span><span class="o">.</span><span class="n">root</span><span class="si">}</span><span class="s2">/public/404.html&quot;</span><span class="p">,</span> <span class="ss">:status</span> <span class="o">=&gt;</span> <span class="mi">404</span>
       <span class="k">return</span>
     <span class="k">end</span>
 
     <span class="n">body</span> <span class="o">=</span> <span class="n">request</span><span class="o">.</span><span class="n">body</span><span class="o">.</span><span class="n">read</span>
+    <span class="k">if</span> <span class="n">body</span><span class="o">.</span><span class="n">length</span> <span class="o">==</span> <span class="mi">0</span>
+      <span class="n">render</span> <span class="ss">:file</span> <span class="o">=&gt;</span> <span class="s2">&quot;</span><span class="si">#{</span><span class="no">Rails</span><span class="o">.</span><span class="n">root</span><span class="si">}</span><span class="s2">/public/404.html&quot;</span><span class="p">,</span> <span class="ss">:status</span> <span class="o">=&gt;</span> <span class="mi">404</span>
+      <span class="k">return</span>
+    <span class="k">end</span>
+
     <span class="n">salmon</span> <span class="o">=</span> <span class="no">OStatus</span><span class="o">::</span><span class="no">Salmon</span><span class="o">.</span><span class="n">from_xml</span> <span class="n">body</span>
     <span class="k">if</span> <span class="n">salmon</span><span class="o">.</span><span class="n">nil?</span>
-      <span class="n">status</span> <span class="mi">404</span>
+      <span class="n">render</span> <span class="ss">:file</span> <span class="o">=&gt;</span> <span class="s2">&quot;</span><span class="si">#{</span><span class="no">Rails</span><span class="o">.</span><span class="n">root</span><span class="si">}</span><span class="s2">/public/404.html&quot;</span><span class="p">,</span> <span class="ss">:status</span> <span class="o">=&gt;</span> <span class="mi">404</span>
       <span class="k">return</span>
     <span class="k">end</span></pre></div>
       </td>
@@ -132,6 +141,7 @@
       <span class="n">author</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="n">atom_entry</span><span class="o">.</span><span class="n">author</span><span class="o">.</span><span class="n">portable_contacts</span><span class="o">.</span><span class="n">display_name</span>
       <span class="n">author</span><span class="o">.</span><span class="n">username</span> <span class="o">=</span> <span class="n">atom_entry</span><span class="o">.</span><span class="n">author</span><span class="o">.</span><span class="n">name</span>
       <span class="n">author</span><span class="o">.</span><span class="n">remote_url</span> <span class="o">=</span> <span class="n">atom_entry</span><span class="o">.</span><span class="n">author</span><span class="o">.</span><span class="n">uri</span>
+      <span class="n">author</span><span class="o">.</span><span class="n">domain</span> <span class="o">=</span> <span class="n">atom_entry</span><span class="o">.</span><span class="n">author</span><span class="o">.</span><span class="n">uri</span>
       <span class="n">author</span><span class="o">.</span><span class="n">email</span> <span class="o">=</span> <span class="n">atom_entry</span><span class="o">.</span><span class="n">author</span><span class="o">.</span><span class="n">email</span>
       <span class="n">author</span><span class="o">.</span><span class="n">email</span> <span class="o">=</span> <span class="kp">nil</span> <span class="k">if</span> <span class="n">author</span><span class="o">.</span><span class="n">email</span> <span class="o">==</span> <span class="s2">&quot;&quot;</span>
       <span class="n">author</span><span class="o">.</span><span class="n">bio</span> <span class="o">=</span> <span class="n">atom_entry</span><span class="o">.</span><span class="n">author</span><span class="o">.</span><span class="n">portable_contacts</span><span class="o">.</span><span class="n">note</span>

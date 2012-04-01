@@ -23,12 +23,16 @@
           <a class="source" href="../controllers/updates_controller.html">updates_controller.rb</a>
           <a class="source" href="../controllers/users_controller.html">users_controller.rb</a>
           <a class="source" href="../controllers/webfinger_controller.html">webfinger_controller.rb</a>
+          <a class="source" href="../decorators/application_decorator.html">application_decorator.rb</a>
+          <a class="source" href="../decorators/author_decorator.html">author_decorator.rb</a>
+          <a class="source" href="../decorators/user_decorator.html">user_decorator.rb</a>
           <a class="source" href="author.html">author.rb</a>
           <a class="source" href="authorization.html">authorization.rb</a>
           <a class="source" href="feed.html">feed.rb</a>
           <a class="source" href="notifier.html">notifier.rb</a>
           <a class="source" href="update.html">update.rb</a>
           <a class="source" href="user.html">user.rb</a>
+          <a class="source" href="webfinger.html">webfinger.rb</a>
       </div>
     </div>
   </div>
@@ -161,9 +165,7 @@ authentication response</p>
       </td>
       <td class=code>
         <div class='highlight'><pre>    <span class="k">if</span> <span class="n">user</span><span class="o">.</span><span class="n">nil?</span>
-      <span class="n">domain</span> <span class="o">=</span> <span class="n">base_uri</span><span class="o">[/</span><span class="p">\:\</span><span class="o">/</span><span class="p">\</span><span class="o">/</span><span class="p">(</span><span class="o">.</span><span class="n">*</span><span class="sc">?)</span><span class="p">\</span><span class="o">//</span><span class="p">,</span> <span class="mi">1</span><span class="o">]</span>
-
-      <span class="n">author</span> <span class="o">=</span> <span class="no">Author</span><span class="o">.</span><span class="n">create_from_hash!</span><span class="p">(</span><span class="n">hsh</span><span class="p">,</span> <span class="n">domain</span><span class="p">)</span>
+      <span class="n">author</span> <span class="o">=</span> <span class="no">Author</span><span class="o">.</span><span class="n">create_from_hash!</span><span class="p">(</span><span class="n">hsh</span><span class="p">,</span> <span class="n">base_uri</span><span class="p">)</span>
       <span class="n">user</span>   <span class="o">=</span> <span class="no">User</span><span class="o">.</span><span class="n">create</span><span class="p">(</span>
                  <span class="ss">:author</span>   <span class="o">=&gt;</span> <span class="n">author</span><span class="p">,</span>
                  <span class="ss">:username</span> <span class="o">=&gt;</span> <span class="n">author</span><span class="o">.</span><span class="n">username</span>

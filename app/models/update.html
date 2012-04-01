@@ -23,12 +23,16 @@
           <a class="source" href="../controllers/updates_controller.html">updates_controller.rb</a>
           <a class="source" href="../controllers/users_controller.html">users_controller.rb</a>
           <a class="source" href="../controllers/webfinger_controller.html">webfinger_controller.rb</a>
+          <a class="source" href="../decorators/application_decorator.html">application_decorator.rb</a>
+          <a class="source" href="../decorators/author_decorator.html">author_decorator.rb</a>
+          <a class="source" href="../decorators/user_decorator.html">user_decorator.rb</a>
           <a class="source" href="author.html">author.rb</a>
           <a class="source" href="authorization.html">authorization.rb</a>
           <a class="source" href="feed.html">feed.rb</a>
           <a class="source" href="notifier.html">notifier.rb</a>
           <a class="source" href="update.html">update.rb</a>
           <a class="source" href="user.html">user.rb</a>
+          <a class="source" href="webfinger.html">webfinger.rb</a>
       </div>
     </div>
   </div>
@@ -262,6 +266,59 @@ Local Update id: (nil if remote)</p>
     <span class="n">to_atom</span><span class="p">(</span><span class="n">base_uri</span><span class="p">)</span><span class="o">.</span><span class="n">to_xml</span>
   <span class="k">end</span>
 
+  <span class="k">def</span> <span class="nc">self</span><span class="o">.</span><span class="nf">create_from_ostatus</span><span class="p">(</span><span class="n">entry</span><span class="p">,</span> <span class="n">feed</span><span class="p">)</span>
+    <span class="n">u</span> <span class="o">=</span> <span class="kp">new</span><span class="p">(</span><span class="ss">:author</span>     <span class="o">=&gt;</span> <span class="n">feed</span><span class="o">.</span><span class="n">author</span><span class="p">,</span>
+            <span class="ss">:created_at</span> <span class="o">=&gt;</span> <span class="n">entry</span><span class="o">.</span><span class="n">published</span><span class="p">,</span>
+            <span class="ss">:remote_url</span> <span class="o">=&gt;</span> <span class="n">entry</span><span class="o">.</span><span class="n">url</span><span class="p">,</span>
+            <span class="ss">:feed</span>       <span class="o">=&gt;</span> <span class="n">feed</span><span class="p">,</span>
+            <span class="ss">:updated_at</span> <span class="o">=&gt;</span> <span class="n">entry</span><span class="o">.</span><span class="n">updated</span><span class="p">)</span>
+
+    <span class="n">u</span><span class="o">.</span><span class="n">sanitize_external_text</span><span class="p">(</span><span class="n">entry</span><span class="o">.</span><span class="n">content</span><span class="p">,</span> <span class="n">entry</span><span class="o">.</span><span class="n">url</span><span class="p">)</span>
+    <span class="n">u</span><span class="o">.</span><span class="n">save</span>
+    <span class="n">u</span>
+  <span class="k">end</span>
+
+  <span class="k">def</span> <span class="nf">sanitize_external_text</span><span class="p">(</span><span class="n">entry_text</span><span class="p">,</span> <span class="n">entry_url</span><span class="p">)</span></pre></div>
+      </td>
+    </tr>
+    <tr id='section-15'>
+      <td class=docs>
+        <div class="pilwrap">
+          <a class="pilcrow" href="#section-15">&#182;</a>
+        </div>
+        <p>Strip HTML</p>
+      </td>
+      <td class=code>
+        <div class='highlight'><pre>    <span class="nb">self</span><span class="o">.</span><span class="n">text</span> <span class="o">=</span> <span class="no">Nokogiri</span><span class="o">::</span><span class="no">HTML</span><span class="o">::</span><span class="no">Document</span><span class="o">.</span><span class="n">parse</span><span class="p">(</span><span class="n">entry_text</span><span class="p">)</span><span class="o">.</span><span class="n">text</span></pre></div>
+      </td>
+    </tr>
+    <tr id='section-16'>
+      <td class=docs>
+        <div class="pilwrap">
+          <a class="pilcrow" href="#section-16">&#182;</a>
+        </div>
+        <p>Truncate text</p>
+      </td>
+      <td class=code>
+        <div class='highlight'><pre>    <span class="n">truncation_necessary</span> <span class="o">=</span> <span class="nb">self</span><span class="o">.</span><span class="n">text</span><span class="o">.</span><span class="n">length</span> <span class="o">&gt;</span> <span class="mi">140</span>
+    <span class="k">if</span> <span class="n">truncation_necessary</span>
+      <span class="nb">self</span><span class="o">.</span><span class="n">text</span> <span class="o">=</span> <span class="nb">self</span><span class="o">.</span><span class="n">text</span><span class="o">[</span><span class="mi">0</span><span class="o">.</span><span class="n">.</span><span class="mi">138</span><span class="o">]</span>
+    <span class="k">end</span></pre></div>
+      </td>
+    </tr>
+    <tr id='section-17'>
+      <td class=docs>
+        <div class="pilwrap">
+          <a class="pilcrow" href="#section-17">&#182;</a>
+        </div>
+        <p>Generate HTML</p>
+      </td>
+      <td class=code>
+        <div class='highlight'><pre>    <span class="k">if</span> <span class="n">truncation_necessary</span>
+      <span class="nb">self</span><span class="o">.</span><span class="n">html</span> <span class="o">=</span> <span class="s2">&quot;</span><span class="si">#{</span><span class="nb">self</span><span class="o">.</span><span class="n">to_html</span><span class="si">}</span><span class="s2">&lt;a href=&#39;</span><span class="si">#{</span><span class="n">entry_url</span><span class="si">}</span><span class="s2">&#39;&gt;\u2026&lt;/a&gt;&quot;</span>
+    <span class="k">end</span>
+  <span class="k">end</span>
+
   <span class="kp">protected</span>
 
   <span class="k">def</span> <span class="nf">get_mentions</span>
@@ -280,10 +337,10 @@ Local Update id: (nil if remote)</p>
         <span class="k">else</span></pre></div>
       </td>
     </tr>
-    <tr id='section-15'>
+    <tr id='section-18'>
       <td class=docs>
         <div class="pilwrap">
-          <a class="pilcrow" href="#section-15">&#182;</a>
+          <a class="pilcrow" href="#section-18">&#182;</a>
         </div>
         <p>Disambiguate</p>
       </td>
@@ -291,10 +348,10 @@ Local Update id: (nil if remote)</p>
         <div class='highlight'><pre></pre></div>
       </td>
     </tr>
-    <tr id='section-16'>
+    <tr id='section-19'>
       <td class=docs>
         <div class="pilwrap">
-          <a class="pilcrow" href="#section-16">&#182;</a>
+          <a class="pilcrow" href="#section-19">&#182;</a>
         </div>
         <p>Is it in update to this author?</p>
       </td>
@@ -306,10 +363,10 @@ Local Update id: (nil if remote)</p>
           <span class="k">end</span></pre></div>
       </td>
     </tr>
-    <tr id='section-17'>
+    <tr id='section-20'>
       <td class=docs>
         <div class="pilwrap">
-          <a class="pilcrow" href="#section-17">&#182;</a>
+          <a class="pilcrow" href="#section-20">&#182;</a>
         </div>
         <p>Is this update is generated by a local user,
 look at who they are following</p>
@@ -333,10 +390,10 @@ look at who they are following</p>
   <span class="k">end</span></pre></div>
       </td>
     </tr>
-    <tr id='section-18'>
+    <tr id='section-21'>
       <td class=docs>
         <div class="pilwrap">
-          <a class="pilcrow" href="#section-18">&#182;</a>
+          <a class="pilcrow" href="#section-21">&#182;</a>
         </div>
         <p>Generate and store the html</p>
       </td>
@@ -345,10 +402,10 @@ look at who they are following</p>
     <span class="n">out</span> <span class="o">=</span> <span class="no">CGI</span><span class="o">.</span><span class="n">escapeHTML</span><span class="p">(</span><span class="n">text</span><span class="p">)</span></pre></div>
       </td>
     </tr>
-    <tr id='section-19'>
+    <tr id='section-22'>
       <td class=docs>
         <div class="pilwrap">
-          <a class="pilcrow" href="#section-19">&#182;</a>
+          <a class="pilcrow" href="#section-22">&#182;</a>
         </div>
         <p>Replace any absolute addresses with a link
 Note: Do this first! Otherwise it will add anchors inside anchors!</p>
@@ -357,10 +414,10 @@ Note: Do this first! Otherwise it will add anchors inside anchors!</p>
         <div class='highlight'><pre>    <span class="n">out</span><span class="o">.</span><span class="n">gsub!</span><span class="p">(</span><span class="sr">/(http[s]?:\/\/\S+[a-zA-Z0-9\/}])/</span><span class="p">,</span> <span class="s2">&quot;&lt;a href=&#39;</span><span class="se">\\</span><span class="s2">1&#39;&gt;</span><span class="se">\\</span><span class="s2">1&lt;/a&gt;&quot;</span><span class="p">)</span></pre></div>
       </td>
     </tr>
-    <tr id='section-20'>
+    <tr id='section-23'>
       <td class=docs>
         <div class="pilwrap">
-          <a class="pilcrow" href="#section-20">&#182;</a>
+          <a class="pilcrow" href="#section-23">&#182;</a>
         </div>
         <p>we let almost anything be in a username, except those that mess with urls.
 but you can&rsquo;t end in a .:;, or !
@@ -396,10 +453,10 @@ XXX: the <em>correct</em> solution will be to use an email validator</p>
   <span class="k">def</span> <span class="nf">send_to_remote_mentions</span></pre></div>
       </td>
     </tr>
-    <tr id='section-21'>
+    <tr id='section-24'>
       <td class=docs>
         <div class="pilwrap">
-          <a class="pilcrow" href="#section-21">&#182;</a>
+          <a class="pilcrow" href="#section-24">&#182;</a>
         </div>
         <p>Only local users can do this</p>
       </td>
@@ -407,10 +464,10 @@ XXX: the <em>correct</em> solution will be to use an email validator</p>
         <div class='highlight'><pre>    <span class="k">if</span> <span class="n">author</span><span class="o">.</span><span class="n">user</span></pre></div>
       </td>
     </tr>
-    <tr id='section-22'>
+    <tr id='section-25'>
       <td class=docs>
         <div class="pilwrap">
-          <a class="pilcrow" href="#section-22">&#182;</a>
+          <a class="pilcrow" href="#section-25">&#182;</a>
         </div>
         <p>For each mention, if they are not following this user, send
 this update to them as a salmon notification
@@ -429,10 +486,10 @@ XXX: allow for authors that we do not know (who do not have feeds)</p>
   <span class="k">end</span></pre></div>
       </td>
     </tr>
-    <tr id='section-23'>
+    <tr id='section-26'>
       <td class=docs>
         <div class="pilwrap">
-          <a class="pilcrow" href="#section-23">&#182;</a>
+          <a class="pilcrow" href="#section-26">&#182;</a>
         </div>
         <p>If a user has twitter enabled on their account and they checked
 it on update form, repost the update to twitter</p>
@@ -442,10 +499,10 @@ it on update form, repost the update to twitter</p>
     <span class="k">return</span> <span class="k">if</span> <span class="no">ENV</span><span class="o">[</span><span class="s1">&#39;RAILS_ENV&#39;</span><span class="o">]</span> <span class="o">==</span> <span class="s1">&#39;development&#39;</span></pre></div>
       </td>
     </tr>
-    <tr id='section-24'>
+    <tr id='section-27'>
       <td class=docs>
         <div class="pilwrap">
-          <a class="pilcrow" href="#section-24">&#182;</a>
+          <a class="pilcrow" href="#section-27">&#182;</a>
         </div>
         <p>If there is no user we can&rsquo;t get to the oauth tokens, abort!</p>
       </td>
@@ -453,10 +510,10 @@ it on update form, repost the update to twitter</p>
         <div class='highlight'><pre>    <span class="k">if</span> <span class="n">author</span><span class="o">.</span><span class="n">user</span></pre></div>
       </td>
     </tr>
-    <tr id='section-25'>
+    <tr id='section-28'>
       <td class=docs>
         <div class="pilwrap">
-          <a class="pilcrow" href="#section-25">&#182;</a>
+          <a class="pilcrow" href="#section-28">&#182;</a>
         </div>
         <p>If the twitter flag is true and the user has a twitter account linked
 send the update</p>
@@ -475,10 +532,10 @@ send the update</p>
         <span class="k">rescue</span> <span class="no">Exception</span> <span class="o">=&gt;</span> <span class="n">e</span></pre></div>
       </td>
     </tr>
-    <tr id='section-26'>
+    <tr id='section-29'>
       <td class=docs>
         <div class="pilwrap">
-          <a class="pilcrow" href="#section-26">&#182;</a>
+          <a class="pilcrow" href="#section-29">&#182;</a>
         </div>
         <p>I should be shot for doing this.</p>
 
@@ -491,7 +548,11 @@ send the update</p>
   <span class="k">end</span>
 
   <span class="k">def</span> <span class="nf">do_not_repeat_yourself</span>
-    <span class="n">errors</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="ss">:text</span><span class="p">,</span> <span class="s2">&quot;You already posted this update.&quot;</span><span class="p">)</span> <span class="k">if</span> <span class="n">feed</span><span class="o">.</span><span class="n">last_update</span> <span class="o">&amp;&amp;</span> <span class="n">feed</span><span class="o">.</span><span class="n">last_update</span><span class="o">.</span><span class="n">id</span> <span class="o">!=</span> <span class="nb">id</span> <span class="o">&amp;&amp;</span> <span class="n">feed</span><span class="o">.</span><span class="n">last_update</span><span class="o">.</span><span class="n">text</span> <span class="o">==</span> <span class="n">text</span> <span class="o">&amp;&amp;</span> <span class="n">feed</span><span class="o">.</span><span class="n">last_update</span><span class="o">.</span><span class="n">author</span><span class="o">.</span><span class="n">id</span> <span class="o">==</span> <span class="n">author</span><span class="o">.</span><span class="n">id</span>
+    <span class="n">errors</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="ss">:text</span><span class="p">,</span> <span class="s2">&quot;You already posted this update.&quot;</span><span class="p">)</span> <span class="k">if</span> <span class="n">already_posted?</span>
+  <span class="k">end</span>
+
+  <span class="k">def</span> <span class="nf">already_posted?</span>
+    <span class="n">feed</span><span class="o">.</span><span class="n">last_update</span> <span class="o">&amp;&amp;</span> <span class="n">feed</span><span class="o">.</span><span class="n">last_update</span><span class="o">.</span><span class="n">id</span> <span class="o">!=</span> <span class="nb">id</span> <span class="o">&amp;&amp;</span> <span class="n">feed</span><span class="o">.</span><span class="n">last_update</span><span class="o">.</span><span class="n">text</span> <span class="o">==</span> <span class="n">text</span>
   <span class="k">end</span>
 <span class="k">end</span></pre></div>
       </td>

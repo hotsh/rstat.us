@@ -23,12 +23,16 @@
           <a class="source" href="updates_controller.html">updates_controller.rb</a>
           <a class="source" href="users_controller.html">users_controller.rb</a>
           <a class="source" href="webfinger_controller.html">webfinger_controller.rb</a>
+          <a class="source" href="../decorators/application_decorator.html">application_decorator.rb</a>
+          <a class="source" href="../decorators/author_decorator.html">author_decorator.rb</a>
+          <a class="source" href="../decorators/user_decorator.html">user_decorator.rb</a>
           <a class="source" href="../models/author.html">author.rb</a>
           <a class="source" href="../models/authorization.html">authorization.rb</a>
           <a class="source" href="../models/feed.html">feed.rb</a>
           <a class="source" href="../models/notifier.html">notifier.rb</a>
           <a class="source" href="../models/update.html">update.rb</a>
           <a class="source" href="../models/user.html">user.rb</a>
+          <a class="source" href="../models/webfinger.html">webfinger.rb</a>
       </div>
     </div>
   </div>
@@ -50,6 +54,7 @@
       <td class=code>
         <div class='highlight'><pre><span class="k">class</span> <span class="nc">SearchesController</span> <span class="o">&lt;</span> <span class="no">ApplicationController</span>
   <span class="k">def</span> <span class="nf">show</span>
+    <span class="vi">@title</span> <span class="o">=</span> <span class="s2">&quot;search&quot;</span>
     <span class="vi">@updates</span> <span class="o">=</span> <span class="o">[]</span>
     <span class="k">if</span> <span class="n">params</span><span class="o">[</span><span class="ss">:q</span><span class="o">]</span>
       <span class="n">set_params_page</span>

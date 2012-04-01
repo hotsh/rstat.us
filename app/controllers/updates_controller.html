@@ -23,12 +23,16 @@
           <a class="source" href="updates_controller.html">updates_controller.rb</a>
           <a class="source" href="users_controller.html">users_controller.rb</a>
           <a class="source" href="webfinger_controller.html">webfinger_controller.rb</a>
+          <a class="source" href="../decorators/application_decorator.html">application_decorator.rb</a>
+          <a class="source" href="../decorators/author_decorator.html">author_decorator.rb</a>
+          <a class="source" href="../decorators/user_decorator.html">user_decorator.rb</a>
           <a class="source" href="../models/author.html">author.rb</a>
           <a class="source" href="../models/authorization.html">authorization.rb</a>
           <a class="source" href="../models/feed.html">feed.rb</a>
           <a class="source" href="../models/notifier.html">notifier.rb</a>
           <a class="source" href="../models/update.html">update.rb</a>
           <a class="source" href="../models/user.html">user.rb</a>
+          <a class="source" href="../models/webfinger.html">webfinger.rb</a>
       </div>
     </div>
   </div>
@@ -53,6 +57,7 @@
   <span class="n">before_filter</span> <span class="ss">:require_user</span><span class="p">,</span> <span class="ss">:only</span> <span class="o">=&gt;</span> <span class="o">[</span><span class="ss">:timeline</span><span class="p">,</span> <span class="ss">:replies</span><span class="o">]</span>
 
   <span class="k">def</span> <span class="nf">index</span>
+    <span class="vi">@title</span> <span class="o">=</span> <span class="s2">&quot;updates&quot;</span>
     <span class="n">render_index</span><span class="p">(</span><span class="no">Update</span><span class="p">)</span>
   <span class="k">end</span>
 
@@ -66,7 +71,11 @@
 
   <span class="k">def</span> <span class="nf">show</span>
     <span class="vi">@update</span> <span class="o">=</span> <span class="no">Update</span><span class="o">.</span><span class="n">first</span><span class="p">(</span><span class="ss">:id</span> <span class="o">=&gt;</span> <span class="n">params</span><span class="o">[</span><span class="ss">:id</span><span class="o">]</span><span class="p">)</span>
-    <span class="n">render</span> <span class="ss">:layout</span> <span class="o">=&gt;</span> <span class="s2">&quot;update&quot;</span>
+    <span class="k">if</span> <span class="vi">@update</span>
+      <span class="n">render</span> <span class="ss">:layout</span> <span class="o">=&gt;</span> <span class="s2">&quot;update&quot;</span>
+    <span class="k">else</span>
+      <span class="n">render</span> <span class="ss">:file</span> <span class="o">=&gt;</span> <span class="s2">&quot;</span><span class="si">#{</span><span class="no">Rails</span><span class="o">.</span><span class="n">root</span><span class="si">}</span><span class="s2">/public/404.html&quot;</span><span class="p">,</span> <span class="ss">:status</span> <span class="o">=&gt;</span> <span class="mi">404</span>
+    <span class="k">end</span>
   <span class="k">end</span>
 
   <span class="k">def</span> <span class="nf">create</span></pre></div>
@@ -133,17 +142,17 @@
         <div class="pilwrap">
           <a class="pilcrow" href="#section-5">&#182;</a>
         </div>
-        <p>lolsecurity.</p>
+        <p>security.</p>
       </td>
       <td class=code>
         <div class='highlight'><pre>    <span class="k">if</span> <span class="n">update</span><span class="o">.</span><span class="n">author</span> <span class="o">==</span> <span class="n">current_user</span><span class="o">.</span><span class="n">author</span>
       <span class="n">update</span><span class="o">.</span><span class="n">destroy</span>
 
-      <span class="n">flash</span><span class="o">[</span><span class="ss">:notice</span><span class="o">]</span> <span class="o">=</span> <span class="s2">&quot;Update Baleeted!&quot;</span>
+      <span class="n">flash</span><span class="o">[</span><span class="ss">:notice</span><span class="o">]</span> <span class="o">=</span> <span class="s2">&quot;Update Deleted!&quot;</span>
       <span class="n">redirect_to</span> <span class="n">root_path</span>
     <span class="k">else</span>
-      <span class="n">flash</span><span class="o">[</span><span class="ss">:notice</span><span class="o">]</span> <span class="o">=</span> <span class="s2">&quot;I&#39;m afraid I can&#39;t let you do that, </span><span class="si">#{</span><span class="n">current_user</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2">.&quot;</span>
-      <span class="n">redirect_to</span> <span class="n">back</span>
+      <span class="n">flash</span><span class="o">[</span><span class="ss">:notice</span><span class="o">]</span> <span class="o">=</span> <span class="s2">&quot;I&#39;m afraid I can&#39;t let you do that, </span><span class="si">#{</span><span class="n">current_user</span><span class="o">.</span><span class="n">username</span><span class="si">}</span><span class="s2">.&quot;</span>
+      <span class="n">redirect_to</span> <span class="ss">:back</span>
     <span class="k">end</span>
   <span class="k">end</span>
 

@@ -23,12 +23,16 @@
           <a class="source" href="updates_controller.html">updates_controller.rb</a>
           <a class="source" href="users_controller.html">users_controller.rb</a>
           <a class="source" href="webfinger_controller.html">webfinger_controller.rb</a>
+          <a class="source" href="../decorators/application_decorator.html">application_decorator.rb</a>
+          <a class="source" href="../decorators/author_decorator.html">author_decorator.rb</a>
+          <a class="source" href="../decorators/user_decorator.html">user_decorator.rb</a>
           <a class="source" href="../models/author.html">author.rb</a>
           <a class="source" href="../models/authorization.html">authorization.rb</a>
           <a class="source" href="../models/feed.html">feed.rb</a>
           <a class="source" href="../models/notifier.html">notifier.rb</a>
           <a class="source" href="../models/update.html">update.rb</a>
           <a class="source" href="../models/user.html">user.rb</a>
+          <a class="source" href="../models/webfinger.html">webfinger.rb</a>
       </div>
     </div>
   </div>
@@ -77,7 +81,7 @@ This is also our view for a particular feed</p>
         <p>Redirect to the local profile page</p>
       </td>
       <td class=code>
-        <div class='highlight'><pre>          <span class="n">redirect_to</span> <span class="s2">&quot;/users/</span><span class="si">#{</span><span class="n">feed</span><span class="o">.</span><span class="n">author</span><span class="o">.</span><span class="n">username</span><span class="si">}</span><span class="s2">&quot;</span>
+        <div class='highlight'><pre>          <span class="n">redirect_to</span> <span class="n">user_path</span><span class="p">(</span><span class="n">feed</span><span class="o">.</span><span class="n">author</span><span class="p">)</span>
         <span class="k">else</span></pre></div>
       </td>
     </tr>
@@ -103,8 +107,9 @@ has to go to another site. This is the new age.</p>
         <div class="pilwrap">
           <a class="pilcrow" href="#section-5">&#182;</a>
         </div>
-        <p>We do have to provide a rendered feed to the hub, and this controller does
-it. Publishers will also view a feed in order to verify their subscription.</p>
+        <p>We do have to provide a rendered feed to the hub, and this controller
+does it. Publishers will also view a feed in order to verify their
+subscription.</p>
       </td>
       <td class=code>
         <div class='highlight'><pre>        <span class="n">feed</span> <span class="o">=</span> <span class="no">Feed</span><span class="o">.</span><span class="n">first</span> <span class="ss">:id</span> <span class="o">=&gt;</span> <span class="n">params</span><span class="o">[</span><span class="ss">:id</span><span class="o">]</span></pre></div>
@@ -119,7 +124,7 @@ it. Publishers will also view a feed in order to verify their subscription.</p>
 
       </td>
       <td class=code>
-        <div class='highlight'><pre>        <span class="n">render</span> <span class="ss">:text</span> <span class="o">=&gt;</span> <span class="n">feed</span><span class="o">.</span><span class="n">atom</span><span class="p">(</span><span class="n">root_url</span><span class="p">)</span>
+        <div class='highlight'><pre>        <span class="n">render</span> <span class="ss">:text</span> <span class="o">=&gt;</span> <span class="n">feed</span><span class="o">.</span><span class="n">atom</span><span class="p">(</span><span class="n">root_url</span><span class="p">,</span> <span class="ss">:since</span> <span class="o">=&gt;</span> <span class="n">request</span><span class="o">.</span><span class="n">if_modified_since</span><span class="p">)</span>
       <span class="k">end</span>
     <span class="k">end</span>
   <span class="k">end</span>

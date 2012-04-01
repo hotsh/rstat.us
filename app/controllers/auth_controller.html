@@ -23,12 +23,16 @@
           <a class="source" href="updates_controller.html">updates_controller.rb</a>
           <a class="source" href="users_controller.html">users_controller.rb</a>
           <a class="source" href="webfinger_controller.html">webfinger_controller.rb</a>
+          <a class="source" href="../decorators/application_decorator.html">application_decorator.rb</a>
+          <a class="source" href="../decorators/author_decorator.html">author_decorator.rb</a>
+          <a class="source" href="../decorators/user_decorator.html">user_decorator.rb</a>
           <a class="source" href="../models/author.html">author.rb</a>
           <a class="source" href="../models/authorization.html">authorization.rb</a>
           <a class="source" href="../models/feed.html">feed.rb</a>
           <a class="source" href="../models/notifier.html">notifier.rb</a>
           <a class="source" href="../models/update.html">update.rb</a>
           <a class="source" href="../models/user.html">user.rb</a>
+          <a class="source" href="../models/webfinger.html">webfinger.rb</a>
       </div>
     </div>
   </div>
@@ -83,7 +87,8 @@ account.</p>
         <div class='highlight'><pre>    <span class="k">unless</span> <span class="vi">@auth</span> <span class="o">=</span> <span class="no">Authorization</span><span class="o">.</span><span class="n">find_from_hash</span><span class="p">(</span><span class="n">auth</span><span class="p">)</span>
       <span class="k">if</span> <span class="n">logged_in?</span>
         <span class="no">Authorization</span><span class="o">.</span><span class="n">create_from_hash!</span><span class="p">(</span><span class="n">auth</span><span class="p">,</span> <span class="n">root_url</span><span class="p">,</span> <span class="n">current_user</span><span class="p">)</span>
-        <span class="n">redirect_to</span> <span class="s2">&quot;/users/</span><span class="si">#{</span><span class="n">current_user</span><span class="o">.</span><span class="n">username</span><span class="si">}</span><span class="s2">/edit&quot;</span> <span class="ow">and</span> <span class="k">return</span>
+        <span class="n">redirect_to</span> <span class="n">edit_user_path</span><span class="p">(</span><span class="n">current_user</span><span class="p">)</span>
+        <span class="k">return</span>
       <span class="k">else</span></pre></div>
       </td>
     </tr>
@@ -124,8 +129,7 @@ to have their username.</p>
           <span class="n">flash</span><span class="o">[</span><span class="ss">:error</span><span class="o">]</span> <span class="o">=</span> <span class="s2">&quot;Sorry, someone else has that username. Please pick another.&quot;</span>
         <span class="k">end</span>
 
-        <span class="n">redirect_to</span> <span class="s1">&#39;/users/new&#39;</span>
-
+        <span class="n">redirect_to</span> <span class="n">new_user_path</span>
         <span class="k">return</span>
       <span class="k">end</span>
     <span class="k">end</span></pre></div>
@@ -149,7 +153,8 @@ and updated.</p>
     <span class="n">session</span><span class="o">[</span><span class="ss">:user_id</span><span class="o">]</span> <span class="o">=</span> <span class="vi">@auth</span><span class="o">.</span><span class="n">user</span><span class="o">.</span><span class="n">id</span>
 
     <span class="n">flash</span><span class="o">[</span><span class="ss">:notice</span><span class="o">]</span> <span class="o">=</span> <span class="s2">&quot;You&#39;re now logged in.&quot;</span>
-    <span class="n">redirect_to</span> <span class="s1">&#39;/&#39;</span>
+
+    <span class="n">redirect_to</span> <span class="n">root_path</span>
   <span class="k">end</span>
 
   <span class="k">def</span> <span class="nf">failure</span>
@@ -175,16 +180,27 @@ and updated.</p>
           <a class="pilcrow" href="#section-7">&#182;</a>
         </div>
         <p>This lets someone remove a particular Authorization from their account.</p>
-
       </td>
       <td class=code>
         <div class='highlight'><pre>  <span class="k">def</span> <span class="nf">destroy</span>
-    <span class="n">user</span> <span class="o">=</span> <span class="no">User</span><span class="o">.</span><span class="n">first</span><span class="p">(</span><span class="ss">:username</span> <span class="o">=&gt;</span> <span class="n">params</span><span class="o">[</span><span class="ss">:username</span><span class="o">]</span><span class="p">)</span>
-    <span class="k">if</span> <span class="n">user</span>
+    <span class="k">if</span> <span class="n">user</span> <span class="o">=</span> <span class="no">User</span><span class="o">.</span><span class="n">first</span><span class="p">(</span><span class="ss">:username</span> <span class="o">=&gt;</span> <span class="n">params</span><span class="o">[</span><span class="ss">:username</span><span class="o">]</span><span class="p">)</span>
       <span class="n">auth</span> <span class="o">=</span> <span class="no">Authorization</span><span class="o">.</span><span class="n">first</span><span class="p">(</span><span class="ss">:provider</span> <span class="o">=&gt;</span> <span class="n">params</span><span class="o">[</span><span class="ss">:provider</span><span class="o">]</span><span class="p">,</span> <span class="ss">:user_id</span> <span class="o">=&gt;</span> <span class="n">user</span><span class="o">.</span><span class="n">id</span><span class="p">)</span>
-      <span class="n">auth</span><span class="o">.</span><span class="n">destroy</span> <span class="k">if</span> <span class="n">auth</span>
+      <span class="n">auth</span><span class="o">.</span><span class="n">destroy</span> <span class="k">if</span> <span class="n">auth</span></pre></div>
+      </td>
+    </tr>
+    <tr id='section-8'>
+      <td class=docs>
+        <div class="pilwrap">
+          <a class="pilcrow" href="#section-8">&#182;</a>
+        </div>
+        <p>Without re-setting the session[:user_id] we&rsquo;re logged out</p>
+
+      </td>
+      <td class=code>
+        <div class='highlight'><pre>      <span class="n">session</span><span class="o">[</span><span class="ss">:user_id</span><span class="o">]</span> <span class="o">=</span> <span class="n">user</span><span class="o">.</span><span class="n">id</span>
     <span class="k">end</span>
-    <span class="n">redirect_to</span> <span class="s2">&quot;/users/</span><span class="si">#{</span><span class="n">params</span><span class="o">[</span><span class="ss">:username</span><span class="o">]</span><span class="si">}</span><span class="s2">/edit&quot;</span>
+
+    <span class="n">redirect_to</span> <span class="n">edit_user_path</span><span class="p">(</span><span class="n">user</span><span class="p">)</span>
   <span class="k">end</span>
 <span class="k">end</span></pre></div>
       </td>

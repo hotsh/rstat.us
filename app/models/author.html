@@ -23,12 +23,16 @@
           <a class="source" href="../controllers/updates_controller.html">updates_controller.rb</a>
           <a class="source" href="../controllers/users_controller.html">users_controller.rb</a>
           <a class="source" href="../controllers/webfinger_controller.html">webfinger_controller.rb</a>
+          <a class="source" href="../decorators/application_decorator.html">application_decorator.rb</a>
+          <a class="source" href="../decorators/author_decorator.html">author_decorator.rb</a>
+          <a class="source" href="../decorators/user_decorator.html">user_decorator.rb</a>
           <a class="source" href="author.html">author.rb</a>
           <a class="source" href="authorization.html">authorization.rb</a>
           <a class="source" href="feed.html">feed.rb</a>
           <a class="source" href="notifier.html">notifier.rb</a>
           <a class="source" href="update.html">update.rb</a>
           <a class="source" href="user.html">user.rb</a>
+          <a class="source" href="webfinger.html">webfinger.rb</a>
       </div>
     </div>
   </div>
@@ -63,6 +67,7 @@ remote authors, from feeds that originate from outside of our site.</p>
       </td>
       <td class=code>
         <div class='highlight'><pre>  <span class="no">GRAVATAR</span>               <span class="o">=</span> <span class="s2">&quot;gravatar.com&quot;</span>
+  <span class="no">GRAVATAR_SIGNUP</span>        <span class="o">=</span> <span class="s2">&quot;http://gravatar.com/site/signup&quot;</span>
   <span class="no">DEFAULT_AVATAR</span>         <span class="o">=</span> <span class="s2">&quot;avatar.png&quot;</span>
   <span class="no">ENCODED_DEFAULT_AVATAR</span> <span class="o">=</span> <span class="no">URI</span><span class="o">.</span><span class="n">encode_www_form_component</span><span class="p">(</span><span class="no">DEFAULT_AVATAR</span><span class="p">)</span></pre></div>
       </td>
@@ -95,10 +100,12 @@ of it is val*idated right now. Fun. Then again, not all of it is neccesary.</p>
         <div class="pilwrap">
           <a class="pilcrow" href="#section-5">&#182;</a>
         </div>
-        <p>This contains the domain that the author&rsquo;s feed originates (nil for local)</p>
+        <p>This contains the domain that the author&rsquo;s feed originates.</p>
       </td>
       <td class=code>
-        <div class='highlight'><pre>  <span class="n">key</span> <span class="ss">:domain</span><span class="p">,</span>    <span class="nb">String</span></pre></div>
+        <div class='highlight'><pre>  <span class="n">key</span> <span class="ss">:domain</span><span class="p">,</span>    <span class="nb">String</span>
+
+  <span class="n">validates_presence_of</span> <span class="ss">:domain</span></pre></div>
       </td>
     </tr>
     <tr id='section-6'>
@@ -106,10 +113,10 @@ of it is val*idated right now. Fun. Then again, not all of it is neccesary.</p>
         <div class="pilwrap">
           <a class="pilcrow" href="#section-6">&#182;</a>
         </div>
-        <p>We can get the domain from the remote_url</p>
+        <p>Normalize the domain so we can use them the same way</p>
       </td>
       <td class=code>
-        <div class='highlight'><pre>  <span class="n">before_save</span> <span class="ss">:get_domain</span></pre></div>
+        <div class='highlight'><pre>  <span class="n">before_save</span> <span class="ss">:normalize_domain</span></pre></div>
       </td>
     </tr>
     <tr id='section-7'>
@@ -267,6 +274,17 @@ they&rsquo;re local, they also have a User, too.</p>
     <span class="p">)</span>
   <span class="k">end</span>
 
+  <span class="k">def</span> <span class="nc">self</span><span class="o">.</span><span class="nf">new_from_session!</span><span class="p">(</span><span class="n">session</span><span class="p">,</span> <span class="n">params</span><span class="p">,</span> <span class="n">domain</span><span class="p">)</span>
+    <span class="kp">new</span><span class="p">(</span>
+      <span class="ss">:name</span>     <span class="o">=&gt;</span> <span class="n">session</span><span class="o">[</span><span class="ss">:name</span><span class="o">]</span><span class="p">,</span>
+      <span class="ss">:username</span> <span class="o">=&gt;</span> <span class="n">params</span><span class="o">[</span><span class="ss">:username</span><span class="o">]</span><span class="p">,</span>
+      <span class="ss">:website</span>  <span class="o">=&gt;</span> <span class="n">session</span><span class="o">[</span><span class="ss">:website</span><span class="o">]</span><span class="p">,</span>
+      <span class="ss">:bio</span>      <span class="o">=&gt;</span> <span class="n">session</span><span class="o">[</span><span class="ss">:description</span><span class="o">]</span><span class="p">,</span>
+      <span class="ss">:image</span>    <span class="o">=&gt;</span> <span class="n">session</span><span class="o">[</span><span class="ss">:image</span><span class="o">]</span><span class="p">,</span>
+      <span class="ss">:domain</span>   <span class="o">=&gt;</span> <span class="n">domain</span>
+    <span class="p">)</span>
+  <span class="k">end</span>
+
   <span class="k">def</span> <span class="nc">self</span><span class="o">.</span><span class="nf">create_from_session!</span><span class="p">(</span><span class="n">session</span><span class="p">,</span> <span class="n">params</span><span class="p">,</span> <span class="n">domain</span><span class="p">)</span>
     <span class="n">create!</span><span class="p">(</span>
       <span class="ss">:name</span>     <span class="o">=&gt;</span> <span class="n">session</span><span class="o">[</span><span class="ss">:name</span><span class="o">]</span><span class="p">,</span>
@@ -364,7 +382,7 @@ If none of that is around, then we show the DEFAULT_AVATAR</p>
         <div class="pilwrap">
           <a class="pilcrow" href="#section-25">&#182;</a>
         </div>
-        <p>If the user has an email (Don&rsquo;t they have to?), look for a gravatar url.</p>
+        <p>If the user has an email, look for a gravatar url.</p>
       </td>
       <td class=code>
         <div class='highlight'><pre>    <span class="k">elsif</span> <span class="n">email</span><span class="o">.</span><span class="n">present?</span>
@@ -499,24 +517,24 @@ Query described <a href="http://en.gravatar.com/site/implement/images/#default-i
     <span class="n">author</span>
   <span class="k">end</span>
 
-  <span class="k">def</span> <span class="nf">get_domain</span>
-    <span class="k">if</span> <span class="nb">self</span><span class="o">.</span><span class="n">remote_url</span>
-      <span class="nb">self</span><span class="o">.</span><span class="n">domain</span> <span class="o">=</span> <span class="n">remote_url</span><span class="o">[/</span><span class="p">\:\</span><span class="o">/</span><span class="p">\</span><span class="o">/</span><span class="p">(</span><span class="o">.</span><span class="n">*</span><span class="sc">?)</span><span class="p">\</span><span class="o">//</span><span class="p">,</span> <span class="mi">1</span><span class="o">]</span>
-    <span class="k">end</span>
+  <span class="k">def</span> <span class="nf">normalize_domain</span>
+    <span class="n">norm</span> <span class="o">=</span> <span class="nb">self</span><span class="o">.</span><span class="n">domain</span><span class="o">.</span><span class="n">gsub</span><span class="p">(</span><span class="sr">/^.*:\/\//</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">)</span>
+    <span class="n">norm</span> <span class="o">=</span> <span class="n">norm</span><span class="o">.</span><span class="n">gsub</span><span class="p">(</span><span class="sr">/^www./</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">)</span>
+    <span class="n">norm</span> <span class="o">=</span> <span class="n">norm</span><span class="o">.</span><span class="n">gsub</span><span class="p">(</span><span class="sr">/\/.*$/</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">)</span>
+    <span class="n">norm</span> <span class="o">=</span> <span class="n">norm</span><span class="o">.</span><span class="n">gsub</span><span class="p">(</span><span class="sr">/\?.*$/</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">)</span>
+    <span class="n">norm</span> <span class="o">=</span> <span class="n">norm</span><span class="o">.</span><span class="n">gsub</span><span class="p">(</span><span class="sr">/#.*$/</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">)</span>
+    <span class="nb">self</span><span class="o">.</span><span class="n">domain</span> <span class="o">=</span> <span class="n">norm</span>
+  <span class="k">end</span>
+
+  <span class="k">def</span> <span class="nf">to_param</span>
+    <span class="n">username</span>
   <span class="k">end</span>
 
   <span class="k">def</span> <span class="nc">self</span><span class="o">.</span><span class="nf">search</span><span class="p">(</span><span class="n">params</span> <span class="o">=</span> <span class="p">{})</span>
     <span class="k">if</span> <span class="n">params</span><span class="o">[</span><span class="ss">:search</span><span class="o">]</span> <span class="o">&amp;&amp;</span> <span class="o">!</span><span class="n">params</span><span class="o">[</span><span class="ss">:search</span><span class="o">].</span><span class="n">empty?</span>
-      <span class="vi">@authors</span> <span class="o">=</span> <span class="no">Author</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="ss">:username</span> <span class="o">=&gt;</span> <span class="sr">/</span><span class="si">#{</span><span class="n">params</span><span class="o">[</span><span class="ss">:search</span><span class="o">]</span><span class="si">}</span><span class="sr">/i</span><span class="p">)</span>
-    <span class="k">elsif</span> <span class="n">params</span><span class="o">[</span><span class="ss">:letter</span><span class="o">]</span>
-      <span class="k">if</span> <span class="n">params</span><span class="o">[</span><span class="ss">:letter</span><span class="o">]</span> <span class="o">==</span> <span class="s2">&quot;other&quot;</span>
-        <span class="vi">@authors</span> <span class="o">=</span> <span class="no">Author</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="ss">:username</span> <span class="o">=&gt;</span> <span class="sr">/^[^a-z0-9]/i</span><span class="p">)</span>
-      <span class="k">else</span>
-        <span class="vi">@authors</span> <span class="o">=</span> <span class="no">Author</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="ss">:username</span> <span class="o">=&gt;</span> <span class="sr">/^</span><span class="si">#{</span><span class="n">params</span><span class="o">[</span><span class="ss">:letter</span><span class="o">][</span><span class="mi">0</span><span class="o">].</span><span class="n">chr</span><span class="si">}</span><span class="sr">/i</span><span class="p">)</span>
-      <span class="k">end</span>
-      <span class="vi">@authors</span> <span class="o">=</span> <span class="vi">@authors</span><span class="o">.</span><span class="n">sort</span><span class="p">(</span><span class="ss">:username</span><span class="p">)</span>
+      <span class="no">Author</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="ss">:username</span> <span class="o">=&gt;</span> <span class="sr">/</span><span class="si">#{</span><span class="n">params</span><span class="o">[</span><span class="ss">:search</span><span class="o">]</span><span class="si">}</span><span class="sr">/i</span><span class="p">)</span>
     <span class="k">else</span>
-      <span class="vi">@authors</span> <span class="o">=</span> <span class="no">Author</span><span class="o">.</span><span class="n">sort</span><span class="p">(</span><span class="ss">:created_at</span><span class="o">.</span><span class="n">desc</span><span class="p">)</span>
+      <span class="o">[]</span>
     <span class="k">end</span>
   <span class="k">end</span>
 <span class="k">end</span></pre></div>

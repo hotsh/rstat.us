@@ -23,12 +23,16 @@
           <a class="source" href="../controllers/updates_controller.html">updates_controller.rb</a>
           <a class="source" href="../controllers/users_controller.html">users_controller.rb</a>
           <a class="source" href="../controllers/webfinger_controller.html">webfinger_controller.rb</a>
+          <a class="source" href="../decorators/application_decorator.html">application_decorator.rb</a>
+          <a class="source" href="../decorators/author_decorator.html">author_decorator.rb</a>
+          <a class="source" href="../decorators/user_decorator.html">user_decorator.rb</a>
           <a class="source" href="author.html">author.rb</a>
           <a class="source" href="authorization.html">authorization.rb</a>
           <a class="source" href="feed.html">feed.rb</a>
           <a class="source" href="notifier.html">notifier.rb</a>
           <a class="source" href="update.html">update.rb</a>
           <a class="source" href="user.html">user.rb</a>
+          <a class="source" href="webfinger.html">webfinger.rb</a>
       </div>
     </div>
   </div>
@@ -45,6 +49,17 @@
         <div class="pilwrap">
           <a class="pilcrow" href="#section-1">&#182;</a>
         </div>
+        
+      </td>
+      <td class=code>
+        <div class='highlight'><pre><span class="n">require_relative</span> <span class="s1">&#39;../../lib/finds_or_creates_feeds&#39;</span></pre></div>
+      </td>
+    </tr>
+    <tr id='section-2'>
+      <td class=docs>
+        <div class="pilwrap">
+          <a class="pilcrow" href="#section-2">&#182;</a>
+        </div>
         <p>Feeds are pretty central to everything. They&rsquo;re a representation of a PuSH
 enabled Atom feed. Every user has a feed of their updates, we keep feeds
 for remote users that our users are subscribed to, and maybe even other
@@ -54,10 +69,10 @@ things in the future, like hashtags.</p>
         <div class='highlight'><pre><span class="k">class</span> <span class="nc">Feed</span></pre></div>
       </td>
     </tr>
-    <tr id='section-2'>
+    <tr id='section-3'>
       <td class=docs>
         <div class="pilwrap">
-          <a class="pilcrow" href="#section-2">&#182;</a>
+          <a class="pilcrow" href="#section-3">&#182;</a>
         </div>
         <p>XXX: Are these even needed? Bundler should be require-ing them.</p>
       </td>
@@ -70,10 +85,10 @@ things in the future, like hashtags.</p>
   <span class="kp">include</span> <span class="no">MongoMapper</span><span class="o">::</span><span class="no">Document</span></pre></div>
       </td>
     </tr>
-    <tr id='section-3'>
+    <tr id='section-4'>
       <td class=docs>
         <div class="pilwrap">
-          <a class="pilcrow" href="#section-3">&#182;</a>
+          <a class="pilcrow" href="#section-4">&#182;</a>
         </div>
         <p>Feed url (and an indicator that it is local if this is nil)</p>
       </td>
@@ -81,10 +96,10 @@ things in the future, like hashtags.</p>
         <div class='highlight'><pre>  <span class="n">key</span> <span class="ss">:remote_url</span><span class="p">,</span> <span class="nb">String</span></pre></div>
       </td>
     </tr>
-    <tr id='section-4'>
+    <tr id='section-5'>
       <td class=docs>
         <div class="pilwrap">
-          <a class="pilcrow" href="#section-4">&#182;</a>
+          <a class="pilcrow" href="#section-5">&#182;</a>
         </div>
         <p>OStatus subscriber information</p>
       </td>
@@ -93,10 +108,10 @@ things in the future, like hashtags.</p>
   <span class="n">key</span> <span class="ss">:secret</span><span class="p">,</span> <span class="nb">String</span></pre></div>
       </td>
     </tr>
-    <tr id='section-5'>
+    <tr id='section-6'>
       <td class=docs>
         <div class="pilwrap">
-          <a class="pilcrow" href="#section-5">&#182;</a>
+          <a class="pilcrow" href="#section-6">&#182;</a>
         </div>
         <p>For both pubs and subs, it needs to know what hubs the feed is in
 communication with in order to control pub/sub operations</p>
@@ -107,17 +122,27 @@ communication with in order to control pub/sub operations</p>
   <span class="n">belongs_to</span> <span class="ss">:author</span>
   <span class="n">key</span> <span class="ss">:author_id</span><span class="p">,</span> <span class="no">ObjectId</span>
 
-  <span class="n">many</span> <span class="ss">:updates</span>
+  <span class="n">many</span> <span class="ss">:updates</span><span class="p">,</span> <span class="ss">:order</span> <span class="o">=&gt;</span> <span class="s1">&#39;created_at desc&#39;</span>
 
   <span class="n">timestamps!</span>
 
-  <span class="n">after_create</span> <span class="ss">:default_hubs</span></pre></div>
+  <span class="n">after_create</span> <span class="ss">:default_hubs</span>
+
+  <span class="k">def</span> <span class="nc">self</span><span class="o">.</span><span class="nf">find_or_create</span><span class="p">(</span><span class="n">subscribe_to</span><span class="p">)</span>
+    <span class="no">FindsOrCreatesFeeds</span><span class="o">.</span><span class="n">find_or_create</span><span class="p">(</span><span class="n">subscribe_to</span><span class="p">)</span>
+  <span class="k">end</span>
+
+  <span class="k">def</span> <span class="nc">self</span><span class="o">.</span><span class="nf">create_from_feed_data</span><span class="p">(</span><span class="n">feed_data</span><span class="p">)</span>
+    <span class="n">feed</span> <span class="o">=</span> <span class="no">Feed</span><span class="o">.</span><span class="n">create</span><span class="p">(</span><span class="ss">:remote_url</span> <span class="o">=&gt;</span> <span class="n">feed_data</span><span class="o">.</span><span class="n">url</span><span class="p">)</span>
+    <span class="n">feed</span><span class="o">.</span><span class="n">populate</span><span class="p">(</span><span class="n">feed_data</span><span class="o">.</span><span class="n">finger_data</span><span class="p">)</span>
+    <span class="n">feed</span>
+  <span class="k">end</span></pre></div>
       </td>
     </tr>
-    <tr id='section-6'>
+    <tr id='section-7'>
       <td class=docs>
         <div class="pilwrap">
-          <a class="pilcrow" href="#section-6">&#182;</a>
+          <a class="pilcrow" href="#section-7">&#182;</a>
         </div>
         <p>This is because sometimes the mongomapper association returns nil
 even though there is an author_id and the Author exists; see Issue #421</p>
@@ -127,13 +152,13 @@ even though there is an author_id and the Author exists; see Issue #421</p>
     <span class="no">Author</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="n">author_id</span><span class="p">)</span>
   <span class="k">end</span>
 
-  <span class="k">def</span> <span class="nf">populate</span><span class="p">(</span><span class="n">xrd</span> <span class="o">=</span> <span class="kp">nil</span><span class="p">)</span></pre></div>
+  <span class="k">def</span> <span class="nf">populate</span><span class="p">(</span><span class="n">finger_data</span><span class="p">)</span></pre></div>
       </td>
     </tr>
-    <tr id='section-7'>
+    <tr id='section-8'>
       <td class=docs>
         <div class="pilwrap">
-          <a class="pilcrow" href="#section-7">&#182;</a>
+          <a class="pilcrow" href="#section-8">&#182;</a>
         </div>
         <p>TODO: More entropy would be nice</p>
       </td>
@@ -154,36 +179,16 @@ even though there is an author_id and the Author exists; see Issue #421</p>
                                 <span class="ss">:username</span> <span class="o">=&gt;</span> <span class="n">a</span><span class="o">.</span><span class="n">name</span><span class="p">,</span>
                                 <span class="ss">:email</span> <span class="o">=&gt;</span> <span class="n">a</span><span class="o">.</span><span class="n">email</span><span class="p">,</span>
                                 <span class="ss">:remote_url</span> <span class="o">=&gt;</span> <span class="n">a</span><span class="o">.</span><span class="n">uri</span><span class="p">,</span>
+                                <span class="ss">:domain</span> <span class="o">=&gt;</span> <span class="n">a</span><span class="o">.</span><span class="n">uri</span><span class="p">,</span>
                                 <span class="ss">:salmon_url</span> <span class="o">=&gt;</span> <span class="n">ostatus_feed</span><span class="o">.</span><span class="n">salmon</span><span class="p">,</span>
                                 <span class="ss">:bio</span> <span class="o">=&gt;</span> <span class="n">a</span><span class="o">.</span><span class="n">portable_contacts</span><span class="o">.</span><span class="n">note</span><span class="p">,</span>
                                 <span class="ss">:image_url</span> <span class="o">=&gt;</span> <span class="n">avatar_url</span><span class="p">)</span>
 
-    <span class="k">if</span> <span class="n">xrd</span></pre></div>
-      </td>
-    </tr>
-    <tr id='section-8'>
-      <td class=docs>
-        <div class="pilwrap">
-          <a class="pilcrow" href="#section-8">&#182;</a>
-        </div>
-        <p>Retrieve the public key</p>
-      </td>
-      <td class=code>
-        <div class='highlight'><pre>      <span class="n">public_key</span> <span class="o">=</span> <span class="n">xrd</span><span class="o">.</span><span class="n">links</span><span class="o">.</span><span class="n">find</span> <span class="p">{</span> <span class="o">|</span><span class="n">l</span><span class="o">|</span> <span class="n">l</span><span class="o">[</span><span class="s1">&#39;rel&#39;</span><span class="o">].</span><span class="n">downcase</span> <span class="o">==</span> <span class="s1">&#39;magic-public-key&#39;</span> <span class="p">}</span>
-      <span class="n">public_key</span> <span class="o">=</span> <span class="n">public_key</span><span class="o">.</span><span class="n">href</span><span class="o">[/^.</span><span class="n">*</span><span class="sc">?,</span><span class="p">(</span><span class="o">.</span><span class="n">*</span><span class="p">)</span><span class="vg">$/</span><span class="p">,</span><span class="mi">1</span><span class="o">]</span>
-      <span class="nb">self</span><span class="o">.</span><span class="n">author</span><span class="o">.</span><span class="n">public_key</span> <span class="o">=</span> <span class="n">public_key</span>
-      <span class="nb">self</span><span class="o">.</span><span class="n">author</span><span class="o">.</span><span class="n">reset_key_lease</span></pre></div>
-      </td>
-    </tr>
-    <tr id='section-9'>
-      <td class=docs>
-        <div class="pilwrap">
-          <a class="pilcrow" href="#section-9">&#182;</a>
-        </div>
-        <p>Salmon URL</p>
-      </td>
-      <td class=code>
-        <div class='highlight'><pre>      <span class="nb">self</span><span class="o">.</span><span class="n">author</span><span class="o">.</span><span class="n">salmon_url</span> <span class="o">=</span> <span class="n">xrd</span><span class="o">.</span><span class="n">links</span><span class="o">.</span><span class="n">find</span> <span class="p">{</span> <span class="o">|</span><span class="n">l</span><span class="o">|</span> <span class="n">l</span><span class="o">[</span><span class="s1">&#39;rel&#39;</span><span class="o">].</span><span class="n">downcase</span> <span class="o">==</span> <span class="s1">&#39;salmon&#39;</span> <span class="p">}</span>
+    <span class="k">if</span><span class="p">(</span><span class="n">finger_data</span><span class="p">)</span>
+      <span class="nb">self</span><span class="o">.</span><span class="n">author</span><span class="o">.</span><span class="n">public_key</span> <span class="o">=</span> <span class="n">finger_data</span><span class="o">.</span><span class="n">public_key</span>
+      <span class="nb">self</span><span class="o">.</span><span class="n">author</span><span class="o">.</span><span class="n">reset_key_lease</span>
+
+      <span class="nb">self</span><span class="o">.</span><span class="n">author</span><span class="o">.</span><span class="n">salmon_url</span> <span class="o">=</span> <span class="n">finger_data</span><span class="o">.</span><span class="n">salmon_url</span>
       <span class="nb">self</span><span class="o">.</span><span class="n">author</span><span class="o">.</span><span class="n">save</span>
     <span class="k">end</span>
 
@@ -192,10 +197,10 @@ even though there is an author_id and the Author exists; see Issue #421</p>
     <span class="n">save</span></pre></div>
       </td>
     </tr>
-    <tr id='section-10'>
+    <tr id='section-9'>
       <td class=docs>
         <div class="pilwrap">
-          <a class="pilcrow" href="#section-10">&#182;</a>
+          <a class="pilcrow" href="#section-9">&#182;</a>
         </div>
         <p>Save the first 3 updates in our feed</p>
       </td>
@@ -212,16 +217,20 @@ even though there is an author_id and the Author exists; see Issue #421</p>
 
   <span class="k">def</span> <span class="nf">populate_entries</span><span class="p">(</span><span class="n">os_entries</span><span class="p">)</span>
     <span class="n">os_entries</span><span class="o">.</span><span class="n">each</span> <span class="k">do</span> <span class="o">|</span><span class="n">entry</span><span class="o">|</span>
-      <span class="n">u</span> <span class="o">=</span> <span class="no">Update</span><span class="o">.</span><span class="n">first</span><span class="p">(</span><span class="ss">:url</span> <span class="o">=&gt;</span> <span class="n">entry</span><span class="o">.</span><span class="n">url</span><span class="p">)</span>
-      <span class="n">new_update</span> <span class="o">=</span> <span class="kp">false</span>
-      <span class="k">if</span> <span class="n">u</span><span class="o">.</span><span class="n">nil?</span>
-        <span class="n">new_update</span> <span class="o">=</span> <span class="kp">true</span>
-        <span class="n">u</span> <span class="o">=</span> <span class="no">Update</span><span class="o">.</span><span class="n">new</span><span class="p">(</span><span class="ss">:author</span> <span class="o">=&gt;</span> <span class="nb">self</span><span class="o">.</span><span class="n">author</span><span class="p">,</span>
-                       <span class="ss">:created_at</span> <span class="o">=&gt;</span> <span class="n">entry</span><span class="o">.</span><span class="n">published</span><span class="p">,</span>
-                       <span class="ss">:url</span> <span class="o">=&gt;</span> <span class="n">entry</span><span class="o">.</span><span class="n">url</span><span class="p">,</span>
-                       <span class="ss">:feed</span> <span class="o">=&gt;</span> <span class="nb">self</span><span class="p">,</span>
-                       <span class="ss">:updated_at</span> <span class="o">=&gt;</span> <span class="n">entry</span><span class="o">.</span><span class="n">updated</span><span class="p">)</span>
-      <span class="k">end</span></pre></div>
+      <span class="k">if</span> <span class="n">entry</span><span class="o">.</span><span class="n">url</span> <span class="c1"># This will drop some RTs from identica until ostatus</span></pre></div>
+      </td>
+    </tr>
+    <tr id='section-10'>
+      <td class=docs>
+        <div class="pilwrap">
+          <a class="pilcrow" href="#section-10">&#182;</a>
+        </div>
+        <p>issue #4 is fixed, but at least this&rsquo;ll fix issue #458</p>
+      </td>
+      <td class=code>
+        <div class='highlight'><pre>        <span class="n">existing_update</span> <span class="o">=</span> <span class="no">Update</span><span class="o">.</span><span class="n">first</span><span class="p">(</span><span class="ss">:remote_url</span> <span class="o">=&gt;</span> <span class="n">entry</span><span class="o">.</span><span class="n">url</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">existing_update</span></pre></div>
       </td>
     </tr>
     <tr id='section-11'>
@@ -229,63 +238,29 @@ even though there is an author_id and the Author exists; see Issue #421</p>
         <div class="pilwrap">
           <a class="pilcrow" href="#section-11">&#182;</a>
         </div>
-        <p>Strip HTML</p>
+        <p>Don&rsquo;t change anything about an existing update unless this
+is an update event.</p>
       </td>
       <td class=code>
-        <div class='highlight'><pre>      <span class="n">u</span><span class="o">.</span><span class="n">text</span> <span class="o">=</span> <span class="no">Nokogiri</span><span class="o">::</span><span class="no">HTML</span><span class="o">::</span><span class="no">Document</span><span class="o">.</span><span class="n">parse</span><span class="p">(</span><span class="n">entry</span><span class="o">.</span><span class="n">content</span><span class="p">)</span><span class="o">.</span><span class="n">text</span></pre></div>
+        <div class='highlight'><pre>          <span class="k">if</span> <span class="n">entry</span><span class="o">.</span><span class="n">activity</span> <span class="o">&amp;&amp;</span> <span class="n">entry</span><span class="o">.</span><span class="n">activity</span><span class="o">.</span><span class="n">verb</span> <span class="o">==</span> <span class="s2">&quot;update&quot;</span>
+            <span class="n">existing_update</span><span class="o">.</span><span class="n">sanitize_external_text</span><span class="p">(</span><span class="n">entry</span><span class="o">.</span><span class="n">content</span><span class="p">,</span> <span class="n">entry</span><span class="o">.</span><span class="n">url</span><span class="p">)</span>
+            <span class="n">existing_update</span><span class="o">.</span><span class="n">save</span>
+            <span class="nb">self</span><span class="o">.</span><span class="n">updates</span> <span class="o">&lt;&lt;</span> <span class="n">existing_update</span>
+          <span class="k">end</span>
+        <span class="k">else</span>
+          <span class="n">u</span> <span class="o">=</span> <span class="no">Update</span><span class="o">.</span><span class="n">create_from_ostatus</span><span class="p">(</span><span class="n">entry</span><span class="p">,</span> <span class="nb">self</span><span class="p">)</span>
+          <span class="nb">self</span><span class="o">.</span><span class="n">updates</span> <span class="o">&lt;&lt;</span> <span class="n">u</span>
+        <span class="k">end</span>
+      <span class="k">end</span>
+    <span class="k">end</span>
+    <span class="n">save</span>
+  <span class="k">end</span></pre></div>
       </td>
     </tr>
     <tr id='section-12'>
       <td class=docs>
         <div class="pilwrap">
           <a class="pilcrow" href="#section-12">&#182;</a>
-        </div>
-        <p>Truncate text</p>
-      </td>
-      <td class=code>
-        <div class='highlight'><pre>      <span class="n">truncation_necessary</span> <span class="o">=</span> <span class="n">u</span><span class="o">.</span><span class="n">text</span><span class="o">.</span><span class="n">length</span> <span class="o">&gt;</span> <span class="mi">140</span>
-      <span class="k">if</span> <span class="n">truncation_necessary</span>
-        <span class="n">u</span><span class="o">.</span><span class="n">text</span> <span class="o">=</span> <span class="n">u</span><span class="o">.</span><span class="n">text</span><span class="o">[</span><span class="mi">0</span><span class="o">.</span><span class="n">.</span><span class="mi">138</span><span class="o">]</span>
-      <span class="k">end</span></pre></div>
-      </td>
-    </tr>
-    <tr id='section-13'>
-      <td class=docs>
-        <div class="pilwrap">
-          <a class="pilcrow" href="#section-13">&#182;</a>
-        </div>
-        <p>Generate HTML</p>
-      </td>
-      <td class=code>
-        <div class='highlight'><pre>      <span class="k">if</span> <span class="n">truncation_necessary</span>
-        <span class="n">u</span><span class="o">.</span><span class="n">html</span> <span class="o">=</span> <span class="s2">&quot;</span><span class="si">#{</span><span class="n">u</span><span class="o">.</span><span class="n">to_html</span><span class="si">}</span><span class="s2">&lt;a href=&#39;</span><span class="si">#{</span><span class="n">entry</span><span class="o">.</span><span class="n">url</span><span class="si">}</span><span class="s2">&#39;&gt;\u2026&lt;/a&gt;&quot;</span>
-      <span class="k">end</span></pre></div>
-      </td>
-    </tr>
-    <tr id='section-14'>
-      <td class=docs>
-        <div class="pilwrap">
-          <a class="pilcrow" href="#section-14">&#182;</a>
-        </div>
-        <p>Commit</p>
-      </td>
-      <td class=code>
-        <div class='highlight'><pre>      <span class="n">u</span><span class="o">.</span><span class="n">save</span>
-
-      <span class="k">if</span> <span class="n">new_update</span>
-        <span class="nb">self</span><span class="o">.</span><span class="n">updates</span> <span class="o">&lt;&lt;</span> <span class="n">u</span>
-      <span class="k">end</span>
-
-    <span class="k">end</span>
-
-    <span class="n">save</span>
-  <span class="k">end</span></pre></div>
-      </td>
-    </tr>
-    <tr id='section-15'>
-      <td class=docs>
-        <div class="pilwrap">
-          <a class="pilcrow" href="#section-15">&#182;</a>
         </div>
         <p>Pings hub
 needs absolute url for feed to give to hub for callback</p>
@@ -313,10 +288,10 @@ needs absolute url for feed to give to hub for callback</p>
       <span class="n">os_feed</span> <span class="o">=</span> <span class="no">OStatus</span><span class="o">::</span><span class="no">Feed</span><span class="o">.</span><span class="n">from_string</span><span class="p">(</span><span class="n">atom_xml</span><span class="p">)</span></pre></div>
       </td>
     </tr>
-    <tr id='section-16'>
+    <tr id='section-13'>
       <td class=docs>
         <div class="pilwrap">
-          <a class="pilcrow" href="#section-16">&#182;</a>
+          <a class="pilcrow" href="#section-13">&#182;</a>
         </div>
         <p>XXX: Update author if necessary</p>
       </td>
@@ -332,22 +307,29 @@ needs absolute url for feed to give to hub for callback</p>
   <span class="k">end</span></pre></div>
       </td>
     </tr>
-    <tr id='section-17'>
+    <tr id='section-14'>
       <td class=docs>
         <div class="pilwrap">
-          <a class="pilcrow" href="#section-17">&#182;</a>
+          <a class="pilcrow" href="#section-14">&#182;</a>
         </div>
         <p>create atom feed
 need base_uri since urls outgoing should be absolute</p>
       </td>
       <td class=code>
-        <div class='highlight'><pre>  <span class="k">def</span> <span class="nf">atom</span><span class="p">(</span><span class="n">base_uri</span><span class="p">)</span></pre></div>
+        <div class='highlight'><pre>  <span class="k">def</span> <span class="nf">atom</span><span class="p">(</span><span class="n">base_uri</span><span class="p">,</span> <span class="n">params</span> <span class="o">=</span> <span class="p">{})</span>
+    <span class="k">if</span> <span class="n">params</span><span class="o">[</span><span class="ss">:since</span><span class="o">]</span>
+      <span class="n">atom_updates</span> <span class="o">=</span> <span class="n">updates</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="ss">:created_at</span> <span class="o">=&gt;</span> <span class="p">{:</span><span class="vg">$gt</span> <span class="o">=&gt;</span> <span class="n">params</span><span class="o">[</span><span class="ss">:since</span><span class="o">]</span><span class="p">})</span>
+    <span class="k">elsif</span> <span class="n">params</span><span class="o">[</span><span class="ss">:num</span><span class="o">]</span>
+      <span class="n">atom_updates</span> <span class="o">=</span> <span class="n">updates</span><span class="o">.</span><span class="n">limit</span><span class="p">(</span><span class="n">params</span><span class="o">[</span><span class="ss">:num</span><span class="o">]</span><span class="p">)</span>
+    <span class="k">else</span>
+      <span class="n">atom_updates</span> <span class="o">=</span> <span class="n">updates</span><span class="o">.</span><span class="n">limit</span><span class="p">(</span><span class="mi">20</span><span class="p">)</span>
+    <span class="k">end</span></pre></div>
       </td>
     </tr>
-    <tr id='section-18'>
+    <tr id='section-15'>
       <td class=docs>
         <div class="pilwrap">
-          <a class="pilcrow" href="#section-18">&#182;</a>
+          <a class="pilcrow" href="#section-15">&#182;</a>
         </div>
         <p>Create the OStatus::Author object</p>
       </td>
@@ -355,15 +337,15 @@ need base_uri since urls outgoing should be absolute</p>
         <div class='highlight'><pre>    <span class="n">os_auth</span> <span class="o">=</span> <span class="n">author</span><span class="o">.</span><span class="n">to_atom</span></pre></div>
       </td>
     </tr>
-    <tr id='section-19'>
+    <tr id='section-16'>
       <td class=docs>
         <div class="pilwrap">
-          <a class="pilcrow" href="#section-19">&#182;</a>
+          <a class="pilcrow" href="#section-16">&#182;</a>
         </div>
         <p>Gather entries as OStatus::Entry objects</p>
       </td>
       <td class=code>
-        <div class='highlight'><pre>    <span class="n">entries</span> <span class="o">=</span> <span class="n">updates</span><span class="o">.</span><span class="n">to_a</span><span class="o">.</span><span class="n">sort</span><span class="p">{</span><span class="o">|</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="o">|</span> <span class="n">b</span><span class="o">.</span><span class="n">created_at</span> <span class="o">&lt;=&gt;</span> <span class="n">a</span><span class="o">.</span><span class="n">created_at</span><span class="p">}</span><span class="o">.</span><span class="n">map</span> <span class="k">do</span> <span class="o">|</span><span class="n">update</span><span class="o">|</span>
+        <div class='highlight'><pre>    <span class="n">entries</span> <span class="o">=</span> <span class="n">atom_updates</span><span class="o">.</span><span class="n">map</span> <span class="k">do</span> <span class="o">|</span><span class="n">update</span><span class="o">|</span>
       <span class="n">update</span><span class="o">.</span><span class="n">to_atom</span><span class="p">(</span><span class="n">base_uri</span><span class="p">)</span>
     <span class="k">end</span>
 
@@ -373,36 +355,42 @@ need base_uri since urls outgoing should be absolute</p>
     <span class="k">end</span></pre></div>
       </td>
     </tr>
-    <tr id='section-20'>
+    <tr id='section-17'>
       <td class=docs>
         <div class="pilwrap">
-          <a class="pilcrow" href="#section-20">&#182;</a>
+          <a class="pilcrow" href="#section-17">&#182;</a>
         </div>
         <p>Create a Feed representation which we can generate
 the Atom feed and send out.</p>
 
       </td>
       <td class=code>
-        <div class='highlight'><pre>    <span class="n">feed</span> <span class="o">=</span> <span class="no">OStatus</span><span class="o">::</span><span class="no">Feed</span><span class="o">.</span><span class="n">from_data</span><span class="p">(</span><span class="s2">&quot;</span><span class="si">#{</span><span class="n">base_uri</span><span class="si">}</span><span class="s2">feeds/</span><span class="si">#{</span><span class="nb">id</span><span class="si">}</span><span class="s2">.atom&quot;</span><span class="p">,</span>
-                             <span class="ss">:title</span> <span class="o">=&gt;</span> <span class="s2">&quot;</span><span class="si">#{</span><span class="n">author</span><span class="o">.</span><span class="n">username</span><span class="si">}</span><span class="s2">&#39;s Updates&quot;</span><span class="p">,</span>
-                             <span class="ss">:logo</span> <span class="o">=&gt;</span> <span class="n">avatar_url_abs</span><span class="p">,</span>
-                             <span class="ss">:id</span> <span class="o">=&gt;</span> <span class="s2">&quot;</span><span class="si">#{</span><span class="n">base_uri</span><span class="si">}</span><span class="s2">feeds/</span><span class="si">#{</span><span class="nb">id</span><span class="si">}</span><span class="s2">.atom&quot;</span><span class="p">,</span>
-                             <span class="ss">:author</span> <span class="o">=&gt;</span> <span class="n">os_auth</span><span class="p">,</span>
-                             <span class="ss">:updated</span> <span class="o">=&gt;</span> <span class="n">updated_at</span><span class="p">,</span>
-                             <span class="ss">:entries</span> <span class="o">=&gt;</span> <span class="n">entries</span><span class="p">,</span>
-                             <span class="ss">:links</span> <span class="o">=&gt;</span> <span class="p">{</span>
-                               <span class="ss">:hub</span> <span class="o">=&gt;</span> <span class="o">[</span><span class="p">{</span><span class="ss">:href</span> <span class="o">=&gt;</span> <span class="n">hubs</span><span class="o">.</span><span class="n">first</span><span class="p">}</span><span class="o">]</span><span class="p">,</span>
-                               <span class="ss">:salmon</span> <span class="o">=&gt;</span> <span class="o">[</span><span class="p">{</span><span class="ss">:href</span> <span class="o">=&gt;</span> <span class="s2">&quot;</span><span class="si">#{</span><span class="n">base_uri</span><span class="si">}</span><span class="s2">feeds/</span><span class="si">#{</span><span class="nb">id</span><span class="si">}</span><span class="s2">/salmon&quot;</span><span class="p">}</span><span class="o">]</span><span class="p">,</span>
-                               <span class="ss">:&quot;http://salmon-protocol.org/ns/salmon-replies&quot;</span> <span class="o">=&gt;</span>
-                                 <span class="o">[</span><span class="p">{</span><span class="ss">:href</span> <span class="o">=&gt;</span> <span class="s2">&quot;</span><span class="si">#{</span><span class="n">base_uri</span><span class="si">}</span><span class="s2">feeds/</span><span class="si">#{</span><span class="nb">id</span><span class="si">}</span><span class="s2">/salmon&quot;</span><span class="p">}</span><span class="o">]</span><span class="p">,</span>
-                               <span class="ss">:&quot;http://salmon-protocol.org/ns/salmon-mention&quot;</span> <span class="o">=&gt;</span>
-                                 <span class="o">[</span><span class="p">{</span><span class="ss">:href</span> <span class="o">=&gt;</span> <span class="s2">&quot;</span><span class="si">#{</span><span class="n">base_uri</span><span class="si">}</span><span class="s2">feeds/</span><span class="si">#{</span><span class="nb">id</span><span class="si">}</span><span class="s2">/salmon&quot;</span><span class="p">}</span><span class="o">]</span>
-                             <span class="p">})</span>
+        <div class='highlight'><pre>    <span class="n">atom_url</span>   <span class="o">=</span> <span class="s2">&quot;</span><span class="si">#{</span><span class="n">base_uri</span><span class="si">}</span><span class="s2">feeds/</span><span class="si">#{</span><span class="nb">id</span><span class="si">}</span><span class="s2">.atom&quot;</span>
+    <span class="n">salmon_url</span> <span class="o">=</span> <span class="s2">&quot;</span><span class="si">#{</span><span class="n">base_uri</span><span class="si">}</span><span class="s2">feeds/</span><span class="si">#{</span><span class="nb">id</span><span class="si">}</span><span class="s2">/salmon&quot;</span>
+
+    <span class="n">feed</span> <span class="o">=</span> <span class="no">OStatus</span><span class="o">::</span><span class="no">Feed</span><span class="o">.</span><span class="n">from_data</span><span class="p">(</span>
+      <span class="n">atom_url</span><span class="p">,</span>
+      <span class="ss">:title</span>   <span class="o">=&gt;</span> <span class="s2">&quot;</span><span class="si">#{</span><span class="n">author</span><span class="o">.</span><span class="n">username</span><span class="si">}</span><span class="s2">&#39;s Updates&quot;</span><span class="p">,</span>
+      <span class="ss">:logo</span>    <span class="o">=&gt;</span> <span class="n">avatar_url_abs</span><span class="p">,</span>
+      <span class="ss">:id</span>      <span class="o">=&gt;</span> <span class="n">atom_url</span><span class="p">,</span>
+      <span class="ss">:author</span>  <span class="o">=&gt;</span> <span class="n">os_auth</span><span class="p">,</span>
+      <span class="ss">:updated</span> <span class="o">=&gt;</span> <span class="n">updated_at</span><span class="p">,</span>
+      <span class="ss">:entries</span> <span class="o">=&gt;</span> <span class="n">entries</span><span class="p">,</span>
+      <span class="ss">:links</span>   <span class="o">=&gt;</span> <span class="p">{</span>
+        <span class="ss">:hub</span>    <span class="o">=&gt;</span> <span class="o">[</span><span class="p">{</span><span class="ss">:href</span> <span class="o">=&gt;</span> <span class="n">hubs</span><span class="o">.</span><span class="n">first</span><span class="p">}</span><span class="o">]</span><span class="p">,</span>
+        <span class="ss">:salmon</span> <span class="o">=&gt;</span> <span class="o">[</span><span class="p">{</span><span class="ss">:href</span> <span class="o">=&gt;</span> <span class="n">salmon_url</span><span class="p">}</span><span class="o">]</span><span class="p">,</span>
+        <span class="ss">:&quot;http://salmon-protocol.org/ns/salmon-replies&quot;</span> <span class="o">=&gt;</span>
+          <span class="o">[</span><span class="p">{</span><span class="ss">:href</span> <span class="o">=&gt;</span> <span class="n">salmon_url</span><span class="p">}</span><span class="o">]</span><span class="p">,</span>
+        <span class="ss">:&quot;http://salmon-protocol.org/ns/salmon-mention&quot;</span> <span class="o">=&gt;</span>
+          <span class="o">[</span><span class="p">{</span><span class="ss">:href</span> <span class="o">=&gt;</span> <span class="n">salmon_url</span><span class="p">}</span><span class="o">]</span>
+      <span class="p">}</span>
+    <span class="p">)</span>
+
     <span class="n">feed</span><span class="o">.</span><span class="n">atom</span>
   <span class="k">end</span>
 
   <span class="k">def</span> <span class="nf">last_update</span>
-    <span class="no">Update</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="ss">:feed_id</span> <span class="o">=&gt;</span> <span class="nb">id</span><span class="p">)</span><span class="o">.</span><span class="n">order</span><span class="p">(</span><span class="o">[</span><span class="s1">&#39;created_at&#39;</span><span class="p">,</span> <span class="s1">&#39;descending&#39;</span><span class="o">]</span><span class="p">)</span><span class="o">.</span><span class="n">first</span>
+    <span class="n">updates</span><span class="o">.</span><span class="n">first</span>
   <span class="k">end</span>
 <span class="k">end</span></pre></div>
       </td>

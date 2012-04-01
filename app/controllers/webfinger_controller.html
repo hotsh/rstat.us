@@ -23,12 +23,16 @@
           <a class="source" href="updates_controller.html">updates_controller.rb</a>
           <a class="source" href="users_controller.html">users_controller.rb</a>
           <a class="source" href="webfinger_controller.html">webfinger_controller.rb</a>
+          <a class="source" href="../decorators/application_decorator.html">application_decorator.rb</a>
+          <a class="source" href="../decorators/author_decorator.html">author_decorator.rb</a>
+          <a class="source" href="../decorators/user_decorator.html">user_decorator.rb</a>
           <a class="source" href="../models/author.html">author.rb</a>
           <a class="source" href="../models/authorization.html">authorization.rb</a>
           <a class="source" href="../models/feed.html">feed.rb</a>
           <a class="source" href="../models/notifier.html">notifier.rb</a>
           <a class="source" href="../models/update.html">update.rb</a>
           <a class="source" href="../models/user.html">user.rb</a>
+          <a class="source" href="../models/webfinger.html">webfinger.rb</a>
       </div>
     </div>
   </div>
@@ -56,7 +60,8 @@
         <div class="pilwrap">
           <a class="pilcrow" href="#section-2">&#182;</a>
         </div>
-        <p>Webfinger base xml, describes how to find user xrds</p>
+        <p><a href="http://hueniverse.com/webfinger/">Webfinger</a> base xml, describes how to
+find a user&rsquo;s Extensible Resource Descriptor (xrd)</p>
       </td>
       <td class=code>
         <div class='highlight'><pre>  <span class="k">def</span> <span class="nf">host_meta</span>
@@ -73,39 +78,18 @@
           <a class="pilcrow" href="#section-3">&#182;</a>
         </div>
         <p>User xrd generation</p>
-      </td>
-      <td class=code>
-        <div class='highlight'><pre>  <span class="k">def</span> <span class="nf">xrd</span></pre></div>
-      </td>
-    </tr>
-    <tr id='section-4'>
-      <td class=docs>
-        <div class="pilwrap">
-          <a class="pilcrow" href="#section-4">&#182;</a>
-        </div>
-        <p>webfinger likes to give fully qualified names
-For example: &ldquo;acct:wilkie@rstat.us&rdquo;</p>
-      </td>
-      <td class=code>
-        <div class='highlight'><pre></pre></div>
-      </td>
-    </tr>
-    <tr id='section-5'>
-      <td class=docs>
-        <div class="pilwrap">
-          <a class="pilcrow" href="#section-5">&#182;</a>
-        </div>
-        <p>This is rather redundant, but what can you do?
-here we strip off the extra foo:</p>
 
       </td>
       <td class=code>
-        <div class='highlight'><pre>    <span class="n">username</span> <span class="o">=</span> <span class="n">params</span><span class="o">[</span><span class="ss">:username</span><span class="o">][/^.</span><span class="n">*</span><span class="sc">?\</span><span class="p">:(</span><span class="o">.</span><span class="n">*</span><span class="sc">?)</span><span class="err">@</span><span class="o">/</span><span class="p">,</span> <span class="mi">1</span><span class="o">]</span> <span class="o">||</span> <span class="n">params</span><span class="o">[</span><span class="ss">:username</span><span class="o">]</span>
+        <div class='highlight'><pre>  <span class="k">def</span> <span class="nf">xrd</span>
+    <span class="vi">@user</span> <span class="o">=</span> <span class="no">Webfinger</span><span class="o">.</span><span class="n">find_user</span><span class="p">(</span><span class="n">params</span><span class="o">[</span><span class="ss">:username</span><span class="o">]</span><span class="p">)</span>
 
-    <span class="vi">@user</span> <span class="o">=</span> <span class="no">User</span><span class="o">.</span><span class="n">first</span> <span class="ss">:username</span> <span class="o">=&gt;</span> <span class="sr">/^</span><span class="si">#{</span><span class="n">username</span><span class="si">}</span><span class="sr">$/i</span>
-    <span class="vi">@base_url</span> <span class="o">=</span> <span class="n">root_url</span>
-
-    <span class="n">render</span> <span class="s2">&quot;xml/webfinger/xrd&quot;</span><span class="p">,</span> <span class="ss">:layout</span> <span class="o">=&gt;</span> <span class="kp">false</span><span class="p">,</span> <span class="ss">:content_type</span> <span class="o">=&gt;</span> <span class="s2">&quot;application/xrd+xml&quot;</span>
+    <span class="k">if</span> <span class="vi">@user</span>
+      <span class="vi">@base_url</span> <span class="o">=</span> <span class="n">root_url</span>
+      <span class="n">render</span> <span class="s2">&quot;xml/webfinger/xrd&quot;</span><span class="p">,</span> <span class="ss">:layout</span> <span class="o">=&gt;</span> <span class="kp">false</span><span class="p">,</span> <span class="ss">:content_type</span> <span class="o">=&gt;</span> <span class="s2">&quot;application/xrd+xml&quot;</span>
+    <span class="k">else</span>
+      <span class="n">render</span> <span class="ss">:file</span> <span class="o">=&gt;</span> <span class="s2">&quot;</span><span class="si">#{</span><span class="no">Rails</span><span class="o">.</span><span class="n">root</span><span class="si">}</span><span class="s2">/public/404.html&quot;</span><span class="p">,</span> <span class="ss">:status</span> <span class="o">=&gt;</span> <span class="mi">404</span>
+    <span class="k">end</span>
   <span class="k">end</span>
 <span class="k">end</span></pre></div>
       </td>

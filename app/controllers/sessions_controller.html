@@ -23,12 +23,16 @@
           <a class="source" href="updates_controller.html">updates_controller.rb</a>
           <a class="source" href="users_controller.html">users_controller.rb</a>
           <a class="source" href="webfinger_controller.html">webfinger_controller.rb</a>
+          <a class="source" href="../decorators/application_decorator.html">application_decorator.rb</a>
+          <a class="source" href="../decorators/author_decorator.html">author_decorator.rb</a>
+          <a class="source" href="../decorators/user_decorator.html">user_decorator.rb</a>
           <a class="source" href="../models/author.html">author.rb</a>
           <a class="source" href="../models/authorization.html">authorization.rb</a>
           <a class="source" href="../models/feed.html">feed.rb</a>
           <a class="source" href="../models/notifier.html">notifier.rb</a>
           <a class="source" href="../models/update.html">update.rb</a>
           <a class="source" href="../models/user.html">user.rb</a>
+          <a class="source" href="../models/webfinger.html">webfinger.rb</a>
       </div>
     </div>
   </div>
@@ -50,6 +54,7 @@
       <td class=code>
         <div class='highlight'><pre><span class="k">class</span> <span class="nc">SessionsController</span> <span class="o">&lt;</span> <span class="no">ApplicationController</span>
   <span class="k">def</span> <span class="nf">new</span>
+    <span class="vi">@title</span> <span class="o">=</span> <span class="s2">&quot;sign in&quot;</span>
     <span class="n">redirect_to</span> <span class="n">root_path</span> <span class="o">&amp;&amp;</span> <span class="k">return</span> <span class="k">if</span> <span class="n">logged_in?</span>
   <span class="k">end</span></pre></div>
       </td>
@@ -68,7 +73,7 @@ is your run-of-the-mill login procedure.</p>
       </td>
       <td class=code>
         <div class='highlight'><pre>  <span class="k">def</span> <span class="nf">create</span>
-    <span class="n">u</span> <span class="o">=</span> <span class="no">User</span><span class="o">.</span><span class="n">first</span> <span class="ss">:username</span> <span class="o">=&gt;</span> <span class="n">params</span><span class="o">[</span><span class="ss">:username</span><span class="o">]</span>
+    <span class="n">u</span> <span class="o">=</span> <span class="no">User</span><span class="o">.</span><span class="n">find_by_case_insensitive_username</span><span class="p">(</span><span class="n">params</span><span class="o">[</span><span class="ss">:username</span><span class="o">]</span><span class="p">)</span>
     <span class="k">if</span> <span class="n">u</span><span class="o">.</span><span class="n">nil?</span></pre></div>
       </td>
     </tr>
@@ -81,18 +86,21 @@ is your run-of-the-mill login procedure.</p>
 
       </td>
       <td class=code>
-        <div class='highlight'><pre>      <span class="n">params</span><span class="o">[</span><span class="ss">:domain</span><span class="o">]</span> <span class="o">=</span> <span class="n">root_path</span><span class="p">()</span><span class="o">[/</span><span class="p">\:\</span><span class="o">/</span><span class="p">\</span><span class="o">/</span><span class="p">(</span><span class="o">.</span><span class="n">*</span><span class="sc">?)</span><span class="p">\</span><span class="o">/</span><span class="vg">$/</span><span class="p">,</span> <span class="mi">1</span><span class="o">]</span>
+        <div class='highlight'><pre>      <span class="n">params</span><span class="o">[</span><span class="ss">:domain</span><span class="o">]</span> <span class="o">=</span> <span class="n">root_url</span>
 
-      <span class="n">author</span> <span class="o">=</span> <span class="no">Author</span><span class="o">.</span><span class="n">new</span> <span class="n">params</span>
+      <span class="n">author</span> <span class="o">=</span> <span class="no">Author</span><span class="o">.</span><span class="n">new_from_session!</span><span class="p">(</span><span class="n">session</span><span class="p">,</span> <span class="n">params</span><span class="p">,</span> <span class="n">root_url</span><span class="p">)</span>
 
-      <span class="vi">@user</span> <span class="o">=</span> <span class="no">User</span><span class="o">.</span><span class="n">new</span> <span class="n">params</span><span class="o">.</span><span class="n">merge</span><span class="p">({</span><span class="ss">:author</span> <span class="o">=&gt;</span> <span class="n">author</span><span class="p">})</span>
+      <span class="vi">@user</span> <span class="o">=</span> <span class="no">User</span><span class="o">.</span><span class="n">new</span> <span class="ss">:author</span> <span class="o">=&gt;</span> <span class="n">author</span><span class="p">,</span>
+                       <span class="ss">:username</span> <span class="o">=&gt;</span> <span class="n">params</span><span class="o">[</span><span class="ss">:username</span><span class="o">]</span><span class="p">,</span>
+                       <span class="ss">:email</span> <span class="o">=&gt;</span> <span class="n">params</span><span class="o">[</span><span class="ss">:email</span><span class="o">]</span><span class="p">,</span>
+                       <span class="ss">:password</span> <span class="o">=&gt;</span> <span class="n">params</span><span class="o">[</span><span class="ss">:password</span><span class="o">]</span>
+
       <span class="k">if</span> <span class="vi">@user</span><span class="o">.</span><span class="n">valid?</span>
         <span class="k">if</span> <span class="n">params</span><span class="o">[</span><span class="ss">:password</span><span class="o">].</span><span class="n">length</span> <span class="o">&gt;</span> <span class="mi">0</span>
-          <span class="n">author</span><span class="o">.</span><span class="n">save</span>
           <span class="vi">@user</span><span class="o">.</span><span class="n">save</span>
           <span class="n">session</span><span class="o">[</span><span class="ss">:user_id</span><span class="o">]</span> <span class="o">=</span> <span class="vi">@user</span><span class="o">.</span><span class="n">id</span>
           <span class="n">flash</span><span class="o">[</span><span class="ss">:notice</span><span class="o">]</span> <span class="o">=</span> <span class="s2">&quot;Thanks for signing up!&quot;</span>
-          <span class="n">redirect_to</span> <span class="s2">&quot;/&quot;</span>
+          <span class="n">redirect_to</span> <span class="n">root_path</span>
           <span class="k">return</span>
         <span class="k">else</span>
           <span class="vi">@user</span><span class="o">.</span><span class="n">errors</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="ss">:password</span><span class="p">,</span> <span class="s2">&quot;can&#39;t be empty&quot;</span><span class="p">)</span>
@@ -100,27 +108,24 @@ is your run-of-the-mill login procedure.</p>
       <span class="k">end</span>
 
       <span class="n">render</span> <span class="ss">:new</span>
-      <span class="k">return</span>
     <span class="k">else</span>
       <span class="k">if</span> <span class="n">user</span> <span class="o">=</span> <span class="no">User</span><span class="o">.</span><span class="n">authenticate</span><span class="p">(</span><span class="n">params</span><span class="o">[</span><span class="ss">:username</span><span class="o">]</span><span class="p">,</span> <span class="n">params</span><span class="o">[</span><span class="ss">:password</span><span class="o">]</span><span class="p">)</span>
         <span class="n">session</span><span class="o">[</span><span class="ss">:user_id</span><span class="o">]</span> <span class="o">=</span> <span class="n">user</span><span class="o">.</span><span class="n">id</span>
         <span class="n">flash</span><span class="o">[</span><span class="ss">:notice</span><span class="o">]</span> <span class="o">=</span> <span class="s2">&quot;Login successful.&quot;</span>
-        <span class="n">redirect_to</span> <span class="s2">&quot;/&quot;</span>
-        <span class="k">return</span>
+        <span class="n">redirect_to</span> <span class="n">root_path</span>
         <span class="k">return</span>
       <span class="k">end</span>
       <span class="n">flash</span><span class="o">[</span><span class="ss">:error</span><span class="o">]</span> <span class="o">=</span> <span class="s2">&quot;The password given for username </span><span class="se">\&quot;</span><span class="si">#{</span><span class="n">params</span><span class="o">[</span><span class="ss">:username</span><span class="o">]</span><span class="si">}</span><span class="se">\&quot;</span><span class="s2"> is incorrect.</span>
 
 <span class="s2">      If you are trying to create a new account, please choose a different username.&quot;</span>
       <span class="n">render</span> <span class="ss">:new</span>
-      <span class="k">return</span>
     <span class="k">end</span>
   <span class="k">end</span>
 
   <span class="k">def</span> <span class="nf">destroy</span>
     <span class="n">session</span><span class="o">[</span><span class="ss">:user_id</span><span class="o">]</span> <span class="o">=</span> <span class="kp">nil</span>
     <span class="n">flash</span><span class="o">[</span><span class="ss">:notice</span><span class="o">]</span> <span class="o">=</span> <span class="s2">&quot;You&#39;ve been logged out.&quot;</span>
-    <span class="n">redirect_to</span> <span class="s1">&#39;/&#39;</span>
+    <span class="n">redirect_to</span> <span class="n">root_path</span>
   <span class="k">end</span>
 
 <span class="k">end</span></pre></div>

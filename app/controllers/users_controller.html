@@ -23,12 +23,16 @@
           <a class="source" href="updates_controller.html">updates_controller.rb</a>
           <a class="source" href="users_controller.html">users_controller.rb</a>
           <a class="source" href="webfinger_controller.html">webfinger_controller.rb</a>
+          <a class="source" href="../decorators/application_decorator.html">application_decorator.rb</a>
+          <a class="source" href="../decorators/author_decorator.html">author_decorator.rb</a>
+          <a class="source" href="../decorators/user_decorator.html">user_decorator.rb</a>
           <a class="source" href="../models/author.html">author.rb</a>
           <a class="source" href="../models/authorization.html">authorization.rb</a>
           <a class="source" href="../models/feed.html">feed.rb</a>
           <a class="source" href="../models/notifier.html">notifier.rb</a>
           <a class="source" href="../models/update.html">update.rb</a>
           <a class="source" href="../models/user.html">user.rb</a>
+          <a class="source" href="../models/webfinger.html">webfinger.rb</a>
       </div>
     </div>
   </div>
@@ -49,42 +53,43 @@
       </td>
       <td class=code>
         <div class='highlight'><pre><span class="k">class</span> <span class="nc">UsersController</span> <span class="o">&lt;</span> <span class="no">ApplicationController</span>
+  <span class="n">before_filter</span> <span class="ss">:find_user</span><span class="p">,</span> <span class="ss">:only</span> <span class="o">=&gt;</span> <span class="o">[</span><span class="ss">:show</span><span class="p">,</span> <span class="ss">:edit</span><span class="p">,</span> <span class="ss">:update</span><span class="p">,</span> <span class="ss">:feed</span><span class="p">,</span> <span class="ss">:following</span><span class="p">,</span> <span class="ss">:followers</span><span class="o">]</span>
 
   <span class="k">def</span> <span class="nf">index</span>
+    <span class="vi">@title</span> <span class="o">=</span> <span class="s2">&quot;users&quot;</span>
     <span class="n">set_params_page</span>
-    <span class="vi">@authors</span> <span class="o">=</span> <span class="no">Author</span><span class="o">.</span><span class="n">search</span><span class="p">(</span><span class="n">params</span><span class="p">)</span>
-
-    <span class="vi">@authors</span> <span class="o">=</span> <span class="vi">@authors</span><span class="o">.</span><span class="n">paginate</span><span class="p">(</span><span class="ss">:page</span> <span class="o">=&gt;</span> <span class="n">params</span><span class="o">[</span><span class="ss">:page</span><span class="o">]</span><span class="p">,</span> <span class="ss">:per_page</span> <span class="o">=&gt;</span> <span class="n">params</span><span class="o">[</span><span class="ss">:per_page</span><span class="o">]</span><span class="p">)</span>
-
-    <span class="k">if</span> <span class="n">params</span><span class="o">[</span><span class="ss">:letter</span><span class="o">]</span> <span class="o">&amp;&amp;</span> <span class="o">!</span><span class="n">params</span><span class="o">[</span><span class="ss">:letter</span><span class="o">].</span><span class="n">empty?</span>
-      <span class="n">set_pagination_buttons</span><span class="p">(</span><span class="vi">@authors</span><span class="p">,</span> <span class="ss">:letter</span> <span class="o">=&gt;</span> <span class="n">params</span><span class="o">[</span><span class="ss">:letter</span><span class="o">]</span><span class="p">)</span>
-    <span class="k">else</span>
+    <span class="k">begin</span>
+      <span class="vi">@authors</span> <span class="o">=</span> <span class="no">Author</span><span class="o">.</span><span class="n">search</span><span class="p">(</span><span class="n">params</span><span class="p">)</span>
+    <span class="k">rescue</span> <span class="no">RegexpError</span>
+      <span class="n">flash</span><span class="o">[</span><span class="ss">:error</span><span class="o">]</span> <span class="o">=</span> <span class="s2">&quot;Please enter a valid search term&quot;</span>
+      <span class="n">redirect_to</span> <span class="n">users_path</span> <span class="ow">and</span> <span class="k">return</span>
+    <span class="k">end</span>
+    <span class="k">unless</span> <span class="vi">@authors</span><span class="o">.</span><span class="n">empty?</span>
+      <span class="vi">@authors</span> <span class="o">=</span> <span class="vi">@authors</span><span class="o">.</span><span class="n">paginate</span><span class="p">(</span><span class="ss">:page</span> <span class="o">=&gt;</span> <span class="n">params</span><span class="o">[</span><span class="ss">:page</span><span class="o">]</span><span class="p">,</span> <span class="ss">:per_page</span> <span class="o">=&gt;</span> <span class="n">params</span><span class="o">[</span><span class="ss">:per_page</span><span class="o">]</span><span class="p">)</span>
       <span class="n">set_pagination_buttons</span><span class="p">(</span><span class="vi">@authors</span><span class="p">)</span>
     <span class="k">end</span>
   <span class="k">end</span>
 
   <span class="k">def</span> <span class="nf">show</span>
-    <span class="n">user</span> <span class="o">=</span> <span class="no">User</span><span class="o">.</span><span class="n">find_by_case_insensitive_username</span><span class="p">(</span><span class="n">params</span><span class="o">[</span><span class="ss">:id</span><span class="o">]</span><span class="p">)</span>
-
-    <span class="k">if</span> <span class="n">user</span><span class="o">.</span><span class="n">nil?</span>
+    <span class="k">if</span> <span class="vi">@user</span><span class="o">.</span><span class="n">nil?</span>
       <span class="n">render</span> <span class="ss">:file</span> <span class="o">=&gt;</span> <span class="s2">&quot;</span><span class="si">#{</span><span class="no">Rails</span><span class="o">.</span><span class="n">root</span><span class="si">}</span><span class="s2">/public/404.html&quot;</span><span class="p">,</span> <span class="ss">:status</span> <span class="o">=&gt;</span> <span class="mi">404</span>
-    <span class="k">elsif</span> <span class="n">user</span><span class="o">.</span><span class="n">username</span> <span class="o">!=</span> <span class="n">params</span><span class="o">[</span><span class="ss">:id</span><span class="o">]</span> <span class="c1"># case difference</span>
-      <span class="n">redirect_to</span> <span class="s2">&quot;/users/</span><span class="si">#{</span><span class="n">user</span><span class="o">.</span><span class="n">username</span><span class="si">}</span><span class="s2">&quot;</span>
+    <span class="k">elsif</span> <span class="vi">@user</span><span class="o">.</span><span class="n">username</span> <span class="o">!=</span> <span class="n">params</span><span class="o">[</span><span class="ss">:id</span><span class="o">]</span> <span class="c1"># case difference</span>
+      <span class="vi">@title</span> <span class="o">=</span> <span class="vi">@user</span><span class="o">.</span><span class="n">username</span>
+      <span class="n">redirect_to</span> <span class="n">user_path</span><span class="p">(</span><span class="vi">@user</span><span class="p">)</span>
     <span class="k">else</span>
       <span class="n">set_params_page</span>
-
-      <span class="vi">@author</span>  <span class="o">=</span> <span class="n">user</span><span class="o">.</span><span class="n">author</span>
-      <span class="vi">@updates</span> <span class="o">=</span> <span class="n">user</span><span class="o">.</span><span class="n">updates</span>
+      <span class="vi">@title</span> <span class="o">=</span> <span class="vi">@user</span><span class="o">.</span><span class="n">username</span>
+      <span class="vi">@author</span>  <span class="o">=</span> <span class="vi">@user</span><span class="o">.</span><span class="n">author</span>
+      <span class="vi">@updates</span> <span class="o">=</span> <span class="vi">@user</span><span class="o">.</span><span class="n">updates</span>
       <span class="vi">@updates</span> <span class="o">=</span> <span class="vi">@updates</span><span class="o">.</span><span class="n">paginate</span><span class="p">(</span><span class="ss">:page</span> <span class="o">=&gt;</span> <span class="n">params</span><span class="o">[</span><span class="ss">:page</span><span class="o">]</span><span class="p">,</span> <span class="ss">:per_page</span> <span class="o">=&gt;</span> <span class="n">params</span><span class="o">[</span><span class="ss">:per_page</span><span class="o">]</span><span class="p">)</span>
 
       <span class="n">set_pagination_buttons</span><span class="p">(</span><span class="vi">@updates</span><span class="p">)</span>
 
-      <span class="n">headers</span><span class="o">[</span><span class="s1">&#39;Link&#39;</span><span class="o">]</span> <span class="o">=</span> <span class="s2">&quot;&lt;</span><span class="si">#{</span><span class="n">user_xrd_path</span><span class="p">(</span><span class="n">user</span><span class="o">.</span><span class="n">author</span><span class="o">.</span><span class="n">username</span><span class="p">)</span><span class="si">}</span><span class="s2">&gt;; rel=</span><span class="se">\&quot;</span><span class="s2">lrdd</span><span class="se">\&quot;</span><span class="s2">; type=</span><span class="se">\&quot;</span><span class="s2">application/xrd+xml</span><span class="se">\&quot;</span><span class="s2">&quot;</span>
+      <span class="n">headers</span><span class="o">[</span><span class="s1">&#39;Link&#39;</span><span class="o">]</span> <span class="o">=</span> <span class="s2">&quot;&lt;</span><span class="si">#{</span><span class="n">user_xrd_path</span><span class="p">(</span><span class="vi">@user</span><span class="o">.</span><span class="n">author</span><span class="p">)</span><span class="si">}</span><span class="s2">&gt;; rel=</span><span class="se">\&quot;</span><span class="s2">lrdd</span><span class="se">\&quot;</span><span class="s2">; type=</span><span class="se">\&quot;</span><span class="s2">application/xrd+xml</span><span class="se">\&quot;</span><span class="s2">&quot;</span>
     <span class="k">end</span>
   <span class="k">end</span>
 
-  <span class="k">def</span> <span class="nf">edit</span>
-    <span class="vi">@user</span> <span class="o">=</span> <span class="no">User</span><span class="o">.</span><span class="n">find_by_case_insensitive_username</span><span class="p">(</span><span class="n">params</span><span class="o">[</span><span class="ss">:id</span><span class="o">]</span><span class="p">)</span></pre></div>
+  <span class="k">def</span> <span class="nf">edit</span></pre></div>
       </td>
     </tr>
     <tr id='section-2'>
@@ -104,23 +109,12 @@ shouldn&rsquo;t let you do that. We&rsquo;re no fun.</p>
   <span class="k">end</span>
 
   <span class="k">def</span> <span class="nf">update</span>
-    <span class="vi">@user</span> <span class="o">=</span> <span class="no">User</span><span class="o">.</span><span class="n">find_by_case_insensitive_username</span><span class="p">(</span><span class="n">params</span><span class="o">[</span><span class="ss">:id</span><span class="o">]</span><span class="p">)</span>
     <span class="k">if</span> <span class="vi">@user</span> <span class="o">==</span> <span class="n">current_user</span>
       <span class="n">response</span> <span class="o">=</span> <span class="vi">@user</span><span class="o">.</span><span class="n">edit_user_profile</span><span class="p">(</span><span class="n">params</span><span class="p">)</span>
       <span class="k">if</span> <span class="n">response</span> <span class="o">==</span> <span class="kp">true</span>
 
-        <span class="k">unless</span> <span class="vi">@user</span><span class="o">.</span><span class="n">email</span><span class="o">.</span><span class="n">blank?</span> <span class="o">||</span> <span class="vi">@user</span><span class="o">.</span><span class="n">email_confirmed</span></pre></div>
-      </td>
-    </tr>
-    <tr id='section-3'>
-      <td class=docs>
-        <div class="pilwrap">
-          <a class="pilcrow" href="#section-3">&#182;</a>
-        </div>
-        <p>Generate same token as password reset&hellip;.</p>
-      </td>
-      <td class=code>
-        <div class='highlight'><pre>          <span class="no">Notifier</span><span class="o">.</span><span class="n">send_confirm_email_notification</span><span class="p">(</span><span class="vi">@user</span><span class="o">.</span><span class="n">email</span><span class="p">,</span> <span class="vi">@user</span><span class="o">.</span><span class="n">set_perishable_token</span><span class="p">)</span>
+        <span class="k">unless</span> <span class="vi">@user</span><span class="o">.</span><span class="n">email</span><span class="o">.</span><span class="n">blank?</span> <span class="o">||</span> <span class="vi">@user</span><span class="o">.</span><span class="n">email_confirmed</span>
+          <span class="no">Notifier</span><span class="o">.</span><span class="n">send_confirm_email_notification</span><span class="p">(</span><span class="vi">@user</span><span class="o">.</span><span class="n">email</span><span class="p">,</span> <span class="vi">@user</span><span class="o">.</span><span class="n">create_token</span><span class="p">)</span>
           <span class="n">flash</span><span class="o">[</span><span class="ss">:notice</span><span class="o">]</span> <span class="o">=</span> <span class="s2">&quot;A link to confirm your updated email address has been sent to </span><span class="si">#{</span><span class="vi">@user</span><span class="o">.</span><span class="n">email</span><span class="si">}</span><span class="s2">.&quot;</span>
         <span class="k">else</span>
           <span class="n">flash</span><span class="o">[</span><span class="ss">:notice</span><span class="o">]</span> <span class="o">=</span> <span class="s2">&quot;Profile saved!&quot;</span>
@@ -145,7 +139,10 @@ shouldn&rsquo;t let you do that. We&rsquo;re no fun.</p>
   <span class="k">def</span> <span class="nf">create</span>
     <span class="n">params</span><span class="o">[</span><span class="ss">:author</span><span class="o">]</span> <span class="o">=</span> <span class="no">Author</span><span class="o">.</span><span class="n">create_from_session!</span><span class="p">(</span><span class="n">session</span><span class="p">,</span> <span class="n">params</span><span class="p">,</span> <span class="n">root_url</span><span class="p">)</span>
 
-    <span class="vi">@user</span> <span class="o">=</span> <span class="no">User</span><span class="o">.</span><span class="n">new</span> <span class="n">params</span>
+    <span class="vi">@user</span> <span class="o">=</span> <span class="no">User</span><span class="o">.</span><span class="n">new</span> <span class="ss">:email</span>    <span class="o">=&gt;</span> <span class="n">params</span><span class="o">[</span><span class="ss">:email</span><span class="o">]</span><span class="p">,</span>
+                     <span class="ss">:author</span>   <span class="o">=&gt;</span> <span class="n">params</span><span class="o">[</span><span class="ss">:author</span><span class="o">]</span><span class="p">,</span>
+                     <span class="ss">:username</span> <span class="o">=&gt;</span> <span class="n">params</span><span class="o">[</span><span class="ss">:username</span><span class="o">]</span><span class="p">,</span>
+                     <span class="ss">:password</span> <span class="o">=&gt;</span> <span class="n">params</span><span class="o">[</span><span class="ss">:password</span><span class="o">]</span>
 
     <span class="k">if</span> <span class="vi">@user</span><span class="o">.</span><span class="n">save</span>
       <span class="no">Authorization</span><span class="o">.</span><span class="n">create_from_session!</span><span class="p">(</span><span class="n">session</span><span class="p">,</span> <span class="vi">@user</span><span class="p">)</span>
@@ -159,25 +156,36 @@ shouldn&rsquo;t let you do that. We&rsquo;re no fun.</p>
   <span class="k">end</span></pre></div>
       </td>
     </tr>
+    <tr id='section-3'>
+      <td class=docs>
+        <div class="pilwrap">
+          <a class="pilcrow" href="#section-3">&#182;</a>
+        </div>
+        <p>This is pretty much the same thing as /feeds/your_feed_id.atom, but we
+wanted to have a really nice URL for it, and not just the ugly one.</p>
+      </td>
+      <td class=code>
+        <div class='highlight'><pre>  <span class="k">def</span> <span class="nf">feed</span>
+    <span class="k">if</span> <span class="vi">@user</span>
+      <span class="n">redirect_to</span> <span class="n">feed_path</span><span class="p">(</span><span class="vi">@user</span><span class="o">.</span><span class="n">feed</span><span class="p">,</span> <span class="ss">:format</span> <span class="o">=&gt;</span> <span class="ss">:atom</span><span class="p">)</span>
+    <span class="k">else</span>
+      <span class="n">render</span> <span class="ss">:file</span> <span class="o">=&gt;</span> <span class="s2">&quot;</span><span class="si">#{</span><span class="no">Rails</span><span class="o">.</span><span class="n">root</span><span class="si">}</span><span class="s2">/public/404.html&quot;</span><span class="p">,</span> <span class="ss">:status</span> <span class="o">=&gt;</span> <span class="mi">404</span>
+    <span class="k">end</span>
+  <span class="k">end</span></pre></div>
+      </td>
+    </tr>
     <tr id='section-4'>
       <td class=docs>
         <div class="pilwrap">
           <a class="pilcrow" href="#section-4">&#182;</a>
         </div>
-        <p>uuuhhhh</p>
+        <p>Who do you think is a really neat person? This page will show it to the
+world, so pick wisely!</p>
       </td>
       <td class=code>
-        <div class='highlight'><pre>  <span class="k">def</span> <span class="nf">create_from_email</span>
-    <span class="n">u</span> <span class="o">=</span> <span class="no">User</span><span class="o">.</span><span class="n">create</span><span class="p">(</span><span class="ss">:email</span> <span class="o">=&gt;</span> <span class="n">params</span><span class="o">[</span><span class="ss">:email</span><span class="o">]</span><span class="p">,</span>
-                    <span class="ss">:status</span> <span class="o">=&gt;</span> <span class="s2">&quot;unconfirmed&quot;</span><span class="p">)</span>
-    <span class="n">u</span><span class="o">.</span><span class="n">set_perishable_token</span>
-
-    <span class="k">if</span> <span class="n">development?</span>
-      <span class="nb">puts</span> <span class="n">root_url</span> <span class="o">+</span> <span class="s2">&quot;/confirm/</span><span class="si">#{</span><span class="n">u</span><span class="o">.</span><span class="n">perishable_token</span><span class="si">}</span><span class="s2">&quot;</span>
-    <span class="k">else</span>
-      <span class="no">Notifier</span><span class="o">.</span><span class="n">send_signup_notification</span><span class="p">(</span><span class="n">params</span><span class="o">[</span><span class="ss">:email</span><span class="o">]</span><span class="p">,</span> <span class="n">u</span><span class="o">.</span><span class="n">perishable_token</span><span class="p">)</span>
-    <span class="k">end</span>
-  <span class="k">end</span></pre></div>
+        <div class='highlight'><pre>  <span class="k">def</span> <span class="nf">following</span>
+    <span class="k">if</span> <span class="vi">@user</span><span class="o">.</span><span class="n">nil?</span>
+      <span class="n">render</span> <span class="ss">:file</span> <span class="o">=&gt;</span> <span class="s2">&quot;</span><span class="si">#{</span><span class="no">Rails</span><span class="o">.</span><span class="n">root</span><span class="si">}</span><span class="s2">/public/404.html&quot;</span><span class="p">,</span> <span class="ss">:status</span> <span class="o">=&gt;</span> <span class="mi">404</span></pre></div>
       </td>
     </tr>
     <tr id='section-5'>
@@ -185,40 +193,12 @@ shouldn&rsquo;t let you do that. We&rsquo;re no fun.</p>
         <div class="pilwrap">
           <a class="pilcrow" href="#section-5">&#182;</a>
         </div>
-        <p>This is pretty much the same thing as /feeds/your_feed_id, but we
-wanted to have a really nice URL for it, and not just the ugly one.
-Since it&rsquo;s only two lines, we don&rsquo;t bother to do a redirect, and
-it&rsquo;s arguably better to display them as two different resources.
-Whatevs.
-Except we ARE doing a redirect??? /me shakes fist at steve</p>
+        <p>If the username&rsquo;s case entered in the URL is different than the case
+specified by that user, redirect to the case that the user prefers</p>
       </td>
       <td class=code>
-        <div class='highlight'><pre>  <span class="k">def</span> <span class="nf">feed</span>
-    <span class="n">user</span> <span class="o">=</span> <span class="no">User</span><span class="o">.</span><span class="n">find_by_case_insensitive_username</span><span class="p">(</span><span class="n">params</span><span class="o">[</span><span class="ss">:id</span><span class="o">]</span><span class="p">)</span>
-    <span class="k">if</span> <span class="n">user</span>
-      <span class="n">redirect_to</span> <span class="s2">&quot;/feeds/</span><span class="si">#{</span><span class="n">user</span><span class="o">.</span><span class="n">feed</span><span class="o">.</span><span class="n">id</span><span class="si">}</span><span class="s2">.atom&quot;</span>
-    <span class="k">else</span>
-      <span class="n">render</span> <span class="ss">:file</span> <span class="o">=&gt;</span> <span class="s2">&quot;</span><span class="si">#{</span><span class="no">Rails</span><span class="o">.</span><span class="n">root</span><span class="si">}</span><span class="s2">/public/404.html&quot;</span><span class="p">,</span> <span class="ss">:status</span> <span class="o">=&gt;</span> <span class="mi">404</span>
-    <span class="k">end</span>
-  <span class="k">end</span></pre></div>
-      </td>
-    </tr>
-    <tr id='section-6'>
-      <td class=docs>
-        <div class="pilwrap">
-          <a class="pilcrow" href="#section-6">&#182;</a>
-        </div>
-        <p>Who do you think is a really neat person? This page will show it to the
-world, so pick wisely!</p>
-      </td>
-      <td class=code>
-        <div class='highlight'><pre>  <span class="k">def</span> <span class="nf">following</span>
-    <span class="vi">@user</span> <span class="o">=</span> <span class="no">User</span><span class="o">.</span><span class="n">find_by_case_insensitive_username</span><span class="p">(</span><span class="n">params</span><span class="o">[</span><span class="ss">:id</span><span class="o">]</span><span class="p">)</span>
-
-    <span class="k">if</span> <span class="vi">@user</span><span class="o">.</span><span class="n">nil?</span>
-      <span class="n">render</span> <span class="ss">:file</span> <span class="o">=&gt;</span> <span class="s2">&quot;</span><span class="si">#{</span><span class="no">Rails</span><span class="o">.</span><span class="n">root</span><span class="si">}</span><span class="s2">/public/404.html&quot;</span><span class="p">,</span> <span class="ss">:status</span> <span class="o">=&gt;</span> <span class="mi">404</span>
-    <span class="k">elsif</span> <span class="vi">@user</span><span class="o">.</span><span class="n">username</span> <span class="o">!=</span> <span class="n">params</span><span class="o">[</span><span class="ss">:id</span><span class="o">]</span> <span class="c1"># case difference</span>
-      <span class="n">redirect_to</span> <span class="s2">&quot;/users/</span><span class="si">#{</span><span class="vi">@user</span><span class="o">.</span><span class="n">username</span><span class="si">}</span><span class="s2">/following&quot;</span>
+        <div class='highlight'><pre>    <span class="k">elsif</span> <span class="vi">@user</span><span class="o">.</span><span class="n">username</span> <span class="o">!=</span> <span class="n">params</span><span class="o">[</span><span class="ss">:id</span><span class="o">]</span>
+      <span class="n">redirect_to</span> <span class="n">following_path</span><span class="p">(</span><span class="vi">@user</span><span class="o">.</span><span class="n">username</span><span class="p">)</span>
     <span class="k">else</span>
       <span class="n">set_params_page</span>
 
@@ -244,22 +224,31 @@ world, so pick wisely!</p>
   <span class="k">end</span></pre></div>
       </td>
     </tr>
-    <tr id='section-7'>
+    <tr id='section-6'>
       <td class=docs>
         <div class="pilwrap">
-          <a class="pilcrow" href="#section-7">&#182;</a>
+          <a class="pilcrow" href="#section-6">&#182;</a>
         </div>
         <p>This shows off how cool you are: I hope you&rsquo;ve got the biggest number of
 followers. Only one way to find out&hellip;</p>
       </td>
       <td class=code>
         <div class='highlight'><pre>  <span class="k">def</span> <span class="nf">followers</span>
-    <span class="vi">@user</span> <span class="o">=</span> <span class="no">User</span><span class="o">.</span><span class="n">find_by_case_insensitive_username</span><span class="p">(</span><span class="n">params</span><span class="o">[</span><span class="ss">:id</span><span class="o">]</span><span class="p">)</span>
-
     <span class="k">if</span> <span class="vi">@user</span><span class="o">.</span><span class="n">nil?</span>
-      <span class="n">render</span> <span class="ss">:file</span> <span class="o">=&gt;</span> <span class="s2">&quot;</span><span class="si">#{</span><span class="no">Rails</span><span class="o">.</span><span class="n">root</span><span class="si">}</span><span class="s2">/public/404.html&quot;</span><span class="p">,</span> <span class="ss">:status</span> <span class="o">=&gt;</span> <span class="mi">404</span>
-    <span class="k">elsif</span> <span class="vi">@user</span><span class="o">.</span><span class="n">username</span> <span class="o">!=</span> <span class="n">params</span><span class="o">[</span><span class="ss">:id</span><span class="o">]</span> <span class="c1"># case difference</span>
-      <span class="n">redirect_to</span> <span class="s2">&quot;/users/</span><span class="si">#{</span><span class="vi">@user</span><span class="o">.</span><span class="n">username</span><span class="si">}</span><span class="s2">/followers&quot;</span>
+      <span class="n">render</span> <span class="ss">:file</span> <span class="o">=&gt;</span> <span class="s2">&quot;</span><span class="si">#{</span><span class="no">Rails</span><span class="o">.</span><span class="n">root</span><span class="si">}</span><span class="s2">/public/404.html&quot;</span><span class="p">,</span> <span class="ss">:status</span> <span class="o">=&gt;</span> <span class="mi">404</span></pre></div>
+      </td>
+    </tr>
+    <tr id='section-7'>
+      <td class=docs>
+        <div class="pilwrap">
+          <a class="pilcrow" href="#section-7">&#182;</a>
+        </div>
+        <p>If the username&rsquo;s case entered in the URL is different than the case
+specified by that user, redirect to the case that the user prefers</p>
+      </td>
+      <td class=code>
+        <div class='highlight'><pre>    <span class="k">elsif</span> <span class="vi">@user</span><span class="o">.</span><span class="n">username</span> <span class="o">!=</span> <span class="n">params</span><span class="o">[</span><span class="ss">:id</span><span class="o">]</span>
+      <span class="n">redirect_to</span> <span class="n">followers_path</span><span class="p">(</span><span class="vi">@user</span><span class="o">.</span><span class="n">username</span><span class="p">)</span>
     <span class="k">else</span>
       <span class="n">set_params_page</span>
 
@@ -288,16 +277,7 @@ followers. Only one way to find out&hellip;</p>
 
       <span class="n">render</span> <span class="s2">&quot;users/list&quot;</span><span class="p">,</span> <span class="ss">:locals</span> <span class="o">=&gt;</span> <span class="p">{</span><span class="ss">:title</span> <span class="o">=&gt;</span> <span class="n">title</span><span class="p">}</span>
     <span class="k">end</span>
-  <span class="k">end</span>
-
-  <span class="k">def</span> <span class="nf">confirm_email</span>
-    <span class="n">user</span> <span class="o">=</span> <span class="no">User</span><span class="o">.</span><span class="n">first</span><span class="p">(</span><span class="ss">:perishable_token</span> <span class="o">=&gt;</span> <span class="n">params</span><span class="o">[</span><span class="ss">:token</span><span class="o">]</span><span class="p">)</span>
-    <span class="k">if</span> <span class="n">user</span><span class="o">.</span><span class="n">nil?</span>
-      <span class="n">flash</span><span class="o">[</span><span class="ss">:notice</span><span class="o">]</span> <span class="o">=</span> <span class="s2">&quot;Can&#39;t find User Account for this link.&quot;</span>
-      <span class="n">redirect_to</span> <span class="s2">&quot;/&quot;</span>
-    <span class="k">else</span>
-      <span class="n">user</span><span class="o">.</span><span class="n">email_confirmed</span> <span class="o">=</span> <span class="kp">true</span>
-      <span class="n">user</span><span class="o">.</span><span class="n">save</span></pre></div>
+  <span class="k">end</span></pre></div>
       </td>
     </tr>
     <tr id='section-9'>
@@ -305,20 +285,46 @@ followers. Only one way to find out&hellip;</p>
         <div class="pilwrap">
           <a class="pilcrow" href="#section-9">&#182;</a>
         </div>
-        <p>Register a session for the user</p>
+        <p>If we can&rsquo;t find a user in mongo or the token is expired give
+them some information and redirect.</p>
+
+<p>Once an email has been confirmed there is no reason to leave
+the token set so let&rsquo;s nil it out. The reset token method runs
+save so we don&rsquo;t need to do that anymore</p>
       </td>
       <td class=code>
-        <div class='highlight'><pre>      <span class="n">session</span><span class="o">[</span><span class="ss">:user_id</span><span class="o">]</span> <span class="o">=</span> <span class="n">user</span><span class="o">.</span><span class="n">id</span>
-      <span class="n">flash</span><span class="o">[</span><span class="ss">:notice</span><span class="o">]</span> <span class="o">=</span> <span class="s2">&quot;Email successfully confirmed.&quot;</span>
-      <span class="n">redirect_to</span> <span class="s2">&quot;/&quot;</span>
-    <span class="k">end</span>
-  <span class="k">end</span></pre></div>
+        <div class='highlight'><pre>  <span class="k">def</span> <span class="nf">confirm_email</span>
+    <span class="n">user</span> <span class="o">=</span> <span class="no">User</span><span class="o">.</span><span class="n">first</span><span class="p">(</span><span class="ss">:perishable_token</span> <span class="o">=&gt;</span> <span class="n">params</span><span class="o">[</span><span class="ss">:token</span><span class="o">]</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">user</span><span class="o">.</span><span class="n">nil?</span>
+      <span class="n">flash</span><span class="o">[</span><span class="ss">:notice</span><span class="o">]</span> <span class="o">=</span> <span class="s2">&quot;Can&#39;t find User Account for this link.&quot;</span>
+      <span class="n">redirect_to</span> <span class="n">root_path</span>
+    <span class="k">elsif</span> <span class="n">user</span><span class="o">.</span><span class="n">token_expired?</span>
+      <span class="n">flash</span><span class="o">[</span><span class="ss">:notice</span><span class="o">]</span> <span class="o">=</span> <span class="s2">&quot;Your link is no longer valid, please request a new one.&quot;</span>
+      <span class="n">redirect_to</span> <span class="n">root_path</span>
+    <span class="k">else</span>
+      <span class="n">user</span><span class="o">.</span><span class="n">email_confirmed</span> <span class="o">=</span> <span class="kp">true</span>
+      <span class="n">user</span><span class="o">.</span><span class="n">reset_perishable_token</span></pre></div>
       </td>
     </tr>
     <tr id='section-10'>
       <td class=docs>
         <div class="pilwrap">
           <a class="pilcrow" href="#section-10">&#182;</a>
+        </div>
+        <p>Register a session for the user</p>
+      </td>
+      <td class=code>
+        <div class='highlight'><pre>      <span class="n">session</span><span class="o">[</span><span class="ss">:user_id</span><span class="o">]</span> <span class="o">=</span> <span class="n">user</span><span class="o">.</span><span class="n">id</span>
+      <span class="n">flash</span><span class="o">[</span><span class="ss">:notice</span><span class="o">]</span> <span class="o">=</span> <span class="s2">&quot;Email successfully confirmed.&quot;</span>
+      <span class="n">redirect_to</span> <span class="n">root_path</span>
+    <span class="k">end</span>
+  <span class="k">end</span></pre></div>
+      </td>
+    </tr>
+    <tr id='section-11'>
+      <td class=docs>
+        <div class="pilwrap">
+          <a class="pilcrow" href="#section-11">&#182;</a>
         </div>
         <p>Passwords can be reset by unauthenticated users by navigating to the forgot
 password and page and submitting the email address they provided.</p>
@@ -329,10 +335,10 @@ password and page and submitting the email address they provided.</p>
   <span class="k">end</span></pre></div>
       </td>
     </tr>
-    <tr id='section-11'>
+    <tr id='section-12'>
       <td class=docs>
         <div class="pilwrap">
-          <a class="pilcrow" href="#section-11">&#182;</a>
+          <a class="pilcrow" href="#section-12">&#182;</a>
         </div>
         <p>We&rsquo;ve got a pretty solid forgotten password implementation. It&rsquo;s simple:
 the email address is looked up, if no user is found an error is provided.
@@ -347,27 +353,27 @@ confirmation page to prevent repost issues</p>
       <span class="n">flash</span><span class="o">[</span><span class="ss">:notice</span><span class="o">]</span> <span class="o">=</span> <span class="s2">&quot;Your account could not be found, please check your email and try again.&quot;</span>
       <span class="n">render</span> <span class="s2">&quot;login/forgot_password&quot;</span>
     <span class="k">else</span>
-      <span class="no">Notifier</span><span class="o">.</span><span class="n">send_forgot_password_notification</span><span class="p">(</span><span class="n">user</span><span class="o">.</span><span class="n">email</span><span class="p">,</span> <span class="n">user</span><span class="o">.</span><span class="n">set_password_reset_token</span><span class="p">)</span></pre></div>
-      </td>
-    </tr>
-    <tr id='section-12'>
-      <td class=docs>
-        <div class="pilwrap">
-          <a class="pilcrow" href="#section-12">&#182;</a>
-        </div>
-        <p>Redirect to try to avoid repost issues</p>
-      </td>
-      <td class=code>
-        <div class='highlight'><pre>      <span class="n">session</span><span class="o">[</span><span class="ss">:fp_email</span><span class="o">]</span> <span class="o">=</span> <span class="n">user</span><span class="o">.</span><span class="n">email</span>
-      <span class="n">redirect_to</span> <span class="s1">&#39;/forgot_password_confirm&#39;</span>
-    <span class="k">end</span>
-  <span class="k">end</span></pre></div>
+      <span class="no">Notifier</span><span class="o">.</span><span class="n">send_forgot_password_notification</span><span class="p">(</span><span class="n">user</span><span class="o">.</span><span class="n">email</span><span class="p">,</span> <span class="n">user</span><span class="o">.</span><span class="n">create_token</span><span class="p">)</span></pre></div>
       </td>
     </tr>
     <tr id='section-13'>
       <td class=docs>
         <div class="pilwrap">
           <a class="pilcrow" href="#section-13">&#182;</a>
+        </div>
+        <p>Redirect to try to avoid repost issues</p>
+      </td>
+      <td class=code>
+        <div class='highlight'><pre>      <span class="n">session</span><span class="o">[</span><span class="ss">:fp_email</span><span class="o">]</span> <span class="o">=</span> <span class="n">user</span><span class="o">.</span><span class="n">email</span>
+      <span class="n">redirect_to</span> <span class="n">forgot_password_confirm_path</span>
+    <span class="k">end</span>
+  <span class="k">end</span></pre></div>
+      </td>
+    </tr>
+    <tr id='section-14'>
+      <td class=docs>
+        <div class="pilwrap">
+          <a class="pilcrow" href="#section-14">&#182;</a>
         </div>
         <p>Forgot password confirmation screen, displays email address that the email
 was sent to</p>
@@ -380,20 +386,19 @@ was sent to</p>
 
   <span class="k">def</span> <span class="nf">reset_password_new</span>
     <span class="k">if</span> <span class="ow">not</span> <span class="n">logged_in?</span>
-      <span class="n">redirect_to</span> <span class="s2">&quot;/forgot_password&quot;</span>
+      <span class="n">redirect_to</span> <span class="n">forgot_password_path</span>
     <span class="k">else</span>
       <span class="n">render</span> <span class="s2">&quot;login/password_reset&quot;</span>
     <span class="k">end</span>
   <span class="k">end</span></pre></div>
       </td>
     </tr>
-    <tr id='section-14'>
+    <tr id='section-15'>
       <td class=docs>
         <div class="pilwrap">
-          <a class="pilcrow" href="#section-14">&#182;</a>
+          <a class="pilcrow" href="#section-15">&#182;</a>
         </div>
-        <p>Submitted passwords are checked for length and confirmation. If the user
-does not have an email address they are required to provide one. Once the
+        <p>Submitted passwords are checked for length and confirmation. Once the
 password has been reset the user is redirected to /</p>
       </td>
       <td class=code>
@@ -402,7 +407,7 @@ password has been reset the user is redirected to /</p>
 
     <span class="k">if</span> <span class="n">params</span><span class="o">[</span><span class="ss">:token</span><span class="o">]</span>
       <span class="n">user</span> <span class="o">=</span> <span class="no">User</span><span class="o">.</span><span class="n">first</span><span class="p">(</span><span class="ss">:perishable_token</span> <span class="o">=&gt;</span> <span class="n">params</span><span class="o">[</span><span class="ss">:token</span><span class="o">]</span><span class="p">)</span>
-      <span class="k">if</span> <span class="n">user</span> <span class="ow">and</span> <span class="n">user</span><span class="o">.</span><span class="n">password_reset_sent</span><span class="o">.</span><span class="n">to_time</span> <span class="o">&lt;</span> <span class="mi">2</span><span class="o">.</span><span class="n">days</span><span class="o">.</span><span class="n">ago</span>
+      <span class="k">if</span> <span class="n">user</span> <span class="ow">and</span> <span class="n">user</span><span class="o">.</span><span class="n">token_expired?</span>
         <span class="n">user</span> <span class="o">=</span> <span class="kp">nil</span>
       <span class="k">end</span>
     <span class="k">end</span>
@@ -410,30 +415,40 @@ password has been reset the user is redirected to /</p>
     <span class="k">unless</span> <span class="n">user</span><span class="o">.</span><span class="n">nil?</span></pre></div>
       </td>
     </tr>
-    <tr id='section-15'>
+    <tr id='section-16'>
       <td class=docs>
         <div class="pilwrap">
-          <a class="pilcrow" href="#section-15">&#182;</a>
+          <a class="pilcrow" href="#section-16">&#182;</a>
         </div>
         <p>XXX: yes, this is a code smell</p>
       </td>
       <td class=code>
         <div class='highlight'><pre>      <span class="k">if</span> <span class="n">params</span><span class="o">[</span><span class="ss">:password</span><span class="o">].</span><span class="n">size</span> <span class="o">==</span> <span class="mi">0</span>
         <span class="n">flash</span><span class="o">[</span><span class="ss">:notice</span><span class="o">]</span> <span class="o">=</span> <span class="s2">&quot;Password must be present&quot;</span>
-        <span class="n">redirect_to</span> <span class="s2">&quot;/reset_password/</span><span class="si">#{</span><span class="n">params</span><span class="o">[</span><span class="ss">:token</span><span class="o">]</span><span class="si">}</span><span class="s2">&quot;</span>
+        <span class="n">redirect_to</span> <span class="n">reset_password_path</span><span class="p">(</span><span class="n">params</span><span class="o">[</span><span class="ss">:token</span><span class="o">]</span><span class="p">)</span>
         <span class="k">return</span>
       <span class="k">end</span>
 
       <span class="k">if</span> <span class="n">params</span><span class="o">[</span><span class="ss">:password</span><span class="o">]</span> <span class="o">!=</span> <span class="n">params</span><span class="o">[</span><span class="ss">:password_confirm</span><span class="o">]</span>
         <span class="n">flash</span><span class="o">[</span><span class="ss">:notice</span><span class="o">]</span> <span class="o">=</span> <span class="s2">&quot;Passwords do not match&quot;</span>
-        <span class="n">redirect_to</span> <span class="s2">&quot;/reset_password/</span><span class="si">#{</span><span class="n">params</span><span class="o">[</span><span class="ss">:token</span><span class="o">]</span><span class="si">}</span><span class="s2">&quot;</span>
+        <span class="n">redirect_to</span> <span class="n">reset_password_path</span><span class="p">(</span><span class="n">params</span><span class="o">[</span><span class="ss">:token</span><span class="o">]</span><span class="p">)</span>
         <span class="k">return</span>
-      <span class="k">end</span>
-
-      <span class="k">if</span> <span class="n">user</span><span class="o">.</span><span class="n">email</span><span class="o">.</span><span class="n">nil?</span>
+      <span class="k">end</span></pre></div>
+      </td>
+    </tr>
+    <tr id='section-17'>
+      <td class=docs>
+        <div class="pilwrap">
+          <a class="pilcrow" href="#section-17">&#182;</a>
+        </div>
+        <p>TODO: This may be unreachable, since we don&rsquo;t allow password reset
+without an email&hellip; look into this and remove this code if so.</p>
+      </td>
+      <td class=code>
+        <div class='highlight'><pre>      <span class="k">if</span> <span class="n">user</span><span class="o">.</span><span class="n">email</span><span class="o">.</span><span class="n">nil?</span>
         <span class="k">if</span> <span class="n">params</span><span class="o">[</span><span class="ss">:email</span><span class="o">].</span><span class="n">empty?</span>
           <span class="n">flash</span><span class="o">[</span><span class="ss">:notice</span><span class="o">]</span> <span class="o">=</span> <span class="s2">&quot;Email must be provided&quot;</span>
-          <span class="n">redirect_to</span> <span class="s2">&quot;/reset_password/</span><span class="si">#{</span><span class="n">params</span><span class="o">[</span><span class="ss">:token</span><span class="o">]</span><span class="si">}</span><span class="s2">&quot;</span>
+          <span class="n">redirect_to</span> <span class="n">reset_password_path</span><span class="p">(</span><span class="n">params</span><span class="o">[</span><span class="ss">:token</span><span class="o">]</span><span class="p">)</span>
           <span class="k">return</span>
         <span class="k">else</span>
           <span class="n">user</span><span class="o">.</span><span class="n">email</span> <span class="o">=</span> <span class="n">params</span><span class="o">[</span><span class="ss">:email</span><span class="o">]</span>
@@ -443,17 +458,17 @@ password has been reset the user is redirected to /</p>
       <span class="n">user</span><span class="o">.</span><span class="n">password</span> <span class="o">=</span> <span class="n">params</span><span class="o">[</span><span class="ss">:password</span><span class="o">]</span>
       <span class="n">user</span><span class="o">.</span><span class="n">save</span>
       <span class="n">flash</span><span class="o">[</span><span class="ss">:notice</span><span class="o">]</span> <span class="o">=</span> <span class="s2">&quot;Password successfully set&quot;</span>
-      <span class="n">redirect_to</span> <span class="s2">&quot;/&quot;</span>
+      <span class="n">redirect_to</span> <span class="n">root_path</span>
     <span class="k">else</span>
-      <span class="n">redirect_to</span> <span class="s2">&quot;/forgot_password&quot;</span>
+      <span class="n">redirect_to</span> <span class="n">forgot_password_path</span>
     <span class="k">end</span>
   <span class="k">end</span></pre></div>
       </td>
     </tr>
-    <tr id='section-16'>
+    <tr id='section-18'>
       <td class=docs>
         <div class="pilwrap">
-          <a class="pilcrow" href="#section-16">&#182;</a>
+          <a class="pilcrow" href="#section-18">&#182;</a>
         </div>
         <p>Public reset password page, accessible via a valid token. Tokens are only
 valid for 2 days and are unique to that user. The user is found using the
@@ -463,13 +478,21 @@ token and the reset password page is rendered</p>
       <td class=code>
         <div class='highlight'><pre>  <span class="k">def</span> <span class="nf">reset_password_with_token</span>
     <span class="n">user</span> <span class="o">=</span> <span class="no">User</span><span class="o">.</span><span class="n">first</span><span class="p">(</span><span class="ss">:perishable_token</span> <span class="o">=&gt;</span> <span class="n">params</span><span class="o">[</span><span class="ss">:token</span><span class="o">]</span><span class="p">)</span>
-    <span class="k">if</span> <span class="n">user</span><span class="o">.</span><span class="n">nil?</span> <span class="o">||</span> <span class="n">user</span><span class="o">.</span><span class="n">password_reset_sent</span><span class="o">.</span><span class="n">to_time</span> <span class="o">&lt;</span> <span class="mi">2</span><span class="o">.</span><span class="n">days</span><span class="o">.</span><span class="n">ago</span>
+    <span class="k">if</span> <span class="n">user</span><span class="o">.</span><span class="n">nil?</span> <span class="o">||</span> <span class="n">user</span><span class="o">.</span><span class="n">token_expired?</span>
       <span class="n">flash</span><span class="o">[</span><span class="ss">:notice</span><span class="o">]</span> <span class="o">=</span> <span class="s2">&quot;Your link is no longer valid, please request a new one.&quot;</span>
-      <span class="n">redirect_to</span> <span class="s2">&quot;/forgot_password&quot;</span>
+      <span class="n">redirect_to</span> <span class="n">forgot_password_path</span>
     <span class="k">else</span>
       <span class="vi">@token</span> <span class="o">=</span> <span class="n">params</span><span class="o">[</span><span class="ss">:token</span><span class="o">]</span>
-      <span class="vi">@user</span> <span class="o">=</span> <span class="n">user</span>
+      <span class="vi">@user</span>  <span class="o">=</span> <span class="n">user</span>
       <span class="n">render</span> <span class="s2">&quot;login/password_reset&quot;</span>
+    <span class="k">end</span>
+  <span class="k">end</span>
+
+  <span class="kp">private</span>
+
+  <span class="k">def</span> <span class="nf">find_user</span>
+    <span class="k">if</span> <span class="vi">@user</span> <span class="o">=</span> <span class="no">User</span><span class="o">.</span><span class="n">find_by_case_insensitive_username</span><span class="p">(</span><span class="n">params</span><span class="o">[</span><span class="ss">:id</span><span class="o">]</span><span class="p">)</span>
+      <span class="vi">@user</span> <span class="o">=</span> <span class="no">UserDecorator</span><span class="o">.</span><span class="n">decorate</span><span class="p">(</span><span class="vi">@user</span><span class="p">)</span>
     <span class="k">end</span>
   <span class="k">end</span>
 <span class="k">end</span></pre></div>
