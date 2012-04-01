@@ -2,9 +2,7 @@
   - authors.each_with_index do |author, i|
     - next if author.nil?
     %li.user{:class => i%2 == 0 ? "even" : "odd"}
-      .avatar
-        %a{:href => author.url}
-          %img{:alt => "avatar", :src => avatar_for(author)}/
+      = AuthorDecorator.decorate(author).avatar
 
       .info
         %a{:href => author.url}

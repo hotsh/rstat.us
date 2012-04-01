@@ -1,11 +1,10 @@
 - if current_user
+  - current_author = AuthorDecorator.decorate(current_user.author)
   #current_user_block.vcard.block
-    .avatar
-      %a{:href=>"/users/#{current_user.username}"}
-        %img.photo{:alt => "avatar", :src => avatar_for(current_user.author)}/
+    = current_author.avatar
     .user-info
-      %h4.name 
-        = current_user.author.display_name
+      %h4.name
+        = current_author.display_name
       .nickname
         %a.url{:href=>"/users/#{current_user.username}"}
           @#{current_user.username}

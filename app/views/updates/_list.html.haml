@@ -8,9 +8,8 @@
       - mentioned = current_user.nil? ? false : update.mentioned?(current_user.username)
     %li.update.hentry{:class => (mentioned ? "mention " : "") + (mine ? "mine " : ""), :id => "update-#{update.id}", "data-id" => update.id, "data-name" => update.author.username}
       .author.vcard
-        .avatar
-          %a.url{:href => update.author.url}
-            %img.photo{:alt => "avatar", :src => avatar_for(update.author)}/
+        %a.url{:href => update.author.url}
+          = AuthorDecorator.decorate(update.author).avatar
         %span.fn
           %a.url{:href => update.author.url}
             = update.author.display_name

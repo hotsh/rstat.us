@@ -1,9 +1,8 @@
 - reply ||= false
 .update
   .byline
-    %a.author{:href => "/users/#{update.author.username}"}
-      .avatar
-        %img{:alt => "avatar", :src => avatar_for(update.author)}/
+    = AuthorDecorator.decorate(update.author).avatar
+    %a{:href => "/users/#{update.author.username}"}
       = update.author.username
   .update-text
     .content
