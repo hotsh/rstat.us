@@ -49,23 +49,43 @@
         <div class="pilwrap">
           <a class="pilcrow" href="#section-1">&#182;</a>
         </div>
-        
+
 
       </td>
       <td class=code>
         <div class='highlight'><pre><span class="k">class</span> <span class="nc">AuthorDecorator</span> <span class="o">&lt;</span> <span class="no">ApplicationDecorator</span>
-  <span class="n">decorates</span> <span class="ss">:author</span>
-
-  <span class="k">def</span> <span class="nf">avatar</span>
+  <span class="n">decorates</span> <span class="ss">:author</span></pre></div>
+      </td>
+    </tr>
+    <tr id='section-2'>
+      <td class=docs>
+        <div class="pilwrap">
+          <a class="pilcrow" href="#section-2">&#182;</a>
+        </div>
+        <p>Creates a div with class avatar that contains the image tag linked
+to the user&rsquo;s page</p>
+      </td>
+      <td class=code>
+        <div class='highlight'><pre>  <span class="k">def</span> <span class="nf">avatar</span>
     <span class="n">h</span><span class="o">.</span><span class="n">content_tag</span> <span class="s2">&quot;div&quot;</span><span class="p">,</span> <span class="ss">:class</span> <span class="o">=&gt;</span> <span class="s2">&quot;avatar&quot;</span> <span class="k">do</span>
       <span class="n">h</span><span class="o">.</span><span class="n">link_to</span><span class="p">(</span>
         <span class="n">h</span><span class="o">.</span><span class="n">image_tag</span><span class="p">(</span><span class="n">avatar_src</span><span class="p">,</span> <span class="ss">:class</span> <span class="o">=&gt;</span> <span class="s2">&quot;photo&quot;</span><span class="p">,</span> <span class="ss">:alt</span> <span class="o">=&gt;</span> <span class="s2">&quot;avatar&quot;</span><span class="p">),</span>
         <span class="n">author</span><span class="o">.</span><span class="n">url</span>
       <span class="p">)</span>
     <span class="k">end</span>
-  <span class="k">end</span>
-
-  <span class="k">def</span> <span class="nf">website_link</span>
+  <span class="k">end</span></pre></div>
+      </td>
+    </tr>
+    <tr id='section-3'>
+      <td class=docs>
+        <div class="pilwrap">
+          <a class="pilcrow" href="#section-3">&#182;</a>
+        </div>
+        <p>Creates a link to the user&rsquo;s website for their profile and adds http://
+if it isn&rsquo;t there</p>
+      </td>
+      <td class=code>
+        <div class='highlight'><pre>  <span class="k">def</span> <span class="nf">website_link</span>
     <span class="n">url</span> <span class="o">=</span> <span class="k">if</span> <span class="n">model</span><span class="o">.</span><span class="n">website</span><span class="o">[</span><span class="mi">0</span><span class="p">,</span><span class="mi">7</span><span class="o">]</span> <span class="o">==</span> <span class="s2">&quot;http://&quot;</span> <span class="ow">or</span> <span class="n">model</span><span class="o">.</span><span class="n">website</span><span class="o">[</span><span class="mi">0</span><span class="p">,</span><span class="mi">8</span><span class="o">]</span> <span class="o">==</span> <span class="s2">&quot;https://&quot;</span>
             <span class="n">model</span><span class="o">.</span><span class="n">website</span>
           <span class="k">else</span>
@@ -75,9 +95,20 @@
     <span class="n">h</span><span class="o">.</span><span class="n">link_to</span><span class="p">(</span><span class="n">url</span><span class="p">,</span> <span class="n">url</span><span class="p">,</span> <span class="ss">:rel</span> <span class="o">=&gt;</span> <span class="s1">&#39;me&#39;</span><span class="p">,</span> <span class="ss">:class</span> <span class="o">=&gt;</span> <span class="s1">&#39;url&#39;</span><span class="p">)</span>
   <span class="k">end</span>
 
-  <span class="kp">private</span>
+  <span class="kp">private</span></pre></div>
+      </td>
+    </tr>
+    <tr id='section-4'>
+      <td class=docs>
+        <div class="pilwrap">
+          <a class="pilcrow" href="#section-4">&#182;</a>
+        </div>
+        <p>Make sure we&rsquo;re using the asset path if the user&rsquo;s avatar is the default
+(local) avatar</p>
 
-  <span class="k">def</span> <span class="nf">avatar_src</span>
+      </td>
+      <td class=code>
+        <div class='highlight'><pre>  <span class="k">def</span> <span class="nf">avatar_src</span>
     <span class="k">if</span> <span class="n">author</span><span class="o">.</span><span class="n">avatar_url</span><span class="o">.</span><span class="n">eql?</span> <span class="no">Author</span><span class="o">::</span><span class="no">DEFAULT_AVATAR</span>
       <span class="n">h</span><span class="o">.</span><span class="n">asset_path</span><span class="p">(</span><span class="n">author</span><span class="o">.</span><span class="n">avatar_url</span><span class="p">)</span>
     <span class="k">else</span>
