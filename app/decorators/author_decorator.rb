@@ -1,7 +1,7 @@
 class AuthorDecorator < ApplicationDecorator
   decorates :author
 
-  def website_url
+  def website_link
     url = if model.website[0,7] == "http://" or model.website[0,8] == "https://"
             model.website
           else
