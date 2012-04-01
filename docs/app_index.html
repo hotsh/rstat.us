@@ -223,6 +223,39 @@
         <div class='highlight'><pre>decorators/</pre></div>
       </td>
     </tr>
+    <tr id='section-decorators-application'>
+      <td class=docs>
+        <div class="pilwrap">
+          <a class="pilcrow" href="#section-decorators-application">&#182;</a>
+        </div>
+        <p>This is a decorator that the other decorators inherit from. It contains methods that are applicable to multiple decorators.</p>
+      </td>
+      <td class=code>
+        <div class='highlight'><pre>|- <a class="source" href="app/decorators/application_decorator.html">application_decorator.rb</a></pre></div>
+      </td>
+    </tr>
+    <tr id='section-decorators-author'>
+      <td class=docs>
+        <div class="pilwrap">
+          <a class="pilcrow" href="#section-decorators-author">&#182;</a>
+        </div>
+        <p>The author decorator handles display items for authors of statuses displayed on rstat.us, whether or not they are users on rstat.us. An example is an author's avatar.</p>
+      </td>
+      <td class=code>
+        <div class='highlight'><pre>|- <a class="source" href="app/decorators/author_decorator.html">author_decorator.rb</a></pre></div>
+      </td>
+    </tr>
+    <tr id='section-decorators-user'>
+      <td class=docs>
+        <div class="pilwrap">
+          <a class="pilcrow" href="#section-decorators-user">&#182;</a>
+        </div>
+        <p>The user decorator contains only display items that users who have accounts on rstat.us should see. It also has an associated author decorator.</p>
+      </td>
+      <td class=code>
+        <div class='highlight'><pre>|- <a class="source" href="app/decorators/user_decorator.html">user_decorator.rb</a></pre></div>
+      </td>
+    </tr>
     <tr id='section-models'>
       <td class=docs>
         <div class="pilwrap">
