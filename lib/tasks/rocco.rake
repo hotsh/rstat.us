@@ -6,7 +6,9 @@ begin
 
   desc 'Build rocco docs'
   task :rocco
-  Rocco::make 'docs/', ["app/models/*.rb", "app/controllers/*.rb"]
+  Rocco::make 'docs/', ["app/models/*.rb",
+                        "app/controllers/*.rb",
+                        "app/decorators/*.rb"]
 
   desc 'Build docs and open in browser for the reading'
   task :read => :rocco do
