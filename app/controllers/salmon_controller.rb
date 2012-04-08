@@ -1,6 +1,12 @@
 class SalmonController < ApplicationController
   def feeds
-    Salmon.interpret_entry(request.body.read, :feed_id => params[id])
+    SalmonInterpreter.new(
+      request.body.read,
+      {
+        :feed_id  => params[:id],
+        :root_url => root_url
+      }
+    ).interpret
   rescue MongoMapper::DocumentNotFound, ArgumentError
     render :file => "#{Rails.root}/public/404.html", :status => 404
     return
