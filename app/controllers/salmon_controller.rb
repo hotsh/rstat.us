@@ -163,7 +163,7 @@ class SalmonController < ApplicationController
       end
     end
 
-    if development?
+    if Rails.env.development?
       puts "Salmon notification"
     end
   end
