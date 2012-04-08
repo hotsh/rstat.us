@@ -11,6 +11,10 @@ class SalmonInterpreter
   end
 
   def interpret
+    # We can ignore salmon for authors that have a local user account.
+    return true if local_user?
+
+    raise RstatUs::InvalidSalmonMessage unless message_verified?
   end
 
   # Isolating calls to external classes so we can stub these methods in test
@@ -23,5 +27,22 @@ class SalmonInterpreter
 
   def self.parse(body)
     OStatus::Salmon.from_xml body
+  end
+
+  def self.find_or_create_author
+  end
+
+  private
+
+  def message_verified?
+    @salmon.verified?(public_key)
+  end
+
+  def local_user?
+    author_uri.start_with?(@root_url)
+  end
+
+  def author_uri
+    @salmon.entry.author.uri
   end
 end

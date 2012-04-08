@@ -7,24 +7,15 @@ class SalmonController < ApplicationController
         :root_url => root_url
       }
     ).interpret
-  rescue MongoMapper::DocumentNotFound, ArgumentError
+    status 200
+    return
+  rescue MongoMapper::DocumentNotFound, ArgumentError, RstatUs::InvalidSalmonMessage
     render :file => "#{Rails.root}/public/404.html", :status => 404
     return
   end
 
-    #
-    # # Verify data payload
-    #
-    # # Interpret data payload
     # atom_entry = salmon.entry
-    # puts atom_entry.to_xml
-    #
-    # if atom_entry.author.uri.start_with?(root_url)
-    #   # Is a local user, we can ignore salmon
-    #   status 200
-    #   return
-    # end
-    #
+
     # author = Author.first :remote_url => atom_entry.author.uri
     # verify_author = false
     # if author.nil?

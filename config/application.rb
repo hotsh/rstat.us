@@ -64,4 +64,7 @@ module RstatUs
     end
 
   end
+
+  # Custom RstatUs exceptions
+  class InvalidSalmonMessage < StandardError; end
 end
