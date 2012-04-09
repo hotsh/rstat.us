@@ -68,11 +68,38 @@ describe "SalmonInterpreter" do
       end
 
       it "raises an exception if we can't verify the salmon message" do
+        @s.stubs(:find_or_initialize_author)
         @s.expects(:message_verified?).returns(false)
 
         lambda {
           @s.interpret
         }.must_raise RstatUs::InvalidSalmonMessage
+      end
+
+      describe "unseen" do
+        it "saves the new Author if the message is verified" do
+          author = mock
+          author.stubs(:new?).returns(true)
+          @s.expects(:find_or_initialize_author).returns(author)
+          @s.expects(:message_verified?).returns(true)
+
+          author.expects(:save!)
+
+          @s.interpret
+        end
+
+        it "doesn't save the new Author if the message fails verification" do
+          author = mock
+          author.stubs(:new?).returns(true)
+          @s.expects(:find_or_initialize_author).returns(author)
+          @s.expects(:message_verified?).returns(false)
+
+          author.expects(:save!).never
+
+          lambda {
+            @s.interpret
+          }.must_raise RstatUs::InvalidSalmonMessage
+        end
       end
     end
   end

@@ -14,7 +14,13 @@ class SalmonInterpreter
     # We can ignore salmon for authors that have a local user account.
     return true if local_user?
 
+    @author = find_or_initialize_author
+
     raise RstatUs::InvalidSalmonMessage unless message_verified?
+
+    if @author.new?
+      @author.save!
+    end
   end
 
   # Isolating calls to external classes so we can stub these methods in test
@@ -29,13 +35,20 @@ class SalmonInterpreter
     OStatus::Salmon.from_xml body
   end
 
-  def self.find_or_create_author
-  end
-
   private
 
+  def find_or_initialize_author
+    author = Author.first :remote_url => author_uri
+
+    # This author is unknown to us, so let's create a new Author
+    unless author
+    end
+
+    author
+  end
+
   def message_verified?
-    @salmon.verified?(public_key)
+    @salmon.verified?(@author.retrieve_public_key)
   end
 
   def local_user?
