@@ -52,12 +52,14 @@ describe "SalmonInterpreter" do
   describe "#interpret" do
     before do
       SalmonInterpreter.stubs(:find_feed)
-      SalmonInterpreter.stubs(:parse).returns(mock)
+      SalmonInterpreter.stubs(:parse).returns(
+        stub_everything(:entry => stub_everything)
+      )
     end
 
     it "returns if the author's url is local" do
       s = SalmonInterpreter.new("something", :root_url => "http://example.com")
-      s.expects(:author_uri).returns("http://example.com/user/abcd")
+      s.expects(:local_user?).returns(true)
       assert s.interpret
     end
 
@@ -68,7 +70,7 @@ describe "SalmonInterpreter" do
       end
 
       it "raises an exception if we can't verify the salmon message" do
-        @s.stubs(:find_or_initialize_author)
+        @s.stubs(:find_or_initialize_author).returns(stub_everything)
         @s.expects(:message_verified?).returns(false)
 
         lambda {
@@ -78,8 +80,7 @@ describe "SalmonInterpreter" do
 
       describe "unseen" do
         it "saves the new Author if the message is verified" do
-          author = mock
-          author.stubs(:new?).returns(true)
+          author = stub_everything(:new? => true)
           @s.expects(:find_or_initialize_author).returns(author)
           @s.expects(:message_verified?).returns(true)
 
@@ -89,8 +90,7 @@ describe "SalmonInterpreter" do
         end
 
         it "doesn't save the new Author if the message fails verification" do
-          author = mock
-          author.stubs(:new?).returns(true)
+          author = stub_everything(:new? => true)
           @s.expects(:find_or_initialize_author).returns(author)
           @s.expects(:message_verified?).returns(false)
 

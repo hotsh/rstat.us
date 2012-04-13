@@ -1,3 +1,5 @@
+require_relative './salmon_author'
+
 class SalmonInterpreter
   def initialize(body, params = {})
     raise(ArgumentError, "request body can't be empty") if !body || body.empty?
@@ -7,6 +9,7 @@ class SalmonInterpreter
     @salmon = SalmonInterpreter.parse(body)
     raise(ArgumentError, "can't parse salmon envelope") if @salmon.nil?
 
+    @salmon_author = SalmonAuthor.new(@salmon.entry.author)
     @root_url = params[:root_url]
   end
 
@@ -44,18 +47,18 @@ class SalmonInterpreter
   private
 
   def find_or_initialize_author
-    author = Author.first :remote_url => author_uri
+    author = Author.first :remote_url => @salmon_author.uri
 
     # This author is unknown to us, so let's create a new Author
     unless author
       author            = Author.new
-      author.name       = author_name
-      author.username   = author_username
-      author.remote_url = author_uri
-      author.domain     = author_uri
-      author.email      = author_email
-      author.bio        = author_bio
-      author.image_url  = author_avatar_url
+      author.name       = @salmon_author.name
+      author.username   = @salmon_author.username
+      author.remote_url = @salmon_author.uri
+      author.domain     = @salmon_author.uri
+      author.email      = @salmon_author.email
+      author.bio        = @salmon_author.bio
+      author.image_url  = @salmon_author.avatar_url
 
       # Retrieve the user xrd
       # XXX: Use the author uri to determine location of xrd
@@ -84,34 +87,7 @@ class SalmonInterpreter
   end
 
   def local_user?
-    author_uri.start_with?(@root_url)
+    @salmon_author.uri.start_with?(@root_url)
   end
 
-  def author_uri
-    @salmon.entry.author.uri
-  end
-
-  def author_name
-    @salmon.entry.author.portable_contacts.display_name
-  end
-
-  def author_username
-    @salmon.entry.author.name
-  end
-
-  def author_bio
-    @salmon.entry.author.portable_contacts.note
-  end
-
-  def author_avatar_url
-    @salmon.entry.author.links.find_all{|l| l.rel.downcase == "avatar"}.first.href
-  end
-
-  def author_email
-    email = @salmon.entry.author.email
-    if email == ""
-      return nil
-    end
-    email
-  end
 end
