@@ -51,14 +51,7 @@ class SalmonInterpreter
 
     # This author is unknown to us, so let's create a new Author
     unless author
-      author            = Author.new
-      author.name       = @salmon_author.name
-      author.username   = @salmon_author.username
-      author.remote_url = @salmon_author.uri
-      author.domain     = @salmon_author.uri
-      author.email      = @salmon_author.email
-      author.bio        = @salmon_author.bio
-      author.image_url  = @salmon_author.avatar_url
+      author = Author.new(@salmon_author.author_attributes)
 
       # Retrieve the user xrd
       # XXX: Use the author uri to determine location of xrd

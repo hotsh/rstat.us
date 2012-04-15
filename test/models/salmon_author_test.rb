@@ -76,4 +76,78 @@ describe "SalmonAuthor" do
     @salmon_no_email = SalmonAuthor.new(@no_email)
     @salmon_no_email.email.must_equal(nil)
   end
+
+  describe "#author_attributes" do
+    it "returns a hash that can be used to populate or update Author attributes" do
+      @salmon_author.author_attributes.must_equal({
+        :name       => @display_name,
+        :username   => @username,
+        :remote_url => @uri,
+        :domain     => @uri,
+        :email      => @email,
+        :bio        => @bio,
+        :image_url  => @avatar_url
+      })
+    end
+  end
+
+  describe "==" do
+    it "can tell that two SalmonAuthors are the same if their uris are" do
+      @other_ostatus_author = OStatus::Author.new(
+                          :name => @username,
+                          :uri => @uri,
+                          :portable_contacts => @poco,
+                          :email => @email,
+                          :links => [
+                            Atom::Link.new(:rel  => "avatar",
+                                           :type => "image/png",
+                                           :href => @avatar_url
+                                          )
+                          ]
+                        )
+      @other_salmon_author = SalmonAuthor.new(@other_ostatus_author)
+      assert @salmon_author == @other_salmon_author
+    end
+
+    it "can tell that two SalmonAuthors are different if their uris aren't" do
+      @other_ostatus_author = OStatus::Author.new(
+                          :name => @username,
+                          :uri => "http://duckduckgo.com",
+                          :portable_contacts => @poco,
+                          :email => @email,
+                          :links => [
+                            Atom::Link.new(:rel  => "avatar",
+                                           :type => "image/png",
+                                           :href => @avatar_url
+                                          )
+                          ]
+                        )
+      @other_salmon_author = SalmonAuthor.new(@other_ostatus_author)
+      refute @salmon_author == @other_salmon_author
+    end
+
+    it "can tell that a SalmonAuthor and an Author are the same if all their info is the same" do
+      author = stub(
+        :name       => @display_name,
+        :username   => @username,
+        :remote_url => @uri,
+        :email      => @email,
+        :bio        => @bio,
+        :image_url  => @avatar_url
+      )
+      assert @salmon_author == author
+    end
+
+    it "can tell that a SalmonAuthor and an Author are different if the salmon author info would update the author" do
+      author = stub(
+        :name       => "not #{@display_name}",
+        :username   => "not #{@username}",
+        :remote_url => "not #{@uri}",
+        :email      => "not #{@email}",
+        :bio        => "not #{@bio}",
+        :image_url  => "not #{@avatar_url}"
+      )
+      refute @salmon_author == author
+    end
+  end
 end
