@@ -60,6 +60,7 @@ describe "SalmonInterpreter" do
     it "returns if the author's url is local" do
       s = SalmonInterpreter.new("something", :root_url => "http://example.com")
       s.expects(:local_user?).returns(true)
+      s.expects(:process_activity).never
       assert s.interpret
     end
 
@@ -73,6 +74,8 @@ describe "SalmonInterpreter" do
         @s.stubs(:find_or_initialize_author).returns(stub_everything)
         @s.expects(:message_verified?).returns(false)
 
+        @s.expects(:process_activity).never
+
         lambda {
           @s.interpret
         }.must_raise RstatUs::InvalidSalmonMessage
@@ -85,6 +88,7 @@ describe "SalmonInterpreter" do
           @s.expects(:message_verified?).returns(true)
 
           author.expects(:save!)
+          @s.expects(:process_activity)
 
           @s.interpret
         end
@@ -95,12 +99,54 @@ describe "SalmonInterpreter" do
           @s.expects(:message_verified?).returns(false)
 
           author.expects(:save!).never
+          @s.expects(:process_activity).never
 
           lambda {
             @s.interpret
           }.must_raise RstatUs::InvalidSalmonMessage
         end
       end
+
+      describe "seen" do
+        it "doesn't save the Author if it isn't new" do
+          author = stub_everything(:new? => false)
+          @s.expects(:find_or_initialize_author).returns(author)
+          @s.expects(:message_verified?).returns(true)
+
+          author.expects(:save!).never
+          @s.expects(:process_activity)
+
+          @s.interpret
+        end
+      end
+    end
+  end
+
+  describe "#process_activity" do
+    before do
+      SalmonInterpreter.stubs(:find_feed)
+    end
+
+    {
+      :post => :post,
+      :follow => :follow,
+      "http://ostatus.org/schema/1.0/unfollow" => :unfollow,
+      "http://ostatus.org/schema/1.0/update-profile" => :update_profile
+    }.each do |verb, method|
+
+      it "calls the #{method} method when it gets #{verb} for the verb" do
+        activity = stub_everything(:verb => verb)
+        entry = stub_everything(:activity => activity)
+        SalmonInterpreter.stubs(:parse).returns(
+          stub_everything(:entry => entry)
+        )
+
+        s = SalmonInterpreter.new("something")
+
+        s.expects(method)
+        s.process_activity
+      end
+
     end
   end
 end

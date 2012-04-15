@@ -28,6 +28,65 @@ class SalmonInterpreter
     if @author.new?
       @author.save!
     end
+
+    process_activity
+  end
+
+  def process_activity
+    case @salmon.entry.activity.verb
+    when :post
+      post
+    when :follow
+      follow
+    when "http://ostatus.org/schema/1.0/unfollow"
+      unfollow
+    when "http://ostatus.org/schema/1.0/update-profile"
+      update_profile
+    end
+  end
+
+  # A new post that perhaps mentions or is in reply to our user
+  def post
+    # populate the feed
+    @author.feed.populate_entries [@salmon.entry]
+
+    # Determine reply-to context (if possible)
+    thread = @salmon.entry.thr_in_reply_to
+    if not thread.nil?
+      update_url = thread.href
+      # Local update url
+      if update_url.start_with?(@root_url)
+        # Retrieve update id
+        update_id = update_url[/#{@root_url}\/updates\/(.*)$/,1]
+
+        u = @author.feed.updates.first :remote_url => @salmon.entry.url
+        u.referral_id = update_id
+        u.save
+      end
+    end
+  end
+
+  # A notification that somebody is now following our user
+  def follow
+    user = @feed.author.user
+    if user && !user.followed_by?(@author.feed)
+      user.followed_by! @author.feed
+    end
+  end
+
+  def unfollow
+    user = @feed.author.user
+    if user && user.followed_by?(@author.feed)
+      user.unfollowed_by! @author.feed
+    end
+  end
+
+  def update_profile
+    # Don't bother updating the Author if it already has the same info
+    # as the SalmonAuthor (for example if we just created it)
+    if !(@salmon_author == @author)
+      @author.update_attributes!(@salmon_author.author_attributes)
+    end
   end
 
   # Isolating calls to external classes so we can stub these methods in test
