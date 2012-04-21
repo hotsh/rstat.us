@@ -47,10 +47,11 @@ group :development, :test do
   gem "show_me_the_cookies"
   gem "rocco", :git => "git://github.com/rtomayko/rocco.git"
   gem "pygmentize"
-  gem "mocha"
+  gem "mocha", "~> 0.11.0"
   gem "vcr"
   gem "simplecov", "~> 0.4.0", :require => false
   gem "launchy"
+  gem "minitest", "~> 2.12.1"
 end
 
 group :test do
