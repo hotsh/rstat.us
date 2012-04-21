@@ -123,7 +123,7 @@ shouldn&rsquo;t let you do that. We&rsquo;re no fun.</p>
         <span class="n">redirect_to</span> <span class="n">user_path</span><span class="p">(</span><span class="n">params</span><span class="o">[</span><span class="ss">:id</span><span class="o">]</span><span class="p">)</span>
 
       <span class="k">else</span>
-        <span class="n">flash</span><span class="o">[</span><span class="ss">:notice</span><span class="o">]</span> <span class="o">=</span> <span class="s2">&quot;Profile could not be saved: </span><span class="si">#{</span><span class="n">response</span><span class="si">}</span><span class="s2">&quot;</span>
+        <span class="n">flash</span><span class="o">[</span><span class="ss">:error</span><span class="o">]</span> <span class="o">=</span> <span class="s2">&quot;Profile could not be saved: </span><span class="si">#{</span><span class="n">response</span><span class="si">}</span><span class="s2">&quot;</span>
         <span class="n">render</span> <span class="ss">:edit</span>
       <span class="k">end</span>
     <span class="k">else</span>
@@ -296,10 +296,10 @@ save so we don&rsquo;t need to do that anymore</p>
         <div class='highlight'><pre>  <span class="k">def</span> <span class="nf">confirm_email</span>
     <span class="n">user</span> <span class="o">=</span> <span class="no">User</span><span class="o">.</span><span class="n">first</span><span class="p">(</span><span class="ss">:perishable_token</span> <span class="o">=&gt;</span> <span class="n">params</span><span class="o">[</span><span class="ss">:token</span><span class="o">]</span><span class="p">)</span>
     <span class="k">if</span> <span class="n">user</span><span class="o">.</span><span class="n">nil?</span>
-      <span class="n">flash</span><span class="o">[</span><span class="ss">:notice</span><span class="o">]</span> <span class="o">=</span> <span class="s2">&quot;Can&#39;t find User Account for this link.&quot;</span>
+      <span class="n">flash</span><span class="o">[</span><span class="ss">:error</span><span class="o">]</span> <span class="o">=</span> <span class="s2">&quot;Can&#39;t find User Account for this link.&quot;</span>
       <span class="n">redirect_to</span> <span class="n">root_path</span>
     <span class="k">elsif</span> <span class="n">user</span><span class="o">.</span><span class="n">token_expired?</span>
-      <span class="n">flash</span><span class="o">[</span><span class="ss">:notice</span><span class="o">]</span> <span class="o">=</span> <span class="s2">&quot;Your link is no longer valid, please request a new one.&quot;</span>
+      <span class="n">flash</span><span class="o">[</span><span class="ss">:error</span><span class="o">]</span> <span class="o">=</span> <span class="s2">&quot;Your link is no longer valid, please request a new one.&quot;</span>
       <span class="n">redirect_to</span> <span class="n">root_path</span>
     <span class="k">else</span>
       <span class="n">user</span><span class="o">.</span><span class="n">email_confirmed</span> <span class="o">=</span> <span class="kp">true</span>
@@ -350,7 +350,7 @@ confirmation page to prevent repost issues</p>
         <div class='highlight'><pre>  <span class="k">def</span> <span class="nf">forgot_password_create</span>
     <span class="n">user</span> <span class="o">=</span> <span class="no">User</span><span class="o">.</span><span class="n">first</span><span class="p">(</span><span class="ss">:email</span> <span class="o">=&gt;</span> <span class="n">params</span><span class="o">[</span><span class="ss">:email</span><span class="o">]</span><span class="p">)</span>
     <span class="k">if</span> <span class="n">user</span><span class="o">.</span><span class="n">nil?</span>
-      <span class="n">flash</span><span class="o">[</span><span class="ss">:notice</span><span class="o">]</span> <span class="o">=</span> <span class="s2">&quot;Your account could not be found, please check your email and try again.&quot;</span>
+      <span class="n">flash</span><span class="o">[</span><span class="ss">:error</span><span class="o">]</span> <span class="o">=</span> <span class="s2">&quot;Your account could not be found, please check your email and try again.&quot;</span>
       <span class="n">render</span> <span class="s2">&quot;login/forgot_password&quot;</span>
     <span class="k">else</span>
       <span class="no">Notifier</span><span class="o">.</span><span class="n">send_forgot_password_notification</span><span class="p">(</span><span class="n">user</span><span class="o">.</span><span class="n">email</span><span class="p">,</span> <span class="n">user</span><span class="o">.</span><span class="n">create_token</span><span class="p">)</span></pre></div>
@@ -424,13 +424,13 @@ password has been reset the user is redirected to /</p>
       </td>
       <td class=code>
         <div class='highlight'><pre>      <span class="k">if</span> <span class="n">params</span><span class="o">[</span><span class="ss">:password</span><span class="o">].</span><span class="n">size</span> <span class="o">==</span> <span class="mi">0</span>
-        <span class="n">flash</span><span class="o">[</span><span class="ss">:notice</span><span class="o">]</span> <span class="o">=</span> <span class="s2">&quot;Password must be present&quot;</span>
+        <span class="n">flash</span><span class="o">[</span><span class="ss">:error</span><span class="o">]</span> <span class="o">=</span> <span class="s2">&quot;Password must be present&quot;</span>
         <span class="n">redirect_to</span> <span class="n">reset_password_path</span><span class="p">(</span><span class="n">params</span><span class="o">[</span><span class="ss">:token</span><span class="o">]</span><span class="p">)</span>
         <span class="k">return</span>
       <span class="k">end</span>
 
       <span class="k">if</span> <span class="n">params</span><span class="o">[</span><span class="ss">:password</span><span class="o">]</span> <span class="o">!=</span> <span class="n">params</span><span class="o">[</span><span class="ss">:password_confirm</span><span class="o">]</span>
-        <span class="n">flash</span><span class="o">[</span><span class="ss">:notice</span><span class="o">]</span> <span class="o">=</span> <span class="s2">&quot;Passwords do not match&quot;</span>
+        <span class="n">flash</span><span class="o">[</span><span class="ss">:error</span><span class="o">]</span> <span class="o">=</span> <span class="s2">&quot;Passwords do not match&quot;</span>
         <span class="n">redirect_to</span> <span class="n">reset_password_path</span><span class="p">(</span><span class="n">params</span><span class="o">[</span><span class="ss">:token</span><span class="o">]</span><span class="p">)</span>
         <span class="k">return</span>
       <span class="k">end</span></pre></div>
@@ -447,7 +447,7 @@ without an email&hellip; look into this and remove this code if so.</p>
       <td class=code>
         <div class='highlight'><pre>      <span class="k">if</span> <span class="n">user</span><span class="o">.</span><span class="n">email</span><span class="o">.</span><span class="n">nil?</span>
         <span class="k">if</span> <span class="n">params</span><span class="o">[</span><span class="ss">:email</span><span class="o">].</span><span class="n">empty?</span>
-          <span class="n">flash</span><span class="o">[</span><span class="ss">:notice</span><span class="o">]</span> <span class="o">=</span> <span class="s2">&quot;Email must be provided&quot;</span>
+          <span class="n">flash</span><span class="o">[</span><span class="ss">:error</span><span class="o">]</span> <span class="o">=</span> <span class="s2">&quot;Email must be provided&quot;</span>
           <span class="n">redirect_to</span> <span class="n">reset_password_path</span><span class="p">(</span><span class="n">params</span><span class="o">[</span><span class="ss">:token</span><span class="o">]</span><span class="p">)</span>
           <span class="k">return</span>
         <span class="k">else</span>
@@ -479,7 +479,7 @@ token and the reset password page is rendered</p>
         <div class='highlight'><pre>  <span class="k">def</span> <span class="nf">reset_password_with_token</span>
     <span class="n">user</span> <span class="o">=</span> <span class="no">User</span><span class="o">.</span><span class="n">first</span><span class="p">(</span><span class="ss">:perishable_token</span> <span class="o">=&gt;</span> <span class="n">params</span><span class="o">[</span><span class="ss">:token</span><span class="o">]</span><span class="p">)</span>
     <span class="k">if</span> <span class="n">user</span><span class="o">.</span><span class="n">nil?</span> <span class="o">||</span> <span class="n">user</span><span class="o">.</span><span class="n">token_expired?</span>
-      <span class="n">flash</span><span class="o">[</span><span class="ss">:notice</span><span class="o">]</span> <span class="o">=</span> <span class="s2">&quot;Your link is no longer valid, please request a new one.&quot;</span>
+      <span class="n">flash</span><span class="o">[</span><span class="ss">:error</span><span class="o">]</span> <span class="o">=</span> <span class="s2">&quot;Your link is no longer valid, please request a new one.&quot;</span>
       <span class="n">redirect_to</span> <span class="n">forgot_password_path</span>
     <span class="k">else</span>
       <span class="vi">@token</span> <span class="o">=</span> <span class="n">params</span><span class="o">[</span><span class="ss">:token</span><span class="o">]</span>

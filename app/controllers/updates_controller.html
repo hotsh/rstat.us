@@ -107,7 +107,7 @@
         <div class='highlight'><pre>    <span class="n">current_user</span><span class="o">.</span><span class="n">feed</span><span class="o">.</span><span class="n">updates</span> <span class="o">&lt;&lt;</span> <span class="n">u</span>
 
     <span class="k">unless</span> <span class="n">u</span><span class="o">.</span><span class="n">valid?</span>
-      <span class="n">flash</span><span class="o">[</span><span class="ss">:notice</span><span class="o">]</span> <span class="o">=</span> <span class="n">u</span><span class="o">.</span><span class="n">errors</span><span class="o">.</span><span class="n">values</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+      <span class="n">flash</span><span class="o">[</span><span class="ss">:error</span><span class="o">]</span> <span class="o">=</span> <span class="n">u</span><span class="o">.</span><span class="n">errors</span><span class="o">.</span><span class="n">values</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
     <span class="k">else</span>
       <span class="n">current_user</span><span class="o">.</span><span class="n">feed</span><span class="o">.</span><span class="n">save</span>
       <span class="n">current_user</span><span class="o">.</span><span class="n">save</span></pre></div>
@@ -151,7 +151,7 @@
       <span class="n">flash</span><span class="o">[</span><span class="ss">:notice</span><span class="o">]</span> <span class="o">=</span> <span class="s2">&quot;Update Deleted!&quot;</span>
       <span class="n">redirect_to</span> <span class="n">root_path</span>
     <span class="k">else</span>
-      <span class="n">flash</span><span class="o">[</span><span class="ss">:notice</span><span class="o">]</span> <span class="o">=</span> <span class="s2">&quot;I&#39;m afraid I can&#39;t let you do that, </span><span class="si">#{</span><span class="n">current_user</span><span class="o">.</span><span class="n">username</span><span class="si">}</span><span class="s2">.&quot;</span>
+      <span class="n">flash</span><span class="o">[</span><span class="ss">:error</span><span class="o">]</span> <span class="o">=</span> <span class="s2">&quot;I&#39;m afraid I can&#39;t let you do that, </span><span class="si">#{</span><span class="n">current_user</span><span class="o">.</span><span class="n">username</span><span class="si">}</span><span class="s2">.&quot;</span>
       <span class="n">redirect_to</span> <span class="ss">:back</span>
     <span class="k">end</span>
   <span class="k">end</span>

@@ -190,13 +190,30 @@ that you&rsquo;re logged in for this one, too.</p>
         <p>Find or create the Feed</p>
       </td>
       <td class=code>
-        <div class='highlight'><pre>    <span class="n">subscribe_to_feed</span> <span class="o">=</span> <span class="no">Feed</span><span class="o">.</span><span class="n">find_or_create</span><span class="p">(</span><span class="n">params</span><span class="o">[</span><span class="ss">:subscribe_to</span><span class="o">]</span><span class="p">)</span></pre></div>
+        <div class='highlight'><pre>    <span class="k">begin</span>
+      <span class="n">subscribe_to_feed</span> <span class="o">=</span> <span class="no">Feed</span><span class="o">.</span><span class="n">find_or_create</span><span class="p">(</span><span class="n">params</span><span class="o">[</span><span class="ss">:subscribe_to</span><span class="o">]</span><span class="p">)</span>
+    <span class="k">rescue</span> <span class="no">RstatUs</span><span class="o">::</span><span class="no">InvalidSubscribeTo</span> <span class="o">=&gt;</span> <span class="n">e</span></pre></div>
       </td>
     </tr>
     <tr id='section-11'>
       <td class=docs>
         <div class="pilwrap">
           <a class="pilcrow" href="#section-11">&#182;</a>
+        </div>
+        <p>This means the user&rsquo;s entry was neither a webfinger identifier
+nor a feed URL, and calling <code>open</code> on it did not return anything.</p>
+      </td>
+      <td class=code>
+        <div class='highlight'><pre>      <span class="n">flash</span><span class="o">[</span><span class="ss">:error</span><span class="o">]</span> <span class="o">=</span> <span class="s2">&quot;There was a problem following </span><span class="si">#{</span><span class="n">params</span><span class="o">[</span><span class="ss">:subscribe_to</span><span class="o">]</span><span class="si">}</span><span class="s2">. Please specify the whole ID for the person you would like to follow, including both their username and the domain of the site they&#39;re on. It should look like an email address-- for example, username@status.net&quot;</span>
+      <span class="n">redirect_to</span> <span class="n">request</span><span class="o">.</span><span class="n">referrer</span>
+      <span class="k">return</span>
+    <span class="k">end</span></pre></div>
+      </td>
+    </tr>
+    <tr id='section-12'>
+      <td class=docs>
+        <div class="pilwrap">
+          <a class="pilcrow" href="#section-12">&#182;</a>
         </div>
         <p>Stop and return a nice message if already following this feed</p>
       </td>
@@ -208,10 +225,10 @@ that you&rsquo;re logged in for this one, too.</p>
     <span class="k">end</span></pre></div>
       </td>
     </tr>
-    <tr id='section-12'>
+    <tr id='section-13'>
       <td class=docs>
         <div class="pilwrap">
-          <a class="pilcrow" href="#section-12">&#182;</a>
+          <a class="pilcrow" href="#section-13">&#182;</a>
         </div>
         <p>Actually follow!</p>
       </td>
@@ -219,16 +236,16 @@ that you&rsquo;re logged in for this one, too.</p>
         <div class='highlight'><pre>    <span class="n">f</span> <span class="o">=</span> <span class="n">current_user</span><span class="o">.</span><span class="n">follow!</span> <span class="n">subscribe_to_feed</span>
 
     <span class="k">unless</span> <span class="n">f</span>
-      <span class="n">flash</span><span class="o">[</span><span class="ss">:notice</span><span class="o">]</span> <span class="o">=</span> <span class="s2">&quot;There was a problem following </span><span class="si">#{</span><span class="n">params</span><span class="o">[</span><span class="ss">:subscribe_to_feed</span><span class="o">]</span><span class="si">}</span><span class="s2">.&quot;</span>
+      <span class="n">flash</span><span class="o">[</span><span class="ss">:error</span><span class="o">]</span> <span class="o">=</span> <span class="s2">&quot;There was a problem following </span><span class="si">#{</span><span class="n">params</span><span class="o">[</span><span class="ss">:subscribe_to</span><span class="o">]</span><span class="si">}</span><span class="s2">.&quot;</span>
       <span class="n">redirect_to</span> <span class="n">request</span><span class="o">.</span><span class="n">referrer</span>
       <span class="k">return</span>
     <span class="k">end</span></pre></div>
       </td>
     </tr>
-    <tr id='section-13'>
+    <tr id='section-14'>
       <td class=docs>
         <div class="pilwrap">
-          <a class="pilcrow" href="#section-13">&#182;</a>
+          <a class="pilcrow" href="#section-14">&#182;</a>
         </div>
         <p>Attempt to inform the hub for remote feeds</p>
 
