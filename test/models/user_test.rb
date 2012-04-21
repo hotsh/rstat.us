@@ -7,7 +7,7 @@ describe User do
   include TestHelper
 
   def stub_superfeedr_request_for_user(user)
-    user_feed_url = CGI.escape(user.feed.url(true)).downcase
+    user_feed_url = CGI.escape(user.feed.url(true))
 
     stub_request(:post, "http://rstatus.superfeedr.com/").
       with(:body => "hub.mode=publish&hub.url=#{user_feed_url}",
