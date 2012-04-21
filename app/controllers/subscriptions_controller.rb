@@ -83,7 +83,7 @@ class SubscriptionsController < ApplicationController
     f = current_user.follow! subscribe_to_feed
 
     unless f
-      flash[:notice] = "There was a problem following #{params[:subscribe_to_feed]}."
+      flash[:notice] = "There was a problem following #{params[:subscribe_to]}."
       redirect_to request.referrer
       return
     end
