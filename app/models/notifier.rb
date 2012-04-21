@@ -7,7 +7,7 @@ class Notifier
   def self.send_forgot_password_notification(recipient, token)
     Pony.mail(:to => recipient,
               :subject => "Reset your rstat.us password",
-              :from => "steve+rstatus@steveklabnik.com",
+              :from => "rstatus@rstat.us",
               :body => render_haml_template("forgot_password", {:token => token}),
               :via => :smtp)
   end
@@ -15,7 +15,7 @@ class Notifier
   def self.send_confirm_email_notification(recipient, token)
     Pony.mail(:to => recipient,
               :subject => "Confirm your rstat.us email",
-              :from => "steve+rstatus@steveklabnik.com",
+              :from => "rstatus@rstat.us",
               :body => render_haml_template("email_change", {:token => token}),
               :via => :smtp)
   end
