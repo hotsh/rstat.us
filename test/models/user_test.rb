@@ -9,6 +9,15 @@ describe User do
   def stub_superfeedr_request_for_user(user)
     user_feed_url = CGI.escape(user.feed.url(true))
 
+    # Downcase the escaped user_feed_url for ruby 1.9.2
+    stub_request(:post, "http://rstatus.superfeedr.com/").
+      with(:body => "hub.mode=publish&hub.url=#{user_feed_url.downcase}",
+           :headers => { 'Accept' => '*/*',
+                         'Content-Type' => 'application/x-www-form-urlencoded',
+                         'User-Agent' => 'Ruby'}).
+      to_return(:status => 200, :body => "", :headers => {})
+
+    # Leave the escaped user_feed_url as it is for ruby 1.9.3
     stub_request(:post, "http://rstatus.superfeedr.com/").
       with(:body => "hub.mode=publish&hub.url=#{user_feed_url}",
            :headers => { 'Accept' => '*/*',
