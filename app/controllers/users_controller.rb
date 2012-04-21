@@ -60,7 +60,7 @@ class UsersController < ApplicationController
         redirect_to user_path(params[:id])
 
       else
-        flash[:notice] = "Profile could not be saved: #{response}"
+        flash[:error] = "Profile could not be saved: #{response}"
         render :edit
       end
     else
@@ -175,10 +175,10 @@ class UsersController < ApplicationController
   def confirm_email
     user = User.first(:perishable_token => params[:token])
     if user.nil?
-      flash[:notice] = "Can't find User Account for this link."
+      flash[:error] = "Can't find User Account for this link."
       redirect_to root_path
     elsif user.token_expired?
-      flash[:notice] = "Your link is no longer valid, please request a new one."
+      flash[:error] = "Your link is no longer valid, please request a new one."
       redirect_to root_path
     else
       user.email_confirmed = true
@@ -204,7 +204,7 @@ class UsersController < ApplicationController
   def forgot_password_create
     user = User.first(:email => params[:email])
     if user.nil?
-      flash[:notice] = "Your account could not be found, please check your email and try again."
+      flash[:error] = "Your account could not be found, please check your email and try again."
       render "login/forgot_password"
     else
       Notifier.send_forgot_password_notification(user.email, user.create_token)
@@ -245,13 +245,13 @@ class UsersController < ApplicationController
       # XXX: yes, this is a code smell
 
       if params[:password].size == 0
-        flash[:notice] = "Password must be present"
+        flash[:error] = "Password must be present"
         redirect_to reset_password_path(params[:token])
         return
       end
 
       if params[:password] != params[:password_confirm]
-        flash[:notice] = "Passwords do not match"
+        flash[:error] = "Passwords do not match"
         redirect_to reset_password_path(params[:token])
         return
       end
@@ -260,7 +260,7 @@ class UsersController < ApplicationController
       # without an email... look into this and remove this code if so.
       if user.email.nil?
         if params[:email].empty?
-          flash[:notice] = "Email must be provided"
+          flash[:error] = "Email must be provided"
           redirect_to reset_password_path(params[:token])
           return
         else
@@ -283,7 +283,7 @@ class UsersController < ApplicationController
   def reset_password_with_token
     user = User.first(:perishable_token => params[:token])
     if user.nil? || user.token_expired?
-      flash[:notice] = "Your link is no longer valid, please request a new one."
+      flash[:error] = "Your link is no longer valid, please request a new one."
       redirect_to forgot_password_path
     else
       @token = params[:token]

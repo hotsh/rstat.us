@@ -66,7 +66,7 @@ class SubscriptionsController < ApplicationController
     rescue RstatUs::InvalidSubscribeTo => e
       # This means the user's entry was neither a webfinger identifier
       # nor a feed URL, and calling `open` on it did not return anything.
-      flash[:notice] = "There was a problem following #{params[:subscribe_to]}. Please specify the whole ID for the person you would like to follow, including both their username and the domain of the site they're on. It should look like an email address-- for example, username@status.net"
+      flash[:error] = "There was a problem following #{params[:subscribe_to]}. Please specify the whole ID for the person you would like to follow, including both their username and the domain of the site they're on. It should look like an email address-- for example, username@status.net"
       redirect_to request.referrer
       return
     end
@@ -82,7 +82,7 @@ class SubscriptionsController < ApplicationController
     f = current_user.follow! subscribe_to_feed
 
     unless f
-      flash[:notice] = "There was a problem following #{params[:subscribe_to]}."
+      flash[:error] = "There was a problem following #{params[:subscribe_to]}."
       redirect_to request.referrer
       return
     end

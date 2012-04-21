@@ -36,7 +36,7 @@ class UpdatesController < ApplicationController
     current_user.feed.updates << u
 
     unless u.valid?
-      flash[:notice] = u.errors.values.join("\n")
+      flash[:error] = u.errors.values.join("\n")
     else
       current_user.feed.save
       current_user.save
@@ -63,7 +63,7 @@ class UpdatesController < ApplicationController
       flash[:notice] = "Update Deleted!"
       redirect_to root_path
     else
-      flash[:notice] = "I'm afraid I can't let you do that, #{current_user.username}."
+      flash[:error] = "I'm afraid I can't let you do that, #{current_user.username}."
       redirect_to :back
     end
   end
