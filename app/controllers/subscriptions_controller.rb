@@ -63,14 +63,13 @@ class SubscriptionsController < ApplicationController
     # Find or create the Feed
     begin
       subscribe_to_feed = Feed.find_or_create(params[:subscribe_to])
-    rescue Errno::ENOENT => e
+    rescue RstatUs::InvalidSubscribeTo => e
       # This means the user's entry was neither a webfinger identifier
       # nor a feed URL, and calling `open` on it did not return anything.
       flash[:notice] = "There was a problem following #{params[:subscribe_to]}. Please specify the whole ID for the person you would like to follow, including both their username and the domain of the site they're on. It should look like an email address-- for example, username@status.net"
       redirect_to request.referrer
       return
     end
-
 
     # Stop and return a nice message if already following this feed
     if current_user.following_feed? subscribe_to_feed

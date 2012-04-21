@@ -14,8 +14,10 @@ class ConvertsSubscriberToFeedData
       finger_data = QueriesWebFinger.query(subscriber_url)
       feed_data.url = finger_data.url
       feed_data.finger_data = finger_data
-    else
+    when /^https?:\/\//
       feed_data.url = subscriber_url
+    else
+      raise RstatUs::InvalidSubscribeTo
     end
 
     feed_data

@@ -56,7 +56,7 @@ describe "following remote users" do
   end
 
   describe "failure" do
-    it "doesn't look up something that doesn't look like a webfinger id" do
+    it "doesn't look up something that doesn't look like either a webfinger id or a URL" do
       log_in_as_some_user
       visit "/"
       click_link "Follow Remote User"
@@ -71,6 +71,24 @@ describe "following remote users" do
 
       within flash do
         assert has_content?("There was a problem following justinbieber. Please specify the whole ID for the person you would like to follow, including both their username and the domain of the site they're on. It should look like an email address-- for example, username@status.net")
+      end
+    end
+
+    it "especially doesn't look up something that looks like a local file" do
+      log_in_as_some_user
+      visit "/"
+      click_link "Follow Remote User"
+
+      follow_remote_page = page.current_url
+
+      fill_in 'subscribe_to', :with => "Gemfile"
+      click_button "Follow"
+
+      # Should still be on this page
+      page.current_url.must_equal(follow_remote_page)
+
+      within flash do
+        assert has_content?("There was a problem following Gemfile.")
       end
     end
   end
