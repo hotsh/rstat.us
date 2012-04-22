@@ -1,0 +1,1352 @@
+---
+- !ruby/struct:VCR::HTTPInteraction
+  request: !ruby/struct:VCR::Request
+    method: :get
+    uri: https://identi.ca:443/.well-known/host-meta
+    body: !!null 
+    headers:
+      accept:
+      - ! '*/*; q=0.5, application/xml'
+      accept-encoding:
+      - gzip, deflate
+  response: !ruby/struct:VCR::Response
+    status: !ruby/struct:VCR::ResponseStatus
+      code: 200
+      message: OK
+    headers:
+      date:
+      - Thu, 08 Dec 2011 19:45:14 GMT
+      server:
+      - Apache/2.2.14 (Ubuntu)
+      x-powered-by:
+      - PHP/5.3.8-1ppa1
+      vary:
+      - Accept-Encoding,Cookie
+      content-length:
+      - '273'
+      content-type:
+      - application/xrd+xml
+    body: !str
+      str: ! '<?xml version="1.0" encoding="UTF-8"?>
+
+        <XRD xmlns="http://docs.oasis-open.org/ns/xri/xrd-1.0"><hm:Host xmlns:hm="http://host-meta.net/xrd/1.0">identi.ca</hm:Host><Link
+        rel="lrdd" template="http://identi.ca/main/xrd?uri={uri}"><Title>Resource
+        Descriptor</Title></Link></XRD>'
+      net_http_res: &2186497060 !ruby/object:Net::HTTPOK
+        http_version: '1.0'
+        code: '200'
+        message: OK
+        header:
+          date:
+          - Thu, 08 Dec 2011 19:45:14 GMT
+          server:
+          - Apache/2.2.14 (Ubuntu)
+          x-powered-by:
+          - PHP/5.3.8-1ppa1
+          vary:
+          - Accept-Encoding,Cookie
+          content-length:
+          - '273'
+          content-type:
+          - application/xrd+xml
+        body: !str
+          str: ! '<?xml version="1.0" encoding="UTF-8"?>
+
+            <XRD xmlns="http://docs.oasis-open.org/ns/xri/xrd-1.0"><hm:Host xmlns:hm="http://host-meta.net/xrd/1.0">identi.ca</hm:Host><Link
+            rel="lrdd" template="http://identi.ca/main/xrd?uri={uri}"><Title>Resource
+            Descriptor</Title></Link></XRD>'
+          net_http_res: *2186497060
+          args: &2186789460
+            :timeout: 10
+            :open_timeout: 5
+            :method: :get
+            :url: https://identi.ca/.well-known/host-meta
+            :headers: {}
+          code: 200
+        read: true
+        __read_body_previously_called: true
+      args: *2186789460
+      code: 200
+    http_version: '1.1'
+- !ruby/struct:VCR::HTTPInteraction
+  request: !ruby/struct:VCR::Request
+    method: :get
+    uri: http://identi.ca:80/main/xrd?uri=steveklabnik@identi.ca
+    body: !!null 
+    headers:
+      accept:
+      - ! '*/*; q=0.5, application/xml'
+      accept-encoding:
+      - gzip, deflate
+  response: !ruby/struct:VCR::Response
+    status: !ruby/struct:VCR::ResponseStatus
+      code: 200
+      message: OK
+    headers:
+      date:
+      - Thu, 08 Dec 2011 19:45:14 GMT
+      server:
+      - Apache/2.2.14 (Ubuntu)
+      x-powered-by:
+      - PHP/5.3.8-1ppa1
+      content-length:
+      - '1854'
+      content-type:
+      - application/xrd+xml
+    body: !str
+      str: ! '<?xml version="1.0" encoding="UTF-8"?>
+
+        <XRD xmlns="http://docs.oasis-open.org/ns/xri/xrd-1.0"><Subject>acct:steveklabnik@identi.ca</Subject><Alias>http://identi.ca/user/396889</Alias><Alias>http://identi.ca/steveklabnik</Alias><Link
+        rel="http://webfinger.net/rel/profile-page" type="text/html" href="http://identi.ca/steveklabnik"></Link><Link
+        rel="http://gmpg.org/xfn/11" type="text/html" href="http://identi.ca/steveklabnik"></Link><Link
+        rel="describedby" type="application/rdf+xml" href="http://identi.ca/steveklabnik/foaf"></Link><Link
+        rel="http://apinamespace.org/atom" type="application/atomsvc+xml" href="http://identi.ca/api/statusnet/app/service/steveklabnik.xml"><Property
+        type="http://apinamespace.org/atom/username">steveklabnik</Property></Link><Link
+        rel="http://apinamespace.org/twitter" href="https://identi.ca/api/"><Property
+        type="http://apinamespace.org/twitter/username">steveklabnik</Property></Link><Link
+        rel="http://schemas.google.com/g/2010#updates-from" href="http://identi.ca/api/statuses/user_timeline/396889.atom"
+        type="application/atom+xml"></Link><Link rel="salmon" href="http://identi.ca/main/salmon/user/396889"></Link><Link
+        rel="http://salmon-protocol.org/ns/salmon-replies" href="http://identi.ca/main/salmon/user/396889"></Link><Link
+        rel="http://salmon-protocol.org/ns/salmon-mention" href="http://identi.ca/main/salmon/user/396889"></Link><Link
+        rel="magic-public-key" href="data:application/magic-public-key,RSA.lkoawYmyxmF4PFEw5lt82N3eqWWcHsxZLvNOIQ69XtB-aEN4o26r-uxdBqDDnlKD1_a7PCb9J-3YnLu0ipMutJOqbEWbj1yiNRQwdpiP9HtZSuolvp4KmLcUbuXju21DOjWQbfFMDQsPwzVR6KfZwdU3zy7MNkFf8B0whZTxmD8=.AQAB"></Link><Link
+        rel="http://ostatus.org/schema/1.0/subscribe" template="http://identi.ca/main/ostatussub?profile={uri}"></Link><Link
+        rel="http://specs.openid.net/auth/2.0/provider" href="http://identi.ca/steveklabnik"></Link></XRD>'
+      net_http_res: &2186328720 !ruby/object:Net::HTTPOK
+        http_version: '1.0'
+        code: '200'
+        message: OK
+        header:
+          date:
+          - Thu, 08 Dec 2011 19:45:14 GMT
+          server:
+          - Apache/2.2.14 (Ubuntu)
+          x-powered-by:
+          - PHP/5.3.8-1ppa1
+          content-length:
+          - '1854'
+          content-type:
+          - application/xrd+xml
+        body: !str
+          str: ! '<?xml version="1.0" encoding="UTF-8"?>
+
+            <XRD xmlns="http://docs.oasis-open.org/ns/xri/xrd-1.0"><Subject>acct:steveklabnik@identi.ca</Subject><Alias>http://identi.ca/user/396889</Alias><Alias>http://identi.ca/steveklabnik</Alias><Link
+            rel="http://webfinger.net/rel/profile-page" type="text/html" href="http://identi.ca/steveklabnik"></Link><Link
+            rel="http://gmpg.org/xfn/11" type="text/html" href="http://identi.ca/steveklabnik"></Link><Link
+            rel="describedby" type="application/rdf+xml" href="http://identi.ca/steveklabnik/foaf"></Link><Link
+            rel="http://apinamespace.org/atom" type="application/atomsvc+xml" href="http://identi.ca/api/statusnet/app/service/steveklabnik.xml"><Property
+            type="http://apinamespace.org/atom/username">steveklabnik</Property></Link><Link
+            rel="http://apinamespace.org/twitter" href="https://identi.ca/api/"><Property
+            type="http://apinamespace.org/twitter/username">steveklabnik</Property></Link><Link
+            rel="http://schemas.google.com/g/2010#updates-from" href="http://identi.ca/api/statuses/user_timeline/396889.atom"
+            type="application/atom+xml"></Link><Link rel="salmon" href="http://identi.ca/main/salmon/user/396889"></Link><Link
+            rel="http://salmon-protocol.org/ns/salmon-replies" href="http://identi.ca/main/salmon/user/396889"></Link><Link
+            rel="http://salmon-protocol.org/ns/salmon-mention" href="http://identi.ca/main/salmon/user/396889"></Link><Link
+            rel="magic-public-key" href="data:application/magic-public-key,RSA.lkoawYmyxmF4PFEw5lt82N3eqWWcHsxZLvNOIQ69XtB-aEN4o26r-uxdBqDDnlKD1_a7PCb9J-3YnLu0ipMutJOqbEWbj1yiNRQwdpiP9HtZSuolvp4KmLcUbuXju21DOjWQbfFMDQsPwzVR6KfZwdU3zy7MNkFf8B0whZTxmD8=.AQAB"></Link><Link
+            rel="http://ostatus.org/schema/1.0/subscribe" template="http://identi.ca/main/ostatussub?profile={uri}"></Link><Link
+            rel="http://specs.openid.net/auth/2.0/provider" href="http://identi.ca/steveklabnik"></Link></XRD>'
+          net_http_res: *2186328720
+          args: &2186479480
+            :method: :get
+            :url: http://identi.ca/main/xrd?uri=steveklabnik@identi.ca
+            :headers: {}
+          code: 200
+        read: true
+        __read_body_previously_called: true
+      args: *2186479480
+      code: 200
+    http_version: '1.1'
+- !ruby/struct:VCR::HTTPInteraction
+  request: !ruby/struct:VCR::Request
+    method: :get
+    uri: http://identi.ca:80/api/statuses/user_timeline/396889.atom
+    body: !!null 
+    headers: !!null 
+  response: !ruby/struct:VCR::Response
+    status: !ruby/struct:VCR::ResponseStatus
+      code: 200
+      message: OK
+    headers:
+      date:
+      - Thu, 08 Dec 2011 19:45:15 GMT
+      server:
+      - Apache/2.2.14 (Ubuntu)
+      x-powered-by:
+      - PHP/5.3.8-1ppa1
+      access-control-allow-origin:
+      - ! '*'
+      vary:
+      - Accept-Encoding,Cookie
+      etag:
+      - ! '"ApiTimelineUser:0:en:396889:1299901531:1299891873"'
+      last-modified:
+      - Sat, 12 Mar 2011 03:45:31 +0000
+      expires:
+      - Thu, 01 Jan 1970 00:00:00 GMT
+      cache-control:
+      - private, must-revalidate, max-age=0
+      pragma:
+      - ''
+      x-sup-id:
+      - http://identi.ca/main/sup
+      transfer-encoding:
+      - chunked
+      content-type:
+      - application/atom+xml; charset=utf-8
+    body: ! "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<feed xml:lang=\"en-US\"
+      xmlns=\"http://www.w3.org/2005/Atom\" xmlns:thr=\"http://purl.org/syndication/thread/1.0\"
+      xmlns:georss=\"http://www.georss.org/georss\" xmlns:activity=\"http://activitystrea.ms/spec/1.0/\"
+      xmlns:media=\"http://purl.org/syndication/atommedia\" xmlns:poco=\"http://portablecontacts.net/spec/1.0\"
+      xmlns:ostatus=\"http://ostatus.org/schema/1.0\" xmlns:statusnet=\"http://status.net/schema/api/1/\">\n
+      <generator uri=\"http://status.net\" version=\"1.0.1\">StatusNet</generator>\n
+      <id>http://identi.ca/api/statuses/user_timeline/396889.atom</id>\n <title>steveklabnik
+      timeline</title>\n <subtitle>Updates from steveklabnik on Identi.ca!</subtitle>\n
+      <logo>http://avatar.identi.ca/396889-96-20110312004840.jpeg</logo>\n <updated>2011-12-08T19:45:15+00:00</updated>\n<author>\n
+      <activity:object-type>http://activitystrea.ms/schema/1.0/person</activity:object-type>\n
+      <uri>http://identi.ca/user/396889</uri>\n <name>steveklabnik</name>\n <link
+      rel=\"alternate\" type=\"text/html\" href=\"http://identi.ca/steveklabnik\"/>\n
+      <link rel=\"avatar\" type=\"image/jpeg\" media:width=\"125\" media:height=\"125\"
+      href=\"http://avatar.identi.ca/396889-125-20110312004840.jpeg\"/>\n <link rel=\"avatar\"
+      type=\"image/jpeg\" media:width=\"96\" media:height=\"96\" href=\"http://avatar.identi.ca/396889-96-20110312004840.jpeg\"/>\n
+      <link rel=\"avatar\" type=\"image/jpeg\" media:width=\"48\" media:height=\"48\"
+      href=\"http://avatar.identi.ca/396889-48-20110312004840.jpeg\"/>\n <link rel=\"avatar\"
+      type=\"image/jpeg\" media:width=\"24\" media:height=\"24\" href=\"http://avatar.identi.ca/396889-24-20110312004840.jpeg\"/>\n
+      <georss:point>40.44062 -79.99589</georss:point>\n <poco:preferredUsername>steveklabnik</poco:preferredUsername>\n
+      <poco:displayName>Steve Klabnik</poco:displayName>\n <poco:note>Software craftsman,
+      maintainer of @hacketyhack. I post about politics, software, startups, and random
+      things I find interesting.</poco:note>\n <poco:address>\n  <poco:formatted>Pittsburgh</poco:formatted>\n
+      </poco:address>\n <poco:urls>\n  <poco:type>homepage</poco:type>\n  <poco:value>http://steveklabnik.com/</poco:value>\n
+      \ <poco:primary>true</poco:primary>\n </poco:urls>\n <statusnet:profile_info
+      local_id=\"396889\"></statusnet:profile_info>\n</author>\n<!--Deprecation warning:
+      activity:subject is present only for backward compatibility. It will be removed
+      in the next version of StatusNet.-->\n<activity:subject>\n <activity:object-type>http://activitystrea.ms/schema/1.0/person</activity:object-type>\n
+      <id>http://identi.ca/user/396889</id>\n <title>Steve Klabnik</title>\n <link
+      rel=\"alternate\" type=\"text/html\" href=\"http://identi.ca/steveklabnik\"/>\n
+      <link rel=\"avatar\" type=\"image/jpeg\" media:width=\"125\" media:height=\"125\"
+      href=\"http://avatar.identi.ca/396889-125-20110312004840.jpeg\"/>\n <link rel=\"avatar\"
+      type=\"image/jpeg\" media:width=\"96\" media:height=\"96\" href=\"http://avatar.identi.ca/396889-96-20110312004840.jpeg\"/>\n
+      <link rel=\"avatar\" type=\"image/jpeg\" media:width=\"48\" media:height=\"48\"
+      href=\"http://avatar.identi.ca/396889-48-20110312004840.jpeg\"/>\n <link rel=\"avatar\"
+      type=\"image/jpeg\" media:width=\"24\" media:height=\"24\" href=\"http://avatar.identi.ca/396889-24-20110312004840.jpeg\"/>\n
+      <georss:point>40.44062 -79.99589</georss:point>\n <poco:preferredUsername>steveklabnik</poco:preferredUsername>\n
+      <poco:displayName>Steve Klabnik</poco:displayName>\n <poco:note>Software craftsman,
+      maintainer of @hacketyhack. I post about politics, software, startups, and random
+      things I find interesting.</poco:note>\n <poco:address>\n  <poco:formatted>Pittsburgh</poco:formatted>\n
+      </poco:address>\n <poco:urls>\n  <poco:type>homepage</poco:type>\n  <poco:value>http://steveklabnik.com/</poco:value>\n
+      \ <poco:primary>true</poco:primary>\n </poco:urls>\n <statusnet:profile_info
+      local_id=\"396889\"></statusnet:profile_info>\n</activity:subject>\n <link href=\"http://identi.ca/steveklabnik\"
+      rel=\"alternate\" type=\"text/html\"/>\n <link href=\"http://identi.ca/main/sup\"
+      rel=\"http://api.friendfeed.com/2008/03#sup\" type=\"application/json\"/>\n
+      <link href=\"http://identi.ca/api/statuses/user_timeline/396889.atom?max_id=66771489\"
+      rel=\"next\" type=\"application/atom+xml\"/>\n <link href=\"http://identi.ca/main/push/hub\"
+      rel=\"hub\"/>\n <link href=\"http://identi.ca/main/salmon/user/396889\" rel=\"salmon\"/>\n
+      <link href=\"http://identi.ca/main/salmon/user/396889\" rel=\"http://salmon-protocol.org/ns/salmon-replies\"/>\n
+      <link href=\"http://identi.ca/main/salmon/user/396889\" rel=\"http://salmon-protocol.org/ns/salmon-mention\"/>\n
+      <link href=\"http://identi.ca/api/statuses/user_timeline/396889.atom\" rel=\"self\"
+      type=\"application/atom+xml\"/>\n<entry>\n <id>http://identi.ca/notice/66780043</id>\n
+      <title>RT @bascule Hard to tell if today marks some major shift in the social
+      media landscape or a non-event we'll all forget in a few weeks #fb</title>\n
+      <content type=\"html\">RT @&lt;span class=&quot;vcard&quot;&gt;&lt;a href=&quot;http://identi.ca/user/237036&quot;
+      class=&quot;url&quot; title=&quot;Tony Arcieri&quot;&gt;&lt;span class=&quot;fn
+      nickname&quot;&gt;bascule&lt;/span&gt;&lt;/a&gt;&lt;/span&gt; Hard to tell if
+      today marks some major shift in the social media landscape or a non-event we'll
+      all forget in a few weeks #&lt;span class=&quot;tag&quot;&gt;&lt;a href=&quot;http://identi.ca/tag/fb&quot;
+      rel=&quot;tag&quot;&gt;fb&lt;/a&gt;&lt;/span&gt;</content>\n <link rel=\"alternate\"
+      type=\"text/html\">http://identi.ca/notice/66780043</link>\n <activity:verb>http://activitystrea.ms/schema/1.0/share</activity:verb>\n
+      <published>2011-03-12T03:45:31+00:00</published>\n <updated>2011-03-12T03:45:31+00:00</updated>\n
+      <activity:object>\n  <activity:object-type>http://activitystrea.ms/schema/1.0/activity</activity:object-type>\n
+      \ <id>http://identi.ca/notice/66779892</id>\n  <title>Hard to tell if today
+      marks some major shift in the social media landscape or a non-event we'll all
+      forget in a few weeks #fb</title>\n  <content type=\"html\">Hard to tell if
+      today marks some major shift in the social media landscape or a non-event we'll
+      all forget in a few weeks #&lt;span class=&quot;tag&quot;&gt;&lt;a href=&quot;http://identi.ca/tag/fb&quot;
+      rel=&quot;tag&quot;&gt;fb&lt;/a&gt;&lt;/span&gt;</content>\n  <link rel=\"alternate\"
+      type=\"text/html\">http://identi.ca/notice/66779892</link>\n  <activity:verb>http://activitystrea.ms/schema/1.0/post</activity:verb>\n
+      \ <published>2011-03-12T03:41:26+00:00</published>\n  <updated>2011-03-12T03:41:26+00:00</updated>\n
+      \ <author>\n   <activity:object-type>http://activitystrea.ms/schema/1.0/person</activity:object-type>\n
+      \  <uri>http://identi.ca/user/237036</uri>\n   <name>bascule</name>\n   <link
+      rel=\"alternate\" type=\"text/html\" href=\"http://identi.ca/bascule\"/>\n   <link
+      rel=\"avatar\" type=\"image/jpeg\" media:width=\"88\" media:height=\"88\" href=\"http://avatar.identi.ca/237036-88-20100818184800.jpeg\"/>\n
+      \  <link rel=\"avatar\" type=\"image/jpeg\" media:width=\"96\" media:height=\"96\"
+      href=\"http://avatar.identi.ca/237036-96-20100818184800.jpeg\"/>\n   <link rel=\"avatar\"
+      type=\"image/jpeg\" media:width=\"48\" media:height=\"48\" href=\"http://avatar.identi.ca/237036-48-20100818184800.jpeg\"/>\n
+      \  <link rel=\"avatar\" type=\"image/jpeg\" media:width=\"24\" media:height=\"24\"
+      href=\"http://avatar.identi.ca/237036-24-20100818184800.jpeg\"/>\n   <georss:point>39.73915
+      -104.9847</georss:point>\n   <poco:preferredUsername>bascule</poco:preferredUsername>\n
+      \  <poco:displayName>Tony Arcieri</poco:displayName>\n   <poco:note>Rubysexual,
+      software architect for Medioh, and creator of the Reia programming language</poco:note>\n
+      \  <poco:address>\n    <poco:formatted>Denver, CO</poco:formatted>\n   </poco:address>\n
+      \  <poco:urls>\n    <poco:type>homepage</poco:type>\n    <poco:value>http://unlimitednovelty.com</poco:value>\n
+      \   <poco:primary>true</poco:primary>\n   </poco:urls>\n   <statusnet:profile_info
+      local_id=\"237036\"></statusnet:profile_info>\n  </author>\n  <activity:object>\n
+      \  <activity:object-type>http://activitystrea.ms/schema/1.0/note</activity:object-type>\n
+      \  <id>http://identi.ca/notice/66779892</id>\n   <title>Hard to tell if today
+      marks some major shift in the social media landscape or a non-event we'll all
+      forget in a few weeks #fb</title>\n   <content type=\"html\">Hard to tell if
+      today marks some major shift in the social media landscape or a non-event we'll
+      all forget in a few weeks #&lt;span class=&quot;tag&quot;&gt;&lt;a href=&quot;http://identi.ca/tag/fb&quot;
+      rel=&quot;tag&quot;&gt;fb&lt;/a&gt;&lt;/span&gt;</content>\n   <link rel=\"alternate\"
+      type=\"text/html\" href=\"http://identi.ca/notice/66779892\"/>\n  </activity:object>\n
+      \ <link rel=\"ostatus:conversation\" href=\"http://identi.ca/conversation/65981995\"/>\n
+      \ <georss:point>39.73915 -104.9847</georss:point>\n  <category term=\"fb\"></category>\n
+      \ <source>\n   <id>http://identi.ca/api/statuses/user_timeline/237036.atom</id>\n
+      \  <title>Tony Arcieri</title>\n   <link rel=\"alternate\" type=\"text/html\"
+      href=\"http://identi.ca/bascule\"/>\n   <link rel=\"self\" type=\"application/atom+xml\"
+      href=\"http://identi.ca/api/statuses/user_timeline/237036.atom\"/>\n   <link
+      rel=\"license\" href=\"http://creativecommons.org/licenses/by/3.0/\"/>\n   <icon>http://avatar.identi.ca/237036-96-20100818184800.jpeg</icon>\n
+      \  <updated>2011-05-05T06:59:18+00:00</updated>\n  </source>\n  <link rel=\"self\"
+      type=\"application/atom+xml\" href=\"http://identi.ca/api/statuses/show/66779892.atom\"/>\n
+      \ <link rel=\"edit\" type=\"application/atom+xml\" href=\"http://identi.ca/api/statuses/show/66779892.atom\"/>\n
+      </activity:object>\n <link rel=\"ostatus:conversation\" href=\"http://identi.ca/conversation/65982135\"/>\n
+      <ostatus:forward ref=\"http://identi.ca/notice/66779892\" href=\"http://identi.ca/notice/66779892\"></ostatus:forward>\n
+      <category term=\"fb\"></category>\n <link rel=\"self\" type=\"application/atom+xml\"
+      href=\"http://identi.ca/api/statuses/show/66780043.atom\"/>\n <link rel=\"edit\"
+      type=\"application/atom+xml\" href=\"http://identi.ca/api/statuses/show/66780043.atom\"/>\n
+      <statusnet:notice_info local_id=\"66780043\" source=\"web\" repeat_of=\"66779892\"></statusnet:notice_info>\n</entry>\n<entry>\n
+      <activity:object-type>http://activitystrea.ms/schema/1.0/note</activity:object-type>\n
+      <id>http://identi.ca/notice/66779498</id>\n <title>Did we decide yet? Who's
+      writing a Twitter clone over the weekend and deploying to @heroku's free account?
+      #thisalwaysworks</title>\n <content type=\"html\">Did we decide yet? Who's writing
+      a Twitter clone over the weekend and deploying to @heroku's free account? #&lt;span
+      class=&quot;tag&quot;&gt;&lt;a href=&quot;http://identi.ca/tag/thisalwaysworks&quot;
+      rel=&quot;tag&quot;&gt;thisalwaysworks&lt;/a&gt;&lt;/span&gt;</content>\n <link
+      rel=\"alternate\" type=\"text/html\" href=\"http://identi.ca/notice/66779498\"/>\n
+      <activity:verb>http://activitystrea.ms/schema/1.0/post</activity:verb>\n <published>2011-03-12T03:33:36+00:00</published>\n
+      <updated>2011-03-12T03:33:36+00:00</updated>\n <link rel=\"ostatus:conversation\"
+      href=\"http://identi.ca/conversation/65981614\"/>\n <georss:point>40.45451 -79.92172</georss:point>\n
+      <category term=\"thisalwaysworks\"></category>\n <link rel=\"self\" type=\"application/atom+xml\"
+      href=\"http://identi.ca/api/statuses/show/66779498.atom\"/>\n <link rel=\"edit\"
+      type=\"application/atom+xml\" href=\"http://identi.ca/api/statuses/show/66779498.atom\"/>\n
+      <statusnet:notice_info local_id=\"66779498\" source=\"web\"></statusnet:notice_info>\n</entry>\n<entry>\n
+      <activity:object-type>http://activitystrea.ms/schema/1.0/note</activity:object-type>\n
+      <id>http://identi.ca/notice/66779330</id>\n <title>@postmodern ah, well that
+      makes a bit more sense then.</title>\n <content type=\"html\">@&lt;span class=&quot;vcard&quot;&gt;&lt;a
+      href=&quot;http://identi.ca/user/76870&quot; class=&quot;url&quot; title=&quot;Postmodern&quot;&gt;&lt;span
+      class=&quot;fn nickname&quot;&gt;postmodern&lt;/span&gt;&lt;/a&gt;&lt;/span&gt;
+      ah, well that makes a bit more sense then.</content>\n <link rel=\"alternate\"
+      type=\"text/html\" href=\"http://identi.ca/notice/66779330\"/>\n <activity:verb>http://activitystrea.ms/schema/1.0/post</activity:verb>\n
+      <published>2011-03-12T03:30:09+00:00</published>\n <updated>2011-03-12T03:30:09+00:00</updated>\n
+      <thr:in-reply-to ref=\"http://identi.ca/notice/66779299\" href=\"http://identi.ca/notice/66779299\"></thr:in-reply-to>\n
+      <link rel=\"related\" href=\"http://identi.ca/notice/66779299\"/>\n <link rel=\"ostatus:conversation\"
+      href=\"http://identi.ca/conversation/65981158\"/>\n <link rel=\"ostatus:attention\"
+      href=\"http://identi.ca/user/76870\"/>\n <link rel=\"mentioned\" href=\"http://identi.ca/user/76870\"/>\n
+      <georss:point>40.45451 -79.92172</georss:point>\n <link rel=\"self\" type=\"application/atom+xml\"
+      href=\"http://identi.ca/api/statuses/show/66779330.atom\"/>\n <link rel=\"edit\"
+      type=\"application/atom+xml\" href=\"http://identi.ca/api/statuses/show/66779330.atom\"/>\n
+      <statusnet:notice_info local_id=\"66779330\" source=\"web\"></statusnet:notice_info>\n</entry>\n<entry>\n
+      <activity:object-type>http://activitystrea.ms/schema/1.0/note</activity:object-type>\n
+      <id>http://identi.ca/notice/66779235</id>\n <title>@postmodern ha! Wow! When
+      it sends the message to twitter, it doesn't even change it to @postmodern_mod3.
+      So I'm replying @postmodern.</title>\n <content type=\"html\">@&lt;span class=&quot;vcard&quot;&gt;&lt;a
+      href=&quot;http://identi.ca/user/76870&quot; class=&quot;url&quot; title=&quot;Postmodern&quot;&gt;&lt;span
+      class=&quot;fn nickname&quot;&gt;postmodern&lt;/span&gt;&lt;/a&gt;&lt;/span&gt;
+      ha! Wow! When it sends the message to twitter, it doesn't even change it to
+      @postmodern_mod3. So I'm replying @&lt;span class=&quot;vcard&quot;&gt;&lt;a
+      href=&quot;http://identi.ca/user/76870&quot; class=&quot;url&quot; title=&quot;Postmodern&quot;&gt;&lt;span
+      class=&quot;fn nickname&quot;&gt;postmodern&lt;/span&gt;&lt;/a&gt;&lt;/span&gt;.</content>\n
+      <link rel=\"alternate\" type=\"text/html\" href=\"http://identi.ca/notice/66779235\"/>\n
+      <activity:verb>http://activitystrea.ms/schema/1.0/post</activity:verb>\n <published>2011-03-12T03:28:12+00:00</published>\n
+      <updated>2011-03-12T03:28:12+00:00</updated>\n <thr:in-reply-to ref=\"http://identi.ca/notice/66779021\"
+      href=\"http://identi.ca/notice/66779021\"></thr:in-reply-to>\n <link rel=\"related\"
+      href=\"http://identi.ca/notice/66779021\"/>\n <link rel=\"ostatus:conversation\"
+      href=\"http://identi.ca/conversation/65981158\"/>\n <link rel=\"ostatus:attention\"
+      href=\"http://identi.ca/user/76870\"/>\n <link rel=\"mentioned\" href=\"http://identi.ca/user/76870\"/>\n
+      <georss:point>40.45451 -79.92172</georss:point>\n <link rel=\"self\" type=\"application/atom+xml\"
+      href=\"http://identi.ca/api/statuses/show/66779235.atom\"/>\n <link rel=\"edit\"
+      type=\"application/atom+xml\" href=\"http://identi.ca/api/statuses/show/66779235.atom\"/>\n
+      <statusnet:notice_info local_id=\"66779235\" source=\"web\"></statusnet:notice_info>\n</entry>\n<entry>\n
+      <activity:object-type>http://activitystrea.ms/schema/1.0/note</activity:object-type>\n
+      <id>http://identi.ca/notice/66779195</id>\n <title>@postmodern dunno, but whatever
+      it's to, I'm down.</title>\n <content type=\"html\">@&lt;span class=&quot;vcard&quot;&gt;&lt;a
+      href=&quot;http://identi.ca/user/76870&quot; class=&quot;url&quot; title=&quot;Postmodern&quot;&gt;&lt;span
+      class=&quot;fn nickname&quot;&gt;postmodern&lt;/span&gt;&lt;/a&gt;&lt;/span&gt;
+      dunno, but whatever it's to, I'm down.</content>\n <link rel=\"alternate\" type=\"text/html\"
+      href=\"http://identi.ca/notice/66779195\"/>\n <activity:verb>http://activitystrea.ms/schema/1.0/post</activity:verb>\n
+      <published>2011-03-12T03:27:11+00:00</published>\n <updated>2011-03-12T03:27:11+00:00</updated>\n
+      <thr:in-reply-to ref=\"http://identi.ca/notice/66779021\" href=\"http://identi.ca/notice/66779021\"></thr:in-reply-to>\n
+      <link rel=\"related\" href=\"http://identi.ca/notice/66779021\"/>\n <link rel=\"ostatus:conversation\"
+      href=\"http://identi.ca/conversation/65981158\"/>\n <link rel=\"ostatus:attention\"
+      href=\"http://identi.ca/user/76870\"/>\n <link rel=\"mentioned\" href=\"http://identi.ca/user/76870\"/>\n
+      <georss:point>40.45451 -79.92172</georss:point>\n <link rel=\"self\" type=\"application/atom+xml\"
+      href=\"http://identi.ca/api/statuses/show/66779195.atom\"/>\n <link rel=\"edit\"
+      type=\"application/atom+xml\" href=\"http://identi.ca/api/statuses/show/66779195.atom\"/>\n
+      <statusnet:notice_info local_id=\"66779195\" source=\"web\"></statusnet:notice_info>\n</entry>\n<entry>\n
+      <activity:object-type>http://activitystrea.ms/schema/1.0/note</activity:object-type>\n
+      <id>http://identi.ca/notice/66778468</id>\n <title>@postmodern I mean that large
+      amounts of it are open sourced. Just not all of it. !github has been good OSS
+      citizens as far as I'm concerned</title>\n <content type=\"html\">@&lt;span
+      class=&quot;vcard&quot;&gt;&lt;a href=&quot;http://identi.ca/user/76870&quot;
+      class=&quot;url&quot; title=&quot;Postmodern&quot;&gt;&lt;span class=&quot;fn
+      nickname&quot;&gt;postmodern&lt;/span&gt;&lt;/a&gt;&lt;/span&gt; I mean that
+      large amounts of it are open sourced. Just not all of it. !&lt;span class=&quot;vcard&quot;&gt;&lt;a
+      href=&quot;http://identi.ca/group/2237/id&quot; class=&quot;url&quot; title=&quot;github
+      (github)&quot;&gt;&lt;span class=&quot;fn nickname&quot;&gt;github&lt;/span&gt;&lt;/a&gt;&lt;/span&gt;
+      has been good OSS citizens as far as I'm concerned</content>\n <link rel=\"alternate\"
+      type=\"text/html\" href=\"http://identi.ca/notice/66778468\"/>\n <activity:verb>http://activitystrea.ms/schema/1.0/post</activity:verb>\n
+      <published>2011-03-12T03:12:12+00:00</published>\n <updated>2011-03-12T03:12:12+00:00</updated>\n
+      <thr:in-reply-to ref=\"http://identi.ca/notice/66778304\" href=\"http://identi.ca/notice/66778304\"></thr:in-reply-to>\n
+      <link rel=\"related\" href=\"http://identi.ca/notice/66778304\"/>\n <link rel=\"ostatus:conversation\"
+      href=\"http://identi.ca/conversation/65980453\"/>\n <link rel=\"ostatus:attention\"
+      href=\"http://identi.ca/user/76870\"/>\n <link rel=\"mentioned\" href=\"http://identi.ca/user/76870\"/>\n
+      <link rel=\"ostatus:attention\" href=\"http://identi.ca/group/2237/id\"/>\n
+      <link rel=\"mentioned\" href=\"http://identi.ca/group/2237/id\"/>\n <georss:point>40.45451
+      -79.92172</georss:point>\n <category term=\"github\"></category>\n <link rel=\"self\"
+      type=\"application/atom+xml\" href=\"http://identi.ca/api/statuses/show/66778468.atom\"/>\n
+      <link rel=\"edit\" type=\"application/atom+xml\" href=\"http://identi.ca/api/statuses/show/66778468.atom\"/>\n
+      <statusnet:notice_info local_id=\"66778468\" source=\"web\"></statusnet:notice_info>\n</entry>\n<entry>\n
+      <activity:object-type>http://activitystrea.ms/schema/1.0/note</activity:object-type>\n
+      <id>http://identi.ca/notice/66778284</id>\n <title>@bascule when I 'repeat'
+      your 'status', it puts a second copy in my ... stream? #confusedterminology</title>\n
+      <content type=\"html\">@&lt;span class=&quot;vcard&quot;&gt;&lt;a href=&quot;http://identi.ca/user/237036&quot;
+      class=&quot;url&quot; title=&quot;Tony Arcieri&quot;&gt;&lt;span class=&quot;fn
+      nickname&quot;&gt;bascule&lt;/span&gt;&lt;/a&gt;&lt;/span&gt; when I 'repeat'
+      your 'status', it puts a second copy in my ... stream? #&lt;span class=&quot;tag&quot;&gt;&lt;a
+      href=&quot;http://identi.ca/tag/confusedterminology&quot; rel=&quot;tag&quot;&gt;confusedterminology&lt;/a&gt;&lt;/span&gt;</content>\n
+      <link rel=\"alternate\" type=\"text/html\" href=\"http://identi.ca/notice/66778284\"/>\n
+      <activity:verb>http://activitystrea.ms/schema/1.0/post</activity:verb>\n <published>2011-03-12T03:08:21+00:00</published>\n
+      <updated>2011-03-12T03:08:21+00:00</updated>\n <link rel=\"ostatus:conversation\"
+      href=\"http://identi.ca/conversation/65980453\"/>\n <link rel=\"ostatus:attention\"
+      href=\"http://identi.ca/user/237036\"/>\n <link rel=\"mentioned\" href=\"http://identi.ca/user/237036\"/>\n
+      <georss:point>40.45451 -79.92172</georss:point>\n <category term=\"confusedterminology\"></category>\n
+      <link rel=\"self\" type=\"application/atom+xml\" href=\"http://identi.ca/api/statuses/show/66778284.atom\"/>\n
+      <link rel=\"edit\" type=\"application/atom+xml\" href=\"http://identi.ca/api/statuses/show/66778284.atom\"/>\n
+      <statusnet:notice_info local_id=\"66778284\" source=\"web\"></statusnet:notice_info>\n</entry>\n<entry>\n
+      <activity:object-type>http://activitystrea.ms/schema/1.0/note</activity:object-type>\n
+      <id>http://identi.ca/notice/66778229</id>\n <title>@postmodern github is open
+      source enough for me. And since they can't lock in data...</title>\n <content
+      type=\"html\">@&lt;span class=&quot;vcard&quot;&gt;&lt;a href=&quot;http://identi.ca/user/76870&quot;
+      class=&quot;url&quot; title=&quot;Postmodern&quot;&gt;&lt;span class=&quot;fn
+      nickname&quot;&gt;postmodern&lt;/span&gt;&lt;/a&gt;&lt;/span&gt; github is open
+      source enough for me. And since they can't lock in data...</content>\n <link
+      rel=\"alternate\" type=\"text/html\" href=\"http://identi.ca/notice/66778229\"/>\n
+      <activity:verb>http://activitystrea.ms/schema/1.0/post</activity:verb>\n <published>2011-03-12T03:06:57+00:00</published>\n
+      <updated>2011-03-12T03:06:57+00:00</updated>\n <thr:in-reply-to ref=\"http://identi.ca/notice/66778166\"
+      href=\"http://identi.ca/notice/66778166\"></thr:in-reply-to>\n <link rel=\"related\"
+      href=\"http://identi.ca/notice/66778166\"/>\n <link rel=\"ostatus:conversation\"
+      href=\"http://identi.ca/conversation/65980269\"/>\n <link rel=\"ostatus:attention\"
+      href=\"http://identi.ca/user/76870\"/>\n <link rel=\"mentioned\" href=\"http://identi.ca/user/76870\"/>\n
+      <georss:point>40.45451 -79.92172</georss:point>\n <link rel=\"self\" type=\"application/atom+xml\"
+      href=\"http://identi.ca/api/statuses/show/66778229.atom\"/>\n <link rel=\"edit\"
+      type=\"application/atom+xml\" href=\"http://identi.ca/api/statuses/show/66778229.atom\"/>\n
+      <statusnet:notice_info local_id=\"66778229\" source=\"web\"></statusnet:notice_info>\n</entry>\n<entry>\n
+      <activity:object-type>http://activitystrea.ms/schema/1.0/note</activity:object-type>\n
+      <id>http://identi.ca/notice/66778188</id>\n <title>Oh! Oh! Can we make up some
+      kind of new silly hashtag for this whole 'eff Twitter's new TOS' thing? I vote
+      #twitterlution!</title>\n <content type=\"html\">Oh! Oh! Can we make up some
+      kind of new silly hashtag for this whole 'eff Twitter's new TOS' thing? I vote
+      #&lt;span class=&quot;tag&quot;&gt;&lt;a href=&quot;http://identi.ca/tag/twitterlution&quot;
+      rel=&quot;tag&quot;&gt;twitterlution&lt;/a&gt;&lt;/span&gt;!</content>\n <link
+      rel=\"alternate\" type=\"text/html\" href=\"http://identi.ca/notice/66778188\"/>\n
+      <activity:verb>http://activitystrea.ms/schema/1.0/post</activity:verb>\n <published>2011-03-12T03:06:09+00:00</published>\n
+      <updated>2011-03-12T03:06:09+00:00</updated>\n <thr:in-reply-to ref=\"http://identi.ca/notice/66777927\"
+      href=\"http://identi.ca/notice/66777927\"></thr:in-reply-to>\n <link rel=\"related\"
+      href=\"http://identi.ca/notice/66777927\"/>\n <link rel=\"ostatus:conversation\"
+      href=\"http://identi.ca/conversation/65979991\"/>\n <georss:point>40.45451 -79.92172</georss:point>\n
+      <category term=\"twitterlution\"></category>\n <link rel=\"self\" type=\"application/atom+xml\"
+      href=\"http://identi.ca/api/statuses/show/66778188.atom\"/>\n <link rel=\"edit\"
+      type=\"application/atom+xml\" href=\"http://identi.ca/api/statuses/show/66778188.atom\"/>\n
+      <statusnet:notice_info local_id=\"66778188\" source=\"web\"></statusnet:notice_info>\n</entry>\n<entry>\n
+      <id>http://identi.ca/notice/66778140</id>\n <title>RT @bascule Then they further
+      realized that the StatusNet code is hosted on Gitorious, Github's retarded cousin</title>\n
+      <content type=\"html\">RT @&lt;span class=&quot;vcard&quot;&gt;&lt;a href=&quot;http://identi.ca/user/237036&quot;
+      class=&quot;url&quot; title=&quot;Tony Arcieri&quot;&gt;&lt;span class=&quot;fn
+      nickname&quot;&gt;bascule&lt;/span&gt;&lt;/a&gt;&lt;/span&gt; Then they further
+      realized that the StatusNet code is hosted on Gitorious, Github's retarded cousin</content>\n
+      <link rel=\"alternate\" type=\"text/html\">http://identi.ca/notice/66778140</link>\n
+      <activity:verb>http://activitystrea.ms/schema/1.0/share</activity:verb>\n <published>2011-03-12T03:05:24+00:00</published>\n
+      <updated>2011-03-12T03:05:24+00:00</updated>\n <activity:object>\n  <activity:object-type>http://activitystrea.ms/schema/1.0/activity</activity:object-type>\n
+      \ <id>http://identi.ca/notice/66778085</id>\n  <title>Then they further realized
+      that the StatusNet code is hosted on Gitorious, Github's retarded cousin</title>\n
+      \ <content type=\"html\">Then they further realized that the StatusNet code
+      is hosted on Gitorious, Github's retarded cousin</content>\n  <link rel=\"alternate\"
+      type=\"text/html\">http://identi.ca/notice/66778085</link>\n  <activity:verb>http://activitystrea.ms/schema/1.0/post</activity:verb>\n
+      \ <published>2011-03-12T03:04:23+00:00</published>\n  <updated>2011-03-12T03:04:23+00:00</updated>\n
+      \ <author>\n   <activity:object-type>http://activitystrea.ms/schema/1.0/person</activity:object-type>\n
+      \  <uri>http://identi.ca/user/237036</uri>\n   <name>bascule</name>\n   <link
+      rel=\"alternate\" type=\"text/html\" href=\"http://identi.ca/bascule\"/>\n   <link
+      rel=\"avatar\" type=\"image/jpeg\" media:width=\"88\" media:height=\"88\" href=\"http://avatar.identi.ca/237036-88-20100818184800.jpeg\"/>\n
+      \  <link rel=\"avatar\" type=\"image/jpeg\" media:width=\"96\" media:height=\"96\"
+      href=\"http://avatar.identi.ca/237036-96-20100818184800.jpeg\"/>\n   <link rel=\"avatar\"
+      type=\"image/jpeg\" media:width=\"48\" media:height=\"48\" href=\"http://avatar.identi.ca/237036-48-20100818184800.jpeg\"/>\n
+      \  <link rel=\"avatar\" type=\"image/jpeg\" media:width=\"24\" media:height=\"24\"
+      href=\"http://avatar.identi.ca/237036-24-20100818184800.jpeg\"/>\n   <georss:point>39.73915
+      -104.9847</georss:point>\n   <poco:preferredUsername>bascule</poco:preferredUsername>\n
+      \  <poco:displayName>Tony Arcieri</poco:displayName>\n   <poco:note>Rubysexual,
+      software architect for Medioh, and creator of the Reia programming language</poco:note>\n
+      \  <poco:address>\n    <poco:formatted>Denver, CO</poco:formatted>\n   </poco:address>\n
+      \  <poco:urls>\n    <poco:type>homepage</poco:type>\n    <poco:value>http://unlimitednovelty.com</poco:value>\n
+      \   <poco:primary>true</poco:primary>\n   </poco:urls>\n   <statusnet:profile_info
+      local_id=\"237036\"></statusnet:profile_info>\n  </author>\n  <activity:object>\n
+      \  <activity:object-type>http://activitystrea.ms/schema/1.0/note</activity:object-type>\n
+      \  <id>http://identi.ca/notice/66778085</id>\n   <title>Then they further realized
+      that the StatusNet code is hosted on Gitorious, Github's retarded cousin</title>\n
+      \  <content type=\"html\">Then they further realized that the StatusNet code
+      is hosted on Gitorious, Github's retarded cousin</content>\n   <link rel=\"alternate\"
+      type=\"text/html\" href=\"http://identi.ca/notice/66778085\"/>\n  </activity:object>\n
+      \ <link rel=\"ostatus:conversation\" href=\"http://identi.ca/conversation/65980269\"/>\n
+      \ <georss:point>39.73915 -104.9847</georss:point>\n  <source>\n   <id>http://identi.ca/api/statuses/user_timeline/237036.atom</id>\n
+      \  <title>Tony Arcieri</title>\n   <link rel=\"alternate\" type=\"text/html\"
+      href=\"http://identi.ca/bascule\"/>\n   <link rel=\"self\" type=\"application/atom+xml\"
+      href=\"http://identi.ca/api/statuses/user_timeline/237036.atom\"/>\n   <link
+      rel=\"license\" href=\"http://creativecommons.org/licenses/by/3.0/\"/>\n   <icon>http://avatar.identi.ca/237036-96-20100818184800.jpeg</icon>\n
+      \  <updated>2011-05-05T06:59:18+00:00</updated>\n  </source>\n  <link rel=\"self\"
+      type=\"application/atom+xml\" href=\"http://identi.ca/api/statuses/show/66778085.atom\"/>\n
+      \ <link rel=\"edit\" type=\"application/atom+xml\" href=\"http://identi.ca/api/statuses/show/66778085.atom\"/>\n
+      </activity:object>\n <link rel=\"ostatus:conversation\" href=\"http://identi.ca/conversation/65980318\"/>\n
+      <ostatus:forward ref=\"http://identi.ca/notice/66778085\" href=\"http://identi.ca/notice/66778085\"></ostatus:forward>\n
+      <link rel=\"self\" type=\"application/atom+xml\" href=\"http://identi.ca/api/statuses/show/66778140.atom\"/>\n
+      <link rel=\"edit\" type=\"application/atom+xml\" href=\"http://identi.ca/api/statuses/show/66778140.atom\"/>\n
+      <statusnet:notice_info local_id=\"66778140\" source=\"web\" repeat_of=\"66778085\"></statusnet:notice_info>\n</entry>\n<entry>\n
+      <id>http://identi.ca/notice/66777960</id>\n <title>RT @bascule A bunch of dissatisfied
+      Rubyists created identi.ca accounts today, but disliked the UI. Then they realized
+      the StatusNet cod ...</title>\n <content type=\"html\">RT @&lt;span class=&quot;vcard&quot;&gt;&lt;a
+      href=&quot;http://identi.ca/user/237036&quot; class=&quot;url&quot; title=&quot;Tony
+      Arcieri&quot;&gt;&lt;span class=&quot;fn nickname&quot;&gt;bascule&lt;/span&gt;&lt;/a&gt;&lt;/span&gt;
+      A bunch of dissatisfied Rubyists created &lt;a href=&quot;http://identi.ca/&quot;
+      title=&quot;http://identi.ca/&quot; rel=&quot;nofollow external&quot;&gt;identi.ca&lt;/a&gt;
+      accounts today, but disliked the UI. Then they realized the StatusNet cod ...</content>\n
+      <link rel=\"alternate\" type=\"text/html\">http://identi.ca/notice/66777960</link>\n
+      <activity:verb>http://activitystrea.ms/schema/1.0/share</activity:verb>\n <published>2011-03-12T03:02:33+00:00</published>\n
+      <updated>2011-03-12T03:02:33+00:00</updated>\n <activity:object>\n  <activity:object-type>http://activitystrea.ms/schema/1.0/activity</activity:object-type>\n
+      \ <id>http://identi.ca/notice/66777944</id>\n  <title>A bunch of dissatisfied
+      Rubyists created identi.ca accounts today, but disliked the UI. Then they realized
+      the StatusNet code is PHP *gasp*</title>\n  <content type=\"html\">A bunch of
+      dissatisfied Rubyists created &lt;a href=&quot;http://identi.ca/&quot; title=&quot;http://identi.ca/&quot;
+      rel=&quot;nofollow external&quot;&gt;identi.ca&lt;/a&gt; accounts today, but
+      disliked the UI. Then they realized the StatusNet code is PHP *gasp*</content>\n
+      \ <link rel=\"alternate\" type=\"text/html\">http://identi.ca/notice/66777944</link>\n
+      \ <activity:verb>http://activitystrea.ms/schema/1.0/post</activity:verb>\n  <published>2011-03-12T03:02:16+00:00</published>\n
+      \ <updated>2011-03-12T03:02:16+00:00</updated>\n  <author>\n   <activity:object-type>http://activitystrea.ms/schema/1.0/person</activity:object-type>\n
+      \  <uri>http://identi.ca/user/237036</uri>\n   <name>bascule</name>\n   <link
+      rel=\"alternate\" type=\"text/html\" href=\"http://identi.ca/bascule\"/>\n   <link
+      rel=\"avatar\" type=\"image/jpeg\" media:width=\"88\" media:height=\"88\" href=\"http://avatar.identi.ca/237036-88-20100818184800.jpeg\"/>\n
+      \  <link rel=\"avatar\" type=\"image/jpeg\" media:width=\"96\" media:height=\"96\"
+      href=\"http://avatar.identi.ca/237036-96-20100818184800.jpeg\"/>\n   <link rel=\"avatar\"
+      type=\"image/jpeg\" media:width=\"48\" media:height=\"48\" href=\"http://avatar.identi.ca/237036-48-20100818184800.jpeg\"/>\n
+      \  <link rel=\"avatar\" type=\"image/jpeg\" media:width=\"24\" media:height=\"24\"
+      href=\"http://avatar.identi.ca/237036-24-20100818184800.jpeg\"/>\n   <georss:point>39.73915
+      -104.9847</georss:point>\n   <poco:preferredUsername>bascule</poco:preferredUsername>\n
+      \  <poco:displayName>Tony Arcieri</poco:displayName>\n   <poco:note>Rubysexual,
+      software architect for Medioh, and creator of the Reia programming language</poco:note>\n
+      \  <poco:address>\n    <poco:formatted>Denver, CO</poco:formatted>\n   </poco:address>\n
+      \  <poco:urls>\n    <poco:type>homepage</poco:type>\n    <poco:value>http://unlimitednovelty.com</poco:value>\n
+      \   <poco:primary>true</poco:primary>\n   </poco:urls>\n   <statusnet:profile_info
+      local_id=\"237036\"></statusnet:profile_info>\n  </author>\n  <activity:object>\n
+      \  <activity:object-type>http://activitystrea.ms/schema/1.0/note</activity:object-type>\n
+      \  <id>http://identi.ca/notice/66777944</id>\n   <title>A bunch of dissatisfied
+      Rubyists created identi.ca accounts today, but disliked the UI. Then they realized
+      the StatusNet code is PHP *gasp*</title>\n   <content type=\"html\">A bunch
+      of dissatisfied Rubyists created &lt;a href=&quot;http://identi.ca/&quot; title=&quot;http://identi.ca/&quot;
+      rel=&quot;nofollow external&quot;&gt;identi.ca&lt;/a&gt; accounts today, but
+      disliked the UI. Then they realized the StatusNet code is PHP *gasp*</content>\n
+      \  <link rel=\"alternate\" type=\"text/html\" href=\"http://identi.ca/notice/66777944\"/>\n
+      \ </activity:object>\n  <link rel=\"ostatus:conversation\" href=\"http://identi.ca/conversation/65980134\"/>\n
+      \ <georss:point>39.73915 -104.9847</georss:point>\n  <source>\n   <id>http://identi.ca/api/statuses/user_timeline/237036.atom</id>\n
+      \  <title>Tony Arcieri</title>\n   <link rel=\"alternate\" type=\"text/html\"
+      href=\"http://identi.ca/bascule\"/>\n   <link rel=\"self\" type=\"application/atom+xml\"
+      href=\"http://identi.ca/api/statuses/user_timeline/237036.atom\"/>\n   <link
+      rel=\"license\" href=\"http://creativecommons.org/licenses/by/3.0/\"/>\n   <icon>http://avatar.identi.ca/237036-96-20100818184800.jpeg</icon>\n
+      \  <updated>2011-05-05T06:59:18+00:00</updated>\n  </source>\n  <link rel=\"self\"
+      type=\"application/atom+xml\" href=\"http://identi.ca/api/statuses/show/66777944.atom\"/>\n
+      \ <link rel=\"edit\" type=\"application/atom+xml\" href=\"http://identi.ca/api/statuses/show/66777944.atom\"/>\n
+      </activity:object>\n <link rel=\"ostatus:conversation\" href=\"http://identi.ca/conversation/65980150\"/>\n
+      <ostatus:forward ref=\"http://identi.ca/notice/66777944\" href=\"http://identi.ca/notice/66777944\"></ostatus:forward>\n
+      <link rel=\"self\" type=\"application/atom+xml\" href=\"http://identi.ca/api/statuses/show/66777960.atom\"/>\n
+      <link rel=\"edit\" type=\"application/atom+xml\" href=\"http://identi.ca/api/statuses/show/66777960.atom\"/>\n
+      <statusnet:notice_info local_id=\"66777960\" source=\"web\" repeat_of=\"66777944\"></statusnet:notice_info>\n</entry>\n<entry>\n
+      <activity:object-type>http://activitystrea.ms/schema/1.0/note</activity:object-type>\n
+      <id>http://identi.ca/notice/66777855</id>\n <title>@tenderlove oh, and enjoy
+      the DDOS on your email every time we do this! :/</title>\n <content type=\"html\">@&lt;span
+      class=&quot;vcard&quot;&gt;&lt;a href=&quot;http://identi.ca/user/396877&quot;
+      class=&quot;url&quot; title=&quot;Aaron Patterson&quot;&gt;&lt;span class=&quot;fn
+      nickname&quot;&gt;tenderlove&lt;/span&gt;&lt;/a&gt;&lt;/span&gt; oh, and enjoy
+      the DDOS on your email every time we do this! :/</content>\n <link rel=\"alternate\"
+      type=\"text/html\" href=\"http://identi.ca/notice/66777855\"/>\n <activity:verb>http://activitystrea.ms/schema/1.0/post</activity:verb>\n
+      <published>2011-03-12T03:01:15+00:00</published>\n <updated>2011-03-12T03:01:15+00:00</updated>\n
+      <thr:in-reply-to ref=\"http://identi.ca/notice/66777791\" href=\"http://identi.ca/notice/66777791\"></thr:in-reply-to>\n
+      <link rel=\"related\" href=\"http://identi.ca/notice/66777791\"/>\n <link rel=\"ostatus:conversation\"
+      href=\"http://identi.ca/conversation/65979991\"/>\n <link rel=\"ostatus:attention\"
+      href=\"http://identi.ca/user/396877\"/>\n <link rel=\"mentioned\" href=\"http://identi.ca/user/396877\"/>\n
+      <georss:point>40.45451 -79.92172</georss:point>\n <link rel=\"self\" type=\"application/atom+xml\"
+      href=\"http://identi.ca/api/statuses/show/66777855.atom\"/>\n <link rel=\"edit\"
+      type=\"application/atom+xml\" href=\"http://identi.ca/api/statuses/show/66777855.atom\"/>\n
+      <statusnet:notice_info local_id=\"66777855\" source=\"web\"></statusnet:notice_info>\n</entry>\n<entry>\n
+      <activity:object-type>http://activitystrea.ms/schema/1.0/note</activity:object-type>\n
+      <id>http://identi.ca/notice/66777834</id>\n <title>Yeah, I think I'm agreeing
+      with everyone else. This UX is pretty freaking bad.</title>\n <content type=\"html\">Yeah,
+      I think I'm agreeing with everyone else. This UX is pretty freaking bad.</content>\n
+      <link rel=\"alternate\" type=\"text/html\" href=\"http://identi.ca/notice/66777834\"/>\n
+      <activity:verb>http://activitystrea.ms/schema/1.0/post</activity:verb>\n <published>2011-03-12T03:01:01+00:00</published>\n
+      <updated>2011-03-12T03:01:01+00:00</updated>\n <link rel=\"ostatus:conversation\"
+      href=\"http://identi.ca/conversation/65980034\"/>\n <georss:point>40.45451 -79.92172</georss:point>\n
+      <link rel=\"self\" type=\"application/atom+xml\" href=\"http://identi.ca/api/statuses/show/66777834.atom\"/>\n
+      <link rel=\"edit\" type=\"application/atom+xml\" href=\"http://identi.ca/api/statuses/show/66777834.atom\"/>\n
+      <statusnet:notice_info local_id=\"66777834\" source=\"web\"></statusnet:notice_info>\n</entry>\n<entry>\n
+      <activity:object-type>http://activitystrea.ms/schema/1.0/note</activity:object-type>\n
+      <id>http://identi.ca/notice/66777718</id>\n <title>@trevorbramble quite.</title>\n
+      <content type=\"html\">@&lt;span class=&quot;vcard&quot;&gt;&lt;a href=&quot;http://identi.ca/user/208583&quot;
+      class=&quot;url&quot; title=&quot;Trevor Bramble&quot;&gt;&lt;span class=&quot;fn
+      nickname&quot;&gt;trevorbramble&lt;/span&gt;&lt;/a&gt;&lt;/span&gt; quite.</content>\n
+      <link rel=\"alternate\" type=\"text/html\" href=\"http://identi.ca/notice/66777718\"/>\n
+      <activity:verb>http://activitystrea.ms/schema/1.0/post</activity:verb>\n <published>2011-03-12T02:59:15+00:00</published>\n
+      <updated>2011-03-12T02:59:15+00:00</updated>\n <thr:in-reply-to ref=\"http://identi.ca/notice/66777654\"
+      href=\"http://identi.ca/notice/66777654\"></thr:in-reply-to>\n <link rel=\"related\"
+      href=\"http://identi.ca/notice/66777654\"/>\n <link rel=\"ostatus:conversation\"
+      href=\"http://identi.ca/conversation/65978259\"/>\n <link rel=\"ostatus:attention\"
+      href=\"http://identi.ca/user/208583\"/>\n <link rel=\"mentioned\" href=\"http://identi.ca/user/208583\"/>\n
+      <georss:point>40.45451 -79.92172</georss:point>\n <link rel=\"self\" type=\"application/atom+xml\"
+      href=\"http://identi.ca/api/statuses/show/66777718.atom\"/>\n <link rel=\"edit\"
+      type=\"application/atom+xml\" href=\"http://identi.ca/api/statuses/show/66777718.atom\"/>\n
+      <statusnet:notice_info local_id=\"66777718\" source=\"web\"></statusnet:notice_info>\n</entry>\n<entry>\n
+      <activity:object-type>http://activitystrea.ms/schema/1.0/note</activity:object-type>\n
+      <id>http://identi.ca/notice/66777529</id>\n <title>@postmodern I'm excited about
+      http://telehash.org/</title>\n <content type=\"html\">@&lt;span class=&quot;vcard&quot;&gt;&lt;a
+      href=&quot;http://identi.ca/user/76870&quot; class=&quot;url&quot; title=&quot;Postmodern&quot;&gt;&lt;span
+      class=&quot;fn nickname&quot;&gt;postmodern&lt;/span&gt;&lt;/a&gt;&lt;/span&gt;
+      I'm excited about &lt;a href=&quot;http://telehash.org/&quot; title=&quot;http://telehash.org/&quot;
+      rel=&quot;nofollow external&quot;&gt;http://telehash.org/&lt;/a&gt;</content>\n
+      <link rel=\"alternate\" type=\"text/html\" href=\"http://identi.ca/notice/66777529\"/>\n
+      <activity:verb>http://activitystrea.ms/schema/1.0/post</activity:verb>\n <published>2011-03-12T02:55:21+00:00</published>\n
+      <updated>2011-03-12T02:55:21+00:00</updated>\n <thr:in-reply-to ref=\"http://identi.ca/notice/66777432\"
+      href=\"http://identi.ca/notice/66777432\"></thr:in-reply-to>\n <link rel=\"related\"
+      href=\"http://identi.ca/notice/66777432\"/>\n <link rel=\"ostatus:conversation\"
+      href=\"http://identi.ca/conversation/65978259\"/>\n <link rel=\"ostatus:attention\"
+      href=\"http://identi.ca/user/76870\"/>\n <link rel=\"mentioned\" href=\"http://identi.ca/user/76870\"/>\n
+      <georss:point>40.45451 -79.92172</georss:point>\n <link rel=\"self\" type=\"application/atom+xml\"
+      href=\"http://identi.ca/api/statuses/show/66777529.atom\"/>\n <link rel=\"edit\"
+      type=\"application/atom+xml\" href=\"http://identi.ca/api/statuses/show/66777529.atom\"/>\n
+      <statusnet:notice_info local_id=\"66777529\" source=\"web\"></statusnet:notice_info>\n</entry>\n<entry>\n
+      <activity:object-type>http://activitystrea.ms/schema/1.0/note</activity:object-type>\n
+      <id>http://identi.ca/notice/66777514</id>\n <title>@postmodern I've heard that.
+      Kinda hard to get over the XML-protocol-ness, though...</title>\n <content type=\"html\">@&lt;span
+      class=&quot;vcard&quot;&gt;&lt;a href=&quot;http://identi.ca/user/76870&quot;
+      class=&quot;url&quot; title=&quot;Postmodern&quot;&gt;&lt;span class=&quot;fn
+      nickname&quot;&gt;postmodern&lt;/span&gt;&lt;/a&gt;&lt;/span&gt; I've heard
+      that. Kinda hard to get over the XML-protocol-ness, though...</content>\n <link
+      rel=\"alternate\" type=\"text/html\" href=\"http://identi.ca/notice/66777514\"/>\n
+      <activity:verb>http://activitystrea.ms/schema/1.0/post</activity:verb>\n <published>2011-03-12T02:55:04+00:00</published>\n
+      <updated>2011-03-12T02:55:04+00:00</updated>\n <thr:in-reply-to ref=\"http://identi.ca/notice/66777432\"
+      href=\"http://identi.ca/notice/66777432\"></thr:in-reply-to>\n <link rel=\"related\"
+      href=\"http://identi.ca/notice/66777432\"/>\n <link rel=\"ostatus:conversation\"
+      href=\"http://identi.ca/conversation/65978259\"/>\n <link rel=\"ostatus:attention\"
+      href=\"http://identi.ca/user/76870\"/>\n <link rel=\"mentioned\" href=\"http://identi.ca/user/76870\"/>\n
+      <georss:point>40.45451 -79.92172</georss:point>\n <link rel=\"self\" type=\"application/atom+xml\"
+      href=\"http://identi.ca/api/statuses/show/66777514.atom\"/>\n <link rel=\"edit\"
+      type=\"application/atom+xml\" href=\"http://identi.ca/api/statuses/show/66777514.atom\"/>\n
+      <statusnet:notice_info local_id=\"66777514\" source=\"web\"></statusnet:notice_info>\n</entry>\n<entry>\n
+      <activity:object-type>http://activitystrea.ms/schema/1.0/note</activity:object-type>\n
+      <id>http://identi.ca/notice/66777341</id>\n <title>@postmodern seems like it
+      wouldn't be too bad, really. The issues come in when you have to scale. #roflscaletips</title>\n
+      <content type=\"html\">@&lt;span class=&quot;vcard&quot;&gt;&lt;a href=&quot;http://identi.ca/user/76870&quot;
+      class=&quot;url&quot; title=&quot;Postmodern&quot;&gt;&lt;span class=&quot;fn
+      nickname&quot;&gt;postmodern&lt;/span&gt;&lt;/a&gt;&lt;/span&gt; seems like
+      it wouldn't be too bad, really. The issues come in when you have to scale. #&lt;span
+      class=&quot;tag&quot;&gt;&lt;a href=&quot;http://identi.ca/tag/roflscaletips&quot;
+      rel=&quot;tag&quot;&gt;roflscaletips&lt;/a&gt;&lt;/span&gt;</content>\n <link
+      rel=\"alternate\" type=\"text/html\" href=\"http://identi.ca/notice/66777341\"/>\n
+      <activity:verb>http://activitystrea.ms/schema/1.0/post</activity:verb>\n <published>2011-03-12T02:51:27+00:00</published>\n
+      <updated>2011-03-12T02:51:27+00:00</updated>\n <thr:in-reply-to ref=\"http://identi.ca/notice/66775964\"
+      href=\"http://identi.ca/notice/66775964\"></thr:in-reply-to>\n <link rel=\"related\"
+      href=\"http://identi.ca/notice/66775964\"/>\n <link rel=\"ostatus:conversation\"
+      href=\"http://identi.ca/conversation/65978259\"/>\n <link rel=\"ostatus:attention\"
+      href=\"http://identi.ca/user/76870\"/>\n <link rel=\"mentioned\" href=\"http://identi.ca/user/76870\"/>\n
+      <georss:point>40.45451 -79.92172</georss:point>\n <category term=\"roflscaletips\"></category>\n
+      <link rel=\"self\" type=\"application/atom+xml\" href=\"http://identi.ca/api/statuses/show/66777341.atom\"/>\n
+      <link rel=\"edit\" type=\"application/atom+xml\" href=\"http://identi.ca/api/statuses/show/66777341.atom\"/>\n
+      <statusnet:notice_info local_id=\"66777341\" source=\"web\"></statusnet:notice_info>\n</entry>\n<entry>\n
+      <activity:object-type>http://activitystrea.ms/schema/1.0/note</activity:object-type>\n
+      <id>http://identi.ca/notice/66775520</id>\n <title>Check out your settings:
+      you can connect identi.ca to your Twitter account, and it'll push to both. Rock.</title>\n
+      <content type=\"html\">Check out your settings: you can connect &lt;a href=&quot;http://identi.ca/&quot;
+      title=&quot;http://identi.ca/&quot; rel=&quot;nofollow external&quot;&gt;identi.ca&lt;/a&gt;
+      to your Twitter account, and it'll push to both. Rock.</content>\n <link rel=\"alternate\"
+      type=\"text/html\" href=\"http://identi.ca/notice/66775520\"/>\n <activity:verb>http://activitystrea.ms/schema/1.0/post</activity:verb>\n
+      <published>2011-03-12T02:12:38+00:00</published>\n <updated>2011-03-12T02:12:38+00:00</updated>\n
+      <link rel=\"ostatus:conversation\" href=\"http://identi.ca/conversation/65977831\"/>\n
+      <georss:point>40.45451 -79.92172</georss:point>\n <link rel=\"self\" type=\"application/atom+xml\"
+      href=\"http://identi.ca/api/statuses/show/66775520.atom\"/>\n <link rel=\"edit\"
+      type=\"application/atom+xml\" href=\"http://identi.ca/api/statuses/show/66775520.atom\"/>\n
+      <statusnet:notice_info local_id=\"66775520\" source=\"web\"></statusnet:notice_info>\n</entry>\n<entry>\n
+      <activity:object-type>http://activitystrea.ms/schema/1.0/note</activity:object-type>\n
+      <id>http://identi.ca/notice/66772217</id>\n <title>So, first thing I see on
+      the public timeline is I'm listening to Nickelback.&quot; Not looking good,
+      identi.ca.</title>\n <content type=\"html\">So, first thing I see on the public
+      timeline is I'm listening to Nickelback.&amp;quot; Not looking good, &lt;a href=&quot;http://identi.ca/&quot;
+      title=&quot;http://identi.ca/&quot; rel=&quot;nofollow external&quot;&gt;identi.ca&lt;/a&gt;.</content>\n
+      <link rel=\"alternate\" type=\"text/html\" href=\"http://identi.ca/notice/66772217\"/>\n
+      <activity:verb>http://activitystrea.ms/schema/1.0/post</activity:verb>\n <published>2011-03-12T01:05:40+00:00</published>\n
+      <updated>2011-03-12T01:05:40+00:00</updated>\n <link rel=\"ostatus:conversation\"
+      href=\"http://identi.ca/conversation/65974658\"/>\n <georss:point>40.45451 -79.92172</georss:point>\n
+      <link rel=\"self\" type=\"application/atom+xml\" href=\"http://identi.ca/api/statuses/show/66772217.atom\"/>\n
+      <link rel=\"edit\" type=\"application/atom+xml\" href=\"http://identi.ca/api/statuses/show/66772217.atom\"/>\n
+      <statusnet:notice_info local_id=\"66772217\" source=\"web\"></statusnet:notice_info>\n</entry>\n<entry>\n
+      <id>http://identi.ca/notice/66772130</id>\n <title>RT @tenderlove can has twitter
+      =&gt; identi.ca sync script? Would that violate TOS?</title>\n <content type=\"html\">RT
+      @&lt;span class=&quot;vcard&quot;&gt;&lt;a href=&quot;http://identi.ca/user/396877&quot;
+      class=&quot;url&quot; title=&quot;Aaron Patterson&quot;&gt;&lt;span class=&quot;fn
+      nickname&quot;&gt;tenderlove&lt;/span&gt;&lt;/a&gt;&lt;/span&gt; can has twitter
+      =&amp;gt; &lt;a href=&quot;http://identi.ca/&quot; title=&quot;http://identi.ca/&quot;
+      rel=&quot;nofollow external&quot;&gt;identi.ca&lt;/a&gt; sync script? Would
+      that violate TOS?</content>\n <link rel=\"alternate\" type=\"text/html\">http://identi.ca/notice/66772130</link>\n
+      <activity:verb>http://activitystrea.ms/schema/1.0/share</activity:verb>\n <published>2011-03-12T01:04:33+00:00</published>\n
+      <updated>2011-03-12T01:04:33+00:00</updated>\n <activity:object>\n  <activity:object-type>http://activitystrea.ms/schema/1.0/activity</activity:object-type>\n
+      \ <id>http://identi.ca/notice/66772083</id>\n  <title>can has twitter =&gt;
+      identi.ca sync script? Would that violate TOS?</title>\n  <content type=\"html\">can
+      has twitter =&amp;gt; &lt;a href=&quot;http://identi.ca/&quot; title=&quot;http://identi.ca/&quot;
+      rel=&quot;nofollow external&quot;&gt;identi.ca&lt;/a&gt; sync script? Would
+      that violate TOS?</content>\n  <link rel=\"alternate\" type=\"text/html\">http://identi.ca/notice/66772083</link>\n
+      \ <activity:verb>http://activitystrea.ms/schema/1.0/post</activity:verb>\n  <published>2011-03-12T01:03:49+00:00</published>\n
+      \ <updated>2011-03-12T01:03:49+00:00</updated>\n  <author>\n   <activity:object-type>http://activitystrea.ms/schema/1.0/person</activity:object-type>\n
+      \  <uri>http://identi.ca/user/396877</uri>\n   <name>tenderlove</name>\n   <link
+      rel=\"alternate\" type=\"text/html\" href=\"http://identi.ca/tenderlove\"/>\n
+      \  <link rel=\"avatar\" type=\"image/png\" media:width=\"150\" media:height=\"150\"
+      href=\"http://avatar.identi.ca/396877-150-20110312003247.png\"/>\n   <link rel=\"avatar\"
+      type=\"image/png\" media:width=\"96\" media:height=\"96\" href=\"http://avatar.identi.ca/396877-96-20110312003247.png\"/>\n
+      \  <link rel=\"avatar\" type=\"image/png\" media:width=\"48\" media:height=\"48\"
+      href=\"http://avatar.identi.ca/396877-48-20110312003247.png\"/>\n   <link rel=\"avatar\"
+      type=\"image/png\" media:width=\"24\" media:height=\"24\" href=\"http://avatar.identi.ca/396877-24-20110312003247.png\"/>\n
+      \  <georss:point>47.60621 -122.33207</georss:point>\n   <poco:preferredUsername>tenderlove</poco:preferredUsername>\n
+      \  <poco:displayName>Aaron Patterson</poco:displayName>\n   <poco:note>It's
+      me!</poco:note>\n   <poco:address>\n    <poco:formatted>Seattle, WA</poco:formatted>\n
+      \  </poco:address>\n   <poco:urls>\n    <poco:type>homepage</poco:type>\n    <poco:value>http://tenderlovemaking.com</poco:value>\n
+      \   <poco:primary>true</poco:primary>\n   </poco:urls>\n   <statusnet:profile_info
+      local_id=\"396877\"></statusnet:profile_info>\n  </author>\n  <activity:object>\n
+      \  <activity:object-type>http://activitystrea.ms/schema/1.0/note</activity:object-type>\n
+      \  <id>http://identi.ca/notice/66772083</id>\n   <title>can has twitter =&gt;
+      identi.ca sync script? Would that violate TOS?</title>\n   <content type=\"html\">can
+      has twitter =&amp;gt; &lt;a href=&quot;http://identi.ca/&quot; title=&quot;http://identi.ca/&quot;
+      rel=&quot;nofollow external&quot;&gt;identi.ca&lt;/a&gt; sync script? Would
+      that violate TOS?</content>\n   <link rel=\"alternate\" type=\"text/html\" href=\"http://identi.ca/notice/66772083\"/>\n
+      \ </activity:object>\n  <link rel=\"ostatus:conversation\" href=\"http://identi.ca/conversation/65974527\"/>\n
+      \ <georss:point>47.60621 -122.33207</georss:point>\n  <source>\n   <id>http://identi.ca/api/statuses/user_timeline/396877.atom</id>\n
+      \  <title>Aaron Patterson</title>\n   <link rel=\"alternate\" type=\"text/html\"
+      href=\"http://identi.ca/tenderlove\"/>\n   <link rel=\"self\" type=\"application/atom+xml\"
+      href=\"http://identi.ca/api/statuses/user_timeline/396877.atom\"/>\n   <link
+      rel=\"license\" href=\"http://creativecommons.org/licenses/by/3.0/\"/>\n   <icon>http://avatar.identi.ca/396877-96-20110312003247.png</icon>\n
+      \  <updated>2011-03-13T21:25:42+00:00</updated>\n  </source>\n  <link rel=\"self\"
+      type=\"application/atom+xml\" href=\"http://identi.ca/api/statuses/show/66772083.atom\"/>\n
+      \ <link rel=\"edit\" type=\"application/atom+xml\" href=\"http://identi.ca/api/statuses/show/66772083.atom\"/>\n
+      </activity:object>\n <link rel=\"ostatus:conversation\" href=\"http://identi.ca/conversation/65974572\"/>\n
+      <ostatus:forward ref=\"http://identi.ca/notice/66772083\" href=\"http://identi.ca/notice/66772083\"></ostatus:forward>\n
+      <link rel=\"self\" type=\"application/atom+xml\" href=\"http://identi.ca/api/statuses/show/66772130.atom\"/>\n
+      <link rel=\"edit\" type=\"application/atom+xml\" href=\"http://identi.ca/api/statuses/show/66772130.atom\"/>\n
+      <statusnet:notice_info local_id=\"66772130\" source=\"web\" repeat_of=\"66772083\"></statusnet:notice_info>\n</entry>\n</feed>\n"
+    http_version: '1.1'
+- !ruby/struct:VCR::HTTPInteraction
+  request: !ruby/struct:VCR::Request
+    method: :post
+    uri: http://identi.ca:80/main/push/hub
+    body: hub.mode=subscribe&hub.callback=http%3a%2f%2fwww.example.com%2fsubscriptions%2f4ee113cac865a511390008ab.atom&hub.verify=async&hub.verify_token=c0f9c030d8ca2af4705016e5652cadd9&hub.lease_seconds=&hub.secret=c01e0ea8a7e95602f00b107005caaeb9&hub.topic=http%3a%2f%2fidenti.ca%2fapi%2fstatuses%2fuser_timeline%2f396889.atom
+    headers:
+      content-type:
+      - application/x-www-form-urlencoded
+  response: !ruby/struct:VCR::Response
+    status: !ruby/struct:VCR::ResponseStatus
+      code: 202
+      message: Accepted
+    headers:
+      date:
+      - Thu, 08 Dec 2011 19:45:17 GMT
+      server:
+      - Apache/2.2.14 (Ubuntu)
+      x-powered-by:
+      - PHP/5.3.8-1ppa1
+      vary:
+      - Accept-Encoding
+      content-length:
+      - '0'
+      content-type:
+      - text/html; charset=UTF-8
+    body: !!null 
+    http_version: '1.1'
+- !ruby/struct:VCR::HTTPInteraction
+  request: !ruby/struct:VCR::Request
+    method: :post
+    uri: http://localhost:9200/mongo-updates/update/4f16354c28043b69f80008d9
+    body: ! '{"author_id":"4f16354c28043b69f80008d7","created_at":"2011-03-12T03:45:31Z","feed_id":"4f16354c28043b69f80008d5","id":"4f16354c28043b69f80008d9","mention_ids":[],"tags":["fb"],"text":"RT
+      @bascule Hard to tell if today marks some major shift in the social media landscape
+      or a non-event we''ll all forget in a few weeks #fb","updated_at":"2012-01-18T02:58:20Z"}'
+    headers:
+      accept:
+      - ! '*/*; q=0.5, application/xml'
+      accept-encoding:
+      - gzip, deflate
+      content-length:
+      - '359'
+  response: !ruby/struct:VCR::Response
+    status: !ruby/struct:VCR::ResponseStatus
+      code: 201
+      message: Created
+    headers:
+      content-type:
+      - application/json; charset=UTF-8
+      content-length:
+      - '99'
+    body: ! '{"ok":true,"_index":"mongo-updates","_type":"update","_id":"4f16354c28043b69f80008d9","_version":1}'
+    http_version: '1.1'
+- !ruby/struct:VCR::HTTPInteraction
+  request: !ruby/struct:VCR::Request
+    method: :post
+    uri: http://localhost:9200/mongo-updates/update/4f16354c28043b69f80008d9
+    body: ! '{"author_id":"4f16354c28043b69f80008d7","created_at":"2011-03-12T03:45:31Z","feed_id":"4f16354c28043b69f80008d5","id":"4f16354c28043b69f80008d9","mention_ids":[],"tags":["fb"],"text":"RT
+      @bascule Hard to tell if today marks some major shift in the social media landscape
+      or a non-event we''ll all forget in a few weeks #fb","updated_at":"2012-01-18T02:58:20Z"}'
+    headers:
+      accept:
+      - ! '*/*; q=0.5, application/xml'
+      accept-encoding:
+      - gzip, deflate
+      content-length:
+      - '359'
+  response: !ruby/struct:VCR::Response
+    status: !ruby/struct:VCR::ResponseStatus
+      code: 200
+      message: OK
+    headers:
+      content-type:
+      - application/json; charset=UTF-8
+      content-length:
+      - '99'
+    body: ! '{"ok":true,"_index":"mongo-updates","_type":"update","_id":"4f16354c28043b69f80008d9","_version":2}'
+    http_version: '1.1'
+- !ruby/struct:VCR::HTTPInteraction
+  request: !ruby/struct:VCR::Request
+    method: :post
+    uri: http://localhost:9200/mongo-updates/update/4f16354c28043b69f80008db
+    body: ! '{"author_id":"4f16354c28043b69f80008d7","created_at":"2011-03-12T03:33:36Z","feed_id":"4f16354c28043b69f80008d5","id":"4f16354c28043b69f80008db","mention_ids":[],"remote_url":"http://identi.ca/notice/66779498","tags":["thisalwaysworks"],"text":"Did
+      we decide yet? Who''s writing a Twitter clone over the weekend and deploying
+      to @heroku''s free account? #thisalwaysworks","updated_at":"2012-01-18T02:58:20Z"}'
+    headers:
+      accept:
+      - ! '*/*; q=0.5, application/xml'
+      accept-encoding:
+      - gzip, deflate
+      content-length:
+      - '406'
+  response: !ruby/struct:VCR::Response
+    status: !ruby/struct:VCR::ResponseStatus
+      code: 201
+      message: Created
+    headers:
+      content-type:
+      - application/json; charset=UTF-8
+      content-length:
+      - '99'
+    body: ! '{"ok":true,"_index":"mongo-updates","_type":"update","_id":"4f16354c28043b69f80008db","_version":1}'
+    http_version: '1.1'
+- !ruby/struct:VCR::HTTPInteraction
+  request: !ruby/struct:VCR::Request
+    method: :post
+    uri: http://localhost:9200/mongo-updates/update/4f16354c28043b69f80008db
+    body: ! '{"author_id":"4f16354c28043b69f80008d7","created_at":"2011-03-12T03:33:36Z","feed_id":"4f16354c28043b69f80008d5","id":"4f16354c28043b69f80008db","mention_ids":[],"remote_url":"http://identi.ca/notice/66779498","tags":["thisalwaysworks"],"text":"Did
+      we decide yet? Who''s writing a Twitter clone over the weekend and deploying
+      to @heroku''s free account? #thisalwaysworks","updated_at":"2012-01-18T02:58:20Z"}'
+    headers:
+      accept:
+      - ! '*/*; q=0.5, application/xml'
+      accept-encoding:
+      - gzip, deflate
+      content-length:
+      - '406'
+  response: !ruby/struct:VCR::Response
+    status: !ruby/struct:VCR::ResponseStatus
+      code: 200
+      message: OK
+    headers:
+      content-type:
+      - application/json; charset=UTF-8
+      content-length:
+      - '99'
+    body: ! '{"ok":true,"_index":"mongo-updates","_type":"update","_id":"4f16354c28043b69f80008db","_version":2}'
+    http_version: '1.1'
+- !ruby/struct:VCR::HTTPInteraction
+  request: !ruby/struct:VCR::Request
+    method: :post
+    uri: http://localhost:9200/mongo-updates/update/4f16354c28043b69f80008e0
+    body: ! '{"author_id":"4f16354c28043b69f80008d7","created_at":"2011-03-12T03:30:09Z","feed_id":"4f16354c28043b69f80008d5","id":"4f16354c28043b69f80008e0","mention_ids":[],"remote_url":"http://identi.ca/notice/66779330","tags":[],"text":"@postmodern
+      ah, well that makes a bit more sense then.","updated_at":"2012-01-18T02:58:20Z"}'
+    headers:
+      accept:
+      - ! '*/*; q=0.5, application/xml'
+      accept-encoding:
+      - gzip, deflate
+      content-length:
+      - '320'
+  response: !ruby/struct:VCR::Response
+    status: !ruby/struct:VCR::ResponseStatus
+      code: 201
+      message: Created
+    headers:
+      content-type:
+      - application/json; charset=UTF-8
+      content-length:
+      - '99'
+    body: ! '{"ok":true,"_index":"mongo-updates","_type":"update","_id":"4f16354c28043b69f80008e0","_version":1}'
+    http_version: '1.1'
+- !ruby/struct:VCR::HTTPInteraction
+  request: !ruby/struct:VCR::Request
+    method: :post
+    uri: http://localhost:9200/mongo-updates/update/4f16354c28043b69f80008e0
+    body: ! '{"author_id":"4f16354c28043b69f80008d7","created_at":"2011-03-12T03:30:09Z","feed_id":"4f16354c28043b69f80008d5","id":"4f16354c28043b69f80008e0","mention_ids":[],"remote_url":"http://identi.ca/notice/66779330","tags":[],"text":"@postmodern
+      ah, well that makes a bit more sense then.","updated_at":"2012-01-18T02:58:20Z"}'
+    headers:
+      accept:
+      - ! '*/*; q=0.5, application/xml'
+      accept-encoding:
+      - gzip, deflate
+      content-length:
+      - '320'
+  response: !ruby/struct:VCR::Response
+    status: !ruby/struct:VCR::ResponseStatus
+      code: 200
+      message: OK
+    headers:
+      content-type:
+      - application/json; charset=UTF-8
+      content-length:
+      - '99'
+    body: ! '{"ok":true,"_index":"mongo-updates","_type":"update","_id":"4f16354c28043b69f80008e0","_version":2}'
+    http_version: '1.1'
+- !ruby/struct:VCR::HTTPInteraction
+  request: !ruby/struct:VCR::Request
+    method: :post
+    uri: http://localhost:9200/mongo-updates/update/4f16354d28043b69f800090e
+    body: ! '{"author_id":"4f16354d28043b69f800090c","created_at":"2011-03-12T03:45:31Z","feed_id":"4f16354d28043b69f800090a","id":"4f16354d28043b69f800090e","mention_ids":[],"tags":["fb"],"text":"RT
+      @bascule Hard to tell if today marks some major shift in the social media landscape
+      or a non-event we''ll all forget in a few weeks #fb","updated_at":"2012-01-18T02:58:21Z"}'
+    headers:
+      accept:
+      - ! '*/*; q=0.5, application/xml'
+      accept-encoding:
+      - gzip, deflate
+      content-length:
+      - '359'
+  response: !ruby/struct:VCR::Response
+    status: !ruby/struct:VCR::ResponseStatus
+      code: 201
+      message: Created
+    headers:
+      content-type:
+      - application/json; charset=UTF-8
+      content-length:
+      - '99'
+    body: ! '{"ok":true,"_index":"mongo-updates","_type":"update","_id":"4f16354d28043b69f800090e","_version":1}'
+    http_version: '1.1'
+- !ruby/struct:VCR::HTTPInteraction
+  request: !ruby/struct:VCR::Request
+    method: :post
+    uri: http://localhost:9200/mongo-updates/update/4f16354d28043b69f800090e
+    body: ! '{"author_id":"4f16354d28043b69f800090c","created_at":"2011-03-12T03:45:31Z","feed_id":"4f16354d28043b69f800090a","id":"4f16354d28043b69f800090e","mention_ids":[],"tags":["fb"],"text":"RT
+      @bascule Hard to tell if today marks some major shift in the social media landscape
+      or a non-event we''ll all forget in a few weeks #fb","updated_at":"2012-01-18T02:58:21Z"}'
+    headers:
+      accept:
+      - ! '*/*; q=0.5, application/xml'
+      accept-encoding:
+      - gzip, deflate
+      content-length:
+      - '359'
+  response: !ruby/struct:VCR::Response
+    status: !ruby/struct:VCR::ResponseStatus
+      code: 200
+      message: OK
+    headers:
+      content-type:
+      - application/json; charset=UTF-8
+      content-length:
+      - '99'
+    body: ! '{"ok":true,"_index":"mongo-updates","_type":"update","_id":"4f16354d28043b69f800090e","_version":2}'
+    http_version: '1.1'
+- !ruby/struct:VCR::HTTPInteraction
+  request: !ruby/struct:VCR::Request
+    method: :post
+    uri: http://localhost:9200/mongo-updates/update/4f16354d28043b69f8000910
+    body: ! '{"author_id":"4f16354d28043b69f800090c","created_at":"2011-03-12T03:33:36Z","feed_id":"4f16354d28043b69f800090a","id":"4f16354d28043b69f8000910","mention_ids":[],"remote_url":"http://identi.ca/notice/66779498","tags":["thisalwaysworks"],"text":"Did
+      we decide yet? Who''s writing a Twitter clone over the weekend and deploying
+      to @heroku''s free account? #thisalwaysworks","updated_at":"2012-01-18T02:58:21Z"}'
+    headers:
+      accept:
+      - ! '*/*; q=0.5, application/xml'
+      accept-encoding:
+      - gzip, deflate
+      content-length:
+      - '406'
+  response: !ruby/struct:VCR::Response
+    status: !ruby/struct:VCR::ResponseStatus
+      code: 201
+      message: Created
+    headers:
+      content-type:
+      - application/json; charset=UTF-8
+      content-length:
+      - '99'
+    body: ! '{"ok":true,"_index":"mongo-updates","_type":"update","_id":"4f16354d28043b69f8000910","_version":1}'
+    http_version: '1.1'
+- !ruby/struct:VCR::HTTPInteraction
+  request: !ruby/struct:VCR::Request
+    method: :post
+    uri: http://localhost:9200/mongo-updates/update/4f16354d28043b69f8000910
+    body: ! '{"author_id":"4f16354d28043b69f800090c","created_at":"2011-03-12T03:33:36Z","feed_id":"4f16354d28043b69f800090a","id":"4f16354d28043b69f8000910","mention_ids":[],"remote_url":"http://identi.ca/notice/66779498","tags":["thisalwaysworks"],"text":"Did
+      we decide yet? Who''s writing a Twitter clone over the weekend and deploying
+      to @heroku''s free account? #thisalwaysworks","updated_at":"2012-01-18T02:58:21Z"}'
+    headers:
+      accept:
+      - ! '*/*; q=0.5, application/xml'
+      accept-encoding:
+      - gzip, deflate
+      content-length:
+      - '406'
+  response: !ruby/struct:VCR::Response
+    status: !ruby/struct:VCR::ResponseStatus
+      code: 200
+      message: OK
+    headers:
+      content-type:
+      - application/json; charset=UTF-8
+      content-length:
+      - '99'
+    body: ! '{"ok":true,"_index":"mongo-updates","_type":"update","_id":"4f16354d28043b69f8000910","_version":2}'
+    http_version: '1.1'
+- !ruby/struct:VCR::HTTPInteraction
+  request: !ruby/struct:VCR::Request
+    method: :post
+    uri: http://localhost:9200/mongo-updates/update/4f16354d28043b69f8000915
+    body: ! '{"author_id":"4f16354d28043b69f800090c","created_at":"2011-03-12T03:30:09Z","feed_id":"4f16354d28043b69f800090a","id":"4f16354d28043b69f8000915","mention_ids":[],"remote_url":"http://identi.ca/notice/66779330","tags":[],"text":"@postmodern
+      ah, well that makes a bit more sense then.","updated_at":"2012-01-18T02:58:22Z"}'
+    headers:
+      accept:
+      - ! '*/*; q=0.5, application/xml'
+      accept-encoding:
+      - gzip, deflate
+      content-length:
+      - '320'
+  response: !ruby/struct:VCR::Response
+    status: !ruby/struct:VCR::ResponseStatus
+      code: 201
+      message: Created
+    headers:
+      content-type:
+      - application/json; charset=UTF-8
+      content-length:
+      - '99'
+    body: ! '{"ok":true,"_index":"mongo-updates","_type":"update","_id":"4f16354d28043b69f8000915","_version":1}'
+    http_version: '1.1'
+- !ruby/struct:VCR::HTTPInteraction
+  request: !ruby/struct:VCR::Request
+    method: :post
+    uri: http://localhost:9200/mongo-updates/update/4f16354d28043b69f8000915
+    body: ! '{"author_id":"4f16354d28043b69f800090c","created_at":"2011-03-12T03:30:09Z","feed_id":"4f16354d28043b69f800090a","id":"4f16354d28043b69f8000915","mention_ids":[],"remote_url":"http://identi.ca/notice/66779330","tags":[],"text":"@postmodern
+      ah, well that makes a bit more sense then.","updated_at":"2012-01-18T02:58:22Z"}'
+    headers:
+      accept:
+      - ! '*/*; q=0.5, application/xml'
+      accept-encoding:
+      - gzip, deflate
+      content-length:
+      - '320'
+  response: !ruby/struct:VCR::Response
+    status: !ruby/struct:VCR::ResponseStatus
+      code: 200
+      message: OK
+    headers:
+      content-type:
+      - application/json; charset=UTF-8
+      content-length:
+      - '99'
+    body: ! '{"ok":true,"_index":"mongo-updates","_type":"update","_id":"4f16354d28043b69f8000915","_version":2}'
+    http_version: '1.1'
+- !ruby/struct:VCR::HTTPInteraction
+  request: !ruby/struct:VCR::Request
+    method: :post
+    uri: http://localhost:9200/mongo-updates/update/4f16354f28043b69f800094b
+    body: ! '{"author_id":"4f16354f28043b69f8000949","created_at":"2011-03-12T03:45:31Z","feed_id":"4f16354f28043b69f8000947","id":"4f16354f28043b69f800094b","mention_ids":[],"tags":["fb"],"text":"RT
+      @bascule Hard to tell if today marks some major shift in the social media landscape
+      or a non-event we''ll all forget in a few weeks #fb","updated_at":"2012-01-18T02:58:23Z"}'
+    headers:
+      accept:
+      - ! '*/*; q=0.5, application/xml'
+      accept-encoding:
+      - gzip, deflate
+      content-length:
+      - '359'
+  response: !ruby/struct:VCR::Response
+    status: !ruby/struct:VCR::ResponseStatus
+      code: 201
+      message: Created
+    headers:
+      content-type:
+      - application/json; charset=UTF-8
+      content-length:
+      - '99'
+    body: ! '{"ok":true,"_index":"mongo-updates","_type":"update","_id":"4f16354f28043b69f800094b","_version":1}'
+    http_version: '1.1'
+- !ruby/struct:VCR::HTTPInteraction
+  request: !ruby/struct:VCR::Request
+    method: :post
+    uri: http://localhost:9200/mongo-updates/update/4f16354f28043b69f800094b
+    body: ! '{"author_id":"4f16354f28043b69f8000949","created_at":"2011-03-12T03:45:31Z","feed_id":"4f16354f28043b69f8000947","id":"4f16354f28043b69f800094b","mention_ids":[],"tags":["fb"],"text":"RT
+      @bascule Hard to tell if today marks some major shift in the social media landscape
+      or a non-event we''ll all forget in a few weeks #fb","updated_at":"2012-01-18T02:58:23Z"}'
+    headers:
+      accept:
+      - ! '*/*; q=0.5, application/xml'
+      accept-encoding:
+      - gzip, deflate
+      content-length:
+      - '359'
+  response: !ruby/struct:VCR::Response
+    status: !ruby/struct:VCR::ResponseStatus
+      code: 200
+      message: OK
+    headers:
+      content-type:
+      - application/json; charset=UTF-8
+      content-length:
+      - '99'
+    body: ! '{"ok":true,"_index":"mongo-updates","_type":"update","_id":"4f16354f28043b69f800094b","_version":2}'
+    http_version: '1.1'
+- !ruby/struct:VCR::HTTPInteraction
+  request: !ruby/struct:VCR::Request
+    method: :post
+    uri: http://localhost:9200/mongo-updates/update/4f16354f28043b69f800094d
+    body: ! '{"author_id":"4f16354f28043b69f8000949","created_at":"2011-03-12T03:33:36Z","feed_id":"4f16354f28043b69f8000947","id":"4f16354f28043b69f800094d","mention_ids":[],"remote_url":"http://identi.ca/notice/66779498","tags":["thisalwaysworks"],"text":"Did
+      we decide yet? Who''s writing a Twitter clone over the weekend and deploying
+      to @heroku''s free account? #thisalwaysworks","updated_at":"2012-01-18T02:58:23Z"}'
+    headers:
+      accept:
+      - ! '*/*; q=0.5, application/xml'
+      accept-encoding:
+      - gzip, deflate
+      content-length:
+      - '406'
+  response: !ruby/struct:VCR::Response
+    status: !ruby/struct:VCR::ResponseStatus
+      code: 201
+      message: Created
+    headers:
+      content-type:
+      - application/json; charset=UTF-8
+      content-length:
+      - '99'
+    body: ! '{"ok":true,"_index":"mongo-updates","_type":"update","_id":"4f16354f28043b69f800094d","_version":1}'
+    http_version: '1.1'
+- !ruby/struct:VCR::HTTPInteraction
+  request: !ruby/struct:VCR::Request
+    method: :post
+    uri: http://localhost:9200/mongo-updates/update/4f16354f28043b69f800094d
+    body: ! '{"author_id":"4f16354f28043b69f8000949","created_at":"2011-03-12T03:33:36Z","feed_id":"4f16354f28043b69f8000947","id":"4f16354f28043b69f800094d","mention_ids":[],"remote_url":"http://identi.ca/notice/66779498","tags":["thisalwaysworks"],"text":"Did
+      we decide yet? Who''s writing a Twitter clone over the weekend and deploying
+      to @heroku''s free account? #thisalwaysworks","updated_at":"2012-01-18T02:58:23Z"}'
+    headers:
+      accept:
+      - ! '*/*; q=0.5, application/xml'
+      accept-encoding:
+      - gzip, deflate
+      content-length:
+      - '406'
+  response: !ruby/struct:VCR::Response
+    status: !ruby/struct:VCR::ResponseStatus
+      code: 200
+      message: OK
+    headers:
+      content-type:
+      - application/json; charset=UTF-8
+      content-length:
+      - '99'
+    body: ! '{"ok":true,"_index":"mongo-updates","_type":"update","_id":"4f16354f28043b69f800094d","_version":2}'
+    http_version: '1.1'
+- !ruby/struct:VCR::HTTPInteraction
+  request: !ruby/struct:VCR::Request
+    method: :post
+    uri: http://localhost:9200/mongo-updates/update/4f16354f28043b69f8000952
+    body: ! '{"author_id":"4f16354f28043b69f8000949","created_at":"2011-03-12T03:30:09Z","feed_id":"4f16354f28043b69f8000947","id":"4f16354f28043b69f8000952","mention_ids":[],"remote_url":"http://identi.ca/notice/66779330","tags":[],"text":"@postmodern
+      ah, well that makes a bit more sense then.","updated_at":"2012-01-18T02:58:23Z"}'
+    headers:
+      accept:
+      - ! '*/*; q=0.5, application/xml'
+      accept-encoding:
+      - gzip, deflate
+      content-length:
+      - '320'
+  response: !ruby/struct:VCR::Response
+    status: !ruby/struct:VCR::ResponseStatus
+      code: 201
+      message: Created
+    headers:
+      content-type:
+      - application/json; charset=UTF-8
+      content-length:
+      - '99'
+    body: ! '{"ok":true,"_index":"mongo-updates","_type":"update","_id":"4f16354f28043b69f8000952","_version":1}'
+    http_version: '1.1'
+- !ruby/struct:VCR::HTTPInteraction
+  request: !ruby/struct:VCR::Request
+    method: :post
+    uri: http://localhost:9200/mongo-updates/update/4f16354f28043b69f8000952
+    body: ! '{"author_id":"4f16354f28043b69f8000949","created_at":"2011-03-12T03:30:09Z","feed_id":"4f16354f28043b69f8000947","id":"4f16354f28043b69f8000952","mention_ids":[],"remote_url":"http://identi.ca/notice/66779330","tags":[],"text":"@postmodern
+      ah, well that makes a bit more sense then.","updated_at":"2012-01-18T02:58:23Z"}'
+    headers:
+      accept:
+      - ! '*/*; q=0.5, application/xml'
+      accept-encoding:
+      - gzip, deflate
+      content-length:
+      - '320'
+  response: !ruby/struct:VCR::Response
+    status: !ruby/struct:VCR::ResponseStatus
+      code: 200
+      message: OK
+    headers:
+      content-type:
+      - application/json; charset=UTF-8
+      content-length:
+      - '99'
+    body: ! '{"ok":true,"_index":"mongo-updates","_type":"update","_id":"4f16354f28043b69f8000952","_version":2}'
+    http_version: '1.1'
+- !ruby/struct:VCR::HTTPInteraction
+  request: !ruby/struct:VCR::Request
+    method: :post
+    uri: http://localhost:9200/mongo-updates/update/4f16355228043b69f8000993
+    body: ! '{"author_id":"4f16355228043b69f8000991","created_at":"2011-03-12T03:45:31Z","feed_id":"4f16355228043b69f800098f","id":"4f16355228043b69f8000993","mention_ids":[],"tags":["fb"],"text":"RT
+      @bascule Hard to tell if today marks some major shift in the social media landscape
+      or a non-event we''ll all forget in a few weeks #fb","updated_at":"2012-01-18T02:58:26Z"}'
+    headers:
+      accept:
+      - ! '*/*; q=0.5, application/xml'
+      accept-encoding:
+      - gzip, deflate
+      content-length:
+      - '359'
+  response: !ruby/struct:VCR::Response
+    status: !ruby/struct:VCR::ResponseStatus
+      code: 201
+      message: Created
+    headers:
+      content-type:
+      - application/json; charset=UTF-8
+      content-length:
+      - '99'
+    body: ! '{"ok":true,"_index":"mongo-updates","_type":"update","_id":"4f16355228043b69f8000993","_version":1}'
+    http_version: '1.1'
+- !ruby/struct:VCR::HTTPInteraction
+  request: !ruby/struct:VCR::Request
+    method: :post
+    uri: http://localhost:9200/mongo-updates/update/4f16355228043b69f8000993
+    body: ! '{"author_id":"4f16355228043b69f8000991","created_at":"2011-03-12T03:45:31Z","feed_id":"4f16355228043b69f800098f","id":"4f16355228043b69f8000993","mention_ids":[],"tags":["fb"],"text":"RT
+      @bascule Hard to tell if today marks some major shift in the social media landscape
+      or a non-event we''ll all forget in a few weeks #fb","updated_at":"2012-01-18T02:58:26Z"}'
+    headers:
+      accept:
+      - ! '*/*; q=0.5, application/xml'
+      accept-encoding:
+      - gzip, deflate
+      content-length:
+      - '359'
+  response: !ruby/struct:VCR::Response
+    status: !ruby/struct:VCR::ResponseStatus
+      code: 200
+      message: OK
+    headers:
+      content-type:
+      - application/json; charset=UTF-8
+      content-length:
+      - '99'
+    body: ! '{"ok":true,"_index":"mongo-updates","_type":"update","_id":"4f16355228043b69f8000993","_version":2}'
+    http_version: '1.1'
+- !ruby/struct:VCR::HTTPInteraction
+  request: !ruby/struct:VCR::Request
+    method: :post
+    uri: http://localhost:9200/mongo-updates/update/4f16355228043b69f8000995
+    body: ! '{"author_id":"4f16355228043b69f8000991","created_at":"2011-03-12T03:33:36Z","feed_id":"4f16355228043b69f800098f","id":"4f16355228043b69f8000995","mention_ids":[],"remote_url":"http://identi.ca/notice/66779498","tags":["thisalwaysworks"],"text":"Did
+      we decide yet? Who''s writing a Twitter clone over the weekend and deploying
+      to @heroku''s free account? #thisalwaysworks","updated_at":"2012-01-18T02:58:26Z"}'
+    headers:
+      accept:
+      - ! '*/*; q=0.5, application/xml'
+      accept-encoding:
+      - gzip, deflate
+      content-length:
+      - '406'
+  response: !ruby/struct:VCR::Response
+    status: !ruby/struct:VCR::ResponseStatus
+      code: 201
+      message: Created
+    headers:
+      content-type:
+      - application/json; charset=UTF-8
+      content-length:
+      - '99'
+    body: ! '{"ok":true,"_index":"mongo-updates","_type":"update","_id":"4f16355228043b69f8000995","_version":1}'
+    http_version: '1.1'
+- !ruby/struct:VCR::HTTPInteraction
+  request: !ruby/struct:VCR::Request
+    method: :post
+    uri: http://localhost:9200/mongo-updates/update/4f16355228043b69f8000995
+    body: ! '{"author_id":"4f16355228043b69f8000991","created_at":"2011-03-12T03:33:36Z","feed_id":"4f16355228043b69f800098f","id":"4f16355228043b69f8000995","mention_ids":[],"remote_url":"http://identi.ca/notice/66779498","tags":["thisalwaysworks"],"text":"Did
+      we decide yet? Who''s writing a Twitter clone over the weekend and deploying
+      to @heroku''s free account? #thisalwaysworks","updated_at":"2012-01-18T02:58:26Z"}'
+    headers:
+      accept:
+      - ! '*/*; q=0.5, application/xml'
+      accept-encoding:
+      - gzip, deflate
+      content-length:
+      - '406'
+  response: !ruby/struct:VCR::Response
+    status: !ruby/struct:VCR::ResponseStatus
+      code: 200
+      message: OK
+    headers:
+      content-type:
+      - application/json; charset=UTF-8
+      content-length:
+      - '99'
+    body: ! '{"ok":true,"_index":"mongo-updates","_type":"update","_id":"4f16355228043b69f8000995","_version":2}'
+    http_version: '1.1'
+- !ruby/struct:VCR::HTTPInteraction
+  request: !ruby/struct:VCR::Request
+    method: :post
+    uri: http://localhost:9200/mongo-updates/update/4f16355228043b69f800099a
+    body: ! '{"author_id":"4f16355228043b69f8000991","created_at":"2011-03-12T03:30:09Z","feed_id":"4f16355228043b69f800098f","id":"4f16355228043b69f800099a","mention_ids":[],"remote_url":"http://identi.ca/notice/66779330","tags":[],"text":"@postmodern
+      ah, well that makes a bit more sense then.","updated_at":"2012-01-18T02:58:26Z"}'
+    headers:
+      accept:
+      - ! '*/*; q=0.5, application/xml'
+      accept-encoding:
+      - gzip, deflate
+      content-length:
+      - '320'
+  response: !ruby/struct:VCR::Response
+    status: !ruby/struct:VCR::ResponseStatus
+      code: 201
+      message: Created
+    headers:
+      content-type:
+      - application/json; charset=UTF-8
+      content-length:
+      - '99'
+    body: ! '{"ok":true,"_index":"mongo-updates","_type":"update","_id":"4f16355228043b69f800099a","_version":1}'
+    http_version: '1.1'
+- !ruby/struct:VCR::HTTPInteraction
+  request: !ruby/struct:VCR::Request
+    method: :post
+    uri: http://localhost:9200/mongo-updates/update/4f16355228043b69f800099a
+    body: ! '{"author_id":"4f16355228043b69f8000991","created_at":"2011-03-12T03:30:09Z","feed_id":"4f16355228043b69f800098f","id":"4f16355228043b69f800099a","mention_ids":[],"remote_url":"http://identi.ca/notice/66779330","tags":[],"text":"@postmodern
+      ah, well that makes a bit more sense then.","updated_at":"2012-01-18T02:58:26Z"}'
+    headers:
+      accept:
+      - ! '*/*; q=0.5, application/xml'
+      accept-encoding:
+      - gzip, deflate
+      content-length:
+      - '320'
+  response: !ruby/struct:VCR::Response
+    status: !ruby/struct:VCR::ResponseStatus
+      code: 200
+      message: OK
+    headers:
+      content-type:
+      - application/json; charset=UTF-8
+      content-length:
+      - '99'
+    body: ! '{"ok":true,"_index":"mongo-updates","_type":"update","_id":"4f16355228043b69f800099a","_version":2}'
+    http_version: '1.1'

@@ -1,0 +1,26 @@
+---
+- !ruby/struct:VCR::HTTPInteraction
+  request: !ruby/struct:VCR::Request
+    method: :post
+    uri: http://rstatus.superfeedr.com:80/
+    body: hub.mode=publish&hub.url=http%3a%2f%2ffoo.example.com%2ffeeds%2f4ee113e3c865a51139000aec.atom
+    headers:
+      content-type:
+      - application/x-www-form-urlencoded
+  response: !ruby/struct:VCR::Response
+    status: !ruby/struct:VCR::ResponseStatus
+      code: 204
+      message: No Content
+    headers:
+      date:
+      - Thu, 08 Dec 2011 19:48:08 GMT
+      status:
+      - 204 No Content
+      x-runtime:
+      - '2'
+      set-cookie:
+      - ''
+      cache-control:
+      - no-cache
+    body: !!null 
+    http_version: '1.1'
