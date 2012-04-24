@@ -67,4 +67,5 @@ module RstatUs
 
   # Custom RstatUs exceptions
   class InvalidSubscribeTo < StandardError; end
+  class InvalidSalmonMessage < StandardError; end
 end

@@ -118,6 +118,27 @@ class Author
     Crypto.make_rsa_keypair(public_key, nil)
   end
 
+  def check_public_key_lease
+    if public_key_lease.nil? or public_key_lease < DateTime.now
+      # Lease has expired, get the public key again
+
+      # Retrieve the user xrd
+      remote_host = remote_url[/^.*?:\/\/(.*?)\//,1]
+      webfinger   = "#{username}@#{remote_host}"
+      acct        = Redfinger.finger(webfinger)
+
+      # Retrieve the public key
+      public_key = acct.links.find { |l| l['rel'] == 'magic-public-key' }
+      public_key = public_key.href[/^.*?,(.*)$/,1]
+      self.public_key = public_key
+      reset_key_lease
+
+      unless new?
+        save!
+      end
+    end
+  end
+
   # Returns a locally useful url for the Author
   def url
     if remote_url.present?
