@@ -44,20 +44,6 @@ describe "update" do
     assert_match page.body, /#{update_text}/
   end
 
-  it "makes a short update" do
-    log_in_as_some_user
-
-    update_text = "Q"
-
-    VCR.use_cassette('publish_short_update') do
-      visit "/"
-      fill_in 'update-textarea', :with => update_text
-      click_button :'update-button'
-    end
-
-    refute_match page.body, /Your status is too short!/
-  end
-
   it "stays on the same page after updating" do
     log_in_as_some_user
 
