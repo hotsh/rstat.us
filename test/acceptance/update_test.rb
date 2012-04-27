@@ -34,9 +34,6 @@ describe "update" do
     log_in_as_some_user
 
     update_text = "Testing, testing"
-    params = {
-      :text => update_text
-    }
 
     VCR.use_cassette('publish_update') do
       visit "/"
@@ -51,9 +48,6 @@ describe "update" do
     log_in_as_some_user
 
     update_text = "Q"
-    params = {
-      :text => update_text
-    }
 
     VCR.use_cassette('publish_short_update') do
       visit "/"
