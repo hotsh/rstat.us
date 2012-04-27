@@ -44,26 +44,16 @@ describe "update" do
     assert_match page.body, /#{update_text}/
   end
 
-  it "stays on the same page after updating" do
-    log_in_as_some_user
+  ["/updates", "/replies", "/"].each do |url|
+    it "stays on the #{url} page after making an update there" do
+      log_in_as_some_user
 
-    visit "/updates"
-    fill_in "text", :with => "Teststring fuer die Ewigkeit ohne UTF-8 Charakter"
-    VCR.use_cassette('publish_to_hub') {click_button "Share"}
+      visit url
+      fill_in "text", :with => "Buy a test string. Your name in this string for only 1 Euro/character"
+      VCR.use_cassette('publish_to_hub') { click_button "Share" }
 
-    assert_match "/updates", page.current_url
-
-    visit "/replies"
-    fill_in "text", :with => "Bratwurst mit Pommes rot-weiss"
-    VCR.use_cassette('publish_to_hub') {click_button "Share"}
-
-    assert_match "/replies", page.current_url
-
-    visit "/"
-    fill_in "text", :with => "Buy a test string. Your name in this string for only 1 Euro/character"
-    VCR.use_cassette('publish_to_hub') {click_button "Share"}
-
-    assert_match "/", page.current_url
+      assert_match url, page.current_url, "Ended up on #{page.current_url}, expected to be on #{url}"
+    end
   end
 
   it "shows one update" do
