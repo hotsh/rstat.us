@@ -1,25 +1,28 @@
 - reply ||= false
-.update
-  .byline
-    = AuthorDecorator.decorate(update.author).avatar
-    %a{:href => "/users/#{update.author.username}"}
-      = update.author.username
-  .update-text
-    .content
-      != update.to_html
-    .update-date
-      - if reply
-        %a.timeago{:href => "/updates/#{update.id}", :title => update.created_at.getutc.iso8601}
-      - else
-        %abbr.timeago{:title => update.created_at.getutc.iso8601}
+#messages
+  %ul.single
+    %li.message
+      .update
+        .byline
+          = AuthorDecorator.decorate(update.author).avatar
+          %a{:href => "/users/#{update.author.username}"}
+            = update.author.username
+        .update-text
+          .content
+            != update.to_html
+          .update-date
+            - if reply
+              %a.timeago{:href => "/updates/#{update.id}", :title => update.created_at.getutc.iso8601}
+            - else
+              %abbr.timeago{:title => update.created_at.getutc.iso8601}
 
-    .actions
-      -unless current_user.nil? or (current_user.author.id == update.author.id)
-        %a.share{:href => "/?share=#{update.id}"} share
-        |
-        %a.reply{:href => "/?reply=#{update.id}"} reply
+          .actions
+            -unless current_user.nil? or (current_user.author.id == update.author.id)
+              %a.share{:href => "/?share=#{update.id}"} share
+              |
+              %a.reply{:href => "/?reply=#{update.id}"} reply
 
-      - if current_user and update.author.id == current_user.author.id
-        = form_tag "/updates/#{update.id}" do
-          %input{:type => "hidden", :name => "_method", :value => "delete"}
-          = submit_tag "I Regret This", :class => "remove-update", :confirm => t(:remove_update, :scope => :confirms)
+            - if current_user and update.author.id == current_user.author.id
+              = form_tag "/updates/#{update.id}" do
+                %input{:type => "hidden", :name => "_method", :value => "delete"}
+                = submit_tag "I Regret This", :class => "remove-update", :confirm => t(:remove_update, :scope => :confirms)

@@ -8,4 +8,4 @@
     #updates-menu-background
       != render :partial => "shared/menu/updates"
 
-!= render :partial => "updates/list", :locals => {:updates => @updates}
+!= render :partial => "updates/list", :locals => {:updates => @updates, :list_class => @list_class}
