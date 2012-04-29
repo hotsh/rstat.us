@@ -243,7 +243,7 @@ describe "update" do
 
     it "has a status of someone i'm following in my timeline" do
       u2 = Fabricate(:user)
-      update = Fabricate(:update, :author => @u.author)
+      update = Fabricate(:update, :author => u2.author)
       u2.feed.updates << update
       @u.follow! u2.feed
 
