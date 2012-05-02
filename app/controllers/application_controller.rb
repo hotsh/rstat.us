@@ -46,12 +46,13 @@ class ApplicationController < ActionController::Base
   def menu_item(name, url, options = {})
     icon = options.fetch(:icon){ false }
     classes = options.fetch(:classes){ [] }
+    rel = options.fetch(:rel){ false }
 
     classes << name.downcase.gsub(" ", "_")
     classes << (request.path_info == url ? "active" : "")
 
     "<li class='#{classes.join(" ")}'>
-      <a href='#{url}'>" +
+      <a href='#{url}'" + (rel ? " rel='#{rel}'" : "") + ">" +
       (icon ? "<div class='icon'></div>" : "") +
       "#{name}</a>
     </li>"

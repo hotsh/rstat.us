@@ -4,14 +4,17 @@ class UpdatesController < ApplicationController
 
   def index
     @title = "updates"
+    @list_class = "all"
     render_index(Update)
   end
 
   def timeline
+    @list_class = "friends"
     render_index(current_user.timeline(params))
   end
 
   def replies
+    @list_class = "mentions"
     render_index(current_user.at_replies(params))
   end
 

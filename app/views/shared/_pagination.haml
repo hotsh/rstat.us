@@ -1,8 +1,8 @@
 %nav.pagination
   - unless @previous_page.nil?
-    %a.button{:href => @previous_page, :id => "prev_button"}
+    %a.button{:href => @previous_page, :id => "prev_button", :rel => "previous"}
       &laquo; Previous
 
   - unless @next_page.nil?
-    %a.button{:href => @next_page, :id => "next_button"}
+    %a.button{:href => @next_page, :id => "next_button", :rel => "next"}
       Next &raquo;

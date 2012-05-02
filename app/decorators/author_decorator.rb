@@ -6,7 +6,7 @@ class AuthorDecorator < ApplicationDecorator
   def avatar
     h.content_tag "div", :class => "avatar" do
       h.link_to(
-        h.image_tag(avatar_src, :class => "photo", :alt => "avatar"),
+        h.image_tag(avatar_src, :class => "photo user-image", :alt => "avatar"),
         author.url
       )
     end
