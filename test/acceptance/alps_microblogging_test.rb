@@ -8,17 +8,10 @@ describe "ALPS microblogging spec" do
   include AcceptanceHelper
 
   describe "messages" do
-    describe "ALPS all, rstat.us homepage (logged out /)" do
-      it "has an individual status in an li with class message" do
-        @u2 = Fabricate(:user)
-        @update = Fabricate(:update)
-        @u2.feed.updates << @update
-
+    describe "ALPS starting URI, rstat.us homepage (logged out /)" do
+      it "can transition to all updates" do
         visit "/"
-
-        within "div#messages ul.all li.message" do
-          assert has_content? @update.text
-        end
+        assert has_selector?(:xpath, "//a[contains(@rel, 'messages-all')]")
       end
     end
 
@@ -33,6 +26,11 @@ describe "ALPS microblogging spec" do
         within "div#messages ul.all li.message" do
           assert has_content? @update.text
         end
+      end
+
+      it "can transition to the application root" do
+        visit "/updates"
+        assert has_selector?(:xpath, "//a[contains(@rel, 'index')]")
       end
     end
 
@@ -52,14 +50,23 @@ describe "ALPS microblogging spec" do
     end
 
     describe "ALPS single, rstat.us update show" do
+      before do
+        @update = Fabricate(:update)
+        visit "/updates/#{@update.id}"
+      end
+
       it "shows the status in a ul with class single" do
-        update = Fabricate(:update)
-
-        visit "/updates/#{update.id}"
-
         within "div#messages ul.single li.message" do
-          assert has_content? update.text
+          assert has_content? @update.text
         end
+      end
+
+      it "can transition to all updates" do
+        assert has_selector?(:xpath, "//a[contains(@rel, 'messages-all')]")
+      end
+
+      it "can transition to the application root" do
+        assert has_selector?(:xpath, "//a[contains(@rel, 'index')]")
       end
     end
 
@@ -69,7 +76,7 @@ describe "ALPS microblogging spec" do
         @an_update = Fabricate(:update, :author => @a_user.author)
         @a_user.feed.updates << @an_update
 
-        visit "/"
+        visit "/updates"
       end
 
       it "has the user nickname in span.user-text" do
@@ -116,6 +123,54 @@ describe "ALPS microblogging spec" do
         within "li.message" do
           assert has_selector?("span.date-time")
         end
+      end
+    end
+
+    describe "pagination" do
+      it "does not paginate when there are too few" do
+        5.times do
+          Fabricate(:update)
+        end
+
+        visit "/updates"
+
+        assert has_no_selector?(:xpath, "//a[contains(@rel, 'previous')]")
+        assert has_no_selector?(:xpath, "//a[contains(@rel, 'next')]")
+      end
+
+      it "paginates forward only if on the first page" do
+        30.times do
+          Fabricate(:update)
+        end
+
+        visit "/updates"
+
+        assert has_no_selector?(:xpath, "//a[contains(@rel, 'previous')]")
+        assert has_selector?(:xpath, "//a[contains(@rel, 'next')]")
+      end
+
+      it "paginates backward only if on the last page" do
+        30.times do
+          Fabricate(:update)
+        end
+
+        visit "/updates"
+        find(:xpath, "//a[contains(@rel, 'next')]").click
+
+        assert has_selector?(:xpath, "//a[contains(@rel, 'previous')]")
+        assert has_no_selector?(:xpath, "//a[contains(@rel, 'next')]")
+      end
+
+      it "paginates forward and backward if on a middle page" do
+        54.times do
+          Fabricate(:update)
+        end
+
+        visit "/updates"
+        find(:xpath, "//a[contains(@rel, 'next')]").click
+
+        assert has_selector?(:xpath, "//a[contains(@rel, 'previous')]")
+        assert has_selector?(:xpath, "//a[contains(@rel, 'next')]")
       end
     end
   end
