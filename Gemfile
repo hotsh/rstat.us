@@ -52,6 +52,7 @@ group :development, :test do
   gem "simplecov", "~> 0.4.0", :require => false
   gem "launchy"
   gem "minitest", "~> 2.12.1"
+  gem "quiet_assets"
 end
 
 group :test do
