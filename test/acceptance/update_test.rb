@@ -121,7 +121,7 @@ describe "update" do
 
   describe "reply and share links for each update" do
     before do
-      log_in_as_some_user
+      log_in_as_some_user(:with => :username)
 
       @u2 = Fabricate(:user)
       @u2.feed.updates << Fabricate(:update, :author => @u2.author)
