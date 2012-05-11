@@ -1,6 +1,6 @@
 class StaticController < ApplicationController
   def homepage
-    @list_class = "all"
+    @list_class = ""
     render :layout => false
   end
 
