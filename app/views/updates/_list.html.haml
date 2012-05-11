@@ -46,7 +46,7 @@
               %input{:type => "hidden", :name => "_method", :value => "delete"}
               = submit_tag "I Regret This", :class => "remove-update", :confirm => t(:remove_update, :scope => :confirms)
 
-!= render :partial => "shared/pagination"
+  != render :partial => "shared/pagination"
 
 - if updates.empty?
   .empty
