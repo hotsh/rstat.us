@@ -29,11 +29,7 @@ class UsersController < ApplicationController
       @updates = @user.updates
       @updates = @updates.paginate(:page => params[:page], :per_page => params[:per_page])
 
-      if @user == current_user
-        @list_class = "me"
-      else
-        @list_class = "single-user"
-      end
+      @list_class = "me"
 
       set_pagination_buttons(@updates)
 

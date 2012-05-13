@@ -34,16 +34,15 @@ describe "ALPS microblogging spec" do
       end
     end
 
-    describe "Unspecified in ALPS: a user's profile other than currently logged in user ('not me')" do
-      # Addition not specified in official ALPS spec!!!
-      it "has a user's updates in a ul with class single-user" do
+    describe "ALPS me, rstat.us user's profile page" do
+      it "has a user's updates in a ul with class me" do
         @u2 = Fabricate(:user)
         @update = Fabricate(:update, :author => @u2.author)
         @u2.feed.updates << @update
 
         visit "/users/#{@u2.username}"
 
-        within "div#messages ul.single-user li.message" do
+        within "div#messages ul.me li.message" do
           assert has_content? @update.text
         end
       end
