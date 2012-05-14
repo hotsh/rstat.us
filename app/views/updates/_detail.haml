@@ -13,8 +13,12 @@
           .update-date
             - if reply
               %a.timeago{:href => "/updates/#{update.id}", :title => update.created_at.getutc.iso8601}
+                %span.date-time
+                  = update.created_at.getutc.strftime("%FT%T")
             - else
               %abbr.timeago{:title => update.created_at.getutc.iso8601}
+                %span.date-time
+                  = update.created_at.getutc.strftime("%FT%T")
 
           .actions
             -unless current_user.nil? or (current_user.author.id == update.author.id)
