@@ -72,7 +72,12 @@ describe "ALPS microblogging spec" do
     describe "ALPS li.message descendants" do
       before do
         @a_user = Fabricate(:user)
-        @an_update = Fabricate(:update, :author => @a_user.author)
+        @an_update = Fabricate(:update,
+                               :author => @a_user.author,
+                               :created_at => Time.parse(
+                                 "Jan 1, 2012 09:34:16 UTC"
+                               )
+                              )
         @a_user.feed.updates << @an_update
 
         visit "/updates"
@@ -119,8 +124,8 @@ describe "ALPS microblogging spec" do
 
       it "has the update time in span.date-time" do
         # valid per RFC3339
-        within "li.message" do
-          assert has_selector?("span.date-time")
+        within "li.message span.date-time" do
+          assert has_content?("2012-01-01T09:34:16")
         end
       end
     end
