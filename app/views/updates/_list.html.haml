@@ -19,10 +19,7 @@
             != update.to_html
 
         .info
-          %time.published{:pubdate => "pubdate", :datetime => update.created_at.getutc.iso8601}
-            %a.timeago{:href => update.url, :rel => "bookmark message", :title => update.created_at.getutc.iso8601}
-              %span.date-time
-                = update.created_at.getutc.strftime("%FT%T")
+          = TimeDecorator.decorate(update).permalink
 
         - if !update.referral.nil?
           %span.in-reply
