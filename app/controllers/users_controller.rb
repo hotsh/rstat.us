@@ -204,7 +204,13 @@ class UsersController < ApplicationController
   # with the url to reset their password. Users are then redirected to the
   # confirmation page to prevent repost issues
   def forgot_password_create
+    unless params[:email] =~ /^([\w\.%\+\-]+)@([\w\-]+\.)+([\w]{2,})$/i
+      flash[:error] = "You didn't enter a correct email address. Please check your email and try again."
+      return render "login/forgot_password"
+    end
+
     user = User.first(:email => params[:email])
+
     if user.nil?
       flash[:error] = "Your account could not be found, please check your email and try again."
       render "login/forgot_password"
