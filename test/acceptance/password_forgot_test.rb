@@ -9,7 +9,9 @@ describe "forgotten password" do
     fill_in "email", :with => "someone@somewhere.com"
     click_button "Send"
 
-    assert_match "Your account could not be found, please check your email and try again.", page.body
+    within flash do
+      assert has_content? "Your account could not be found, please check your email and try again."
+    end
   end
 
   it "sets the reset password token" do
@@ -22,7 +24,11 @@ describe "forgotten password" do
     click_button "Send"
 
     u = User.first(:email => "someone@somewhere.com")
+
     refute u.perishable_token.nil?
-    assert_match "A link to reset your password has been sent to someone@somewhere.com.", page.body
+    within "p" do
+      assert has_content? "A link to reset your password has been sent to someone@somewhere.com."
+    end
+  end
   end
 end
