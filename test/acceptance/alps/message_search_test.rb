@@ -18,4 +18,19 @@ describe "Message searching" do
 
     assert form.has_selector?(:xpath, "input[@type='text' and @name='search']")
   end
+
+  it "does a search when using the form as a template" do
+    @update_text = "These aren't the droids you're looking for!"
+    Fabricate(:update, :text => @update_text)
+
+    visit "/"
+    find(:xpath,  "//a[contains(@rel, 'messages-search')]").click
+
+    form = find("form.messages-search")
+    visit "#{form["action"]}?search=droids"
+
+    within "div#messages ul.search li.message" do
+      assert has_content? @update_text
+    end
+  end
 end
