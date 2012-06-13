@@ -113,14 +113,14 @@ describe Update do
   describe "hashtags" do
     it "makes links if hash starts a word (before create)" do
       u = Fabricate.build(:update, :text => "This is a message with a #hashtag.")
-      assert_match /<a href='\/search\?q=%23hashtag'>#hashtag<\/a>/, u.to_html
+      assert_match /<a href='\/search\?search=%23hashtag'>#hashtag<\/a>/, u.to_html
       u = Fabricate.build(:update, :text => "This is a message with a#hashtag.")
       assert_equal "This is a message with a#hashtag.", u.to_html
     end
 
     it "makes links if hash starts a word (after create)" do
       u = Fabricate(:update, :text => "This is a message with a #hashtag.")
-      assert_match /<a href='\/search\?q=%23hashtag'>#hashtag<\/a>/, u.to_html
+      assert_match /<a href='\/search\?search=%23hashtag'>#hashtag<\/a>/, u.to_html
       u = Fabricate(:update, :text => "This is a message with a#hashtag.")
       assert_equal "This is a message with a#hashtag.", u.to_html
     end
@@ -128,7 +128,7 @@ describe Update do
     it "makes links for both a hashtag and a URL (after create)" do
       u = Fabricate(:update, :text => "This is a message with a #hashtag and mentions http://rstat.us/.")
 
-      assert_match /<a href='\/search\?q=%23hashtag'>#hashtag<\/a>/, u.to_html
+      assert_match /<a href='\/search\?search=%23hashtag'>#hashtag<\/a>/, u.to_html
       assert_match /<a href='http:\/\/rstat.us\/'>http:\/\/rstat.us\/<\/a>/, u.to_html
     end
 

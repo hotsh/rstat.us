@@ -3,7 +3,7 @@ require_relative 'acceptance_helper'
 
 def search_for(query)
   visit "/search"
-  fill_in "q", :with => query
+  fill_in "search", :with => query
   click_button "Search"
 end
 

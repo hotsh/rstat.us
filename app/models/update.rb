@@ -212,7 +212,7 @@ class Update
     end
 
     out.gsub!(/(^|\s+)#(\w+)/) do |match|
-      "#{$1}<a href='/search?q=%23#{$2}'>##{$2}</a>"
+      "#{$1}<a href='/search?search=%23#{$2}'>##{$2}</a>"
     end
 
     self.html = out
