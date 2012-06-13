@@ -1,6 +1,12 @@
 require 'require_relative' if RUBY_VERSION[0,3] == '1.8'
 require_relative 'acceptance_helper'
 
+def search_for(query)
+  visit "/search"
+  fill_in "q", :with => query
+  click_button "Search"
+end
+
 describe "search" do
   include AcceptanceHelper
 
@@ -26,10 +32,7 @@ describe "search" do
     end
 
     it "allows access to search" do
-      visit "/search"
-
-      fill_in "q", :with => "droids"
-      click_button "Search"
+      search_for("droids")
 
       assert_match @update_text, page.body
     end
@@ -44,10 +47,7 @@ describe "search" do
     end
 
     it "allows access to search" do
-      visit "/search"
-
-      fill_in "q", :with => "droids"
-      click_button "Search"
+      search_for("droids")
 
       assert_match @update_text, page.body
     end
@@ -55,37 +55,25 @@ describe "search" do
 
   describe "behavior regardless of authenticatedness" do
     it "gets a match for a word in the update" do
-      visit "/search"
-
-      fill_in "q", :with => "droids"
-      click_button "Search"
+      search_for("droids")
 
       assert_match @update_text, page.body
     end
 
     it "doesn't get a match for a substring ending a word in the update" do
-      visit "/search"
-
-      fill_in "q", :with => "roids"
-      click_button "Search"
+      search_for("roids")
 
       assert_match "No statuses match your search.", page.body
     end
 
     it "doesn't get a match for a substring starting a word in the update" do
-      visit "/search"
-
-      fill_in "q", :with => "loo"
-      click_button "Search"
+      search_for("loo")
 
       assert_match "No statuses match your search.", page.body
     end
 
     it "gets a case-insensitive match for a word in the update" do
-      visit "/search"
-
-      fill_in "q", :with => "DROIDS"
-      click_button "Search"
+      search_for("DROIDS")
 
       assert_match @update_text, page.body
     end
@@ -93,9 +81,8 @@ describe "search" do
     it "gets a match for hashtag search" do
       @hashtag_update_text = "This is a test #hashtag"
       Fabricate(:update, :text => @hashtag_update_text)
-      visit "/search"
-      fill_in "q", :with => "#hashtag"
-      click_button "Search"
+
+      search_for("#hashtag")
 
       assert has_link? "#hashtag"
     end
