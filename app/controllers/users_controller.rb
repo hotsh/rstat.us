@@ -131,7 +131,7 @@ class UsersController < ApplicationController
       end
 
       respond_to do |format|
-        format.html { render "users/list", :locals => {:title => title} }
+        format.html { render "users/list", :locals => {:title => title, :list_class => "friends"} }
         format.json { render :json => @authors }
       end
     end
@@ -164,7 +164,7 @@ class UsersController < ApplicationController
         title = "@#{@user.username}'s followers"
       end
 
-      render "users/list", :locals => {:title => title}
+      render "users/list", :locals => {:title => title, :list_class => "followers"}
     end
   end
 

@@ -4,7 +4,7 @@
 
 - content_for :top do
   #users-search.search
-    %form{:method => :get, :action => "/users"}
+    %form.users-search{:method => :get, :action => "/users"}
       %input{:name => "search", :type => "text", :value => params[:search]}
       %input{:type => "submit", :value => "Search", :class => "button"}
 
@@ -12,6 +12,6 @@
   .empty
     Sorry, no users that match.
 - else
-  = render :partial => "users/list", :locals => {:authors => @authors}
+  = render :partial => "users/list", :locals => {:authors => @authors, :list_class => "search"}
 
 = render :partial => "shared/pagination"

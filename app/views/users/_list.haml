@@ -1,26 +1,27 @@
-%ul.user-list
-  - authors.each_with_index do |author, i|
-    - next if author.nil?
-    %li.user{:class => i%2 == 0 ? "even" : "odd"}
-      = AuthorDecorator.decorate(author).avatar
+#users
+  %ul.user-list{:class => list_class}
+    - authors.each_with_index do |author, i|
+      - next if author.nil?
+      %li.user{:class => i%2 == 0 ? "even" : "odd"}
+        = AuthorDecorator.decorate(author).avatar
 
-      .info
-        %a{:href => author.url}
-          %b
-            = author.display_name
+        .info
+          %a{:href => author.url}
+            %b
+              = author.display_name
 
-          (#{author.username})
-        .bio
-          = author.bio
+            (<span class="user-text">#{author.username}</span>)
+          .bio
+            = author.bio
 
-      - if current_user && current_user.feed != author.feed && author.feed
-        - following = current_user.following_author?(author)
-        .follow{:class => (following ? "negative" : "positive")}
-          - if following
-            = form_tag "/subscriptions/#{author.feed.id}" do
-              %input{:type => "hidden", :name => "_method", :value => "delete"}
-              = submit_tag "Unfollow", :class => "button unfollow", :id => "unfollow-#{author.feed.id}", :confirm => t(:unfollow, :scope => :confirms)
-          - else
-            = form_tag "/subscriptions" do
-              %input{:type => "hidden", :name => "subscribe_to", :value => author.feed.id}
-              %input.button.follow{:type => "submit", :value => "Follow", :id => "follow-#{author.feed.id}"}
+        - if current_user && current_user.feed != author.feed && author.feed
+          - following = current_user.following_author?(author)
+          .follow{:class => (following ? "negative" : "positive")}
+            - if following
+              = form_tag "/subscriptions/#{author.feed.id}" do
+                %input{:type => "hidden", :name => "_method", :value => "delete"}
+                = submit_tag "Unfollow", :class => "button unfollow", :id => "unfollow-#{author.feed.id}", :confirm => t(:unfollow, :scope => :confirms)
+            - else
+              = form_tag "/subscriptions" do
+                %input{:type => "hidden", :name => "subscribe_to", :value => author.feed.id}
+                %input.button.follow{:type => "submit", :value => "Follow", :id => "follow-#{author.feed.id}"}
