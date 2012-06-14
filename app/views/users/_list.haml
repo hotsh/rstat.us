@@ -6,13 +6,14 @@
         = AuthorDecorator.decorate(author).avatar
 
         .info
-          %a{:href => author.url}
+          %a{:href => author.url, :rel => 'user messages'}
             %b
               = author.display_name
 
             (<span class="user-text">#{author.username}</span>)
           .bio
-            = author.bio
+            %span.description
+              = author.bio
 
         - if current_user && current_user.feed != author.feed && author.feed
           - following = current_user.following_author?(author)
