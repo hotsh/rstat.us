@@ -7,47 +7,52 @@
 
 - content_for :top do
   #profile.vcard
+    #users
+      %ul.single
+        %li.user
 
-    %h3.fn= @author.display_name
-    .nickname  @#{@author.username}
+          %h3.fn
+            %span.user-name= @author.display_name
+          .nickname  @<span class="user-text">#{@author.username}</span>
 
-    .follow-wrap
-      - unless current_user and @author.user == current_user
-        #follow
-          - if current_user and current_user.following_author? @author
-            .negative
-              = form_tag "/subscriptions/#{@author.feed.id}" do
-                %input{:type => "hidden", :name => "_method", :value => "delete"}
-                  %input.button.unfollow{:type => "submit", :value => "Unfollow", :id => "unfollow-#{@author.feed.id}"}
-          - elsif current_user
-            = form_tag "/subscriptions" do
-              %input{:type => "hidden", :name => "subscribe_to", :value => @author.feed.id}
-                %input.button.follow{:type => "submit", :value => "Follow", :id => "follow-#{@author.feed.id}"}
+          .follow-wrap
+            - unless current_user and @author.user == current_user
+              #follow
+                - if current_user and current_user.following_author? @author
+                  .negative
+                    = form_tag "/subscriptions/#{@author.feed.id}" do
+                      %input{:type => "hidden", :name => "_method", :value => "delete"}
+                        %input.button.unfollow{:type => "submit", :value => "Unfollow", :id => "unfollow-#{@author.feed.id}"}
+                - elsif current_user
+                  = form_tag "/subscriptions" do
+                    %input{:type => "hidden", :name => "subscribe_to", :value => @author.feed.id}
+                      %input.button.follow{:type => "submit", :value => "Follow", :id => "follow-#{@author.feed.id}"}
 
-      - if @author.user == current_user
-        .edit
-          %a{:href => edit_user_path(@author.username)} Edit
+            - if @author.user == current_user
+              .edit
+                %a{:href => edit_user_path(@author.username)} Edit
 
-    - unless @author.website.blank? or @author.bio.blank?
-      .info
-        - unless @author.website.blank?
-          .website
-            = @author.website_link
+          - unless @author.website.blank? or @author.bio.blank?
+            .info
+              - unless @author.website.blank?
+                .website
+                  = @author.website_link
 
-        %p.note= @author.bio
+              %p.note
+                %span.description= @author.bio
 
-    %ul.stats
-      %li.update-count
-        .icon
-        %a{ :href => "#profile_updates"}= @author.feed.updates.count
-        Updates
-      %li.following-count
-        .icon
-        %a{ :href => "/users/#{@author.username}/following"}= @author.user.following.length
-        Following
-      %li.follower-count
-        .icon
-        %a{ :href => "/users/#{@author.username}/followers"}= @author.user.followers.length
-        Followers
+          %ul.stats
+            %li.update-count
+              .icon
+              %a{ :href => "#profile_updates"}= @author.feed.updates.count
+              Updates
+            %li.following-count
+              .icon
+              %a{ :href => "/users/#{@author.username}/following"}= @author.user.following.length
+              Following
+            %li.follower-count
+              .icon
+              %a{ :href => "/users/#{@author.username}/followers"}= @author.user.followers.length
+              Followers
 
-= render :partial => "updates/list", :locals => {:updates => @updates, :id => "profile_updates", :no_highlight => true, :list_class => @list_class}
+= render :partial => "updates/list", :locals => {:updates => @updates, :id => "profile_updates", :no_highlight => true, :list_class => "messages-user"}

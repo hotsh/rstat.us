@@ -21,7 +21,7 @@ class AuthorDecorator < ApplicationDecorator
             "http://#{model.website}"
           end
 
-    h.link_to(url, url, :rel => 'me', :class => 'url')
+    h.link_to(url, url, :rel => 'website', :class => 'url')
   end
 
   private

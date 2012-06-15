@@ -30,20 +30,6 @@ describe "Unauthenticated reading" do
     end
   end
 
-  describe "ALPS me, rstat.us user's profile page" do
-    it "has a user's updates in a ul with class me" do
-      @u2 = Fabricate(:user)
-      @update = Fabricate(:update, :author => @u2.author)
-      @u2.feed.updates << @update
-
-      visit "/users/#{@u2.username}"
-
-      within "div#messages ul.me li.message" do
-        assert has_content? @update.text
-      end
-    end
-  end
-
   describe "ALPS single, rstat.us update show" do
     before do
       @update = Fabricate(:update)
