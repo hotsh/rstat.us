@@ -16,6 +16,7 @@ gem "haml-rails", "~> 0.3.4"
 gem 'jquery-rails', "~> 1.0.12"
 
 gem 'airbrake', "~> 3.0.9"
+gem 'bcrypt-ruby', "~> 3.0.0"
 gem 'unicorn', "~> 4.0.1"
 gem 'omniauth', :git => 'git://github.com/intridea/omniauth.git'
 gem "mongo_mapper", "~> 0.9.2"
