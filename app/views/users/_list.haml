@@ -8,7 +8,8 @@
         .info
           %a{:href => author.url, :rel => 'user messages'}
             %b
-              = author.display_name
+              %span.user-name
+                = author.display_name
 
             (<span class="user-text">#{author.username}</span>)
           .bio
