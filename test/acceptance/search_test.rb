@@ -87,4 +87,52 @@ describe "search" do
       assert has_link? "#hashtag"
     end
   end
+
+  describe "pagination" do
+    it "does not paginate when there are too few" do
+      5.times do
+        Fabricate(:update, :text => "Testing pagination LIKE A BOSS")
+      end
+
+      search_for("boss")
+
+      refute_match "Previous", page.body
+      refute_match "Next", page.body
+    end
+
+    it "paginates forward only if on the first page" do
+      30.times do
+        Fabricate(:update, :text => "Testing pagination LIKE A BOSS")
+      end
+
+      search_for("boss")
+
+      refute_match "Previous", page.body
+      assert_match "Next", page.body
+    end
+
+    it "paginates backward only if on the last page" do
+      30.times do
+        Fabricate(:update, :text => "Testing pagination LIKE A BOSS")
+      end
+
+      search_for("boss")
+      click_link "next_button"
+
+      assert_match "Previous", page.body
+      refute_match "Next", page.body
+    end
+
+    it "paginates forward and backward if on a middle page" do
+      54.times do
+        Fabricate(:update, :text => "Testing pagination LIKE A BOSS")
+      end
+
+      search_for("boss")
+      click_link "next_button"
+
+      assert_match "Previous", page.body
+      assert_match "Next", page.body
+    end
+  end
 end
