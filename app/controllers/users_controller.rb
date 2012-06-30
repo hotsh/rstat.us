@@ -12,7 +12,7 @@ class UsersController < ApplicationController
     end
     unless @authors.empty?
       @authors = @authors.paginate(:page => params[:page], :per_page => params[:per_page])
-      set_pagination_buttons(@authors)
+      set_pagination_buttons(@authors, :search => params[:search])
     end
   end
 

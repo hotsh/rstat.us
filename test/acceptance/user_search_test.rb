@@ -26,7 +26,7 @@ describe "user search" do
     visit "/users?search=ebr"
     assert has_content?("zebra")
   end
-  
+
   it "copes an with asterisk in the search string" do
     visit "/users?search=*"
     assert_equal 200, page.status_code, "search input (*) caused a #{page.status_code} response"
@@ -45,4 +45,53 @@ describe "user search" do
     visit "/users?search=ZEBR"
     assert has_content?("zebra")
   end
+
+  describe "pagination" do
+    it "does not paginate when there are too few" do
+      5.times do
+        Fabricate(:user)
+      end
+
+      visit "/users?search=user"
+
+      refute_match "Previous", page.body
+      refute_match "Next", page.body
+    end
+
+    it "paginates forward only if on the first page" do
+      30.times do
+        Fabricate(:user)
+      end
+
+      visit "/users?search=user"
+
+      refute_match "Previous", page.body
+      assert_match "Next", page.body
+    end
+
+    it "paginates backward only if on the last page" do
+      30.times do
+        Fabricate(:user)
+      end
+
+      visit "/users?search=user"
+      click_link "next_button"
+
+      assert_match "Previous", page.body
+      refute_match "Next", page.body
+    end
+
+    it "paginates forward and backward if on a middle page" do
+      54.times do
+        Fabricate(:user)
+      end
+
+      visit "/users?search=user"
+      click_link "next_button"
+
+      assert_match "Previous", page.body
+      assert_match "Next", page.body
+    end
+  end
+
 end
