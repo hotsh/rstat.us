@@ -32,6 +32,12 @@ class UsersController < ApplicationController
       set_pagination_buttons(@updates)
 
       headers['Link'] = "<#{user_xrd_path(@user.author)}>; rel=\"lrdd\"; type=\"application/xrd+xml\""
+
+      respond_to do |format|
+        format.json { render :json => {:user => @author, :updates => @updates} }
+        format.html
+      end
+
     end
   end
 

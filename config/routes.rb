@@ -20,6 +20,7 @@ RstatUs::Application.routes.draw do
   match '/users/:username/auth/:provider', :via => :delete, :to => "auth#destroy", :constraints => {:username => /[^\/]+/ }
 
   # Users
+  match 'users/:id.:format', :to => "users#show", :constraints => { :id => /[^\/]+/, :format => /json/ }
   resources :users, :constraints => { :id => /[^\/]+/ }
   match "users/:id/feed", :to => "users#feed", :as => "user_feed", :constraints => { :id => /[^\/]+/ }
 
