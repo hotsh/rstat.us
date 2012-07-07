@@ -21,8 +21,12 @@ describe "JSON Unauthenticated reading" do
 
     parsed_json = JSON.parse(source)
 
-    parsed_json["author"]["username"].must_equal(u.username)
-    parsed_json["updates"][0]["text"].must_equal(update0.text)
-    parsed_json["updates"][1]["text"].must_equal(update1.text)
+    parsed_json.length.must_equal 2
+
+    parsed_json[0]["text"].must_equal(update0.text)
+    parsed_json[0]["user"]["username"].must_equal(u.username)
+
+    parsed_json[1]["text"].must_equal(update1.text)
+    parsed_json[1]["user"]["username"].must_equal(u.username)
   end
 end

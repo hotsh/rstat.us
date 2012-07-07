@@ -35,8 +35,7 @@ class UsersController < ApplicationController
 
       respond_to do |format|
         format.json {
-          author_json = AuthorJsonDecorator.decorate(@author)
-          render :json => {:author => author_json, :updates => @updates}
+          render :json => @updates.map{ |u| UpdateJsonDecorator.decorate(u) }
         }
         format.html
       end
