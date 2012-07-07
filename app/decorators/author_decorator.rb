@@ -6,33 +6,42 @@ class AuthorDecorator < ApplicationDecorator
   def avatar
     h.content_tag "div", :class => "avatar" do
       h.link_to(
-        h.image_tag(avatar_src, :class => "photo user-image", :alt => "avatar"),
+        h.image_tag(
+          absolute_avatar_url,
+          :class => "photo user-image",
+          :alt => "avatar"
+        ),
         author.url
       )
     end
   end
 
-  # Creates a link to the user's website for their profile and adds http://
-  # if it isn't there
-  def website_link
-    url = if model.website[0,7] == "http://" or model.website[0,8] == "https://"
-            model.website
-          else
-            "http://#{model.website}"
-          end
-
-    h.link_to(url, url, :rel => 'website', :class => 'url')
-  end
-
-  private
-
   # Make sure we're using the asset path if the user's avatar is the default
   # (local) avatar
-  def avatar_src
+  def absolute_avatar_url
     if author.avatar_url.eql? Author::DEFAULT_AVATAR
       h.asset_path(author.avatar_url)
     else
       author.avatar_url
+    end
+  end
+
+  # Creates a link to the user's website for their profile
+  def website_link
+    h.link_to(
+      absolute_website_url,
+      absolute_website_url,
+      :rel => 'website',
+      :class => 'url'
+    )
+  end
+
+  # adds http:// if it isn't there
+  def absolute_website_url
+    if author.website[0,7] == "http://" or author.website[0,8] == "https://"
+      author.website
+    else
+      "http://#{author.website}"
     end
   end
 end
