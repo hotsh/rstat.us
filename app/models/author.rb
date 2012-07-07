@@ -201,7 +201,7 @@ class Author
     # Set up PortableContacts
     poco = OStatus::PortableContacts.new(:id => author_url,
                                          :preferred_username => username)
-    poco.display_name = name unless name.nil? || name.empty?
+    poco.display_name = display_name
 
     # Set up and return Author
     avatar_url_abs = avatar_url
