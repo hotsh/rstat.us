@@ -6,19 +6,23 @@ describe "JSON Unauthenticated reading" do
 
   it "can request an individual user's timeline in json" do
     u = Fabricate(:user)
-    update1 = Fabricate(:update,
+    update0 = Fabricate(:update,
                       :text       => "This is a message posted yesterday",
                       :author     => u.author,
                       :created_at => 1.day.ago)
-    update2 = Fabricate(:update,
+    update1 = Fabricate(:update,
                       :text       => "This is a message posted last week",
                       :author     => u.author,
                       :created_at => 1.week.ago)
+    u.feed.updates << update0
     u.feed.updates << update1
-    u.feed.updates << update2
 
     visit "/users/#{u.username}.json"
 
-    assert_match /#{update1.text}.*#{update2.text}/m, page.body
+    parsed_json = JSON.parse(source)
+
+    parsed_json["author"]["username"].must_equal(u.username)
+    parsed_json["updates"][0]["text"].must_equal(update0.text)
+    parsed_json["updates"][1]["text"].must_equal(update1.text)
   end
 end

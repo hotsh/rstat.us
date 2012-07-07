@@ -34,7 +34,10 @@ class UsersController < ApplicationController
       headers['Link'] = "<#{user_xrd_path(@user.author)}>; rel=\"lrdd\"; type=\"application/xrd+xml\""
 
       respond_to do |format|
-        format.json { render :json => {:user => @author, :updates => @updates} }
+        format.json {
+          author_json = AuthorJsonDecorator.decorate(@author)
+          render :json => {:author => author_json, :updates => @updates}
+        }
         format.html
       end
 
