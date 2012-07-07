@@ -28,17 +28,23 @@ class AuthorDecorator < ApplicationDecorator
 
   # Creates a link to the user's website for their profile
   def website_link
-    h.link_to(
-      absolute_website_url,
-      absolute_website_url,
-      :rel => 'website',
-      :class => 'url'
-    )
+    if absolute_website_url.present?
+      h.link_to(
+        absolute_website_url,
+        absolute_website_url,
+        :rel => 'website',
+        :class => 'url'
+      )
+    else
+      ""
+    end
   end
 
   # adds http:// if it isn't there
   def absolute_website_url
-    if author.website[0,7] == "http://" or author.website[0,8] == "https://"
+    if author.website.blank?
+      nil
+    elsif author.website[0,7] == "http://" or author.website[0,8] == "https://"
       author.website
     else
       "http://#{author.website}"
