@@ -5,7 +5,16 @@ class UpdatesController < ApplicationController
   def index
     @title = "updates"
     @list_class = "all"
-    render_index(Update)
+
+    respond_to do |format|
+      format.json {
+        @updates = Update
+        set_pagination
+        render :json => @updates.map{ |u| UpdateJsonDecorator.decorate(u) }
+      }
+      format.html { render_index(Update) }
+    end
+
   end
 
   def timeline

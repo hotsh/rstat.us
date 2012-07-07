@@ -4,7 +4,7 @@ require_relative '../acceptance_helper'
 describe "JSON Unauthenticated reading" do
   include AcceptanceHelper
 
-  it "can request an individual user's timeline in json" do
+  it "can request an individual user's timeline" do
     u = Fabricate(:user)
     update0 = Fabricate(:update,
                       :text       => "This is a message posted yesterday",
@@ -28,5 +28,44 @@ describe "JSON Unauthenticated reading" do
 
     parsed_json[1]["text"].must_equal(update1.text)
     parsed_json[1]["user"]["username"].must_equal(u.username)
+  end
+
+  it "can request all updates" do
+    u = Fabricate(:user)
+    update = Fabricate(:update,
+               :author => u.author
+             )
+    u.feed.updates << update
+
+    visit "/updates.json"
+
+    parsed_json = JSON.parse(source)
+    parsed_json.length.must_equal 1
+
+    parsed_json[0]["text"].must_equal(update.text)
+    parsed_json[0]["user"]["username"].must_equal(u.username)
+  end
+
+  describe "pagination" do
+    it "does not paginate when there are too few" do
+      5.times do
+        Fabricate(:update)
+      end
+
+      visit "/updates.json?page=2"
+
+      parsed_json = JSON.parse(source)
+      parsed_json.length.must_equal 0
+    end
+
+    it "returns the next page of results if we add the page param" do
+      30.times do
+        Fabricate(:update)
+      end
+
+      visit "/updates.json?page=2"
+      parsed_json = JSON.parse(source)
+      parsed_json.length.must_equal 10
+    end
   end
 end
