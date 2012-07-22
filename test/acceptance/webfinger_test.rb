@@ -6,6 +6,9 @@ describe "Webfinger" do
 
   it "404s if that user doesnt exist" do
     get "/users/acct:nonexistent@somedomain.com/xrd.xml"
+    if last_response.status == 301
+      follow_redirect!
+    end
     last_response.status.must_equal(404)
   end
 
@@ -13,6 +16,9 @@ describe "Webfinger" do
     @user = Fabricate(:user)
     param = "acct:#{@user.username}@#{@user.author.domain}"
     get "/users/#{param}/xrd.xml"
+    if last_response.status == 301
+      follow_redirect!
+    end
 
     xml = Nokogiri.XML(last_response.body)
     subject = xml.xpath("//xmlns:Subject").first.content

@@ -18,6 +18,10 @@ describe "Salmon" do
   it "404s if the request body does not contain a magic envelope" do
     feed = Fabricate(:feed)
     post "/feeds/#{feed.id}/salmon", "<?xml version='1.0' encoding='UTF-8'?><bogus-xml />"
+    if last_response.status == 301
+      follow_redirect!
+    end
+
     last_response.status.must_equal(404)
   end
 end

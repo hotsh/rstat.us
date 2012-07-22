@@ -17,6 +17,10 @@ module AcceptanceHelper
 
   OmniAuth.config.test_mode = true
 
+  if ENV["ENABLE_HTTPS"] == "yes"
+    Capybara.app_host = 'https://www.example.com'
+  end
+
   def app
     RstatUs::Application
   end

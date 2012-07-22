@@ -6,9 +6,8 @@ describe "profile" do
 
   it "redirects to the username's profile with the right case" do
     u = Fabricate(:user)
-    url = "http://www.example.com/users/#{u.username}"
     visit "/users/#{u.username.upcase}"
-    assert_equal url, page.current_url
+    current_url.must_match(/\/users\/#{u.username}$/)
   end
 
   it "allows viewing of profiles when username contains a dot" do
