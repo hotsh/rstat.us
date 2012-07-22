@@ -6,7 +6,7 @@ docs/*
 config.yml
 .sass-cache
 tmp
-public/assets/src
+public/assets
 test/coverage
 log/*.log*
 capybara*
