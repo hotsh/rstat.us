@@ -1,14 +1,4 @@
 GIT
-  remote: git://github.com/chriseppstein/compass.git
-  revision: 91a748a916360057b5caf6ea85cd38441d3b257a
-  branch: rails31
-  specs:
-    compass (0.12.0.alpha.0.91a748a)
-      chunky_png (~> 1.2)
-      fssm (>= 0.2.7)
-      sass (~> 3.1)
-
-GIT
   remote: git://github.com/collectiveidea/delayed_job.git
   revision: 8dc3930f20eb7363ef0d451ac05a3851eb0caaf6
   tag: v2.1.4
@@ -122,7 +112,7 @@ GEM
       xpath (~> 0.1.4)
     childprocess (0.3.4)
       ffi (~> 1.0, >= 1.0.6)
-    chunky_png (1.2.0)
+    chunky_png (1.2.5)
     coffee-rails (3.1.1)
       coffee-script (>= 2.2.0)
       railties (~> 3.1.0)
@@ -130,6 +120,12 @@ GEM
       coffee-script-source
       execjs
     coffee-script-source (1.1.2)
+    compass (0.12.2)
+      chunky_png (~> 1.2)
+      fssm (>= 0.2.7)
+      sass (~> 3.1)
+    compass-rails (1.0.3)
+      compass (>= 0.12.2, < 0.14)
     crack (0.1.8)
     daemons (1.1.4)
     database_cleaner (0.6.7)
@@ -148,7 +144,7 @@ GEM
     faraday_middleware (0.7.0)
       faraday (~> 0.7.3)
     ffi (1.1.0)
-    fssm (0.2.7)
+    fssm (0.2.9)
     haml (3.1.2)
     haml-rails (0.3.4)
       actionpack (~> 3.0)
@@ -316,7 +312,7 @@ DEPENDENCIES
   bson_ext (~> 1.3.1)
   capybara (~> 1.1.2)
   coffee-rails (~> 3.1.0)
-  compass!
+  compass-rails (~> 1.0.3)
   database_cleaner (~> 0.6.7)
   delayed_job!
   delayed_job_mongo_mapper!
