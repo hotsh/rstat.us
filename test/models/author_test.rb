@@ -31,7 +31,7 @@ describe Author do
 
     it "uses the default avatar if neither image_url nor email is set" do
       @author.email = nil
-      assert_equal Author::DEFAULT_AVATAR, @author.avatar_url
+      assert_equal RstatUs::DEFAULT_AVATAR, @author.avatar_url
     end
   end
 

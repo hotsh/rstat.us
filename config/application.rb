@@ -69,6 +69,8 @@ module RstatUs
 
   end
 
+  DEFAULT_AVATAR = "avatar.png"
+
   # Custom RstatUs exceptions
   class InvalidSubscribeTo < StandardError; end
   class InvalidSalmonMessage < StandardError; end

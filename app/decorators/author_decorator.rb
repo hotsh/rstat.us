@@ -19,7 +19,7 @@ class AuthorDecorator < ApplicationDecorator
   # Make sure we're using the asset path if the user's avatar is the default
   # (local) avatar
   def absolute_avatar_url
-    if author.avatar_url.eql? Author::DEFAULT_AVATAR
+    if author.avatar_url.eql? RstatUs::DEFAULT_AVATAR
       h.asset_path(author.avatar_url)
     else
       author.avatar_url

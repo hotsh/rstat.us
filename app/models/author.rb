@@ -8,8 +8,9 @@ class Author
   # Constants that are useful for avatars using gravatar
   GRAVATAR               = "gravatar.com"
   GRAVATAR_SIGNUP        = "http://gravatar.com/site/signup"
-  DEFAULT_AVATAR         = "avatar.png"
-  ENCODED_DEFAULT_AVATAR = URI.encode_www_form_component(DEFAULT_AVATAR)
+  ENCODED_DEFAULT_AVATAR = URI.encode_www_form_component(
+                             RstatUs::DEFAULT_AVATAR
+                           )
 
   # public keys are good for 4 weeks
   PUBLIC_KEY_LEASE_DAYS = 28
@@ -152,7 +153,7 @@ class Author
 
   # We've got a couple of options here. If they have some sort of image from
   # Twitter, we use that, and if they don't, we go with Gravatar.
-  # If none of that is around, then we show the DEFAULT_AVATAR
+  # If none of that is around, then we show the RstatUs::DEFAULT_AVATAR
   def avatar_url
 
     # If the user has a twitter image, return it
@@ -165,7 +166,7 @@ class Author
 
     # Otherwise return the default avatar
     else
-      DEFAULT_AVATAR
+      RstatUs::DEFAULT_AVATAR
     end
   end
 

@@ -11,7 +11,7 @@ jQuery $ ->
   # Replace images that 404 with the default avatar
   replaceBrokenImages = ->
     $("img").error ->
-      $(this).attr("src", "<%= asset_path Author::DEFAULT_AVATAR %>")
+      $(this).attr("src", "<%= asset_path RstatUs::DEFAULT_AVATAR %>")
 
   replaceBrokenImages()
 
