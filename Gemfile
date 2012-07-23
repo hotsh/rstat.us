@@ -5,7 +5,9 @@ gem 'rails', '3.1.6'
 # Gems used only for assets and not required
 # in production environments by default.
 group :assets do
-  gem 'sass-rails', "  ~> 3.1.0"
+  # Lock sass-rails at 3.1.4 because of an issue in sass-rails 3.1.5 & 6
+  # https://github.com/rails/sass-rails/issues/78
+  gem 'sass-rails', "= 3.1.4"
   gem 'compass-rails', "~> 1.0.3"
   gem 'coffee-rails', "~> 3.1.0"
   gem 'uglifier', "~> 1.0.0"
