@@ -13,7 +13,7 @@ class User
 
   # Associations
   # XXX: These don't seem to be getting set when you sign up with Twitter, etc?
-  many :authorizations, :dependant => :destroy
+  many :authorizations, :dependent => :destroy
   belongs_to :author
   key :author_id, ObjectId
 
