@@ -5,22 +5,30 @@ class AuthorDecorator < ApplicationDecorator
   # to the user's page
   def avatar
     h.content_tag "div", :class => "avatar" do
-      h.link_to(
+      if author
+        h.link_to(
+          h.image_tag(
+            absolute_avatar_url,
+            :class => "photo user-image",
+            :alt => "avatar"
+          ),
+          author.url
+        )
+      else
         h.image_tag(
           absolute_avatar_url,
           :class => "photo user-image",
           :alt => "avatar"
-        ),
-        author.url
-      )
+        )
+      end
     end
   end
 
   # Make sure we're using the asset path if the user's avatar is the default
   # (local) avatar
   def absolute_avatar_url
-    if author.avatar_url.eql? RstatUs::DEFAULT_AVATAR
-      h.asset_path(author.avatar_url)
+    if !author || author.avatar_url.eql?(RstatUs::DEFAULT_AVATAR)
+      h.asset_path(RstatUs::DEFAULT_AVATAR)
     else
       author.avatar_url
     end
