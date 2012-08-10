@@ -7,21 +7,22 @@ class AuthorDecorator < ApplicationDecorator
     h.content_tag "div", :class => "avatar" do
       if author
         h.link_to(
-          h.image_tag(
-            absolute_avatar_url,
-            :class => "photo user-image",
-            :alt => "avatar"
-          ),
+          avatar_image_tag,
           author.url
         )
       else
-        h.image_tag(
-          absolute_avatar_url,
-          :class => "photo user-image",
-          :alt => "avatar"
-        )
+        avatar_image_tag
       end
     end
+  end
+
+  # Just the image tag part of the avatar markup
+  def avatar_image_tag
+    h.image_tag(
+      absolute_avatar_url,
+      :class => "photo user-image",
+      :alt => "avatar"
+    )
   end
 
   # Make sure we're using the asset path if the user's avatar is the default
