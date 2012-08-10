@@ -15,7 +15,7 @@ namespace :test do
   end
 
   Dir.foreach("test") do |dirname|
-    if dirname !~ /\.|coverage|data/ && File.directory?(File.join("test", dirname))
+    if dirname !~ /\.|coverage|data|fabricators/ && File.directory?(File.join("test", dirname))
       desc "Run #{dirname} tests"
       task dirname do
         test_task = Rake::TestTask.new("#{dirname}tests") do |t|
