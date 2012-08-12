@@ -158,7 +158,11 @@ describe "Authorization" do
 
         visit '/auth/twitter'
 
-        assert page.has_content?("We were unable to use your credentials to log you in")
+        within flash do
+          assert has_content?(
+            "We were unable to use your credentials to log you in"
+          )
+        end
         assert_match /\/sessions\/new/, page.current_url
       end
 
@@ -167,7 +171,11 @@ describe "Authorization" do
 
         visit '/auth/twitter'
 
-        assert page.has_content?("We were unable to use your credentials because of a timeout")
+        within flash do
+          assert has_content?(
+            "We were unable to use your credentials because of a timeout"
+          )
+        end
         assert_match /\/sessions\/new/, page.current_url
       end
 
@@ -176,7 +184,9 @@ describe "Authorization" do
 
         visit '/auth/twitter'
 
-        assert page.has_content?("We were unable to use your credentials")
+        within flash do
+          assert has_content?("We were unable to use your credentials")
+        end
         assert_match /\/sessions\/new/, page.current_url
       end
     end
@@ -231,7 +241,9 @@ describe "Authorization" do
       it "logs in with username and no twitter login" do
         log_in_as_some_user(:with => :username)
 
-        assert_match /Login successful/, page.body
+        within flash do
+          assert has_content?("Login successful")
+        end
         assert_match @u.username, page.body
       end
 
