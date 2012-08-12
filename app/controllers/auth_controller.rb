@@ -65,6 +65,11 @@ class AuthController < ApplicationController
     redirect_to root_path
   end
 
+  def invalid_auth_provider
+    flash[:error] = "We were unable to use your credentials because we do not support logging in with #{params[:provider]}."
+    redirect_to new_session_url
+  end
+
   def failure
     if params[:message] == "invalid_credentials"
       flash[:error] = "We were unable to use your credentials to log you in. " +

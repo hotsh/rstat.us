@@ -15,7 +15,10 @@ RstatUs::Application.routes.draw do
   match "help" => "static#help"
 
   # External Auth
-  match '/auth/:provider/callback', :to => 'auth#auth'
+  # If we add more valid auth providers, they will need to be added
+  # to this route's constraints
+  match '/auth/:provider/callback', :to => 'auth#auth', :constraints => {:provider => /twitter/}
+  match '/auth/:provider/callback', :to => 'auth#invalid_auth_provider'
   match '/auth/failure', :to => 'auth#failure'
   match '/users/:username/auth/:provider', :via => :delete, :to => "auth#destroy", :constraints => {:username => /[^\/]+/ }
 

@@ -190,6 +190,28 @@ describe "Authorization" do
         assert_match /\/sessions\/new/, page.current_url
       end
     end
+
+    describe "facebook" do
+      it "fails facebook login with a nice error message; not crashing" do
+        visit '/auth/facebook/callback'
+
+        within flash do
+          assert has_content?("We were unable to use your credentials because we do not support logging in with facebook.")
+        end
+        page.current_url.must_match(/\/sessions\/new/)
+      end
+    end
+
+    describe "any provider other than twitter" do
+      it "fails with a nice error; we only support login with twitter" do
+        visit '/auth/whatever/callback'
+
+        within flash do
+          assert has_content?("We were unable to use your credentials because we do not support logging in with whatever.")
+        end
+        page.current_url.must_match(/\/sessions\/new/)
+      end
+    end
   end
 
   describe "profile" do
