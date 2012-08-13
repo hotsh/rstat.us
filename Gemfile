@@ -19,7 +19,10 @@ gem 'jquery-rails', "~> 1.0.12"
 gem 'airbrake', "~> 3.0.9"
 gem 'bcrypt-ruby', "~> 3.0.0"
 gem 'unicorn', "~> 4.0.1"
+
 gem 'omniauth', "~> 1.1.0"
+gem "omniauth-twitter", "~> 0.0.12"
+
 gem "mongo_mapper", "~> 0.11.2"
 gem "mongo", "= 1.6.2"
 gem "bson", "= 1.6.2"
