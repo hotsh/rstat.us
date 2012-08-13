@@ -18,7 +18,7 @@ class UsersController < ApplicationController
 
   def show
     if @user.nil?
-      render :file => "#{Rails.root}/public/404.html", :status => 404
+      render :file => "#{Rails.root}/public/404", :status => 404
     elsif @user.username != params[:id] # case difference
       @title = @user.username
       redirect_to user_path(@user)
@@ -106,7 +106,7 @@ class UsersController < ApplicationController
     if @user
       redirect_to feed_path(@user.feed, :format => :atom)
     else
-      render :file => "#{Rails.root}/public/404.html", :status => 404
+      render :file => "#{Rails.root}/public/404", :status => 404
     end
   end
 
@@ -114,7 +114,7 @@ class UsersController < ApplicationController
   # world, so pick wisely!
   def following
     if @user.nil?
-      render :file => "#{Rails.root}/public/404.html", :status => 404
+      render :file => "#{Rails.root}/public/404", :status => 404
     # If the username's case entered in the URL is different than the case
     # specified by that user, redirect to the case that the user prefers
     elsif @user.username != params[:id]
@@ -147,7 +147,7 @@ class UsersController < ApplicationController
   # followers. Only one way to find out...
   def followers
     if @user.nil?
-      render :file => "#{Rails.root}/public/404.html", :status => 404
+      render :file => "#{Rails.root}/public/404", :status => 404
     # If the username's case entered in the URL is different than the case
     # specified by that user, redirect to the case that the user prefers
     elsif @user.username != params[:id]

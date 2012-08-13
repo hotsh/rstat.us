@@ -15,7 +15,7 @@ class SalmonController < ApplicationController
     status 200
     return
   rescue MongoMapper::DocumentNotFound, ArgumentError, RstatUs::InvalidSalmonMessage
-    render :file => "#{Rails.root}/public/404.html", :status => 404
+    render :file => "#{Rails.root}/public/404", :status => 404
     return
   end
 end
