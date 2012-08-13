@@ -48,7 +48,7 @@ module TestHelper
     {
       "provider" => options[:provider] || "twitter",
       "uid" => options[:uid] || 12345,
-      "user_info" => {
+      "info" => {
         "name" => "Joe Public",
         "email" => "joe@public.com",
         "nickname" => options[:nickname] || username,

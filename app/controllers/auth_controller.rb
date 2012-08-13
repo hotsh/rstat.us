@@ -27,12 +27,12 @@ class AuthController < ApplicationController
         # might be a nice refactoring.
         session[:uid] = auth['uid']
         session[:provider] = auth['provider']
-        session[:name] = auth['user_info']['name']
-        session[:nickname] = auth['user_info']['nickname']
-        session[:website] = auth['user_info']['urls']['Website']
-        session[:description] = auth['user_info']['description']
-        session[:image] = auth['user_info']['image']
-        session[:email] = auth['user_info']['email']
+        session[:name] = auth['info']['name']
+        session[:nickname] = auth['info']['nickname']
+        session[:website] = auth['info']['urls']['Website']
+        session[:description] = auth['info']['description']
+        session[:image] = auth['info']['image']
+        session[:email] = auth['info']['email']
         session[:oauth_token] = auth['credentials']['token']
         session[:oauth_secret] = auth['credentials']['secret']
 
@@ -40,7 +40,7 @@ class AuthController < ApplicationController
         # the user is informed that they need to change it.
         # Everyone is redirected to /users/new to confirm that they'd like
         # to have their username.
-        if User.first :username => auth['user_info']['nickname']
+        if User.first :username => auth['info']['nickname']
           flash[:error] = "Sorry, someone else has that username. Please pick another."
         end
 
@@ -55,7 +55,7 @@ class AuthController < ApplicationController
 
     @auth.oauth_token = auth['credentials']['token']
     @auth.oauth_secret = auth['credentials']['secret']
-    @auth.nickname = auth['user_info']['nickname']
+    @auth.nickname = auth['info']['nickname']
     @auth.save
 
     session[:user_id] = @auth.user.id
