@@ -18,7 +18,7 @@ describe Authorization do
 
     assert_equal auth["uid"], a.uid
     assert_equal auth["provider"], a.provider
-    assert_equal auth["user_info"]["nickname"], a.nickname
+    assert_equal auth["info"]["nickname"], a.nickname
     assert_equal auth['credentials']['token'], a.oauth_token
     assert_equal auth['credentials']['secret'], a.oauth_secret
   end

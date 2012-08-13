@@ -64,7 +64,7 @@ class Author
   def self.create_from_hash!(hash, domain)
 
     # Omniauth user information, as a hash
-    user  = hash['user_info']
+    user  = hash['info']
 
     # Grabs each of the important user details
     name       = user['name']

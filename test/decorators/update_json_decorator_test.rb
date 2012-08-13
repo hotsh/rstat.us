@@ -20,7 +20,9 @@ describe UpdateJsonDecorator do
     end
 
     it "has the date published" do
-      @parsed_json["created_at"].must_equal(@update.created_at)
+      json_time = Time.parse(@parsed_json["created_at"])
+
+      json_time.to_i.must_equal(@update.created_at.to_i)
     end
 
     it "has the url to just that update" do

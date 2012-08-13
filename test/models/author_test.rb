@@ -7,7 +7,7 @@ describe Author do
   end
 
   it "creates an author from a hash" do
-    hash = {"user_info" => {"name" => "james", "nickname" => "jim", "urls" => {}} }
+    hash = {"info" => {"name" => "james", "nickname" => "jim", "urls" => {}} }
     assert Author.create_from_hash!(hash, "rstat.us").is_a?(Author)
   end
 

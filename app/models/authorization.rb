@@ -55,7 +55,7 @@ class Authorization
     end
 
     # Grab the user information from the hash
-    uid, provider, nickname = hash['uid'], hash['provider'], hash['user_info']['nickname']
+    uid, provider, nickname = hash['uid'], hash['provider'], hash['info']['nickname']
 
     # Grab the credentials, including token and secret, from the hash
     credentials = hash['credentials']
