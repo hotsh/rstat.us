@@ -20,7 +20,7 @@ gem 'airbrake', "~> 3.0.9"
 gem 'bcrypt-ruby', "~> 3.0.0"
 gem 'unicorn', "~> 4.0.1"
 gem 'omniauth', :git => 'git://github.com/intridea/omniauth.git'
-gem "mongo_mapper", "~> 0.9.2"
+gem "mongo_mapper", "~> 0.11.2"
 gem "mongo", "= 1.6.2"
 gem "bson", "= 1.6.2"
 gem "bson_ext", "= 1.6.2"
