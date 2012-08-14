@@ -15,6 +15,11 @@ describe "feeds" do
     assert_match "The page you were looking for doesn't exist.", page.body
   end
 
+  it "404s if that feed id doesnt exist" do
+    visit "/feeds/123"
+    page.status_code.must_equal(404)
+  end
+
   describe "atom for the hub" do
     it "returns 20 updates if no cache header info is supplied" do
       f = Fabricate(:feed)
