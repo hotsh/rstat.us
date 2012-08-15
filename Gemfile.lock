@@ -33,6 +33,14 @@ GIT
       mustache
       redcarpet (~> 1.17)
 
+GIT
+  remote: git@github.com:carols10cents/doorkeeper.git
+  revision: 3e779760daa480a7efdf68c33a1d7e9329e92f1d
+  branch: mongo_mapper
+  specs:
+    doorkeeper (0.5.0.dev)
+      railties (~> 3.1)
+
 GEM
   remote: http://rubygems.org/
   specs:
@@ -278,6 +286,7 @@ DEPENDENCIES
   database_cleaner (~> 0.6.7)
   delayed_job!
   delayed_job_mongo_mapper!
+  doorkeeper!
   draper (~> 0.11.1)
   exceptional (~> 2.0.32)
   fabrication (~> 1.2.0)
