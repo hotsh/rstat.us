@@ -4,6 +4,15 @@ require_relative 'acceptance_helper'
 describe "OAuth Provider" do
   include AcceptanceHelper
 
+  before do
+    @app = Fabricate(:doorkeeper_application)
+    @authorize_url = "/oauth/authorize?" + {
+      :response_type => "code",
+      :client_id     => @app.uid,
+      :redirect_uri  => @app.redirect_uri
+    }.to_query
+  end
+
   describe "logged out" do
     before do
       visit "/logout"
@@ -12,6 +21,12 @@ describe "OAuth Provider" do
     it "should redirect to the login page" do
       visit "/oauth/authorize"
       page.current_url.must_match(/\/login$/)
+    end
+
+    it "should return to the application after logging in" do
+      visit @authorize_url + "&return_to=#{@app.redirect_uri}"
+      log_in_as_some_user
+      page.current_url.must_match(@app.redirect_uri)
     end
   end
 
@@ -28,15 +43,6 @@ describe "OAuth Provider" do
     end
 
     describe "with an application" do
-      before do
-        @app = Fabricate(:doorkeeper_application)
-        @authorize_url = "/oauth/authorize?" + {
-          :response_type => "code",
-          :client_id     => @app.uid,
-          :redirect_uri  => @app.redirect_uri
-        }.to_query
-      end
-
       it "lets you authorize the app" do
         visit @authorize_url
         click_button "Authorize"
