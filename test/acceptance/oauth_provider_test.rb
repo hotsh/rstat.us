@@ -39,9 +39,17 @@ describe "OAuth Provider" do
 
       it "lets you authorize the app" do
         visit @authorize_url
-        save_and_open_page
         click_button "Authorize"
         page.current_url.must_match(@app.redirect_uri)
+        page.current_url.must_match(/code=/)
+        page.current_url.wont_match(/access_denied/)
+      end
+
+      it "lets you deny the app" do
+        visit @authorize_url
+        click_button "Deny"
+        page.current_url.must_match(@app.redirect_uri)
+        page.current_url.must_match(/error=access_denied/)
       end
     end
   end
