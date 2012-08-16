@@ -5,7 +5,8 @@ Doorkeeper.configure do
 
   # This block will be called to check whether the resource owner is authenticated or not.
   resource_owner_authenticator do |routes|
-    User.first(:id => session[:user_id]) || redirect_to(login_path)
+    User.first(:id => session[:user_id]) ||
+      redirect_to(routes.login_path(return_to: request.fullpath))
     # Put your resource owner authentication logic here.
     # If you want to use named routes from your app, you need to call them on the routes object.
     # For example:
