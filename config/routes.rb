@@ -11,6 +11,7 @@ RstatUs::Application.routes.draw do
 
   # Static
   match "contact" => "static#contact"
+  match "about" => "static#about"
   match "open_source" => "static#open_source"
   match "help" => "static#help"
 
