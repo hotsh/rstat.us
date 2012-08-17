@@ -58,4 +58,14 @@ describe "converting subscriber to feed data" do
       }.must_raise(RstatUs::InvalidSubscribeTo)
     end
   end
+
+  describe "when a network error occurs retrieving the subscriber info" do
+    it "should not raise a socket error" do
+      email = "ladygaga@twitter"
+      QueriesWebFinger.expects(:query).with(email).throws(SocketError)
+      lambda {
+        ConvertsSubscriberToFeedData.get_feed_data(email)
+      }.must_raise(RstatUs::InvalidSubscribeTo)
+    end
+  end
 end
