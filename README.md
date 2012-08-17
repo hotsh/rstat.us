@@ -126,7 +126,7 @@ In the second half of 2012, we plan to focus on:
 
 - [Implementing an API (or two)](https://github.com/hotsh/rstat.us/issues?milestone=8&page=1&sort=updated&state=open)
 
-We'd love to get rstat.us working with desktop and mobile clients, either through a [twitter-compatible API in a client that allows you to change the endpoint URL](https://github.com/hotsh/rstat.us/issues/562) or working with an app developer to make an rstat.us-specific app.
+We'd love to get rstat.us working with desktop and mobile clients, either through a [twitter-compatible API in a client that allows you to change the endpoint URL](https://github.com/hotsh/rstat.us/issues/562) or working with an app developer to make an rstat.us-specific app. If you work on or would like to work on a client, please let us know! We'd love to get feedback from you.
 
 ### Contribution steps
 
