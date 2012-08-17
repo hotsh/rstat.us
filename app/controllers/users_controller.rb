@@ -4,15 +4,20 @@ class UsersController < ApplicationController
   def index
     @title = "users"
     set_params_page
-    begin
-      @authors = Author.search(params)
-    rescue RegexpError
-      flash[:error] = "Please enter a valid search term"
-      redirect_to users_path and return
-    end
-    unless @authors.empty?
-      @authors = @authors.paginate(:page => params[:page], :per_page => params[:per_page])
-      set_pagination_buttons(@authors, :search => params[:search])
+    if params[:search].blank?
+      @authors = Author.paginate(:page => params[:page], :per_page => params[:per_page])
+    else
+      begin
+        @authors = Author.search(params)
+      rescue RegexpError
+        flash[:error] = "Please enter a valid search term"
+        redirect_to users_path and return
+      end
+
+      unless @authors.empty?
+        @authors = @authors.paginate(:page => params[:page], :per_page => params[:per_page])
+        set_pagination_buttons(@authors, :search => params[:search])
+      end
     end
   end
 

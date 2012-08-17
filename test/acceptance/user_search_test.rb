@@ -22,6 +22,12 @@ describe "user search" do
     assert has_content?("Sorry, no users that match.")
   end
 
+  it "displays all users if there is no search query" do
+    visit "/users?search="
+    assert_equal 200, page.status_code
+    assert has_content?("zebra")
+  end
+
   it "finds users by substring regex match (do we want this?)" do
     visit "/users?search=ebr"
     assert has_content?("zebra")
