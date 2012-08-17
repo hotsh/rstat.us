@@ -71,6 +71,13 @@ describe "Webfinger" do
       subscription_uri = @xml.xpath("//xmlns:Link[@rel='#{subscription_rel}']")
       subscription_uri.first.attr("href").must_match regex
     end
+
+    it "contains the subscription url" do
+      regex = /^http(?:s)?:\/\/.*\/subscriptions\?url=\{uri\}\&_method=post$/
+      subscription_rel = "http://ostatus.org/schema/1.0/subscribe"
+      subscription_uri = @xml.xpath("//xmlns:Link[@rel='#{subscription_rel}']")
+      subscription_uri.first.attr("href").must_match regex
+    end
   end
 
   it "404s if that user doesnt exist" do
