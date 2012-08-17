@@ -64,6 +64,13 @@ describe "Webfinger" do
       profile_uri = @xml.xpath("//xmlns:Link[@rel='#{profile_rel}']")
       profile_uri.first.attr("href").must_match regex
     end
+
+    it "contains the feed identifier uri" do
+      regex = /^http(?:s)?:\/\/.*\/feeds\/#{@user.feed.id}\.atom$/
+      subscription_rel = "http://schemas.google.com/g/2010#updates-from"
+      subscription_uri = @xml.xpath("//xmlns:Link[@rel='#{subscription_rel}']")
+      subscription_uri.first.attr("href").must_match regex
+    end
   end
 
   it "404s if that user doesnt exist" do
