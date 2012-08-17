@@ -25,11 +25,16 @@
           <a class="source" href="webfinger_controller.html">webfinger_controller.rb</a>
           <a class="source" href="../decorators/application_decorator.html">application_decorator.rb</a>
           <a class="source" href="../decorators/author_decorator.html">author_decorator.rb</a>
+          <a class="source" href="../decorators/author_json_decorator.html">author_json_decorator.rb</a>
+          <a class="source" href="../decorators/time_decorator.html">time_decorator.rb</a>
+          <a class="source" href="../decorators/update_json_decorator.html">update_json_decorator.rb</a>
           <a class="source" href="../decorators/user_decorator.html">user_decorator.rb</a>
           <a class="source" href="../models/author.html">author.rb</a>
           <a class="source" href="../models/authorization.html">authorization.rb</a>
           <a class="source" href="../models/feed.html">feed.rb</a>
           <a class="source" href="../models/notifier.html">notifier.rb</a>
+          <a class="source" href="../models/salmon_author.html">salmon_author.rb</a>
+          <a class="source" href="../models/salmon_interpreter.html">salmon_interpreter.rb</a>
           <a class="source" href="../models/update.html">update.rb</a>
           <a class="source" href="../models/user.html">user.rb</a>
           <a class="source" href="../models/webfinger.html">webfinger.rb</a>
@@ -55,6 +60,13 @@
         <div class='highlight'><pre><span class="k">class</span> <span class="nc">FeedsController</span> <span class="o">&lt;</span> <span class="no">ApplicationController</span>
 
   <span class="k">def</span> <span class="nf">show</span>
+    <span class="n">feed</span> <span class="o">=</span> <span class="no">Feed</span><span class="o">.</span><span class="n">first</span> <span class="ss">:id</span> <span class="o">=&gt;</span> <span class="n">params</span><span class="o">[</span><span class="ss">:id</span><span class="o">]</span>
+
+    <span class="k">unless</span> <span class="n">feed</span>
+      <span class="n">render</span> <span class="ss">:file</span> <span class="o">=&gt;</span> <span class="s2">&quot;</span><span class="si">#{</span><span class="no">Rails</span><span class="o">.</span><span class="n">root</span><span class="si">}</span><span class="s2">/public/404&quot;</span><span class="p">,</span> <span class="ss">:status</span> <span class="o">=&gt;</span> <span class="mi">404</span>
+      <span class="k">return</span>
+    <span class="k">end</span>
+
     <span class="n">respond_to</span> <span class="k">do</span> <span class="o">|</span><span class="nb">format</span><span class="o">|</span></pre></div>
       </td>
     </tr>
@@ -69,7 +81,6 @@ This is also our view for a particular feed</p>
       </td>
       <td class=code>
         <div class='highlight'><pre>      <span class="nb">format</span><span class="o">.</span><span class="n">html</span> <span class="k">do</span>
-        <span class="n">feed</span> <span class="o">=</span> <span class="no">Feed</span><span class="o">.</span><span class="n">first</span> <span class="ss">:id</span> <span class="o">=&gt;</span> <span class="n">params</span><span class="o">[</span><span class="ss">:id</span><span class="o">]</span>
         <span class="k">if</span> <span class="n">feed</span><span class="o">.</span><span class="n">local?</span></pre></div>
       </td>
     </tr>
@@ -112,7 +123,7 @@ does it. Publishers will also view a feed in order to verify their
 subscription.</p>
       </td>
       <td class=code>
-        <div class='highlight'><pre>        <span class="n">feed</span> <span class="o">=</span> <span class="no">Feed</span><span class="o">.</span><span class="n">first</span> <span class="ss">:id</span> <span class="o">=&gt;</span> <span class="n">params</span><span class="o">[</span><span class="ss">:id</span><span class="o">]</span></pre></div>
+        <div class='highlight'><pre></pre></div>
       </td>
     </tr>
     <tr id='section-6'>

@@ -25,11 +25,16 @@
           <a class="source" href="../controllers/webfinger_controller.html">webfinger_controller.rb</a>
           <a class="source" href="../decorators/application_decorator.html">application_decorator.rb</a>
           <a class="source" href="../decorators/author_decorator.html">author_decorator.rb</a>
+          <a class="source" href="../decorators/author_json_decorator.html">author_json_decorator.rb</a>
+          <a class="source" href="../decorators/time_decorator.html">time_decorator.rb</a>
+          <a class="source" href="../decorators/update_json_decorator.html">update_json_decorator.rb</a>
           <a class="source" href="../decorators/user_decorator.html">user_decorator.rb</a>
           <a class="source" href="author.html">author.rb</a>
           <a class="source" href="authorization.html">authorization.rb</a>
           <a class="source" href="feed.html">feed.rb</a>
           <a class="source" href="notifier.html">notifier.rb</a>
+          <a class="source" href="salmon_author.html">salmon_author.rb</a>
+          <a class="source" href="salmon_interpreter.html">salmon_interpreter.rb</a>
           <a class="source" href="update.html">update.rb</a>
           <a class="source" href="user.html">user.rb</a>
           <a class="source" href="webfinger.html">webfinger.rb</a>
@@ -444,7 +449,7 @@ XXX: the <em>correct</em> solution will be to use an email validator</p>
     <span class="k">end</span>
 
     <span class="n">out</span><span class="o">.</span><span class="n">gsub!</span><span class="p">(</span><span class="sr">/(^|\s+)#(\w+)/</span><span class="p">)</span> <span class="k">do</span> <span class="o">|</span><span class="n">match</span><span class="o">|</span>
-      <span class="s2">&quot;</span><span class="si">#{</span><span class="vg">$1</span><span class="si">}</span><span class="s2">&lt;a href=&#39;/search?q=%23</span><span class="si">#{</span><span class="vg">$2</span><span class="si">}</span><span class="s2">&#39;&gt;#</span><span class="si">#{</span><span class="vg">$2</span><span class="si">}</span><span class="s2">&lt;/a&gt;&quot;</span>
+      <span class="s2">&quot;</span><span class="si">#{</span><span class="vg">$1</span><span class="si">}</span><span class="s2">&lt;a href=&#39;/search?search=%23</span><span class="si">#{</span><span class="vg">$2</span><span class="si">}</span><span class="s2">&#39;&gt;#</span><span class="si">#{</span><span class="vg">$2</span><span class="si">}</span><span class="s2">&lt;/a&gt;&quot;</span>
     <span class="k">end</span>
 
     <span class="nb">self</span><span class="o">.</span><span class="n">html</span> <span class="o">=</span> <span class="n">out</span>

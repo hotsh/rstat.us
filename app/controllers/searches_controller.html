@@ -25,11 +25,16 @@
           <a class="source" href="webfinger_controller.html">webfinger_controller.rb</a>
           <a class="source" href="../decorators/application_decorator.html">application_decorator.rb</a>
           <a class="source" href="../decorators/author_decorator.html">author_decorator.rb</a>
+          <a class="source" href="../decorators/author_json_decorator.html">author_json_decorator.rb</a>
+          <a class="source" href="../decorators/time_decorator.html">time_decorator.rb</a>
+          <a class="source" href="../decorators/update_json_decorator.html">update_json_decorator.rb</a>
           <a class="source" href="../decorators/user_decorator.html">user_decorator.rb</a>
           <a class="source" href="../models/author.html">author.rb</a>
           <a class="source" href="../models/authorization.html">authorization.rb</a>
           <a class="source" href="../models/feed.html">feed.rb</a>
           <a class="source" href="../models/notifier.html">notifier.rb</a>
+          <a class="source" href="../models/salmon_author.html">salmon_author.rb</a>
+          <a class="source" href="../models/salmon_interpreter.html">salmon_interpreter.rb</a>
           <a class="source" href="../models/update.html">update.rb</a>
           <a class="source" href="../models/user.html">user.rb</a>
           <a class="source" href="../models/webfinger.html">webfinger.rb</a>
@@ -50,53 +55,22 @@
           <a class="pilcrow" href="#section-1">&#182;</a>
         </div>
         
+
       </td>
       <td class=code>
         <div class='highlight'><pre><span class="k">class</span> <span class="nc">SearchesController</span> <span class="o">&lt;</span> <span class="no">ApplicationController</span>
   <span class="k">def</span> <span class="nf">show</span>
     <span class="vi">@title</span> <span class="o">=</span> <span class="s2">&quot;search&quot;</span>
     <span class="vi">@updates</span> <span class="o">=</span> <span class="o">[]</span>
-    <span class="k">if</span> <span class="n">params</span><span class="o">[</span><span class="ss">:q</span><span class="o">]</span>
+    <span class="k">if</span> <span class="n">params</span><span class="o">[</span><span class="ss">:search</span><span class="o">]</span>
       <span class="n">set_params_page</span>
       <span class="n">leading_char</span> <span class="o">=</span> <span class="s1">&#39;\b&#39;</span>
-      <span class="k">if</span> <span class="n">params</span><span class="o">[</span><span class="ss">:q</span><span class="o">][</span><span class="mi">0</span><span class="o">]</span> <span class="o">==</span> <span class="s1">&#39;#&#39;</span>
+      <span class="k">if</span> <span class="n">params</span><span class="o">[</span><span class="ss">:search</span><span class="o">][</span><span class="mi">0</span><span class="o">]</span> <span class="o">==</span> <span class="s1">&#39;#&#39;</span>
         <span class="n">leading_char</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
       <span class="k">end</span>
-      <span class="vi">@updates</span> <span class="o">=</span> <span class="no">Update</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="ss">:text</span> <span class="o">=&gt;</span> <span class="sr">/</span><span class="si">#{</span><span class="n">leading_char</span><span class="si">}#{</span><span class="no">Regexp</span><span class="o">.</span><span class="n">quote</span><span class="p">(</span><span class="n">params</span><span class="o">[</span><span class="ss">:q</span><span class="o">]</span><span class="p">)</span><span class="si">}</span><span class="sr">\b/i</span><span class="p">)</span><span class="o">.</span><span class="n">paginate</span><span class="p">(</span><span class="ss">:page</span> <span class="o">=&gt;</span> <span class="n">params</span><span class="o">[</span><span class="ss">:page</span><span class="o">]</span><span class="p">,</span> <span class="ss">:per_page</span> <span class="o">=&gt;</span> <span class="n">params</span><span class="o">[</span><span class="ss">:per_page</span><span class="o">]</span><span class="p">,</span> <span class="ss">:order</span> <span class="o">=&gt;</span> <span class="ss">:created_at</span><span class="o">.</span><span class="n">desc</span><span class="p">)</span>
-      <span class="n">set_pagination_buttons</span><span class="p">(</span><span class="vi">@updates</span><span class="p">)</span>
+      <span class="vi">@updates</span> <span class="o">=</span> <span class="no">Update</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="ss">:text</span> <span class="o">=&gt;</span> <span class="sr">/</span><span class="si">#{</span><span class="n">leading_char</span><span class="si">}#{</span><span class="no">Regexp</span><span class="o">.</span><span class="n">quote</span><span class="p">(</span><span class="n">params</span><span class="o">[</span><span class="ss">:search</span><span class="o">]</span><span class="p">)</span><span class="si">}</span><span class="sr">\b/i</span><span class="p">)</span><span class="o">.</span><span class="n">paginate</span><span class="p">(</span><span class="ss">:page</span> <span class="o">=&gt;</span> <span class="n">params</span><span class="o">[</span><span class="ss">:page</span><span class="o">]</span><span class="p">,</span> <span class="ss">:per_page</span> <span class="o">=&gt;</span> <span class="n">params</span><span class="o">[</span><span class="ss">:per_page</span><span class="o">]</span><span class="p">,</span> <span class="ss">:order</span> <span class="o">=&gt;</span> <span class="ss">:created_at</span><span class="o">.</span><span class="n">desc</span><span class="p">)</span>
+      <span class="n">set_pagination_buttons</span><span class="p">(</span><span class="vi">@updates</span><span class="p">,</span> <span class="ss">:search</span> <span class="o">=&gt;</span> <span class="n">params</span><span class="o">[</span><span class="ss">:search</span><span class="o">]</span><span class="p">)</span>
     <span class="k">end</span>
-  <span class="k">end</span></pre></div>
-      </td>
-    </tr>
-    <tr id='section-2'>
-      <td class=docs>
-        <div class="pilwrap">
-          <a class="pilcrow" href="#section-2">&#182;</a>
-        </div>
-        <p>DERP, this duplication sucks, and this code kinda sucks
-anyway. Let&rsquo;s see if we can&rsquo;t remove it in the future.</p>
-      </td>
-      <td class=code>
-        <div class='highlight'><pre>  <span class="k">def</span> <span class="nf">set_pagination</span>
-    <span class="n">set_params_page</span>
-    <span class="vi">@updates</span> <span class="o">=</span> <span class="vi">@updates</span><span class="o">.</span><span class="n">paginate</span><span class="p">(</span><span class="ss">:page</span> <span class="o">=&gt;</span> <span class="n">params</span><span class="o">[</span><span class="ss">:page</span><span class="o">]</span><span class="p">,</span> <span class="ss">:per_page</span> <span class="o">=&gt;</span> <span class="n">params</span><span class="o">[</span><span class="ss">:per_page</span><span class="o">]</span><span class="p">,</span> <span class="ss">:order</span> <span class="o">=&gt;</span> <span class="ss">:created_at</span><span class="o">.</span><span class="n">desc</span><span class="p">)</span>
-    <span class="n">set_pagination_buttons</span><span class="p">(</span><span class="vi">@updates</span><span class="p">)</span>
-  <span class="k">end</span></pre></div>
-      </td>
-    </tr>
-    <tr id='section-3'>
-      <td class=docs>
-        <div class="pilwrap">
-          <a class="pilcrow" href="#section-3">&#182;</a>
-        </div>
-        <p>Render correct haml depending on request type</p>
-
-      </td>
-      <td class=code>
-        <div class='highlight'><pre>  <span class="k">def</span> <span class="nf">render_index</span><span class="p">(</span><span class="n">updates</span><span class="p">)</span>
-    <span class="vi">@updates</span> <span class="o">=</span> <span class="n">updates</span>
-    <span class="n">set_pagination</span>
-    <span class="n">render</span> <span class="ss">:index</span><span class="p">,</span> <span class="ss">:layout</span> <span class="o">=&gt;</span> <span class="n">show_layout?</span>
   <span class="k">end</span>
 <span class="k">end</span></pre></div>
       </td>

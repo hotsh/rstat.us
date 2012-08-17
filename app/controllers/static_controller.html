@@ -25,11 +25,16 @@
           <a class="source" href="webfinger_controller.html">webfinger_controller.rb</a>
           <a class="source" href="../decorators/application_decorator.html">application_decorator.rb</a>
           <a class="source" href="../decorators/author_decorator.html">author_decorator.rb</a>
+          <a class="source" href="../decorators/author_json_decorator.html">author_json_decorator.rb</a>
+          <a class="source" href="../decorators/time_decorator.html">time_decorator.rb</a>
+          <a class="source" href="../decorators/update_json_decorator.html">update_json_decorator.rb</a>
           <a class="source" href="../decorators/user_decorator.html">user_decorator.rb</a>
           <a class="source" href="../models/author.html">author.rb</a>
           <a class="source" href="../models/authorization.html">authorization.rb</a>
           <a class="source" href="../models/feed.html">feed.rb</a>
           <a class="source" href="../models/notifier.html">notifier.rb</a>
+          <a class="source" href="../models/salmon_author.html">salmon_author.rb</a>
+          <a class="source" href="../models/salmon_interpreter.html">salmon_interpreter.rb</a>
           <a class="source" href="../models/update.html">update.rb</a>
           <a class="source" href="../models/user.html">user.rb</a>
           <a class="source" href="../models/webfinger.html">webfinger.rb</a>
@@ -55,11 +60,16 @@
       <td class=code>
         <div class='highlight'><pre><span class="k">class</span> <span class="nc">StaticController</span> <span class="o">&lt;</span> <span class="no">ApplicationController</span>
   <span class="k">def</span> <span class="nf">homepage</span>
+    <span class="vi">@list_class</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
     <span class="n">render</span> <span class="ss">:layout</span> <span class="o">=&gt;</span> <span class="kp">false</span>
   <span class="k">end</span>
 
   <span class="k">def</span> <span class="nf">open_source</span>
     <span class="vi">@title</span> <span class="o">=</span> <span class="s2">&quot;open source&quot;</span>
+  <span class="k">end</span>
+
+  <span class="k">def</span> <span class="nf">about</span>
+    <span class="vi">@title</span> <span class="o">=</span> <span class="s2">&quot;about us&quot;</span>
   <span class="k">end</span>
 
   <span class="k">def</span> <span class="nf">contact</span>

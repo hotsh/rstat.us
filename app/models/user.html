@@ -25,11 +25,16 @@
           <a class="source" href="../controllers/webfinger_controller.html">webfinger_controller.rb</a>
           <a class="source" href="../decorators/application_decorator.html">application_decorator.rb</a>
           <a class="source" href="../decorators/author_decorator.html">author_decorator.rb</a>
+          <a class="source" href="../decorators/author_json_decorator.html">author_json_decorator.rb</a>
+          <a class="source" href="../decorators/time_decorator.html">time_decorator.rb</a>
+          <a class="source" href="../decorators/update_json_decorator.html">update_json_decorator.rb</a>
           <a class="source" href="../decorators/user_decorator.html">user_decorator.rb</a>
           <a class="source" href="author.html">author.rb</a>
           <a class="source" href="authorization.html">authorization.rb</a>
           <a class="source" href="feed.html">feed.rb</a>
           <a class="source" href="notifier.html">notifier.rb</a>
+          <a class="source" href="salmon_author.html">salmon_author.rb</a>
+          <a class="source" href="salmon_interpreter.html">salmon_interpreter.rb</a>
           <a class="source" href="update.html">update.rb</a>
           <a class="source" href="user.html">user.rb</a>
           <a class="source" href="webfinger.html">webfinger.rb</a>
@@ -73,7 +78,7 @@ particular case.</p>
 XXX: These don&rsquo;t seem to be getting set when you sign up with Twitter, etc?</p>
       </td>
       <td class=code>
-        <div class='highlight'><pre>  <span class="n">many</span> <span class="ss">:authorizations</span><span class="p">,</span> <span class="ss">:dependant</span> <span class="o">=&gt;</span> <span class="ss">:destroy</span>
+        <div class='highlight'><pre>  <span class="n">many</span> <span class="ss">:authorizations</span><span class="p">,</span> <span class="ss">:dependent</span> <span class="o">=&gt;</span> <span class="ss">:destroy</span>
   <span class="n">belongs_to</span> <span class="ss">:author</span>
   <span class="n">key</span> <span class="ss">:author_id</span><span class="p">,</span> <span class="no">ObjectId</span></pre></div>
       </td>

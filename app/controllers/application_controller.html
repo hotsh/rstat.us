@@ -25,11 +25,16 @@
           <a class="source" href="webfinger_controller.html">webfinger_controller.rb</a>
           <a class="source" href="../decorators/application_decorator.html">application_decorator.rb</a>
           <a class="source" href="../decorators/author_decorator.html">author_decorator.rb</a>
+          <a class="source" href="../decorators/author_json_decorator.html">author_json_decorator.rb</a>
+          <a class="source" href="../decorators/time_decorator.html">time_decorator.rb</a>
+          <a class="source" href="../decorators/update_json_decorator.html">update_json_decorator.rb</a>
           <a class="source" href="../decorators/user_decorator.html">user_decorator.rb</a>
           <a class="source" href="../models/author.html">author.rb</a>
           <a class="source" href="../models/authorization.html">authorization.rb</a>
           <a class="source" href="../models/feed.html">feed.rb</a>
           <a class="source" href="../models/notifier.html">notifier.rb</a>
+          <a class="source" href="../models/salmon_author.html">salmon_author.rb</a>
+          <a class="source" href="../models/salmon_interpreter.html">salmon_interpreter.rb</a>
           <a class="source" href="../models/update.html">update.rb</a>
           <a class="source" href="../models/user.html">user.rb</a>
           <a class="source" href="../models/webfinger.html">webfinger.rb</a>
@@ -139,12 +144,13 @@ a particular page, and redirects them if they&rsquo;re not.</p>
   <span class="k">def</span> <span class="nf">menu_item</span><span class="p">(</span><span class="nb">name</span><span class="p">,</span> <span class="n">url</span><span class="p">,</span> <span class="n">options</span> <span class="o">=</span> <span class="p">{})</span>
     <span class="n">icon</span> <span class="o">=</span> <span class="n">options</span><span class="o">.</span><span class="n">fetch</span><span class="p">(</span><span class="ss">:icon</span><span class="p">){</span> <span class="kp">false</span> <span class="p">}</span>
     <span class="n">classes</span> <span class="o">=</span> <span class="n">options</span><span class="o">.</span><span class="n">fetch</span><span class="p">(</span><span class="ss">:classes</span><span class="p">){</span> <span class="o">[]</span> <span class="p">}</span>
+    <span class="n">rel</span> <span class="o">=</span> <span class="n">options</span><span class="o">.</span><span class="n">fetch</span><span class="p">(</span><span class="ss">:rel</span><span class="p">){</span> <span class="kp">false</span> <span class="p">}</span>
 
     <span class="n">classes</span> <span class="o">&lt;&lt;</span> <span class="nb">name</span><span class="o">.</span><span class="n">downcase</span><span class="o">.</span><span class="n">gsub</span><span class="p">(</span><span class="s2">&quot; &quot;</span><span class="p">,</span> <span class="s2">&quot;_&quot;</span><span class="p">)</span>
     <span class="n">classes</span> <span class="o">&lt;&lt;</span> <span class="p">(</span><span class="n">request</span><span class="o">.</span><span class="n">path_info</span> <span class="o">==</span> <span class="n">url</span> <span class="p">?</span> <span class="s2">&quot;active&quot;</span> <span class="p">:</span> <span class="s2">&quot;&quot;</span><span class="p">)</span>
 
     <span class="s2">&quot;&lt;li class=&#39;</span><span class="si">#{</span><span class="n">classes</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="s2">&quot; &quot;</span><span class="p">)</span><span class="si">}</span><span class="s2">&#39;&gt;</span>
-<span class="s2">      &lt;a href=&#39;</span><span class="si">#{</span><span class="n">url</span><span class="si">}</span><span class="s2">&#39;&gt;&quot;</span> <span class="o">+</span>
+<span class="s2">      &lt;a href=&#39;</span><span class="si">#{</span><span class="n">url</span><span class="si">}</span><span class="s2">&#39;&quot;</span> <span class="o">+</span> <span class="p">(</span><span class="n">rel</span> <span class="p">?</span> <span class="s2">&quot; rel=&#39;</span><span class="si">#{</span><span class="n">rel</span><span class="si">}</span><span class="s2">&#39;&quot;</span> <span class="p">:</span> <span class="s2">&quot;&quot;</span><span class="p">)</span> <span class="o">+</span> <span class="s2">&quot;&gt;&quot;</span> <span class="o">+</span>
       <span class="p">(</span><span class="n">icon</span> <span class="p">?</span> <span class="s2">&quot;&lt;div class=&#39;icon&#39;&gt;&lt;/div&gt;&quot;</span> <span class="p">:</span> <span class="s2">&quot;&quot;</span><span class="p">)</span> <span class="o">+</span>
       <span class="s2">&quot;</span><span class="si">#{</span><span class="nb">name</span><span class="si">}</span><span class="s2">&lt;/a&gt;</span>
 <span class="s2">    &lt;/li&gt;&quot;</span>

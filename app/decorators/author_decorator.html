@@ -25,11 +25,16 @@
           <a class="source" href="../controllers/webfinger_controller.html">webfinger_controller.rb</a>
           <a class="source" href="application_decorator.html">application_decorator.rb</a>
           <a class="source" href="author_decorator.html">author_decorator.rb</a>
+          <a class="source" href="author_json_decorator.html">author_json_decorator.rb</a>
+          <a class="source" href="time_decorator.html">time_decorator.rb</a>
+          <a class="source" href="update_json_decorator.html">update_json_decorator.rb</a>
           <a class="source" href="user_decorator.html">user_decorator.rb</a>
           <a class="source" href="../models/author.html">author.rb</a>
           <a class="source" href="../models/authorization.html">authorization.rb</a>
           <a class="source" href="../models/feed.html">feed.rb</a>
           <a class="source" href="../models/notifier.html">notifier.rb</a>
+          <a class="source" href="../models/salmon_author.html">salmon_author.rb</a>
+          <a class="source" href="../models/salmon_interpreter.html">salmon_interpreter.rb</a>
           <a class="source" href="../models/update.html">update.rb</a>
           <a class="source" href="../models/user.html">user.rb</a>
           <a class="source" href="../models/webfinger.html">webfinger.rb</a>
@@ -67,10 +72,14 @@ to the user&rsquo;s page</p>
       <td class=code>
         <div class='highlight'><pre>  <span class="k">def</span> <span class="nf">avatar</span>
     <span class="n">h</span><span class="o">.</span><span class="n">content_tag</span> <span class="s2">&quot;div&quot;</span><span class="p">,</span> <span class="ss">:class</span> <span class="o">=&gt;</span> <span class="s2">&quot;avatar&quot;</span> <span class="k">do</span>
-      <span class="n">h</span><span class="o">.</span><span class="n">link_to</span><span class="p">(</span>
-        <span class="n">h</span><span class="o">.</span><span class="n">image_tag</span><span class="p">(</span><span class="n">avatar_src</span><span class="p">,</span> <span class="ss">:class</span> <span class="o">=&gt;</span> <span class="s2">&quot;photo&quot;</span><span class="p">,</span> <span class="ss">:alt</span> <span class="o">=&gt;</span> <span class="s2">&quot;avatar&quot;</span><span class="p">),</span>
-        <span class="n">author</span><span class="o">.</span><span class="n">url</span>
-      <span class="p">)</span>
+      <span class="k">if</span> <span class="n">author</span>
+        <span class="n">h</span><span class="o">.</span><span class="n">link_to</span><span class="p">(</span>
+          <span class="n">avatar_image_tag</span><span class="p">,</span>
+          <span class="n">author</span><span class="o">.</span><span class="n">url</span>
+        <span class="p">)</span>
+      <span class="k">else</span>
+        <span class="n">avatar_image_tag</span>
+      <span class="k">end</span>
     <span class="k">end</span>
   <span class="k">end</span></pre></div>
       </td>
@@ -80,21 +89,16 @@ to the user&rsquo;s page</p>
         <div class="pilwrap">
           <a class="pilcrow" href="#section-3">&#182;</a>
         </div>
-        <p>Creates a link to the user&rsquo;s website for their profile and adds http://
-if it isn&rsquo;t there</p>
+        <p>Just the image tag part of the avatar markup</p>
       </td>
       <td class=code>
-        <div class='highlight'><pre>  <span class="k">def</span> <span class="nf">website_link</span>
-    <span class="n">url</span> <span class="o">=</span> <span class="k">if</span> <span class="n">model</span><span class="o">.</span><span class="n">website</span><span class="o">[</span><span class="mi">0</span><span class="p">,</span><span class="mi">7</span><span class="o">]</span> <span class="o">==</span> <span class="s2">&quot;http://&quot;</span> <span class="ow">or</span> <span class="n">model</span><span class="o">.</span><span class="n">website</span><span class="o">[</span><span class="mi">0</span><span class="p">,</span><span class="mi">8</span><span class="o">]</span> <span class="o">==</span> <span class="s2">&quot;https://&quot;</span>
-            <span class="n">model</span><span class="o">.</span><span class="n">website</span>
-          <span class="k">else</span>
-            <span class="s2">&quot;http://</span><span class="si">#{</span><span class="n">model</span><span class="o">.</span><span class="n">website</span><span class="si">}</span><span class="s2">&quot;</span>
-          <span class="k">end</span>
-
-    <span class="n">h</span><span class="o">.</span><span class="n">link_to</span><span class="p">(</span><span class="n">url</span><span class="p">,</span> <span class="n">url</span><span class="p">,</span> <span class="ss">:rel</span> <span class="o">=&gt;</span> <span class="s1">&#39;me&#39;</span><span class="p">,</span> <span class="ss">:class</span> <span class="o">=&gt;</span> <span class="s1">&#39;url&#39;</span><span class="p">)</span>
-  <span class="k">end</span>
-
-  <span class="kp">private</span></pre></div>
+        <div class='highlight'><pre>  <span class="k">def</span> <span class="nf">avatar_image_tag</span>
+    <span class="n">h</span><span class="o">.</span><span class="n">image_tag</span><span class="p">(</span>
+      <span class="n">absolute_avatar_url</span><span class="p">,</span>
+      <span class="ss">:class</span> <span class="o">=&gt;</span> <span class="s2">&quot;photo user-image&quot;</span><span class="p">,</span>
+      <span class="ss">:alt</span> <span class="o">=&gt;</span> <span class="s2">&quot;avatar&quot;</span>
+    <span class="p">)</span>
+  <span class="k">end</span></pre></div>
       </td>
     </tr>
     <tr id='section-4'>
@@ -104,14 +108,55 @@ if it isn&rsquo;t there</p>
         </div>
         <p>Make sure we&rsquo;re using the asset path if the user&rsquo;s avatar is the default
 (local) avatar</p>
+      </td>
+      <td class=code>
+        <div class='highlight'><pre>  <span class="k">def</span> <span class="nf">absolute_avatar_url</span>
+    <span class="k">if</span> <span class="o">!</span><span class="n">author</span> <span class="o">||</span> <span class="n">author</span><span class="o">.</span><span class="n">avatar_url</span><span class="o">.</span><span class="n">eql?</span><span class="p">(</span><span class="no">RstatUs</span><span class="o">::</span><span class="no">DEFAULT_AVATAR</span><span class="p">)</span>
+      <span class="n">h</span><span class="o">.</span><span class="n">asset_path</span><span class="p">(</span><span class="no">RstatUs</span><span class="o">::</span><span class="no">DEFAULT_AVATAR</span><span class="p">)</span>
+    <span class="k">else</span>
+      <span class="n">author</span><span class="o">.</span><span class="n">avatar_url</span>
+    <span class="k">end</span>
+  <span class="k">end</span></pre></div>
+      </td>
+    </tr>
+    <tr id='section-5'>
+      <td class=docs>
+        <div class="pilwrap">
+          <a class="pilcrow" href="#section-5">&#182;</a>
+        </div>
+        <p>Creates a link to the user&rsquo;s website for their profile</p>
+      </td>
+      <td class=code>
+        <div class='highlight'><pre>  <span class="k">def</span> <span class="nf">website_link</span>
+    <span class="k">if</span> <span class="n">absolute_website_url</span><span class="o">.</span><span class="n">present?</span>
+      <span class="n">h</span><span class="o">.</span><span class="n">link_to</span><span class="p">(</span>
+        <span class="n">absolute_website_url</span><span class="p">,</span>
+        <span class="n">absolute_website_url</span><span class="p">,</span>
+        <span class="ss">:rel</span> <span class="o">=&gt;</span> <span class="s1">&#39;website&#39;</span><span class="p">,</span>
+        <span class="ss">:class</span> <span class="o">=&gt;</span> <span class="s1">&#39;url&#39;</span>
+      <span class="p">)</span>
+    <span class="k">else</span>
+      <span class="s2">&quot;&quot;</span>
+    <span class="k">end</span>
+  <span class="k">end</span></pre></div>
+      </td>
+    </tr>
+    <tr id='section-6'>
+      <td class=docs>
+        <div class="pilwrap">
+          <a class="pilcrow" href="#section-6">&#182;</a>
+        </div>
+        <p>adds http:// if it isn&rsquo;t there</p>
 
       </td>
       <td class=code>
-        <div class='highlight'><pre>  <span class="k">def</span> <span class="nf">avatar_src</span>
-    <span class="k">if</span> <span class="n">author</span><span class="o">.</span><span class="n">avatar_url</span><span class="o">.</span><span class="n">eql?</span> <span class="no">Author</span><span class="o">::</span><span class="no">DEFAULT_AVATAR</span>
-      <span class="n">h</span><span class="o">.</span><span class="n">asset_path</span><span class="p">(</span><span class="n">author</span><span class="o">.</span><span class="n">avatar_url</span><span class="p">)</span>
+        <div class='highlight'><pre>  <span class="k">def</span> <span class="nf">absolute_website_url</span>
+    <span class="k">if</span> <span class="n">author</span><span class="o">.</span><span class="n">website</span><span class="o">.</span><span class="n">blank?</span>
+      <span class="kp">nil</span>
+    <span class="k">elsif</span> <span class="n">author</span><span class="o">.</span><span class="n">website</span><span class="o">[</span><span class="mi">0</span><span class="p">,</span><span class="mi">7</span><span class="o">]</span> <span class="o">==</span> <span class="s2">&quot;http://&quot;</span> <span class="ow">or</span> <span class="n">author</span><span class="o">.</span><span class="n">website</span><span class="o">[</span><span class="mi">0</span><span class="p">,</span><span class="mi">8</span><span class="o">]</span> <span class="o">==</span> <span class="s2">&quot;https://&quot;</span>
+      <span class="n">author</span><span class="o">.</span><span class="n">website</span>
     <span class="k">else</span>
-      <span class="n">author</span><span class="o">.</span><span class="n">avatar_url</span>
+      <span class="s2">&quot;http://</span><span class="si">#{</span><span class="n">author</span><span class="o">.</span><span class="n">website</span><span class="si">}</span><span class="s2">&quot;</span>
     <span class="k">end</span>
   <span class="k">end</span>
 <span class="k">end</span></pre></div>

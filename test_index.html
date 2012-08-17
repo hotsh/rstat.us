@@ -26,27 +26,32 @@
     Jump To &hellip;
     <div id="jump_wrapper">
       <div id="jump_page">
-          <a class="source" href="app/controllers/application_controller.html">application_controller.rb</a>
-          <a class="source" href="app/controllers/auth_controller.html">auth_controller.rb</a>
-          <a class="source" href="app/controllers/feeds_controller.html">feeds_controller.rb</a>
-          <a class="source" href="app/controllers/salmon_controller.html">salmon_controller.rb</a>
-          <a class="source" href="app/controllers/searches_controller.html">searches_controller.rb</a>
-          <a class="source" href="app/controllers/sessions_controller.html">sessions_controller.rb</a>
-          <a class="source" href="app/controllers/static_controller.html">static_controller.rb</a>
-          <a class="source" href="app/controllers/subscriptions_controller.html">subscriptions_controller.rb</a>
-          <a class="source" href="app/controllers/updates_controller.html">updates_controller.rb</a>
-          <a class="source" href="app/controllers/users_controller.html">users_controller.rb</a>
-          <a class="source" href="app/controllers/webfinger_controller.html">webfinger_controller.rb</a>
-          <a class="source" href="app/decorators/application_decorator.html">application_decorator.rb</a>
-          <a class="source" href="app/decorators/author_decorator.html">author_decorator.rb</a>
-          <a class="source" href="app/decorators/user_decorator.html">user_decorator.rb</a>
-          <a class="source" href="app/models/author.html">author.rb</a>
-          <a class="source" href="app/models/authorization.html">authorization.rb</a>
-          <a class="source" href="app/models/feed.html">feed.rb</a>
-          <a class="source" href="app/models/notifier.html">notifier.rb</a>
-          <a class="source" href="app/models/update.html">update.rb</a>
-          <a class="source" href="app/models/user.html">user.rb</a>
-          <a class="source" href="app/models/webfinger.html">webfinger.rb</a>
+        <a class="source" href="app/controllers/application_controller.html">application_controller.rb</a>
+        <a class="source" href="app/controllers/auth_controller.html">auth_controller.rb</a>
+        <a class="source" href="app/controllers/feeds_controller.html">feeds_controller.rb</a>
+        <a class="source" href="app/controllers/salmon_controller.html">salmon_controller.rb</a>
+        <a class="source" href="app/controllers/searches_controller.html">searches_controller.rb</a>
+        <a class="source" href="app/controllers/sessions_controller.html">sessions_controller.rb</a>
+        <a class="source" href="app/controllers/static_controller.html">static_controller.rb</a>
+        <a class="source" href="app/controllers/subscriptions_controller.html">subscriptions_controller.rb</a>
+        <a class="source" href="app/controllers/updates_controller.html">updates_controller.rb</a>
+        <a class="source" href="app/controllers/users_controller.html">users_controller.rb</a>
+        <a class="source" href="app/controllers/webfinger_controller.html">webfinger_controller.rb</a>
+        <a class="source" href="app/decorators/application_decorator.html">application_decorator.rb</a>
+        <a class="source" href="app/decorators/author_decorator.html">author_decorator.rb</a>
+        <a class="source" href="app/decorators/author_json_decorator.html">author_json_decorator.rb</a>
+        <a class="source" href="app/decorators/time_decorator.html">time_decorator.rb</a>
+        <a class="source" href="app/decorators/update_decorator.html">update_decorator.rb</a>
+        <a class="source" href="app/decorators/user_decorator.html">user_decorator.rb</a>
+        <a class="source" href="app/models/author.html">author.rb</a>
+        <a class="source" href="app/models/authorization.html">authorization.rb</a>
+        <a class="source" href="app/models/feed.html">feed.rb</a>
+        <a class="source" href="app/models/notifier.html">notifier.rb</a>
+        <a class="source" href="app/models/salmon_author.html">salmon_author.rb</a>
+        <a class="source" href="app/models/salmon_interpreter.html">salmon_interpreter.rb</a>
+        <a class="source" href="app/models/update.html">update.rb</a>
+        <a class="source" href="app/models/user.html">user.rb</a>
+        <a class="source" href="app/models/webfinger.html">webfinger.rb</a>
       </div>
     </div>
   </div>
@@ -111,6 +116,17 @@
       </td>
       <td class=code>
         <div class='highlight'><pre>fabricators/</pre></div>
+      </td>
+    </tr>
+    <tr id='section-test-lib'>
+      <td class=docs>
+        <div class="pilwrap">
+          <a class="pilcrow" href="#section-test-lib">&#182;</a>
+        </div>
+        <p>The <code>lib</code> test directory has unit tests for the classes in lib that don't require any functionality from Rails. Want to see how awesome this is? Run <code>rake test:lib</code> and notice how much faster that runs compared to, say, <code>rake test:models</code> since <code>lib</code> doesn't need to load Rails.</p>
+      </td>
+      <td class=code>
+        <div class='highlight'><pre>lib/</pre></div>
       </td>
     </tr>
     <tr id='section-test-models'>

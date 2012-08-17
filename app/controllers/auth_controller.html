@@ -25,11 +25,16 @@
           <a class="source" href="webfinger_controller.html">webfinger_controller.rb</a>
           <a class="source" href="../decorators/application_decorator.html">application_decorator.rb</a>
           <a class="source" href="../decorators/author_decorator.html">author_decorator.rb</a>
+          <a class="source" href="../decorators/author_json_decorator.html">author_json_decorator.rb</a>
+          <a class="source" href="../decorators/time_decorator.html">time_decorator.rb</a>
+          <a class="source" href="../decorators/update_json_decorator.html">update_json_decorator.rb</a>
           <a class="source" href="../decorators/user_decorator.html">user_decorator.rb</a>
           <a class="source" href="../models/author.html">author.rb</a>
           <a class="source" href="../models/authorization.html">authorization.rb</a>
           <a class="source" href="../models/feed.html">feed.rb</a>
           <a class="source" href="../models/notifier.html">notifier.rb</a>
+          <a class="source" href="../models/salmon_author.html">salmon_author.rb</a>
+          <a class="source" href="../models/salmon_interpreter.html">salmon_interpreter.rb</a>
           <a class="source" href="../models/update.html">update.rb</a>
           <a class="source" href="../models/user.html">user.rb</a>
           <a class="source" href="../models/webfinger.html">webfinger.rb</a>
@@ -104,12 +109,12 @@ might be a nice refactoring.</p>
       <td class=code>
         <div class='highlight'><pre>        <span class="n">session</span><span class="o">[</span><span class="ss">:uid</span><span class="o">]</span> <span class="o">=</span> <span class="n">auth</span><span class="o">[</span><span class="s1">&#39;uid&#39;</span><span class="o">]</span>
         <span class="n">session</span><span class="o">[</span><span class="ss">:provider</span><span class="o">]</span> <span class="o">=</span> <span class="n">auth</span><span class="o">[</span><span class="s1">&#39;provider&#39;</span><span class="o">]</span>
-        <span class="n">session</span><span class="o">[</span><span class="ss">:name</span><span class="o">]</span> <span class="o">=</span> <span class="n">auth</span><span class="o">[</span><span class="s1">&#39;user_info&#39;</span><span class="o">][</span><span class="s1">&#39;name&#39;</span><span class="o">]</span>
-        <span class="n">session</span><span class="o">[</span><span class="ss">:nickname</span><span class="o">]</span> <span class="o">=</span> <span class="n">auth</span><span class="o">[</span><span class="s1">&#39;user_info&#39;</span><span class="o">][</span><span class="s1">&#39;nickname&#39;</span><span class="o">]</span>
-        <span class="n">session</span><span class="o">[</span><span class="ss">:website</span><span class="o">]</span> <span class="o">=</span> <span class="n">auth</span><span class="o">[</span><span class="s1">&#39;user_info&#39;</span><span class="o">][</span><span class="s1">&#39;urls&#39;</span><span class="o">][</span><span class="s1">&#39;Website&#39;</span><span class="o">]</span>
-        <span class="n">session</span><span class="o">[</span><span class="ss">:description</span><span class="o">]</span> <span class="o">=</span> <span class="n">auth</span><span class="o">[</span><span class="s1">&#39;user_info&#39;</span><span class="o">][</span><span class="s1">&#39;description&#39;</span><span class="o">]</span>
-        <span class="n">session</span><span class="o">[</span><span class="ss">:image</span><span class="o">]</span> <span class="o">=</span> <span class="n">auth</span><span class="o">[</span><span class="s1">&#39;user_info&#39;</span><span class="o">][</span><span class="s1">&#39;image&#39;</span><span class="o">]</span>
-        <span class="n">session</span><span class="o">[</span><span class="ss">:email</span><span class="o">]</span> <span class="o">=</span> <span class="n">auth</span><span class="o">[</span><span class="s1">&#39;user_info&#39;</span><span class="o">][</span><span class="s1">&#39;email&#39;</span><span class="o">]</span>
+        <span class="n">session</span><span class="o">[</span><span class="ss">:name</span><span class="o">]</span> <span class="o">=</span> <span class="n">auth</span><span class="o">[</span><span class="s1">&#39;info&#39;</span><span class="o">][</span><span class="s1">&#39;name&#39;</span><span class="o">]</span>
+        <span class="n">session</span><span class="o">[</span><span class="ss">:nickname</span><span class="o">]</span> <span class="o">=</span> <span class="n">auth</span><span class="o">[</span><span class="s1">&#39;info&#39;</span><span class="o">][</span><span class="s1">&#39;nickname&#39;</span><span class="o">]</span>
+        <span class="n">session</span><span class="o">[</span><span class="ss">:website</span><span class="o">]</span> <span class="o">=</span> <span class="n">auth</span><span class="o">[</span><span class="s1">&#39;info&#39;</span><span class="o">][</span><span class="s1">&#39;urls&#39;</span><span class="o">][</span><span class="s1">&#39;Website&#39;</span><span class="o">]</span>
+        <span class="n">session</span><span class="o">[</span><span class="ss">:description</span><span class="o">]</span> <span class="o">=</span> <span class="n">auth</span><span class="o">[</span><span class="s1">&#39;info&#39;</span><span class="o">][</span><span class="s1">&#39;description&#39;</span><span class="o">]</span>
+        <span class="n">session</span><span class="o">[</span><span class="ss">:image</span><span class="o">]</span> <span class="o">=</span> <span class="n">auth</span><span class="o">[</span><span class="s1">&#39;info&#39;</span><span class="o">][</span><span class="s1">&#39;image&#39;</span><span class="o">]</span>
+        <span class="n">session</span><span class="o">[</span><span class="ss">:email</span><span class="o">]</span> <span class="o">=</span> <span class="n">auth</span><span class="o">[</span><span class="s1">&#39;info&#39;</span><span class="o">][</span><span class="s1">&#39;email&#39;</span><span class="o">]</span>
         <span class="n">session</span><span class="o">[</span><span class="ss">:oauth_token</span><span class="o">]</span> <span class="o">=</span> <span class="n">auth</span><span class="o">[</span><span class="s1">&#39;credentials&#39;</span><span class="o">][</span><span class="s1">&#39;token&#39;</span><span class="o">]</span>
         <span class="n">session</span><span class="o">[</span><span class="ss">:oauth_secret</span><span class="o">]</span> <span class="o">=</span> <span class="n">auth</span><span class="o">[</span><span class="s1">&#39;credentials&#39;</span><span class="o">][</span><span class="s1">&#39;secret&#39;</span><span class="o">]</span></pre></div>
       </td>
@@ -125,7 +130,7 @@ Everyone is redirected to /users/new to confirm that they&rsquo;d like
 to have their username.</p>
       </td>
       <td class=code>
-        <div class='highlight'><pre>        <span class="k">if</span> <span class="no">User</span><span class="o">.</span><span class="n">first</span> <span class="ss">:username</span> <span class="o">=&gt;</span> <span class="n">auth</span><span class="o">[</span><span class="s1">&#39;user_info&#39;</span><span class="o">][</span><span class="s1">&#39;nickname&#39;</span><span class="o">]</span>
+        <div class='highlight'><pre>        <span class="k">if</span> <span class="no">User</span><span class="o">.</span><span class="n">first</span> <span class="ss">:username</span> <span class="o">=&gt;</span> <span class="n">auth</span><span class="o">[</span><span class="s1">&#39;info&#39;</span><span class="o">][</span><span class="s1">&#39;nickname&#39;</span><span class="o">]</span>
           <span class="n">flash</span><span class="o">[</span><span class="ss">:error</span><span class="o">]</span> <span class="o">=</span> <span class="s2">&quot;Sorry, someone else has that username. Please pick another.&quot;</span>
         <span class="k">end</span>
 
@@ -147,7 +152,7 @@ and updated.</p>
       <td class=code>
         <div class='highlight'><pre>    <span class="vi">@auth</span><span class="o">.</span><span class="n">oauth_token</span> <span class="o">=</span> <span class="n">auth</span><span class="o">[</span><span class="s1">&#39;credentials&#39;</span><span class="o">][</span><span class="s1">&#39;token&#39;</span><span class="o">]</span>
     <span class="vi">@auth</span><span class="o">.</span><span class="n">oauth_secret</span> <span class="o">=</span> <span class="n">auth</span><span class="o">[</span><span class="s1">&#39;credentials&#39;</span><span class="o">][</span><span class="s1">&#39;secret&#39;</span><span class="o">]</span>
-    <span class="vi">@auth</span><span class="o">.</span><span class="n">nickname</span> <span class="o">=</span> <span class="n">auth</span><span class="o">[</span><span class="s1">&#39;user_info&#39;</span><span class="o">][</span><span class="s1">&#39;nickname&#39;</span><span class="o">]</span>
+    <span class="vi">@auth</span><span class="o">.</span><span class="n">nickname</span> <span class="o">=</span> <span class="n">auth</span><span class="o">[</span><span class="s1">&#39;info&#39;</span><span class="o">][</span><span class="s1">&#39;nickname&#39;</span><span class="o">]</span>
     <span class="vi">@auth</span><span class="o">.</span><span class="n">save</span>
 
     <span class="n">session</span><span class="o">[</span><span class="ss">:user_id</span><span class="o">]</span> <span class="o">=</span> <span class="vi">@auth</span><span class="o">.</span><span class="n">user</span><span class="o">.</span><span class="n">id</span>
@@ -155,6 +160,11 @@ and updated.</p>
     <span class="n">flash</span><span class="o">[</span><span class="ss">:notice</span><span class="o">]</span> <span class="o">=</span> <span class="s2">&quot;You&#39;re now logged in.&quot;</span>
 
     <span class="n">redirect_to</span> <span class="n">root_path</span>
+  <span class="k">end</span>
+
+  <span class="k">def</span> <span class="nf">invalid_auth_provider</span>
+    <span class="n">flash</span><span class="o">[</span><span class="ss">:error</span><span class="o">]</span> <span class="o">=</span> <span class="s2">&quot;We were unable to use your credentials because we do not support logging in with </span><span class="si">#{</span><span class="n">params</span><span class="o">[</span><span class="ss">:provider</span><span class="o">]</span><span class="si">}</span><span class="s2">.&quot;</span>
+    <span class="n">redirect_to</span> <span class="n">new_session_url</span>
   <span class="k">end</span>
 
   <span class="k">def</span> <span class="nf">failure</span>

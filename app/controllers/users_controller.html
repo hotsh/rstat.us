@@ -25,11 +25,16 @@
           <a class="source" href="webfinger_controller.html">webfinger_controller.rb</a>
           <a class="source" href="../decorators/application_decorator.html">application_decorator.rb</a>
           <a class="source" href="../decorators/author_decorator.html">author_decorator.rb</a>
+          <a class="source" href="../decorators/author_json_decorator.html">author_json_decorator.rb</a>
+          <a class="source" href="../decorators/time_decorator.html">time_decorator.rb</a>
+          <a class="source" href="../decorators/update_json_decorator.html">update_json_decorator.rb</a>
           <a class="source" href="../decorators/user_decorator.html">user_decorator.rb</a>
           <a class="source" href="../models/author.html">author.rb</a>
           <a class="source" href="../models/authorization.html">authorization.rb</a>
           <a class="source" href="../models/feed.html">feed.rb</a>
           <a class="source" href="../models/notifier.html">notifier.rb</a>
+          <a class="source" href="../models/salmon_author.html">salmon_author.rb</a>
+          <a class="source" href="../models/salmon_interpreter.html">salmon_interpreter.rb</a>
           <a class="source" href="../models/update.html">update.rb</a>
           <a class="source" href="../models/user.html">user.rb</a>
           <a class="source" href="../models/webfinger.html">webfinger.rb</a>
@@ -66,13 +71,13 @@
     <span class="k">end</span>
     <span class="k">unless</span> <span class="vi">@authors</span><span class="o">.</span><span class="n">empty?</span>
       <span class="vi">@authors</span> <span class="o">=</span> <span class="vi">@authors</span><span class="o">.</span><span class="n">paginate</span><span class="p">(</span><span class="ss">:page</span> <span class="o">=&gt;</span> <span class="n">params</span><span class="o">[</span><span class="ss">:page</span><span class="o">]</span><span class="p">,</span> <span class="ss">:per_page</span> <span class="o">=&gt;</span> <span class="n">params</span><span class="o">[</span><span class="ss">:per_page</span><span class="o">]</span><span class="p">)</span>
-      <span class="n">set_pagination_buttons</span><span class="p">(</span><span class="vi">@authors</span><span class="p">)</span>
+      <span class="n">set_pagination_buttons</span><span class="p">(</span><span class="vi">@authors</span><span class="p">,</span> <span class="ss">:search</span> <span class="o">=&gt;</span> <span class="n">params</span><span class="o">[</span><span class="ss">:search</span><span class="o">]</span><span class="p">)</span>
     <span class="k">end</span>
   <span class="k">end</span>
 
   <span class="k">def</span> <span class="nf">show</span>
     <span class="k">if</span> <span class="vi">@user</span><span class="o">.</span><span class="n">nil?</span>
-      <span class="n">render</span> <span class="ss">:file</span> <span class="o">=&gt;</span> <span class="s2">&quot;</span><span class="si">#{</span><span class="no">Rails</span><span class="o">.</span><span class="n">root</span><span class="si">}</span><span class="s2">/public/404.html&quot;</span><span class="p">,</span> <span class="ss">:status</span> <span class="o">=&gt;</span> <span class="mi">404</span>
+      <span class="n">render</span> <span class="ss">:file</span> <span class="o">=&gt;</span> <span class="s2">&quot;</span><span class="si">#{</span><span class="no">Rails</span><span class="o">.</span><span class="n">root</span><span class="si">}</span><span class="s2">/public/404&quot;</span><span class="p">,</span> <span class="ss">:status</span> <span class="o">=&gt;</span> <span class="mi">404</span>
     <span class="k">elsif</span> <span class="vi">@user</span><span class="o">.</span><span class="n">username</span> <span class="o">!=</span> <span class="n">params</span><span class="o">[</span><span class="ss">:id</span><span class="o">]</span> <span class="c1"># case difference</span>
       <span class="vi">@title</span> <span class="o">=</span> <span class="vi">@user</span><span class="o">.</span><span class="n">username</span>
       <span class="n">redirect_to</span> <span class="n">user_path</span><span class="p">(</span><span class="vi">@user</span><span class="p">)</span>
@@ -86,6 +91,14 @@
       <span class="n">set_pagination_buttons</span><span class="p">(</span><span class="vi">@updates</span><span class="p">)</span>
 
       <span class="n">headers</span><span class="o">[</span><span class="s1">&#39;Link&#39;</span><span class="o">]</span> <span class="o">=</span> <span class="s2">&quot;&lt;</span><span class="si">#{</span><span class="n">user_xrd_path</span><span class="p">(</span><span class="vi">@user</span><span class="o">.</span><span class="n">author</span><span class="p">)</span><span class="si">}</span><span class="s2">&gt;; rel=</span><span class="se">\&quot;</span><span class="s2">lrdd</span><span class="se">\&quot;</span><span class="s2">; type=</span><span class="se">\&quot;</span><span class="s2">application/xrd+xml</span><span class="se">\&quot;</span><span class="s2">&quot;</span>
+
+      <span class="n">respond_to</span> <span class="k">do</span> <span class="o">|</span><span class="nb">format</span><span class="o">|</span>
+        <span class="nb">format</span><span class="o">.</span><span class="n">json</span> <span class="p">{</span>
+          <span class="n">render</span> <span class="ss">:json</span> <span class="o">=&gt;</span> <span class="vi">@updates</span><span class="o">.</span><span class="n">map</span><span class="p">{</span> <span class="o">|</span><span class="n">u</span><span class="o">|</span> <span class="no">UpdateJsonDecorator</span><span class="o">.</span><span class="n">decorate</span><span class="p">(</span><span class="n">u</span><span class="p">)</span> <span class="p">}</span>
+        <span class="p">}</span>
+        <span class="nb">format</span><span class="o">.</span><span class="n">html</span>
+      <span class="k">end</span>
+
     <span class="k">end</span>
   <span class="k">end</span>
 
@@ -169,7 +182,7 @@ wanted to have a really nice URL for it, and not just the ugly one.</p>
     <span class="k">if</span> <span class="vi">@user</span>
       <span class="n">redirect_to</span> <span class="n">feed_path</span><span class="p">(</span><span class="vi">@user</span><span class="o">.</span><span class="n">feed</span><span class="p">,</span> <span class="ss">:format</span> <span class="o">=&gt;</span> <span class="ss">:atom</span><span class="p">)</span>
     <span class="k">else</span>
-      <span class="n">render</span> <span class="ss">:file</span> <span class="o">=&gt;</span> <span class="s2">&quot;</span><span class="si">#{</span><span class="no">Rails</span><span class="o">.</span><span class="n">root</span><span class="si">}</span><span class="s2">/public/404.html&quot;</span><span class="p">,</span> <span class="ss">:status</span> <span class="o">=&gt;</span> <span class="mi">404</span>
+      <span class="n">render</span> <span class="ss">:file</span> <span class="o">=&gt;</span> <span class="s2">&quot;</span><span class="si">#{</span><span class="no">Rails</span><span class="o">.</span><span class="n">root</span><span class="si">}</span><span class="s2">/public/404&quot;</span><span class="p">,</span> <span class="ss">:status</span> <span class="o">=&gt;</span> <span class="mi">404</span>
     <span class="k">end</span>
   <span class="k">end</span></pre></div>
       </td>
@@ -185,7 +198,7 @@ world, so pick wisely!</p>
       <td class=code>
         <div class='highlight'><pre>  <span class="k">def</span> <span class="nf">following</span>
     <span class="k">if</span> <span class="vi">@user</span><span class="o">.</span><span class="n">nil?</span>
-      <span class="n">render</span> <span class="ss">:file</span> <span class="o">=&gt;</span> <span class="s2">&quot;</span><span class="si">#{</span><span class="no">Rails</span><span class="o">.</span><span class="n">root</span><span class="si">}</span><span class="s2">/public/404.html&quot;</span><span class="p">,</span> <span class="ss">:status</span> <span class="o">=&gt;</span> <span class="mi">404</span></pre></div>
+      <span class="n">render</span> <span class="ss">:file</span> <span class="o">=&gt;</span> <span class="s2">&quot;</span><span class="si">#{</span><span class="no">Rails</span><span class="o">.</span><span class="n">root</span><span class="si">}</span><span class="s2">/public/404&quot;</span><span class="p">,</span> <span class="ss">:status</span> <span class="o">=&gt;</span> <span class="mi">404</span></pre></div>
       </td>
     </tr>
     <tr id='section-5'>
@@ -217,7 +230,7 @@ specified by that user, redirect to the case that the user prefers</p>
       <span class="k">end</span>
 
       <span class="n">respond_to</span> <span class="k">do</span> <span class="o">|</span><span class="nb">format</span><span class="o">|</span>
-        <span class="nb">format</span><span class="o">.</span><span class="n">html</span> <span class="p">{</span> <span class="n">render</span> <span class="s2">&quot;users/list&quot;</span><span class="p">,</span> <span class="ss">:locals</span> <span class="o">=&gt;</span> <span class="p">{</span><span class="ss">:title</span> <span class="o">=&gt;</span> <span class="n">title</span><span class="p">}</span> <span class="p">}</span>
+        <span class="nb">format</span><span class="o">.</span><span class="n">html</span> <span class="p">{</span> <span class="n">render</span> <span class="s2">&quot;users/list&quot;</span><span class="p">,</span> <span class="ss">:locals</span> <span class="o">=&gt;</span> <span class="p">{</span><span class="ss">:title</span> <span class="o">=&gt;</span> <span class="n">title</span><span class="p">,</span> <span class="ss">:list_class</span> <span class="o">=&gt;</span> <span class="s2">&quot;friends&quot;</span><span class="p">}</span> <span class="p">}</span>
         <span class="nb">format</span><span class="o">.</span><span class="n">json</span> <span class="p">{</span> <span class="n">render</span> <span class="ss">:json</span> <span class="o">=&gt;</span> <span class="vi">@authors</span> <span class="p">}</span>
       <span class="k">end</span>
     <span class="k">end</span>
@@ -235,7 +248,7 @@ followers. Only one way to find out&hellip;</p>
       <td class=code>
         <div class='highlight'><pre>  <span class="k">def</span> <span class="nf">followers</span>
     <span class="k">if</span> <span class="vi">@user</span><span class="o">.</span><span class="n">nil?</span>
-      <span class="n">render</span> <span class="ss">:file</span> <span class="o">=&gt;</span> <span class="s2">&quot;</span><span class="si">#{</span><span class="no">Rails</span><span class="o">.</span><span class="n">root</span><span class="si">}</span><span class="s2">/public/404.html&quot;</span><span class="p">,</span> <span class="ss">:status</span> <span class="o">=&gt;</span> <span class="mi">404</span></pre></div>
+      <span class="n">render</span> <span class="ss">:file</span> <span class="o">=&gt;</span> <span class="s2">&quot;</span><span class="si">#{</span><span class="no">Rails</span><span class="o">.</span><span class="n">root</span><span class="si">}</span><span class="s2">/public/404&quot;</span><span class="p">,</span> <span class="ss">:status</span> <span class="o">=&gt;</span> <span class="mi">404</span></pre></div>
       </td>
     </tr>
     <tr id='section-7'>
@@ -275,7 +288,7 @@ specified by that user, redirect to the case that the user prefers</p>
         <span class="n">title</span> <span class="o">=</span> <span class="s2">&quot;@</span><span class="si">#{</span><span class="vi">@user</span><span class="o">.</span><span class="n">username</span><span class="si">}</span><span class="s2">&#39;s followers&quot;</span>
       <span class="k">end</span>
 
-      <span class="n">render</span> <span class="s2">&quot;users/list&quot;</span><span class="p">,</span> <span class="ss">:locals</span> <span class="o">=&gt;</span> <span class="p">{</span><span class="ss">:title</span> <span class="o">=&gt;</span> <span class="n">title</span><span class="p">}</span>
+      <span class="n">render</span> <span class="s2">&quot;users/list&quot;</span><span class="p">,</span> <span class="ss">:locals</span> <span class="o">=&gt;</span> <span class="p">{</span><span class="ss">:title</span> <span class="o">=&gt;</span> <span class="n">title</span><span class="p">,</span> <span class="ss">:list_class</span> <span class="o">=&gt;</span> <span class="s2">&quot;followers&quot;</span><span class="p">}</span>
     <span class="k">end</span>
   <span class="k">end</span></pre></div>
       </td>
@@ -348,7 +361,13 @@ confirmation page to prevent repost issues</p>
       </td>
       <td class=code>
         <div class='highlight'><pre>  <span class="k">def</span> <span class="nf">forgot_password_create</span>
+    <span class="k">unless</span> <span class="n">params</span><span class="o">[</span><span class="ss">:email</span><span class="o">]</span> <span class="o">=~</span> <span class="sr">/^([\w\.%\+\-]+)@([\w\-]+\.)+([\w]{2,})$/i</span>
+      <span class="n">flash</span><span class="o">[</span><span class="ss">:error</span><span class="o">]</span> <span class="o">=</span> <span class="s2">&quot;You didn&#39;t enter a correct email address. Please check your email and try again.&quot;</span>
+      <span class="k">return</span> <span class="n">render</span> <span class="s2">&quot;login/forgot_password&quot;</span>
+    <span class="k">end</span>
+
     <span class="n">user</span> <span class="o">=</span> <span class="no">User</span><span class="o">.</span><span class="n">first</span><span class="p">(</span><span class="ss">:email</span> <span class="o">=&gt;</span> <span class="n">params</span><span class="o">[</span><span class="ss">:email</span><span class="o">]</span><span class="p">)</span>
+
     <span class="k">if</span> <span class="n">user</span><span class="o">.</span><span class="n">nil?</span>
       <span class="n">flash</span><span class="o">[</span><span class="ss">:error</span><span class="o">]</span> <span class="o">=</span> <span class="s2">&quot;Your account could not be found, please check your email and try again.&quot;</span>
       <span class="n">render</span> <span class="s2">&quot;login/forgot_password&quot;</span>
