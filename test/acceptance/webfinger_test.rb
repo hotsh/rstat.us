@@ -57,6 +57,13 @@ describe "Webfinger" do
       aliases.select{|a| a.match(regex)}
       aliases.wont_be_empty
     end
+
+    it "contains the profile page url" do
+      regex = /^http(?:s)?:\/\/.*\/users\/#{@user.username}$/
+      profile_rel = "http://webfinger.net/rel/profile-page"
+      profile_uri = @xml.xpath("//xmlns:Link[@rel='#{profile_rel}']")
+      profile_uri.first.attr("href").must_match regex
+    end
   end
 
   it "404s if that user doesnt exist" do
