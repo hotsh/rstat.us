@@ -124,3 +124,15 @@
     margin-left: 1em;
   }
 }
+
+#about #contributors {
+  @include clearfix;
+  a {
+    float: left;
+    margin-right: 7px;
+  }
+
+  img {
+    width: 80px;
+  }
+}
