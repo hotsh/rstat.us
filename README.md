@@ -18,6 +18,24 @@ The differences between rstat.us and other microblogging networks are *simplicit
 
 [![Build Status](https://secure.travis-ci.org/hotsh/rstat.us.png?branch=master)](http://travis-ci.org/hotsh/rstat.us)
 
+Quick facts and links
+---------------------
+
+- The stack: ruby/rails 3.2/mongodb
+- [The code][code]
+- [The documentation][docs] (We could use lots of improvement here!)
+- [The Issues list][issues]
+- Tests are written using [minitest][minitest] and [capybara][capy]
+- Documentation is generated using [docco][docco] (rocco)
+
+[code]: http://github.com/hotsh/rstat.us
+[docs]: http://hotsh.github.com/rstat.us/
+[issues]: http://github.com/hotsh/rstat.us/issues
+[flow]: http://scottchacon.com/2011/08/31/github-flow.html
+[minitest]: https://github.com/seattlerb/minitest
+[capy]: https://github.com/jnicklas/capybara
+[docco]: https://github.com/jashkenas/docco
+
 How to get help
 ---------------
 
@@ -31,54 +49,16 @@ How to get help
 Helping out with rstat.us
 -------------------------
 
-If you'd like to contribute, we'd love to have you! Here are some details:
+If you'd like to contribute, we'd love to have you! Your first order of business is setting up a development environment and making sure all the tests pass on your system. Rstat.us is a Ruby on Rails 3.2 application, so it's assumed you already have [Ruby](http://www.ruby-lang.org/en/downloads) (1.9.2 or 1.9.3 preferred, 1.8.7 compatibility is not guaranteed), rubygems (comes with Ruby as of 1.9.2), and [bundler](http://gembundler.com/) on your machine. If not, each of those links has instructions, and we're willing to help via one of the contact methods above if you have issues.
 
-- The stack: ruby/rails 3.1/mongodb
-- [The code][code]
-- [The documentation][docs] (We could use lots of improvement here!)
-- [The Issues list][issues]
-- Tests are written using [minitest][minitest] and [capybara][capy]
-- Documentation is generated using [docco][docco] (rocco)
-- We follow [GitHub flow][flow], as a workflow. Basically:
-  - Please fork the project
-  - Create a feature branch
-  - Make your change, including tests and documentation as appropriate
-  - Submit a pull request from your branch
-  - A member of the core team will let you know they are looking at it as soon as they are able. We will review the code and run the tests before merging.
-
-[code]: http://github.com/hotsh/rstat.us
-[docs]: http://hotsh.github.com/rstat.us/
-[issues]: http://github.com/hotsh/rstat.us/issues
-[flow]: http://scottchacon.com/2011/08/31/github-flow.html
-[minitest]: https://github.com/seattlerb/minitest
-[capy]: https://github.com/jnicklas/capybara
-[docco]: https://github.com/jashkenas/docco
-
-## Development Roadmap
-
-In the first half of 2012, we plan to work on:
-
-- [Fixing user-facing bugs or cutting buggy parts of the app](https://github.com/hotsh/rstat.us/issues?state=open&milestone=11)
-- [Fixing OStatus support](https://github.com/hotsh/rstat.us/issues?state=open&milestone=6)
-- [Implementing a RESTful API](https://github.com/hotsh/rstat.us/issues?milestone=8&state=open)
-- [Supporting and documenting running your own node](https://github.com/hotsh/rstat.us/issues?milestone=7&state=open)
-
-Please see the [Issues](http://github.com/hotsh/rstat.us/issues), anything without an assignee is up for grabs! Don't hesitate to ask for help or clarification either on an issue itself or through one of the contact methods listed above.
-
-Source code documentation
--------------------------
-
-We have documentation that explains our source code using rocco.
-You can view it [here](http://hotsh.github.com/rstat.us/).
-
-
-Setting up a development environment
-------------------------------------
+If you have any problems with the following rstat.us specific steps, _it is a bug_. For example, [this is an issue with running a development environment on windows](https://github.com/hotsh/rstat.us/issues/547) that we need to fix. Please report any issues you have.
 
 ### Getting a local version running
 
 First off: you will need MongoDB (www.mongodb.org).  They have a [quickstart
 guide][mongo-quickstart] for getting it installed and running.
+
+Fork the project in github so that you have your own version.
 
 Then do:
 
@@ -132,9 +112,38 @@ You can run convenient subsets of the tests during development; run `bundle exec
 
     $ bundle exec rake test TEST=test/models/author_test.rb
 
-Please run all the tests before submitting a pull request!
-
 [mongo-quickstart]: http://www.mongodb.org/display/DOCS/Quickstart
+
+Picking something to work on
+----------------------------
+
+Once you've got a development environment set up with the current tests all passing, you're ready to start working on the code!
+
+Please see the [Issues](http://github.com/hotsh/rstat.us/issues); anything without an assignee is up for grabs! Fairly well-defined and small issues are tagged with [Pick me!!!!!!](https://github.com/hotsh/rstat.us/issues?labels=Pick+me!!!!!!&milestone=&page=1&sort=updated&state=open); these would be ideal if you want to help out but aren't sure where to start. Don't hesitate to ask for help or clarification either on an issue itself or through one of the contact methods listed above.
+
+## Development Roadmap
+
+In the second half of 2012, we plan to focus on:
+
+- [Implementing an API (or two)](https://github.com/hotsh/rstat.us/issues?milestone=8&page=1&sort=updated&state=open)
+
+We'd love to get rstat.us working with desktop and mobile clients, either through a [twitter-compatible API in a client that allows you to change the endpoint URL](https://github.com/hotsh/rstat.us/issues/562) or working with an app developer to make an rstat.us-specific app.
+
+## Contribution procedure
+
+- We follow [GitHub flow][flow], as a workflow. Basically:
+  - Create a feature branch in your fork
+  - Make your change, including tests and documentation as appropriate
+  - Please run all the tests before submitting a pull request!
+  - Submit a pull request from your branch
+  - A member of the core team will let you know they are looking at it as soon as they are able. We will review the code and run the tests before merging.
+
+Source code documentation
+-------------------------
+
+We have documentation that explains our source code using rocco.
+You can view it [here](http://hotsh.github.com/rstat.us/).
+
 
 Running your own node
 ---------------------
