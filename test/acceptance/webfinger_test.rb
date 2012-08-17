@@ -59,4 +59,13 @@ describe "Webfinger" do
 
     subject.must_equal(param)
   end
+
+  it "has the correct absolute uri template in host-meta" do
+    get "/.well-known/host-meta"
+    xml = Nokogiri.XML(last_response.body)
+    
+    template_uri = xml.xpath('//xmlns:Link[@rel="lrdd"]').first.attr('template')
+
+    template_uri.must_match /^http(?:s)?:\/\/.*\/users\/\{uri\}\/xrd.xml$/
+  end
 end
