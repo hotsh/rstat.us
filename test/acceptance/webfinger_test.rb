@@ -36,6 +36,11 @@ describe "Webfinger" do
       profile_uri = @xml.xpath("//xmlns:Link[@rel='#{profile_rel}']")
       profile_uri.first.attr("href").must_match regex
     end
+
+    it "contains the account name" do
+      subject = @xml.xpath("//xmlns:Subject").first.content
+      subject.must_equal(@subject)
+    end
   end
 
   it "404s if that user doesnt exist" do
