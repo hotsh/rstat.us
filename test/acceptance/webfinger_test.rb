@@ -41,6 +41,22 @@ describe "Webfinger" do
       subject = @xml.xpath("//xmlns:Subject").first.content
       subject.must_equal(@subject)
     end
+
+    it "contains profile uri as a uri for the user" do
+      regex = /^http(?:s)?:\/\/.*\/users\/#{@user.username}$/
+      aliases = @xml.xpath("//xmlns:Alias")
+      aliases = aliases.map(&:content)
+      aliases.select{|a| a.match(regex)}
+      aliases.wont_be_empty
+    end
+
+    it "contains feed uri as a uri for the user" do
+      regex = /^http(?:s)?:\/\/.*\/feeds\/#{@user.feed.id}$/
+      aliases = @xml.xpath("//xmlns:Alias")
+      aliases = aliases.map(&:content)
+      aliases.select{|a| a.match(regex)}
+      aliases.wont_be_empty
+    end
   end
 
   it "404s if that user doesnt exist" do
