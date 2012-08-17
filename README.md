@@ -121,7 +121,7 @@ Once you've got a development environment set up with the current tests all pass
 
 Please see the [Issues](http://github.com/hotsh/rstat.us/issues); anything without an assignee is up for grabs! Fairly well-defined and small issues are tagged with [Pick me!!!!!!](https://github.com/hotsh/rstat.us/issues?labels=Pick+me!!!!!!&milestone=&page=1&sort=updated&state=open); these would be ideal if you want to help out but aren't sure where to start. Don't hesitate to ask for help or clarification either on an issue itself or through one of the contact methods listed above.
 
-## Development Roadmap
+### Development Roadmap
 
 In the second half of 2012, we plan to focus on:
 
@@ -129,7 +129,7 @@ In the second half of 2012, we plan to focus on:
 
 We'd love to get rstat.us working with desktop and mobile clients, either through a [twitter-compatible API in a client that allows you to change the endpoint URL](https://github.com/hotsh/rstat.us/issues/562) or working with an app developer to make an rstat.us-specific app.
 
-## Contribution procedure
+### Contribution procedure
 
 - We follow [GitHub flow][flow], as a workflow. Basically:
   - Create a feature branch in your fork
