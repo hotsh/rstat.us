@@ -114,8 +114,7 @@ You can run convenient subsets of the tests during development; run `bundle exec
 
 [mongo-quickstart]: http://www.mongodb.org/display/DOCS/Quickstart
 
-Picking something to work on
-----------------------------
+### Picking something to work on
 
 Once you've got a development environment set up with the current tests all passing, you're ready to start working on the code!
 
