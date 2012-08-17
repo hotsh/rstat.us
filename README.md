@@ -129,14 +129,15 @@ In the second half of 2012, we plan to focus on:
 
 We'd love to get rstat.us working with desktop and mobile clients, either through a [twitter-compatible API in a client that allows you to change the endpoint URL](https://github.com/hotsh/rstat.us/issues/562) or working with an app developer to make an rstat.us-specific app.
 
-### Contribution procedure
+### Contribution steps
 
-- We follow [GitHub flow][flow], as a workflow. Basically:
-  - Create a feature branch in your fork
-  - Make your change, including tests and documentation as appropriate
-  - Please run all the tests before submitting a pull request!
-  - Submit a pull request from your branch
-  - A member of the core team will let you know they are looking at it as soon as they are able. We will review the code and run the tests before merging.
+We follow [GitHub flow][flow], as a workflow. Basically:
+
+- Create a feature branch in your fork
+- Make your change, including tests and documentation as appropriate
+- Please run all the tests before submitting a pull request!
+- Submit a pull request from your branch
+- A member of the core team will let you know they are looking at it as soon as they are able. We will review the code and run the tests before merging.
 
 Source code documentation
 -------------------------
