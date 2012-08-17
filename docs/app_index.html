@@ -26,27 +26,32 @@
     Jump To &hellip;
     <div id="jump_wrapper">
       <div id="jump_page">
-          <a class="source" href="app/controllers/application_controller.html">application_controller.rb</a>
-          <a class="source" href="app/controllers/auth_controller.html">auth_controller.rb</a>
-          <a class="source" href="app/controllers/feeds_controller.html">feeds_controller.rb</a>
-          <a class="source" href="app/controllers/salmon_controller.html">salmon_controller.rb</a>
-          <a class="source" href="app/controllers/searches_controller.html">searches_controller.rb</a>
-          <a class="source" href="app/controllers/sessions_controller.html">sessions_controller.rb</a>
-          <a class="source" href="app/controllers/static_controller.html">static_controller.rb</a>
-          <a class="source" href="app/controllers/subscriptions_controller.html">subscriptions_controller.rb</a>
-          <a class="source" href="app/controllers/updates_controller.html">updates_controller.rb</a>
-          <a class="source" href="app/controllers/users_controller.html">users_controller.rb</a>
-          <a class="source" href="app/controllers/webfinger_controller.html">webfinger_controller.rb</a>
-          <a class="source" href="app/decorators/application_decorator.html">application_decorator.rb</a>
-          <a class="source" href="app/decorators/author_decorator.html">author_decorator.rb</a>
-          <a class="source" href="app/decorators/user_decorator.html">user_decorator.rb</a>
-          <a class="source" href="app/models/author.html">author.rb</a>
-          <a class="source" href="app/models/authorization.html">authorization.rb</a>
-          <a class="source" href="app/models/feed.html">feed.rb</a>
-          <a class="source" href="app/models/notifier.html">notifier.rb</a>
-          <a class="source" href="app/models/update.html">update.rb</a>
-          <a class="source" href="app/models/user.html">user.rb</a>
-          <a class="source" href="app/models/webfinger.html">webfinger.rb</a>
+        <a class="source" href="app/controllers/application_controller.html">application_controller.rb</a>
+        <a class="source" href="app/controllers/auth_controller.html">auth_controller.rb</a>
+        <a class="source" href="app/controllers/feeds_controller.html">feeds_controller.rb</a>
+        <a class="source" href="app/controllers/salmon_controller.html">salmon_controller.rb</a>
+        <a class="source" href="app/controllers/searches_controller.html">searches_controller.rb</a>
+        <a class="source" href="app/controllers/sessions_controller.html">sessions_controller.rb</a>
+        <a class="source" href="app/controllers/static_controller.html">static_controller.rb</a>
+        <a class="source" href="app/controllers/subscriptions_controller.html">subscriptions_controller.rb</a>
+        <a class="source" href="app/controllers/updates_controller.html">updates_controller.rb</a>
+        <a class="source" href="app/controllers/users_controller.html">users_controller.rb</a>
+        <a class="source" href="app/controllers/webfinger_controller.html">webfinger_controller.rb</a>
+        <a class="source" href="app/decorators/application_decorator.html">application_decorator.rb</a>
+        <a class="source" href="app/decorators/author_decorator.html">author_decorator.rb</a>
+        <a class="source" href="app/decorators/author_json_decorator.html">author_json_decorator.rb</a>
+        <a class="source" href="app/decorators/time_decorator.html">time_decorator.rb</a>
+        <a class="source" href="app/decorators/update_decorator.html">update_decorator.rb</a>
+        <a class="source" href="app/decorators/user_decorator.html">user_decorator.rb</a>
+        <a class="source" href="app/models/author.html">author.rb</a>
+        <a class="source" href="app/models/authorization.html">authorization.rb</a>
+        <a class="source" href="app/models/feed.html">feed.rb</a>
+        <a class="source" href="app/models/notifier.html">notifier.rb</a>
+        <a class="source" href="app/models/salmon_author.html">salmon_author.rb</a>
+        <a class="source" href="app/models/salmon_interpreter.html">salmon_interpreter.rb</a>
+        <a class="source" href="app/models/update.html">update.rb</a>
+        <a class="source" href="app/models/user.html">user.rb</a>
+        <a class="source" href="app/models/webfinger.html">webfinger.rb</a>
       </div>
     </div>
   </div>
@@ -64,7 +69,7 @@
           <a class="pilcrow" href="#section-intro">&#182;</a>
         </div>
         <p><a href="index.html">Return to the main rstat.us index</a></p>
-        <p>The <code>app</code> directory contains so much that it gets its own index. Rails uses the <a href="http://guides.rubyonrails.org/getting_started.html#the-mvc-architecture">MVC architecture</a> so there are directories for the <code>controllers</code>, <code>models</code>, and <code>views</code>.</p>
+        <p>The <code>app</code> directory contains so much that it gets its own index. Rails uses the <a href="http://guides.rubyonrails.org/getting_started.html#the-mvc-architecture">MVC architecture</a> so there are directories for the <code>controllers</code>, <code>models</code>, and <code>views</code>. We're also starting to use the Decorator pattern for view logic, so there's a directory of <code>decorators</code>.</p>
       </td>
       <td class=code>
       </td>
@@ -245,6 +250,39 @@
         <div class='highlight'><pre>|- <a class="source" href="app/decorators/author_decorator.html">author_decorator.rb</a></pre></div>
       </td>
     </tr>
+    <tr id='section-decorators-author-json'>
+      <td class=docs>
+        <div class="pilwrap">
+          <a class="pilcrow" href="#section-decorators-author-json">&#182;</a>
+        </div>
+        <p>The author json decorator handles the json representation of an author. This decorator makes use of some of the author decorator methods.</p>
+      </td>
+      <td class=code>
+        <div class='highlight'><pre>|- <a class="source" href="app/decorators/author_json_decorator.html">author_json_decorator.rb</a></pre></div>
+      </td>
+    </tr>
+    <tr id='section-decorators-time'>
+      <td class=docs>
+        <div class="pilwrap">
+          <a class="pilcrow" href="#section-decorators-time">&#182;</a>
+        </div>
+        <p>The time decorator has the logic needed for displaying time attributes and markup with different time formats for updates.</p>
+      </td>
+      <td class=code>
+        <div class='highlight'><pre>|- <a class="source" href="app/decorators/time_decorator.html">time_decorator.rb</a></pre></div>
+      </td>
+    </tr>
+    <tr id='section-decorators-update_json'>
+      <td class=docs>
+        <div class="pilwrap">
+          <a class="pilcrow" href="#section-decorators-update_json">&#182;</a>
+        </div>
+        <p>The update json decorator creates the json representation of an update. It calls the author json decorator to embed the author.</p>
+      </td>
+      <td class=code>
+        <div class='highlight'><pre>|- <a class="source" href="app/decorators/update_json_decorator.html">update_json_decorator.rb</a></pre></div>
+      </td>
+    </tr>
     <tr id='section-decorators-user'>
       <td class=docs>
         <div class="pilwrap">
@@ -309,6 +347,28 @@
       </td>
       <td class=code>
         <div class='highlight'><pre>|- <a class="source" href="app/models/notifier.html">notifier.rb</a></pre></div>
+      </td>
+    </tr>
+    <tr id='section-models-salmon-author'>
+      <td class=docs>
+        <div class="pilwrap">
+          <a class="pilcrow" href="#section-models-salmon-author">&#182;</a>
+        </div>
+        <p>The salmon author model is a non-database model. It's a wrapper around an author that is returned from a Salmon response through the OStatus gem. This class makes it easier to treat an author from a Salmon response in the same way as an rstat.us Author without needing to know about OStatus authors' structure.</p>
+      </td>
+      <td class=code>
+        <div class='highlight'><pre>|- <a class="source" href="app/models/salmon_author.html">salmon_author.rb</a></pre></div>
+      </td>
+    </tr>
+    <tr id='section-models-salmon-interpreter'>
+      <td class=docs>
+        <div class="pilwrap">
+          <a class="pilcrow" href="#section-models-salmon-interpreter">&#182;</a>
+        </div>
+        <p>The salmon interpreter model is another non-database model that does a lot of the work of carrying out the actions that a Salmon notification tells us about.</p>
+      </td>
+      <td class=code>
+        <div class='highlight'><pre>|- <a class="source" href="app/models/salmon_interpreter.html">salmon_interpreter.rb</a></pre></div>
       </td>
     </tr>
     <tr id='section-models-update'>
