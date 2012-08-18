@@ -38,7 +38,7 @@ class UpdatesController < ApplicationController
 
   def create
     # XXX: This should really be put into a model. Fat controller here!
-    u = current_user.feed.add_update(params)
+    u = current_user.feed.add_update(create_options)
 
     unless u.valid?
       # XXX should this be u.errors.full_messages?
@@ -105,5 +105,14 @@ class UpdatesController < ApplicationController
     elsif params["status"]
       @update_text = params["status"]
     end
+  end
+
+  def create_options
+    {
+      :text => params[:text],
+      :author => current_user.author,
+      :referral_id => params[:referral_id],
+      :twitter => (params[:tweet] == "1")
+    }
   end
 end
