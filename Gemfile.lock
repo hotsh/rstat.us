@@ -1,12 +1,4 @@
 GIT
-  remote: git://github.com/carols10cents/ratom.git
-  revision: fc4157d4fc2bfef5fd14f72cd78bfbfcf359639e
-  branch: utf-8-check-fix
-  specs:
-    ratom (0.7.1)
-      libxml-ruby (~> 2.3.2)
-
-GIT
   remote: git://github.com/collectiveidea/delayed_job.git
   revision: 8dc3930f20eb7363ef0d451ac05a3851eb0caaf6
   tag: v2.1.4
@@ -199,6 +191,8 @@ GEM
       thor (>= 0.14.6, < 2.0)
     raindrops (0.7.0)
     rake (0.9.2.2)
+    ratom (0.7.2)
+      libxml-ruby (~> 2.3.2)
     rdiscount (1.6.8)
     rdoc (3.12)
       json (~> 1.4)
@@ -296,7 +290,7 @@ DEPENDENCIES
   pygmentize (~> 0.0.3)
   quiet_assets (~> 1.0.0)
   rails (= 3.2.8)
-  ratom!
+  ratom (~> 0.7.2)
   rdiscount (~> 1.6.8)
   redfinger (~> 0.1.0)
   rocco!
