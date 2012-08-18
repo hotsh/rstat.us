@@ -13,7 +13,7 @@ module Api
     before_filter :require_user
 
     #
-    # POST /api/1/statuses/update.json
+    # POST /api/statuses/update.json
     #
     def update
       u = current_user.feed.add_update(update_options)

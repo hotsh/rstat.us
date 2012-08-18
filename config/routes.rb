@@ -71,7 +71,8 @@ RstatUs::Application.routes.draw do
   match 'subscriptions/:id.atom', :to => "subscriptions#post_update", :via => :post
   match 'subscriptions/:id.atom', :to => "subscriptions#show", :via => :get
 
-  scope :module => "api" do
-    match 'api/1/statuses/update.:format', :to => "statuses#update", :via => :post, :constraints => { :format => "json" }
+  # Twitter compatible API
+  namespace :api do
+    match 'statuses/update.:format', :to => "statuses#update", :via => :post, :constraints => { :format => "json" }
   end
 end
