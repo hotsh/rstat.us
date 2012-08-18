@@ -38,16 +38,10 @@ class UpdatesController < ApplicationController
 
   def create
     # XXX: This should really be put into a model. Fat controller here!
-    do_tweet = params[:tweet] == "1"
-    u = Update.new(:text => params[:text],
-                   :referral_id => params[:referral_id],
-                   :author => current_user.author,
-                   :twitter => do_tweet)
-
-    # add entry to user's feed
-    current_user.feed.updates << u
+    u = current_user.feed.add_update(params)
 
     unless u.valid?
+      # XXX should this be u.errors.full_messages?
       flash[:error] = u.errors.values.join("\n")
     else
       current_user.feed.save

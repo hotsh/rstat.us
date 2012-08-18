@@ -212,6 +212,13 @@ class Feed
     feed.atom
   end
 
+  def add_update(options)
+    valid_keys = [:text, :referral_id, :author, :twitter]
+    u = Update.new(options.reject { |k,v| !valid_keys.include?(k) })
+    updates << u
+    u
+  end
+
   def last_update
     updates.first
   end
