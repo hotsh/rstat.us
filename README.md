@@ -185,8 +185,13 @@ pull requests to the hotsh/rstat.us master branch.
 This _also_ means that you _could_ push your commits directly to
 hotsh/rstat.us without going through a pull request. We ask that you not do
 this, however, so that any code on master has been seen by 2 sets of eyes
-(tests don't always catch everything!) We reserve the right to take away this
-permission, but in general we trust you to give it to you. :heart: :heart:
+(tests don't always catch everything!) This does not apply to branches other
+than master; if there is long-term collaboration happening, create a feature
+branch and feel free to push directly to that (but have commits reviewed
+before merging that branch into master).
+
+We reserve the right to take away this permission, but in general we trust you
+to give it to you. :heart: :heart:
 
 Source code documentation
 -------------------------
