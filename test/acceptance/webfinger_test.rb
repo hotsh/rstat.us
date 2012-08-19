@@ -4,6 +4,40 @@ require_relative 'acceptance_helper'
 describe "Webfinger" do
   include AcceptanceHelper
 
+  describe "user xrd" do
+    before do
+      @user = Fabricate(:user)
+      @subject = "acct:#{@user.username}@#{@user.author.domain}"
+      get "/users/#{@subject}/xrd.xml"
+      if last_response.status == 301
+        follow_redirect!
+      end
+
+      @xml = Nokogiri.XML(last_response.body)
+    end
+
+    it "contains the salmon url" do
+      regex = /^http(?:s)?:\/\/.*\/feeds\/#{@user.feed.id}\/salmon$/
+      profile_rel = "salmon"
+      profile_uri = @xml.xpath("//xmlns:Link[@rel='#{profile_rel}']")
+      profile_uri.first.attr("href").must_match regex
+    end
+
+    it "contains the salmon-replies url" do
+      regex = /^http(?:s)?:\/\/.*\/feeds\/#{@user.feed.id}\/salmon$/
+      profile_rel = "http://salmon-protocol.org/ns/salmon-replies"
+      profile_uri = @xml.xpath("//xmlns:Link[@rel='#{profile_rel}']")
+      profile_uri.first.attr("href").must_match regex
+    end
+
+    it "contains the salmon-mention url" do
+      regex = /^http(?:s)?:\/\/.*\/feeds\/#{@user.feed.id}\/salmon$/
+      profile_rel = "http://salmon-protocol.org/ns/salmon-mention"
+      profile_uri = @xml.xpath("//xmlns:Link[@rel='#{profile_rel}']")
+      profile_uri.first.attr("href").must_match regex
+    end
+  end
+
   it "404s if that user doesnt exist" do
     get "/users/acct:nonexistent@somedomain.com/xrd.xml"
     if last_response.status == 301
