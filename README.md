@@ -136,7 +136,24 @@ We follow [GitHub flow][flow], as a workflow. Basically:
 - Make your change, including tests and documentation as appropriate
 - Please run all the tests before submitting a pull request!
 - Submit a pull request from your branch
-- A member of the core team will let you know they are looking at it as soon as they are able. We will review the code and run the tests before merging.
+- Someone with commit access will let you know they are looking at it as soon
+  as they are able. They will review the code and let Travis.ci run the tests
+  before merging. This applies even if you also have commit access.
+
+### Becoming a committer
+
+Following [rubinius'
+lead](http://www.programblings.com/2008/04/15/rubinius-for-the-layman-part-2-how-rubinius-is-friendly/),
+once you have one pull request accepted into rstat.us, we will add you to a
+team that has push+pull access. Basically you will get a big green merge
+button on other people's pull requests, and you will be able to commit those
+pull requests to the hotsh/rstat.us master branch.
+
+This _also_ means that you _could_ push your commits directly to
+hotsh/rstat.us without going through a pull request. We ask that you not do
+this, however, so that any code on master has been seen by 2 sets of eyes
+(tests don't always catch everything!) We reserve the right to take away this
+permission, but in general we trust you to give it to you. :heart: :heart:
 
 Source code documentation
 -------------------------
