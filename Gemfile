@@ -65,5 +65,5 @@ end
 
 group :test do
   gem "webmock", "~> 1.6.4"
-  gem "therubyracer"
+  gem "therubyracer", "~> 0.9.9"
 end

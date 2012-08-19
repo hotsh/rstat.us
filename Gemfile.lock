@@ -308,7 +308,7 @@ DEPENDENCIES
   sass-rails (~> 3.2.5)
   show_me_the_cookies (~> 1.1.0)
   simplecov (~> 0.4.0)
-  therubyracer
+  therubyracer (~> 0.9.9)
   twitter (~> 3.5.0)
   tzinfo (~> 0.3.29)
   uglifier (~> 1.0.0)
