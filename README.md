@@ -10,11 +10,20 @@
 rstat.us is a microblogging site built on top of the [ostatus
 protocol](http://status.net/wiki/OStatus).
 
-The differences between rstat.us and other microblogging networks are *simplicity* and *openness*.
+The differences between rstat.us and other microblogging networks are
+*simplicity* and *openness*.
 
-*Simplicity* is a core 'feature' of rstat.us. We pride ourselves on saying 'no' to lots of features. Our interface is clean, and easy to understand. We give you just enough features to be interesting, but not enough to be complicated and confusing.
+*Simplicity* is a core 'feature' of rstat.us. We pride ourselves on saying
+'no' to lots of features. Our interface is clean, and easy to understand. We
+give you just enough features to be interesting, but not enough to be
+complicated and confusing.
 
-*Openness* means the programming code that makes up rstat.us is available for anyone to download, free of charge. Programmers can use that code to run their own websites just like rstat.us, and you can subscribe to your friends on any site that supports the OStatus protocol, like identi.ca. This also means that you can own your data; we'll never stop you from having full access to everything you've put into rstat.us.
+*Openness* means the programming code that makes up rstat.us is available for
+anyone to download, free of charge. Programmers can use that code to run their
+own websites just like rstat.us, and you can subscribe to your friends on any
+site that supports the OStatus protocol, like identi.ca. This also means that
+you can own your data; we'll never stop you from having full access to
+everything you've put into rstat.us.
 
 [![Build Status](https://secure.travis-ci.org/hotsh/rstat.us.png?branch=master)](http://travis-ci.org/hotsh/rstat.us)
 
@@ -49,9 +58,19 @@ How to get help
 Helping out with rstat.us
 -------------------------
 
-If you'd like to contribute, we'd love to have you! Your first order of business is setting up a development environment and making sure all the tests pass on your system. Rstat.us is a Ruby on Rails 3.2 application, so it's assumed you already have [Ruby](http://www.ruby-lang.org/en/downloads) (1.9.2 or 1.9.3 preferred, 1.8.7 compatibility is not guaranteed), rubygems (comes with Ruby as of 1.9.2), and [bundler](http://gembundler.com/) on your machine. If not, each of those links has instructions, and we're willing to help via one of the contact methods above if you have issues.
+If you'd like to contribute, we'd love to have you! Your first order of
+business is setting up a development environment and making sure all the tests
+pass on your system. Rstat.us is a Ruby on Rails 3.2 application, so it's
+assumed you already have [Ruby](http://www.ruby-lang.org/en/downloads) (1.9.2
+or 1.9.3 preferred, 1.8.7 compatibility is not guaranteed), rubygems (comes
+with Ruby as of 1.9.2), and [bundler](http://gembundler.com/) on your machine.
+If not, each of those links has instructions, and we're willing to help via
+one of the contact methods above if you have issues.
 
-If you have any problems with the following rstat.us specific steps, _it is a bug_. For example, [this is an issue with running a development environment on windows](https://github.com/hotsh/rstat.us/issues/547) that we need to fix. Please report any issues you have.
+If you have any problems with the following rstat.us specific steps, _it is a
+bug_. For example, [this is an issue with running a development environment on
+windows](https://github.com/hotsh/rstat.us/issues/547) that we need to fix.
+Please report any issues you have.
 
 ### Getting a local version running
 
@@ -78,9 +97,9 @@ Bam! Visit <http://localhost:3000/> in your browser, and you'll be good.
 ### Local Twitter configuration
 
 Rstat.us allows you to sign in using a Twitter account or link a Twitter
-account to your Rstat.us account.  If you'd like to enable that
-functionality in your dev environment, you'll need to obtain a consumer key and consumer
-secret from Twitter.  Here are the steps to do that:
+account to your Rstat.us account. If you'd like to enable that functionality
+in your dev environment, you'll need to obtain a consumer key and consumer
+secret from Twitter. Here are the steps to do that:
 
 - Go to https://dev.twitter.com
 - Sign in using a valid Twitter account
@@ -108,7 +127,10 @@ Run all the tests:
 
     $ bundle exec rake test
 
-You can run convenient subsets of the tests during development; run `bundle exec rake -T` to see all the options. You can also run one test file (for example, `test/models/author_test.rb`) by specifying the filepath in the TEST environment variable:
+You can run convenient subsets of the tests during development; run `bundle
+exec rake -T` to see all the options. You can also run one test file (for
+example, `test/models/author_test.rb`) by specifying the filepath in the TEST
+environment variable:
 
     $ bundle exec rake test TEST=test/models/author_test.rb
 
@@ -116,9 +138,16 @@ You can run convenient subsets of the tests during development; run `bundle exec
 
 ### Picking something to work on
 
-Once you've got a development environment set up with the current tests all passing, you're ready to start working on the code!
+Once you've got a development environment set up with the current tests all
+passing, you're ready to start working on the code!
 
-Please see the [Issues](http://github.com/hotsh/rstat.us/issues); anything without an assignee is up for grabs! Fairly well-defined and small issues are tagged with [Pick me!!!!!!](https://github.com/hotsh/rstat.us/issues?labels=Pick+me!!!!!!&milestone=&page=1&sort=updated&state=open); these would be ideal if you want to help out but aren't sure where to start. Don't hesitate to ask for help or clarification either on an issue itself or through one of the contact methods listed above.
+Please see the [Issues](http://github.com/hotsh/rstat.us/issues); anything
+without an assignee is up for grabs! Fairly well-defined and small issues are
+tagged with [Pick
+me!!!!!!](https://github.com/hotsh/rstat.us/issues?labels=Pick+me!!!!!!&milestone=&page=1&sort=updated&state=open);
+these would be ideal if you want to help out but aren't sure where to start.
+Don't hesitate to ask for help or clarification either on an issue itself or
+through one of the contact methods listed above.
 
 ### Development Roadmap
 
@@ -126,7 +155,11 @@ In the second half of 2012, we plan to focus on:
 
 - [Implementing an API (or two)](https://github.com/hotsh/rstat.us/issues?milestone=8&page=1&sort=updated&state=open)
 
-We'd love to get rstat.us working with desktop and mobile clients, either through a [twitter-compatible API in a client that allows you to change the endpoint URL](https://github.com/hotsh/rstat.us/issues/562) or working with an app developer to make an rstat.us-specific app. If you work on or would like to work on a client, please let us know! We'd love to get feedback from you.
+We'd love to get rstat.us working with desktop and mobile clients, either
+through a [twitter-compatible API in a client that allows you to change the
+endpoint URL](https://github.com/hotsh/rstat.us/issues/562) or working with an
+app developer to make an rstat.us-specific app. If you work on or would like
+to work on a client, please let us know! We'd love to get feedback from you.
 
 ### Contribution steps
 
@@ -136,7 +169,29 @@ We follow [GitHub flow][flow], as a workflow. Basically:
 - Make your change, including tests and documentation as appropriate
 - Please run all the tests before submitting a pull request!
 - Submit a pull request from your branch
-- A member of the core team will let you know they are looking at it as soon as they are able. We will review the code and run the tests before merging.
+- Someone with commit access will let you know they are looking at it as soon
+  as they are able. They will review the code and let Travis.ci run the tests
+  before merging. This applies even if you also have commit access.
+
+### Becoming a committer
+
+Following [rubinius'
+lead](http://www.programblings.com/2008/04/15/rubinius-for-the-layman-part-2-how-rubinius-is-friendly/),
+once you have one pull request accepted into rstat.us, we will add you to a
+team that has push+pull access. Basically you will get a big green merge
+button on other people's pull requests, and you will be able to commit those
+pull requests to the hotsh/rstat.us master branch.
+
+This _also_ means that you _could_ push your commits directly to
+hotsh/rstat.us without going through a pull request. We ask that you not do
+this, however, so that any code on master has been seen by 2 sets of eyes
+(tests don't always catch everything!) This does not apply to branches other
+than master; if there is long-term collaboration happening, create a feature
+branch and feel free to push directly to that (but have commits reviewed
+before merging that branch into master).
+
+We reserve the right to take away this permission, but in general we trust you
+to give it to you. :heart: :heart:
 
 Source code documentation
 -------------------------
