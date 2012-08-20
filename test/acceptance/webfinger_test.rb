@@ -76,7 +76,7 @@ describe "Webfinger" do
       regex = /^http(?:s)?:\/\/.*\/subscriptions\?url=\{uri\}\&_method=post$/
       subscription_rel = "http://ostatus.org/schema/1.0/subscribe"
       subscription_uri = @xml.xpath("//xmlns:Link[@rel='#{subscription_rel}']")
-      subscription_uri.first.attr("href").must_match regex
+      subscription_uri.first.attr("template").must_match regex
     end
   end
 
