@@ -149,6 +149,14 @@ class Author
     end
   end
 
+  def fully_qualified_name
+    if remote_url.present?
+      "#{username}@#{domain}"
+    else
+      "#{username}"
+    end
+  end
+
   # Returns a locally useful url for the Author's avatar
 
   # We've got a couple of options here. If they have some sort of image from

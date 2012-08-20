@@ -16,6 +16,18 @@ describe Author do
     assert_equal @author.remote_url, @author.url
   end
 
+  describe "#fully_qualified_name" do
+
+    it "returns simple name if a local user" do
+      assert_equal "james", @author.fully_qualified_name
+    end
+
+    it "returns name with domain if a remote user" do
+      @author.remote_url = "some_url.com"
+      assert_equal "james@foo.example.com", @author.fully_qualified_name
+    end
+  end
+
   describe "#avatar_url" do
 
     it "returns image_url as avatar_url if image_url is set" do
