@@ -288,10 +288,10 @@ class User
     following_plus_me = following.map(&:author_id)
     following_plus_me << self.author.id
     crit = Update.where(:author_id => following_plus_me)
-    if !params[:since_id].empty?
+    if !params[:since_id].blank?
       crit = crit.where(:id.gt => BSON::ObjectId(params[:since_id]))
     end
-    if !params[:max_id].empty?
+    if !params[:max_id].blank?
       crit = crit.where(:id.lte => BSON::ObjectId(params[:max_id]))
     end
     crit = crit.order([:created_at, :descending])
