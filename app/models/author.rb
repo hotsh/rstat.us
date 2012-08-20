@@ -142,7 +142,7 @@ class Author
 
   # Returns a locally useful url for the Author
   def url
-    if remote_url.present?
+    if remote?
       remote_url
     else
       "/users/#{username}"
@@ -150,11 +150,15 @@ class Author
   end
 
   def fully_qualified_name
-    if remote_url.present?
+    if remote?
       "#{username}@#{domain}"
     else
       "#{username}"
     end
+  end
+
+  def remote?
+    remote_url.present?
   end
 
   # Returns a locally useful url for the Author's avatar
