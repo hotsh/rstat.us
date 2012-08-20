@@ -17,6 +17,15 @@ GIT
       rails (>= 3.0.0)
 
 GIT
+  remote: git://github.com/hotsh/redfinger.git
+  revision: 2d837d0cd3ba9a38bf0b253ec5653a5716d56b76
+  specs:
+    redfinger (0.1.1)
+      hashie
+      nokogiri (>= 1.4.0)
+      rest-client (>= 1.5.0)
+
+GIT
   remote: git://github.com/rtomayko/rocco.git
   revision: 727c510d635ba3b6fcf18caf3b0f89e16ef7e8f3
   specs:
@@ -198,11 +207,7 @@ GEM
     rdoc (3.12)
       json (~> 1.4)
     redcarpet (1.17.2)
-    redfinger (0.1.0)
-      hashie
-      nokogiri (>= 1.4.0)
-      rest-client (>= 1.5.0)
-    rest-client (1.6.3)
+    rest-client (1.6.7)
       mime-types (>= 1.16)
     rsa (0.1.4)
     ruby-hmac (0.4.0)
@@ -295,7 +300,7 @@ DEPENDENCIES
   rails (= 3.2.8)
   ratom (~> 0.7.2)
   rdiscount (~> 1.6.8)
-  redfinger (~> 0.1.0)
+  redfinger!
   rocco!
   rsa (~> 0.1.4)
   sass (~> 3.1.10)
