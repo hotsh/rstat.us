@@ -36,6 +36,48 @@ describe "Webfinger" do
       profile_uri = @xml.xpath("//xmlns:Link[@rel='#{profile_rel}']")
       profile_uri.first.attr("href").must_match regex
     end
+
+    it "contains the account name" do
+      subject = @xml.xpath("//xmlns:Subject").first.content
+      subject.must_equal(@subject)
+    end
+
+    it "contains profile uri as a uri for the user" do
+      regex = /^http(?:s)?:\/\/.*\/users\/#{@user.username}$/
+      aliases = @xml.xpath("//xmlns:Alias")
+      aliases = aliases.map(&:content)
+      aliases.select{|a| a.match(regex)}
+      aliases.wont_be_empty
+    end
+
+    it "contains feed uri as a uri for the user" do
+      regex = /^http(?:s)?:\/\/.*\/feeds\/#{@user.feed.id}$/
+      aliases = @xml.xpath("//xmlns:Alias")
+      aliases = aliases.map(&:content)
+      aliases.select{|a| a.match(regex)}
+      aliases.wont_be_empty
+    end
+
+    it "contains the profile page url" do
+      regex = /^http(?:s)?:\/\/.*\/users\/#{@user.username}$/
+      profile_rel = "http://webfinger.net/rel/profile-page"
+      profile_uri = @xml.xpath("//xmlns:Link[@rel='#{profile_rel}']")
+      profile_uri.first.attr("href").must_match regex
+    end
+
+    it "contains the feed identifier uri" do
+      regex = /^http(?:s)?:\/\/.*\/feeds\/#{@user.feed.id}\.atom$/
+      subscription_rel = "http://schemas.google.com/g/2010#updates-from"
+      subscription_uri = @xml.xpath("//xmlns:Link[@rel='#{subscription_rel}']")
+      subscription_uri.first.attr("href").must_match regex
+    end
+
+    it "contains the subscription url" do
+      regex = /^http(?:s)?:\/\/.*\/subscriptions\?url=\{uri\}\&_method=post$/
+      subscription_rel = "http://ostatus.org/schema/1.0/subscribe"
+      subscription_uri = @xml.xpath("//xmlns:Link[@rel='#{subscription_rel}']")
+      subscription_uri.first.attr("template").must_match regex
+    end
   end
 
   it "404s if that user doesnt exist" do
@@ -58,5 +100,14 @@ describe "Webfinger" do
     subject = xml.xpath("//xmlns:Subject").first.content
 
     subject.must_equal(param)
+  end
+
+  it "has the correct absolute uri template in host-meta" do
+    get "/.well-known/host-meta"
+    xml = Nokogiri.XML(last_response.body)
+    
+    template_uri = xml.xpath('//xmlns:Link[@rel="lrdd"]').first.attr('template')
+
+    template_uri.must_match /^http(?:s)?:\/\/.*\/users\/\{uri\}\/xrd.xml$/
   end
 end
