@@ -170,6 +170,9 @@ class User
     # Send envelope to Author's Salmon endpoint
     uri = URI.parse(f.author.salmon_url)
     http = Net::HTTP.new(uri.host, uri.port)
+    if uri.scheme == "https"
+      http.use_ssl = (uri.port == 443)
+    end
     res = http.post(uri.path, envelope, {"Content-Type" => "application/magic-envelope+xml"})
   end
 
@@ -198,6 +201,9 @@ class User
     # Send envelope to Author's Salmon endpoint
     uri = URI.parse(f.author.salmon_url)
     http = Net::HTTP.new(uri.host, uri.port)
+    if uri.scheme == "https"
+      http.use_ssl = (uri.port == 443)
+    end
     res = http.post(uri.path, envelope, {"Content-Type" => "application/magic-envelope+xml"})
   end
 
@@ -214,6 +220,9 @@ class User
     # Send envelope to Author's Salmon endpoint
     uri = URI.parse(f.author.salmon_url)
     http = Net::HTTP.new(uri.host, uri.port)
+    if uri.scheme == "https"
+      http.use_ssl = (uri.port == 443)
+    end
     res = http.post(uri.path, envelope, {"Content-Type" => "application/magic-envelope+xml"})
   end
 
