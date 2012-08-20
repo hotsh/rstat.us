@@ -287,7 +287,16 @@ class User
   def timeline(params = nil)
     following_plus_me = following.map(&:author_id)
     following_plus_me << self.author.id
-    Update.where(:author_id => following_plus_me).order(['created_at', 'descending'])
+    crit = Update.where(:author_id => following_plus_me)
+    if !params[:since_id].empty?
+      crit = crit.where(:id.gt => BSON::ObjectId(params[:since_id]))
+    end
+    if !params[:max_id].empty?
+      crit = crit.where(:id.lte => BSON::ObjectId(params[:max_id]))
+    end
+    crit = crit.order([:created_at, :descending])
+    crit = crit.limit(params[:count]) if !params[:count].nil?
+    crit
   end
 
   # Retrieve the list of Updates that are replies to this user

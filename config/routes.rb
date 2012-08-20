@@ -74,5 +74,6 @@ RstatUs::Application.routes.draw do
   # Twitter compatible API
   namespace :api do
     match 'statuses/update.:format', :to => "statuses#update", :via => :post, :constraints => { :format => "json" }
+    match 'statuses/home_timeline.:format', :to => "statuses#home_timeline", :via => :get, :constraints => { :format => "json" }
   end
 end
