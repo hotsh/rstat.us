@@ -85,7 +85,8 @@ class Author
       bio:        bio,
       image_url:  image,
       remote_url: remote,
-      domain:     domain
+      domain:     domain,
+      use_ssl:    domain.start_with?("https")
     )
   end
 
@@ -96,7 +97,8 @@ class Author
       :website  => session[:website],
       :bio      => session[:description],
       :image    => session[:image],
-      :domain   => domain
+      :domain   => domain,
+      :use_ssl  => domain.start_with?("https")
     )
   end
 
@@ -107,7 +109,8 @@ class Author
       :website  => session[:website],
       :bio      => session[:description],
       :image    => session[:image],
-      :domain   => domain
+      :domain   => domain,
+      :use_ssl  => domain.start_with?("https")
     )
   end
 
@@ -236,8 +239,6 @@ class Author
   end
 
   def normalize_domain
-    self.use_ssl = self.domain.start_with?("https")
-
     norm = self.domain.gsub(/^.*:\/\//, "")
     norm = norm.gsub(/^www./, "")
     norm = norm.gsub(/\/.*$/, "")
