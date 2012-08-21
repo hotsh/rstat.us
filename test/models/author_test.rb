@@ -11,6 +11,12 @@ describe Author do
     assert Author.create_from_hash!(hash, "rstat.us").is_a?(Author)
   end
 
+  it "stores the domain of a local user by normalizing the base url" do
+    @author.domain = "http://example.com/"
+    @author.save
+    assert_equal @author.domain, "example.com"
+  end
+
   it "returns remote_url as the url if set" do
     @author.remote_url = "some_url.com"
     assert_equal @author.remote_url, @author.url
