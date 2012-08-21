@@ -26,7 +26,7 @@ class Author
   key :use_ssl,   Boolean
 
   validates_presence_of :domain
-
+  
   # Normalize the domain so we can use them the same way
   before_save :normalize_domain
 
@@ -85,8 +85,7 @@ class Author
       bio:        bio,
       image_url:  image,
       remote_url: remote,
-      domain:     domain,
-      use_ssl:    domain.start_with?("https")
+      domain:     domain
     )
   end
 
@@ -97,8 +96,7 @@ class Author
       :website  => session[:website],
       :bio      => session[:description],
       :image    => session[:image],
-      :domain   => domain,
-      :use_ssl  => domain.start_with?("https")
+      :domain   => domain
     )
   end
 
@@ -109,8 +107,7 @@ class Author
       :website  => session[:website],
       :bio      => session[:description],
       :image    => session[:image],
-      :domain   => domain,
-      :use_ssl  => domain.start_with?("https")
+      :domain   => domain
     )
   end
 
@@ -239,6 +236,8 @@ class Author
   end
 
   def normalize_domain
+    set_default_use_ssl if use_ssl.nil?
+
     norm = self.domain.gsub(/^.*:\/\//, "")
     norm = norm.gsub(/^www./, "")
     norm = norm.gsub(/\/.*$/, "")
@@ -257,5 +256,9 @@ class Author
     else
       []
     end
+  end
+
+  def set_default_use_ssl
+    self.use_ssl = self.domain.start_with?("https")
   end
 end

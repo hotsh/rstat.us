@@ -17,6 +17,16 @@ describe Author do
     assert_equal @author.domain, "example.com"
   end
 
+  it "sets the use_ssl flag to true when https is used to create the author" do
+    author = Fabricate :author, :username => "james", :domain => "https://example.com", :email => nil, :image_url => nil, :created_at => 3.days.ago
+    assert_equal author.use_ssl, true
+  end
+
+  it "sets the use_ssl flag to false when http is used to create the author" do
+    author = Fabricate :author, :username => "james", :domain => "http://example.com", :email => nil, :image_url => nil, :created_at => 3.days.ago
+    assert_equal author.use_ssl, false
+  end
+
   it "returns remote_url as the url if set" do
     @author.remote_url = "some_url.com"
     assert_equal @author.remote_url, @author.url
