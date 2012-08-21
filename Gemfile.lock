@@ -18,7 +18,7 @@ GIT
 
 GIT
   remote: git://github.com/hotsh/redfinger.git
-  revision: 2d837d0cd3ba9a38bf0b253ec5653a5716d56b76
+  revision: b73861b87c7d0bd8d3669c49134a5d416f5ac9f3
   specs:
     redfinger (0.1.1)
       hashie
