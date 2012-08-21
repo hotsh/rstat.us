@@ -76,5 +76,6 @@ RstatUs::Application.routes.draw do
     match 'statuses/update.:format', :to => "statuses#update", :via => :post, :constraints => { :format => "json" }
     match 'statuses/home_timeline.:format', :to => "statuses#home_timeline", :via => :get, :constraints => { :format => "json" }
     match 'statuses/user_timeline.:format', :to => "statuses#user_timeline", :via => :get, :constraints => { :format => "json" }
+    match 'statuses/mention.:format', :to => "statuses#mention", :via => :get, :constraints => { :format => "json" }
   end
 end

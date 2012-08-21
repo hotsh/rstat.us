@@ -51,6 +51,21 @@ module Api
       handle_error e
     end
 
+    def mention
+      options = timeline_options
+      updates = current_user.at_replies(options)
+      respond_to do |fmt|
+        fmt.json do
+          json = updates.map do |update|
+            update = UpdateTwitterJsonDecorator.decorate(update)
+            update.as_json(:include_entities => options[:include_entities],
+                           :trim_user => options[:trim_user])
+          end
+          render :json => json
+        end
+      end
+    end
+
     protected
 
     def handle_error(e)
@@ -113,6 +128,7 @@ module Api
       end
     end
 
+
     def format_errors(errors)
       errors = errors.full_messages.map do |error|
         #
@@ -172,4 +188,3 @@ module Api
     class NotFound < StandardError; end
   end
 end
-
