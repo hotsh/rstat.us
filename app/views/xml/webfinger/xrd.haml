@@ -5,7 +5,7 @@
   %Alias= "#{@base_url}users/#{@user.username}"
   %Link{:rel => "http://webfinger.net/rel/profile-page", :type => "text/html", :href => "#{@base_url}users/#{@user.username}"}
   %Link{:rel => "http://schemas.google.com/g/2010#updates-from", :href => @user.feed.url(true)}
-  %Link{:rel => "salmon", :href => "#{@base_url}feeds/#{@user.feed.id}/salmon"}
+  %Link{:rel => "salmon", :href => "#{@user.feed.url}/salmon"}
   %Link{:rel => "http://salmon-protocol.org/ns/salmon-replies", :href => "#{@user.feed.url}/salmon"}
   %Link{:rel => "http://salmon-protocol.org/ns/salmon-mention", :href => "#{@user.feed.url}/salmon"}
   %Link{:rel => "http://ostatus.org/schema/1.0/subscribe", :template => "#{@base_url}subscriptions?url={uri}&_method=post"}
