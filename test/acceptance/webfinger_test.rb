@@ -105,9 +105,31 @@ describe "Webfinger" do
       aliases.wont_be_empty
     end
 
-    it "contains feed uri as a uri for the user" do
+    it "contains feed url as a uri for the user" do
       regex = /^http(?:s)?:\/\/.*\/feeds\/#{@user.feed.id}$/
       aliases = @xml.xpath("//xmlns:Alias")
+      aliases = aliases.map(&:content)
+      aliases.select{|a| a.match(regex)}
+      aliases.wont_be_empty
+    end
+
+    it "contains http feed url as a uri for the user when use_ssl is disabled for the Author" do
+      user = Fabricate(:user,
+                       :author => Fabricate(:author, :domain => "http://example.com"))
+      xml = get_user_xrd user
+      regex = /^http:\/\/.*\/feeds\/#{user.feed.id}$/
+      aliases = xml.xpath("//xmlns:Alias")
+      aliases = aliases.map(&:content)
+      aliases.select{|a| a.match(regex)}
+      aliases.wont_be_empty
+    end
+
+    it "contains https feed url as a uri for the user when use_ssl is enabled for the Author" do
+      user = Fabricate(:user,
+                       :author => Fabricate(:author, :domain => "https://example.com"))
+      xml = get_user_xrd user
+      regex = /^https:\/\/.*\/feeds\/#{user.feed.id}$/
+      aliases = xml.xpath("//xmlns:Alias")
       aliases = aliases.map(&:content)
       aliases.select{|a| a.match(regex)}
       aliases.wont_be_empty
