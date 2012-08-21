@@ -30,15 +30,21 @@ describe Author do
 
   describe "#avatar_url" do
 
-    it "returns image_url as avatar_url if image_url is set" do
+    it "returns https version of image_url as avatar_url if image_url is set" do
       image_url = 'http://example.net/cool-avatar'
+      @author.image_url = image_url
+      assert_equal 'https://example.net/cool-avatar', @author.avatar_url
+    end
+
+    it "keeps https version of image_url as avatar_url if image_url is already https" do
+      image_url = 'https://example.net/cool-avatar'
       @author.image_url = image_url
       assert_equal image_url, @author.avatar_url
     end
 
-    it "returns a gravatar if there is an email and image_url is not set" do
+    it "returns https gravatar if there is an email and image_url is not set" do
       @author.email = "jamecook@gmail.com"
-      assert_match 'http://gravatar.com/', @author.avatar_url
+      assert_match 'https://gravatar.com/', @author.avatar_url
     end
 
     it "uses the default avatar if neither image_url nor email is set" do

@@ -170,7 +170,7 @@ class Author
 
     # If the user has a twitter image, return it
     if image_url.present?
-      image_url
+      image_url.sub("http:", "https:")
 
     # If the user has an email, look for a gravatar url.
     elsif email.present?
@@ -199,7 +199,7 @@ class Author
   # Query described [here](http://en.gravatar.com/site/implement/images/#default-image).
   def gravatar_url
     email_digest = Digest::MD5.hexdigest email
-    "http://#{GRAVATAR}/avatar/#{email_digest}?s=48&r=r&d=#{ENCODED_DEFAULT_AVATAR}"
+    "https://#{GRAVATAR}/avatar/#{email_digest}?s=48&r=r&d=#{ENCODED_DEFAULT_AVATAR}"
   end
 
   # Returns an OStatus::Author instance describing this author model
