@@ -127,6 +127,26 @@ describe "Webfinger" do
       subscription_uri.first.attr("href").must_match regex
     end
 
+    it "contains https feed identifier uri when use_ssl is enabled for the Author" do
+      user = Fabricate(:user,
+                       :author => Fabricate(:author, :domain => "https://example.com"))
+      xml = get_user_xrd user
+      regex = /^https:\/\/.*\/feeds\/#{user.feed.id}\.atom$/
+      subscription_rel = "http://schemas.google.com/g/2010#updates-from"
+      subscription_uri = xml.xpath("//xmlns:Link[@rel='#{subscription_rel}']")
+      subscription_uri.first.attr("href").must_match regex
+    end
+
+    it "contains http feed identifier uri when use_ssl is disabled for the Author" do
+      user = Fabricate(:user,
+                       :author => Fabricate(:author, :domain => "http://example.com"))
+      xml = get_user_xrd user
+      regex = /^http:\/\/.*\/feeds\/#{user.feed.id}\.atom$/
+      subscription_rel = "http://schemas.google.com/g/2010#updates-from"
+      subscription_uri = xml.xpath("//xmlns:Link[@rel='#{subscription_rel}']")
+      subscription_uri.first.attr("href").must_match regex
+    end
+
     it "contains the subscription url" do
       regex = /^http(?:s)?:\/\/.*\/subscriptions\?url=\{uri\}\&_method=post$/
       subscription_rel = "http://ostatus.org/schema/1.0/subscribe"
