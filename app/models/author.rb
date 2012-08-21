@@ -22,6 +22,9 @@ class Author
   # This contains the domain that the author's feed originates.
   key :domain,    String
 
+  # When true, this author wishes ssl and https to be used for their endpoints
+  key :use_ssl,   Boolean
+
   validates_presence_of :domain
 
   # Normalize the domain so we can use them the same way
@@ -233,6 +236,8 @@ class Author
   end
 
   def normalize_domain
+    self.use_ssl = self.domain.start_with?("https")
+
     norm = self.domain.gsub(/^.*:\/\//, "")
     norm = norm.gsub(/^www./, "")
     norm = norm.gsub(/\/.*$/, "")

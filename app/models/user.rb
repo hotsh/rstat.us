@@ -212,7 +212,8 @@ class User
     f = Feed.first :id => to_feed_id
     u = Update.first :id => update_id
 
-    base_uri = "http://#{author.domain}/"
+    protocol = author.use_ssl ? "https" : "http"
+    base_uri = "#{protocol}://#{author.domain}/"
     salmon = OStatus::Salmon.new(u.to_atom(base_uri))
 
     envelope = salmon.to_xml self.to_rsa_keypair
@@ -243,7 +244,7 @@ class User
     existing_feeds = Feed.all(:remote_url => feed_url)
 
     # local feed?
-    if existing_feeds.empty? and feed_url.start_with?("http://#{author.domain}/")
+    if existing_feeds.empty? and not feed_url.match(/^http[s]?:\/\/#{author.domain}\//).nil?
       feed_id = feed_url[/\/feeds\/(.+)$/,1]
       existing_feeds = [Feed.first(:id => feed_id)]
     end
