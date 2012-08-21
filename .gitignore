@@ -6,6 +6,7 @@ docs/*
 config.yml
 .sass-cache
 tmp
+tags
 public/assets
 test/coverage
 log/*.log*

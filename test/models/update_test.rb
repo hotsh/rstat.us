@@ -65,6 +65,19 @@ describe Update do
         u = Fabricate(:update, :text => "This is a message mentioning @SteveKlabnik@identi.ca.")
         assert_match /<a href='#{@author.url}'>@SteveKlabnik@identi.ca<\/a>/, u.to_html
       end
+
+      describe "mentioning a different user" do
+        it "makes a link (before create)" do
+          @mentioned = Fabricate(:author, :username => "chrismdp",
+                              :domain => "rstat.us")
+          @author = Fabricate(:author, :username => "steveklabnik",
+                              :domain => "identi.ca",
+                              :remote_url => 'http://identi.ca/steveklabnik')
+          u = Fabricate.build(:update, :text => "This is a message mentioning @chrismdp@rstat.us.", :author => @author)
+          assert_match %r{<a href='http://rstat.us/users/chrismdp'>@chrismdp@rstat.us<\/a>}, u.to_html
+        end
+
+      end
     end
 
     describe "existing user mentioned in the middle of the word" do
