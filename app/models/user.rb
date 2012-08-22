@@ -244,7 +244,7 @@ class User
     existing_feeds = Feed.all(:remote_url => feed_url)
 
     # local feed?
-    if existing_feeds.empty? and not feed_url.match(/^http[s]?:\/\/#{author.domain}\//).nil?
+    if existing_feeds.empty? and feed_url.match(/^http[s]?:\/\/#{author.domain}\//)
       feed_id = feed_url[/\/feeds\/(.+)$/,1]
       existing_feeds = [Feed.first(:id => feed_id)]
     end
