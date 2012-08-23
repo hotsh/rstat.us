@@ -124,7 +124,7 @@ class SalmonInterpreter
 
       begin
         acct = Redfinger.finger(webfinger)
-      rescue
+      rescue Redfinger::ResourceNotFound
         # If there is any error in getting the xrd, then assume there isn't one
         # Without an xrd, an Author cannot be verified. The notification should
         #  not be trusted.
