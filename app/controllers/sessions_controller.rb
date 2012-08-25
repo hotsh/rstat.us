@@ -35,6 +35,12 @@ class SessionsController < ApplicationController
         end
       end
 
+      if @user.errors.any?
+        error_message = render_to_string :partial => 'users/errors',
+                                         :locals => {:user => @user}
+        flash[:error] = error_message.html_safe
+      end
+
       render :new
     else
       if user = User.authenticate(params[:username], params[:password])
