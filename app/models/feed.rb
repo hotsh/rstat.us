@@ -131,7 +131,12 @@ class Feed
   end
 
   def url(atom_format = false)
-    url = (remote_url.nil? && author) ? "http://#{author.domain}/feeds/#{id}" : remote_url
+    if remote_url.nil? && author
+      protocol = author.use_ssl ? "https" : "http"
+      url = "#{protocol}://#{author.domain}/feeds/#{id}"
+    else
+      url = remote_url
+    end
     url << ".atom" if atom_format
     url
   end

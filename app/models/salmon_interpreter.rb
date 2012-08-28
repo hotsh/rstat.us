@@ -18,8 +18,13 @@ class SalmonInterpreter
     return true if local_user?
 
     @author = find_or_initialize_author
+
+    # If the author information cannot be found, salmon is invalid
+    raise RstatUs::InvalidSalmonMessage if @author.nil?
+
     @author.check_public_key_lease
 
+    # Verify the message against the author's key
     raise RstatUs::InvalidSalmonMessage unless message_verified?
 
     # When we verify, we know (with some confidence at least) that the salmon
@@ -116,7 +121,15 @@ class SalmonInterpreter
       # XXX: Use the author uri to determine location of xrd
       remote_host = author.remote_url[/^.*?:\/\/(.*?)\//,1]
       webfinger   = "#{author.username}@#{remote_host}"
-      acct        = Redfinger.finger(webfinger)
+
+      begin
+        acct = Redfinger.finger(webfinger)
+      rescue Redfinger::ResourceNotFound
+        # If there is any error in getting the xrd, then assume there isn't one
+        # Without an xrd, an Author cannot be verified. The notification should
+        #  not be trusted.
+        return nil
+      end
 
       # Retrieve the feed url for the user
       feed_url = acct.links.find { |l| l['rel'] == 'http://schemas.google.com/g/2010#updates-from' }

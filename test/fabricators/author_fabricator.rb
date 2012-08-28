@@ -3,7 +3,7 @@ Fabricator(:author) do
   username "user"
   email { sequence(:email) { |i| "user_#{i}@example.com" } }
   website "http://example.com"
-  domain "foo.example.com"
+  domain "http://foo.example.com"
   name "Something"
   bio "Hi, I do stuff."
 end

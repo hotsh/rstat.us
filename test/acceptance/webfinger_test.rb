@@ -8,18 +8,33 @@ describe "Webfinger" do
     before do
       @user = Fabricate(:user)
       @subject = "acct:#{@user.username}@#{@user.author.domain}"
-      get "/users/#{@subject}/xrd.xml"
-      if last_response.status == 301
-        follow_redirect!
-      end
-
-      @xml = Nokogiri.XML(last_response.body)
+      @xml = get_user_xrd @user
     end
 
     it "contains the salmon url" do
       regex = /^http(?:s)?:\/\/.*\/feeds\/#{@user.feed.id}\/salmon$/
       profile_rel = "salmon"
       profile_uri = @xml.xpath("//xmlns:Link[@rel='#{profile_rel}']")
+      profile_uri.first.attr("href").must_match regex
+    end
+
+    it "contains a https salmon url when use_ssl is enabled for the Author" do
+      user = Fabricate(:user,
+                       :author => Fabricate(:author, :domain => "https://example.com"))
+      xml = get_user_xrd user
+      regex = /^https:\/\/.*\/feeds\/#{user.feed.id}\/salmon$/
+      profile_rel = "salmon"
+      profile_uri = xml.xpath("//xmlns:Link[@rel='#{profile_rel}']")
+      profile_uri.first.attr("href").must_match regex
+    end
+
+    it "contains a http salmon url when use_ssl is disabled for the Author" do
+      user = Fabricate(:user,
+                       :author => Fabricate(:author, :domain => "http://example.com"))
+      xml = get_user_xrd user
+      regex = /^http:\/\/.*\/feeds\/#{user.feed.id}\/salmon$/
+      profile_rel = "salmon"
+      profile_uri = xml.xpath("//xmlns:Link[@rel='#{profile_rel}']")
       profile_uri.first.attr("href").must_match regex
     end
 
@@ -30,10 +45,50 @@ describe "Webfinger" do
       profile_uri.first.attr("href").must_match regex
     end
 
+    it "contains a https salmon-replies url when use_ssl is enabled for the Author" do
+      user = Fabricate(:user,
+                       :author => Fabricate(:author, :domain => "https://example.com"))
+      xml = get_user_xrd user
+      regex = /^https:\/\/.*\/feeds\/#{user.feed.id}\/salmon$/
+      profile_rel = "http://salmon-protocol.org/ns/salmon-replies"
+      profile_uri = xml.xpath("//xmlns:Link[@rel='#{profile_rel}']")
+      profile_uri.first.attr("href").must_match regex
+    end
+
+    it "contains a http salmon-replies url when use_ssl is disabled for the Author" do
+      user = Fabricate(:user,
+                       :author => Fabricate(:author, :domain => "http://example.com"))
+      xml = get_user_xrd user
+      regex = /^http:\/\/.*\/feeds\/#{user.feed.id}\/salmon$/
+      profile_rel = "http://salmon-protocol.org/ns/salmon-replies"
+      profile_uri = xml.xpath("//xmlns:Link[@rel='#{profile_rel}']")
+      profile_uri.first.attr("href").must_match regex
+    end
+
     it "contains the salmon-mention url" do
       regex = /^http(?:s)?:\/\/.*\/feeds\/#{@user.feed.id}\/salmon$/
       profile_rel = "http://salmon-protocol.org/ns/salmon-mention"
       profile_uri = @xml.xpath("//xmlns:Link[@rel='#{profile_rel}']")
+      profile_uri.first.attr("href").must_match regex
+    end
+
+    it "contains a https salmon-mention url when use_ssl is enabled for the Author" do
+      user = Fabricate(:user,
+                       :author => Fabricate(:author, :domain => "https://example.com"))
+      xml = get_user_xrd user
+      regex = /^https:\/\/.*\/feeds\/#{user.feed.id}\/salmon$/
+      profile_rel = "http://salmon-protocol.org/ns/salmon-mention"
+      profile_uri = xml.xpath("//xmlns:Link[@rel='#{profile_rel}']")
+      profile_uri.first.attr("href").must_match regex
+    end
+
+    it "contains a http salmon-mention url when use_ssl is disabled for the Author" do
+      user = Fabricate(:user,
+                       :author => Fabricate(:author, :domain => "http://example.com"))
+      xml = get_user_xrd user
+      regex = /^http:\/\/.*\/feeds\/#{user.feed.id}\/salmon$/
+      profile_rel = "http://salmon-protocol.org/ns/salmon-mention"
+      profile_uri = xml.xpath("//xmlns:Link[@rel='#{profile_rel}']")
       profile_uri.first.attr("href").must_match regex
     end
 
@@ -50,9 +105,31 @@ describe "Webfinger" do
       aliases.wont_be_empty
     end
 
-    it "contains feed uri as a uri for the user" do
+    it "contains feed url as a uri for the user" do
       regex = /^http(?:s)?:\/\/.*\/feeds\/#{@user.feed.id}$/
       aliases = @xml.xpath("//xmlns:Alias")
+      aliases = aliases.map(&:content)
+      aliases.select{|a| a.match(regex)}
+      aliases.wont_be_empty
+    end
+
+    it "contains http feed url as a uri for the user when use_ssl is disabled for the Author" do
+      user = Fabricate(:user,
+                       :author => Fabricate(:author, :domain => "http://example.com"))
+      xml = get_user_xrd user
+      regex = /^http:\/\/.*\/feeds\/#{user.feed.id}$/
+      aliases = xml.xpath("//xmlns:Alias")
+      aliases = aliases.map(&:content)
+      aliases.select{|a| a.match(regex)}
+      aliases.wont_be_empty
+    end
+
+    it "contains https feed url as a uri for the user when use_ssl is enabled for the Author" do
+      user = Fabricate(:user,
+                       :author => Fabricate(:author, :domain => "https://example.com"))
+      xml = get_user_xrd user
+      regex = /^https:\/\/.*\/feeds\/#{user.feed.id}$/
+      aliases = xml.xpath("//xmlns:Alias")
       aliases = aliases.map(&:content)
       aliases.select{|a| a.match(regex)}
       aliases.wont_be_empty
@@ -69,6 +146,26 @@ describe "Webfinger" do
       regex = /^http(?:s)?:\/\/.*\/feeds\/#{@user.feed.id}\.atom$/
       subscription_rel = "http://schemas.google.com/g/2010#updates-from"
       subscription_uri = @xml.xpath("//xmlns:Link[@rel='#{subscription_rel}']")
+      subscription_uri.first.attr("href").must_match regex
+    end
+
+    it "contains https feed identifier uri when use_ssl is enabled for the Author" do
+      user = Fabricate(:user,
+                       :author => Fabricate(:author, :domain => "https://example.com"))
+      xml = get_user_xrd user
+      regex = /^https:\/\/.*\/feeds\/#{user.feed.id}\.atom$/
+      subscription_rel = "http://schemas.google.com/g/2010#updates-from"
+      subscription_uri = xml.xpath("//xmlns:Link[@rel='#{subscription_rel}']")
+      subscription_uri.first.attr("href").must_match regex
+    end
+
+    it "contains http feed identifier uri when use_ssl is disabled for the Author" do
+      user = Fabricate(:user,
+                       :author => Fabricate(:author, :domain => "http://example.com"))
+      xml = get_user_xrd user
+      regex = /^http:\/\/.*\/feeds\/#{user.feed.id}\.atom$/
+      subscription_rel = "http://schemas.google.com/g/2010#updates-from"
+      subscription_uri = xml.xpath("//xmlns:Link[@rel='#{subscription_rel}']")
       subscription_uri.first.attr("href").must_match regex
     end
 

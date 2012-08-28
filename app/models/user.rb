@@ -170,6 +170,9 @@ class User
     # Send envelope to Author's Salmon endpoint
     uri = URI.parse(f.author.salmon_url)
     http = Net::HTTP.new(uri.host, uri.port)
+    if uri.scheme == "https"
+      http.use_ssl = (uri.port == 443)
+    end
     res = http.post(uri.path, envelope, {"Content-Type" => "application/magic-envelope+xml"})
   end
 
@@ -198,6 +201,9 @@ class User
     # Send envelope to Author's Salmon endpoint
     uri = URI.parse(f.author.salmon_url)
     http = Net::HTTP.new(uri.host, uri.port)
+    if uri.scheme == "https"
+      http.use_ssl = (uri.port == 443)
+    end
     res = http.post(uri.path, envelope, {"Content-Type" => "application/magic-envelope+xml"})
   end
 
@@ -206,7 +212,8 @@ class User
     f = Feed.first :id => to_feed_id
     u = Update.first :id => update_id
 
-    base_uri = "http://#{author.domain}/"
+    protocol = author.use_ssl ? "https" : "http"
+    base_uri = "#{protocol}://#{author.domain}/"
     salmon = OStatus::Salmon.new(u.to_atom(base_uri))
 
     envelope = salmon.to_xml self.to_rsa_keypair
@@ -214,6 +221,9 @@ class User
     # Send envelope to Author's Salmon endpoint
     uri = URI.parse(f.author.salmon_url)
     http = Net::HTTP.new(uri.host, uri.port)
+    if uri.scheme == "https"
+      http.use_ssl = (uri.port == 443)
+    end
     res = http.post(uri.path, envelope, {"Content-Type" => "application/magic-envelope+xml"})
   end
 
@@ -234,7 +244,7 @@ class User
     existing_feeds = Feed.all(:remote_url => feed_url)
 
     # local feed?
-    if existing_feeds.empty? and feed_url.start_with?("http://#{author.domain}/")
+    if existing_feeds.empty? and feed_url.match(/^http[s]?:\/\/#{author.domain}\//)
       feed_id = feed_url[/\/feeds\/(.+)$/,1]
       existing_feeds = [Feed.first(:id => feed_id)]
     end

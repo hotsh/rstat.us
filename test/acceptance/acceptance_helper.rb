@@ -105,4 +105,14 @@ module AcceptanceHelper
   def flash
     "#flash"
   end
+
+  def get_user_xrd user
+    subject = "acct:#{user.username}@#{user.author.domain}"
+    get "/users/#{subject}/xrd.xml"
+    if last_response.status == 301
+      follow_redirect!
+    end
+
+    Nokogiri.XML(last_response.body)
+  end
 end
