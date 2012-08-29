@@ -26,6 +26,7 @@ class Author
 
   # Normalize the domain so we can use them the same way
   before_save :normalize_domain
+  before_save :https_image_url
 
   # The Author has a profile and with that various entries
   key :name,      String
@@ -170,7 +171,7 @@ class Author
 
     # If the user has a twitter image, return it
     if image_url.present?
-      image_url.sub("http:", "https:")
+      image_url
 
     # If the user has an email, look for a gravatar url.
     elsif email.present?
@@ -239,6 +240,10 @@ class Author
     norm = norm.gsub(/\?.*$/, "")
     norm = norm.gsub(/#.*$/, "")
     self.domain = norm
+  end
+
+  def https_image_url
+    self.image_url.sub!(/^http/, 'https') if self.image_url.present?
   end
 
   def to_param
