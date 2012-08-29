@@ -22,6 +22,12 @@ describe Author do
     assert_equal 'https://example.net/cool-avatar', @author.image_url
   end
 
+  it "ensures that https image_urls are untouched" do
+    @author.image_url = 'https://example.net/cool-avatar'
+    @author.save!
+    assert_equal 'https://example.net/cool-avatar', @author.image_url
+  end
+
   describe "#fully_qualified_name" do
 
     it "returns simple name if a local user" do

@@ -243,7 +243,7 @@ class Author
   end
 
   def https_image_url
-    self.image_url.sub!(/^http/, 'https') if self.image_url.present?
+    self.image_url.sub!(/^http:/, 'https:') if self.image_url.present?
   end
 
   def to_param
