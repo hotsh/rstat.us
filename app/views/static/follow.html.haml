@@ -4,7 +4,7 @@
 
 #follow-form.search
   = form_tag "/subscriptions" do
-    %input{:type => "text", :name => "subscribe_to"}
+    %input{:type => "text", :name => "subscribe_to", :class => "username" }
     %input.button.follow{:type => "submit", :value => "Follow"}
 
 %h3 OStatus Sites
