@@ -58,7 +58,7 @@ class AuthController < ApplicationController
     @auth.nickname = auth['info']['nickname']
     @auth.save
 
-    session[:user_id] = @auth.user.id
+    sign_in(@auth.user)
 
     flash[:notice] = "You're now logged in."
 
@@ -92,7 +92,7 @@ class AuthController < ApplicationController
       auth = Authorization.first(:provider => params[:provider], :user_id => user.id)
       auth.destroy if auth
       # Without re-setting the session[:user_id] we're logged out
-      session[:user_id] = user.id
+      sign_in(user)
     end
 
     redirect_to edit_user_path(user)

@@ -102,6 +102,15 @@ class ApplicationController < ActionController::Base
     !pjax_request?
   end
 
+  def sign_in(user)
+    session[:user_id] = user.id
+  end
+
+  def sign_out
+    session[:user_id] = nil
+    @current_user = nil
+  end
+
 private
 
   MOBILE_BROWSERS = ["android", "ipod", "opera mini", "blackberry", "palm","hiptop","avantgo","plucker", "xiino","blazer","elaine", "windows ce; ppc;", "windows ce; smartphone;","windows ce; iemobile", "up.browser","up.link","mmp","symbian","smartphone", "midp","wap","vodafone","o2","pocket","kindle", "mobile","pda","psp","treo"]

@@ -98,7 +98,7 @@ class UsersController < ApplicationController
       Authorization.create_from_session!(session, @user)
 
       flash[:notice] = "Thanks! You're all signed up with #{@user.username} for your username."
-      session[:user_id] = @user.id
+      sign_in(@user)
       redirect_to root_path
     else
       render :new
@@ -197,7 +197,7 @@ class UsersController < ApplicationController
       user.email_confirmed = true
       user.reset_perishable_token
       # Register a session for the user
-      session[:user_id] = user.id
+      sign_in(user)
       flash[:notice] = "Email successfully confirmed."
       redirect_to root_path
     end

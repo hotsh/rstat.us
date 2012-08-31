@@ -115,4 +115,10 @@ module AcceptanceHelper
 
     Nokogiri.XML(last_response.body)
   end
+
+  def logged_out?
+    within "#header" do
+      assert has_no_content?("Log Out")
+    end
+  end
 end
