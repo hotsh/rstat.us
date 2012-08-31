@@ -29,6 +29,7 @@ class Author
   
   # Normalize the domain so we can use them the same way
   before_save :normalize_domain
+  before_save :https_image_url
 
   # The Author has a profile and with that various entries
   key :name,      String
@@ -202,7 +203,7 @@ class Author
   # Query described [here](http://en.gravatar.com/site/implement/images/#default-image).
   def gravatar_url
     email_digest = Digest::MD5.hexdigest email
-    "http://#{GRAVATAR}/avatar/#{email_digest}?s=48&r=r&d=#{ENCODED_DEFAULT_AVATAR}"
+    "https://#{GRAVATAR}/avatar/#{email_digest}?s=48&r=r&d=#{ENCODED_DEFAULT_AVATAR}"
   end
 
   # Returns an OStatus::Author instance describing this author model
@@ -244,6 +245,10 @@ class Author
     norm = norm.gsub(/\?.*$/, "")
     norm = norm.gsub(/#.*$/, "")
     self.domain = norm
+  end
+
+  def https_image_url
+    self.image_url.sub!(/^http:/, 'https:') if self.image_url.present?
   end
 
   def to_param
