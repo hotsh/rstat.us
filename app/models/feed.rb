@@ -28,7 +28,7 @@ class Feed
   belongs_to :author
   key :author_id, ObjectId
 
-  many :updates, :order => 'created_at desc'
+  many :updates, :order => 'created_at desc', :dependent => :destroy
 
   timestamps!
 
