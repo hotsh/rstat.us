@@ -36,3 +36,9 @@
       - else
         %form.profile-update{:action => "/auth/twitter", :method => "GET", :name => "profile_update_form"}
           %input.button{:type => "submit", :value => "Add Twitter Account"}
+
+  .delete-account.bottom-block
+    %h4 Delete Account
+
+    .to_delete
+      = link_to "Delete Account", account_deletion_confirmation_path, :class => "button destructive_action"

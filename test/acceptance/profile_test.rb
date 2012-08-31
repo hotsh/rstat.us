@@ -156,7 +156,14 @@ describe "profile" do
     end
   end
 
+  it "doesn't let a logged out user update someone's profile" do
+    u = Fabricate(:user)
+    visit "/users/#{u.username}/edit"
+    page.current_url.wont_match(/\/users\/#{u.username}\/edit/)
+  end
+
   it "doesn't let you update someone else's profile" do
+    log_in_as_some_user
     u = Fabricate(:user)
     visit "/users/#{u.username}/edit"
     assert_match /\/users\/#{u.username}$/, page.current_url

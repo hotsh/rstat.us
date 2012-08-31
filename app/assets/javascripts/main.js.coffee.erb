@@ -117,3 +117,10 @@ jQuery $ ->
 
   if( $("#tweet").length > 0)
     $("#tweet").change(recordTickyboxChange)
+
+  #########################################
+  # Delete account
+  #########################################
+  $("#delete_account").bind "click", (ev) ->
+    ev.preventDefault()
+    $(this).closest("form").submit()
