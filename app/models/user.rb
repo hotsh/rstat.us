@@ -46,6 +46,15 @@ class User
   # This will establish other entities related to the User
   after_create :finalize
 
+  # Mongo_mapper does not run :dependent => :destroy on belongs_to
+  # relationships, so clean up manually.
+  # https://github.com/jnunemaker/mongomapper/blob/master/test/functional/associations/test_belongs_to_proxy.rb#L155
+  before_destroy :clean_up
+
+  def clean_up
+    self.author.destroy
+  end
+
   def feed
     self.author.feed
   end

@@ -26,7 +26,7 @@ class SessionsController < ApplicationController
       if @user.valid?
         if params[:password].length > 0
           @user.save
-          session[:user_id] = @user.id
+          sign_in(@user)
           flash[:notice] = "Thanks for signing up!"
           redirect_to root_path
           return
@@ -44,7 +44,7 @@ class SessionsController < ApplicationController
       render :new
     else
       if user = User.authenticate(params[:username], params[:password])
-        session[:user_id] = user.id
+        sign_in(user)
         flash[:notice] = "Login successful."
         redirect_to root_path
         return
@@ -57,7 +57,7 @@ class SessionsController < ApplicationController
   end
 
   def destroy
-    session[:user_id] = nil
+    sign_out
     flash[:notice] = "You've been logged out."
     redirect_to root_path
   end

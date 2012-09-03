@@ -60,8 +60,8 @@ class Author
   # Associations
 
   # As we said, an Author has a Feed that they're the... author of. And if
-  # they're local, they also have a User, too.
-  one :feed
+  # they're local, they also have a User.
+  one :feed, :dependent => :destroy
   one :user
 
   # This takes results from an omniauth reponse and generates an author

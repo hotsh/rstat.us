@@ -1,5 +1,6 @@
 class UsersController < ApplicationController
   before_filter :find_user, :only => [:show, :edit, :update, :feed, :following, :followers]
+  before_filter :require_user, :only => [:edit, :update, :confirm_delete, :destroy]
 
   def index
     @title = "users"
@@ -98,7 +99,7 @@ class UsersController < ApplicationController
       Authorization.create_from_session!(session, @user)
 
       flash[:notice] = "Thanks! You're all signed up with #{@user.username} for your username."
-      session[:user_id] = @user.id
+      sign_in(@user)
       redirect_to root_path
     else
       render :new
@@ -197,7 +198,7 @@ class UsersController < ApplicationController
       user.email_confirmed = true
       user.reset_perishable_token
       # Register a session for the user
-      session[:user_id] = user.id
+      sign_in(user)
       flash[:notice] = "Email successfully confirmed."
       redirect_to root_path
     end
@@ -308,6 +309,23 @@ class UsersController < ApplicationController
       @token = params[:token]
       @user  = user
       render "login/password_reset"
+    end
+  end
+
+  def confirm_delete
+  end
+
+  def destroy
+    if current_user && params[:username_confirmation] == current_user.username
+      current_user.destroy
+      sign_out
+      flash[:notice] = "Your account has been deleted. We're sorry to see you go."
+      redirect_to root_path
+    elsif current_user
+      flash[:notice] = "Nothing was deleted since you did not type your username."
+      redirect_to edit_user_path
+    else
+      redirect_to root_path
     end
   end
 

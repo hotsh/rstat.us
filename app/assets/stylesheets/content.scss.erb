@@ -338,6 +338,29 @@
   }
 }
 
+.delete-account {
+  .to_delete {
+    @include clearfix;
+  }
+  a {
+    float: right;
+  }
+}
+
+.js #delete .delete_account_submit {
+  display: none;
+}
+
+.no-js #delete a#delete_account {
+  display: none;
+}
+
+.destructive_action:hover {
+  background-color: #c88;
+  color: #fff;
+  border-color: #522;
+}
+
 /* ****************************** */
 /* Sidebar */
 /* ****************************** */

@@ -1,0 +1,23 @@
+#delete
+  %h3 Warning
+
+  %p
+    You are about to delete your account. This will also delete all your status updates, and this cannot be undone.
+
+  %p
+    If you are sure you want to do this, please type your username as confirmation:
+
+  = form_tag user_path(current_user), :class => "delete_account_confirm" do
+    %input{:type => "hidden", :name => "_method", :value => "delete"}
+    %input{:type => :text, :name => :username_confirmation, :class => "username"}
+
+    -# We have both a submit button and links here because of a Firefox
+    -# CSS bug that sets line-height on buttons that can't be overridden.
+    -# Since Cancel should be a link that goes back to the edit profile
+    -# page, to match the height in Firefox, both Delete and Cancel are links.
+    -# Having the submit button, which is hidden using CSS, allows enter to
+    -# submit the form and makes something that will work without javascript.
+
+    %input{:type => "submit", :value => "Delete Account", :class => "delete_account_submit button"}
+    = link_to "Delete Account", "#", :id => "delete_account", :class => "button destructive_action"
+    = link_to "Cancel", edit_user_path(current_user), :class => "button"

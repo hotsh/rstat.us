@@ -40,6 +40,12 @@ form {
       }
     }
   }
+  input[type="text"] {
+    padding: 6px;
+  }
+  input.username{
+    width: 200px;
+  }
 
   .form-submit {
     @include prepend(4);

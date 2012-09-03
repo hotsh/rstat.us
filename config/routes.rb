@@ -38,6 +38,7 @@ RstatUs::Application.routes.draw do
   match 'reset_password', :to => "users#reset_password_new", :via => :get
   match 'reset_password', :to => "users#reset_password_create", :via => :post
   match 'reset_password/:token', :to => "users#reset_password_with_token", :via => :get, :as => "reset_password"
+  match 'users/:id/confirm_delete', :to => "users#confirm_delete", :constraints => { :id => /[^\/]+/ }, :as => "account_deletion_confirmation", :via => :get
 
   # Updates
   resources :updates, :only => [:index, :show, :create, :destroy]
