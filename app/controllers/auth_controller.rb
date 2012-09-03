@@ -2,6 +2,7 @@
 # We're using OmniAuth to handle our Twitter connections, so these
 # routes are all derived from that codebase.
 class AuthController < ApplicationController
+  before_filter :require_user, :only => :destroy
 
   # Omniauth callback after a successful oauth session has been established.
   # New users and existing users adding linked accounts both use this callback
@@ -88,13 +89,11 @@ class AuthController < ApplicationController
 
   # This lets someone remove a particular Authorization from their account.
   def destroy
-    if user = User.first(:username => params[:username])
-      auth = Authorization.first(:provider => params[:provider], :user_id => user.id)
-      auth.destroy if auth
-      # Without re-setting the session[:user_id] we're logged out
-      sign_in(user)
-    end
+    auth = current_user.authorizations.where(:provider => params[:provider])
+    auth.map(&:destroy) unless auth.empty?
+    # Without re-setting the session[:user_id] we're logged out
+    sign_in(current_user)
 
-    redirect_to edit_user_path(user)
+    redirect_to edit_user_path(current_user)
   end
 end

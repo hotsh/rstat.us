@@ -100,6 +100,28 @@ describe "Authorization" do
         assert_match /Add Twitter Account/, page.body
       end
 
+      it "cannot remove twitter from an account if you're not logged in" do
+        username = "someone_else"
+        u = Fabricate(:user, :username => username)
+        a = Fabricate(:authorization, :user => u)
+
+        delete "/users/#{username}/auth/#{a.provider}"
+
+        assert Authorization.find(a.id)
+      end
+
+      it "cannot remove twitter from an account that isn't yours" do
+        username = "someone_else"
+        u = Fabricate(:user, :username => username)
+        a = Fabricate(:authorization, :user => u)
+
+        log_in_as_some_user
+
+        delete "/users/#{username}/auth/#{a.provider}"
+
+        assert Authorization.find(a.id)
+      end
+
       # TODO: Add one for logging in with twitter
       it "signs up with twitter" do
         omni_mock("twitter_user", {
