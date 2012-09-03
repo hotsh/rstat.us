@@ -5,7 +5,7 @@ RstatUs::Application.routes.draw do
   # Sessions
   resources :sessions, :only => [:new, :create, :destroy]
   match "/login", :to => "sessions#new"
-  match "/logout", :to => "sessions#destroy"
+  match "/logout", :to => "sessions#destroy", :via => :post
 
   match "/follow", :to => "static#follow", :via => :get
 
