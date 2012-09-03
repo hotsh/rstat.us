@@ -88,6 +88,9 @@ Then update your gemset:
 
     $ gem install bundler && bundle install
 
+Copy the file `config/config.yml.sample` to `config/config.yml` and set a
+value for SECRET_TOKEN for both the development and test environments.
+
 And start the server:
 
     $ rails server
