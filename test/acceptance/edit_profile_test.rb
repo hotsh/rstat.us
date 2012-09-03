@@ -36,6 +36,7 @@ describe "edit profile" do
 
     it "updates your password successfully" do
       visit "/users/#{@u.username}/edit"
+
       fill_in "password", :with => "new_password"
       fill_in "password_confirm", :with => "new_password"
 
@@ -116,6 +117,32 @@ describe "edit profile" do
       assert Pony.deliveries.empty?
     end
 
+    describe "avatar" do
+      describe "with image_url" do
+        before do
+          @u.author.image_url = "https://example.com/avatar.png"
+          @u.author.save
+          visit "/users/#{@u.username}/edit"
+        end
+
+        it "shows you the avatar whose URL came from twitter" do
+          within ".avatar .avatar-management" do
+            assert has_selector?(:xpath, "//img[@src='https://example.com/avatar.png']")
+          end
+        end
+
+        it "lets you remove that avatar from your account" do
+          within ".avatar .avatar-management" do
+            click_button "Remove Avatar"
+          end
+
+          within ".avatar .avatar-management" do
+            assert has_no_selector?(:xpath, "//img[@src='https://example.com/avatar.png']")
+          end
+        end
+      end
+    end
+
     it "does let you update your profile even if you use a different case in the url" do
       u = Fabricate(:user, :username => "LADY_GAGA")
       a = Fabricate(:authorization, :user => u)
@@ -132,7 +159,6 @@ describe "edit profile" do
         assert has_content? bio_text
       end
     end
-
 
     it "doesn't let you update someone else's profile" do
       u = Fabricate(:user)

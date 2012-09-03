@@ -31,6 +31,9 @@ RstatUs::Application.routes.draw do
   match 'users/:id/followers', :to => "users#followers", :constraints => { :id => /[^\/]+/ }, :as => "followers"
   match 'users/:id/following', :to => "users#following", :constraints => { :id => /[^\/]+/ }, :as => "following"
 
+  # Users - manage avatar
+  match '/users/:username/avatar', :via => :delete, :to => "avatar#destroy", :constraints => {:username => /[^\/]+/ }, :as => "avatar"
+
   # Users - confirm email
   match 'confirm_email/:token', :to => "users#confirm_email"
 
