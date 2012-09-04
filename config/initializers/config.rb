@@ -11,7 +11,7 @@ unless Rails.env.production?
   config.each do |key, value|
     if key == "PONY_VIA_OPTIONS"
       Pony.options = { :via_options => value }
-    else
+    elsif ENV[key].blank?
       ENV[key] = value
     end
   end
