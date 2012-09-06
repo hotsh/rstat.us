@@ -7,12 +7,12 @@ class UpdatesController < ApplicationController
     @list_class = "all"
 
     respond_to do |format|
+      format.html { render_index(Update) }
       format.json {
         @updates = Update
         set_pagination
         render :json => @updates.map{ |u| UpdateJsonDecorator.decorate(u) }
       }
-      format.html { render_index(Update) }
     end
 
   end
