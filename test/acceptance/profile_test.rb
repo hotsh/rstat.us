@@ -36,6 +36,18 @@ describe "profile" do
     assert_match /#{update1.text}.*#{update2.text}/m, page.body
   end
 
+  it "responds with HTML by default if Accept header is */*" do
+    u = Fabricate(:user)
+
+    header "Accept", "*/*"
+    get "/users/#{u.username}"
+
+    html = Nokogiri::HTML::Document.parse(last_response.body)
+    user_text = html.css("span.user-text")
+
+    user_text.first.text.must_match(u.username)
+  end
+
   it "404s if the user doesnt exist" do
     visit "/users/nonexistent"
     assert_match "The page you were looking for doesn't exist.", page.body

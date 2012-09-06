@@ -60,6 +60,22 @@ describe "following" do
       assert_match /leopard.*zebra/m, page.body
     end
 
+    it "responds with HTML by default if Accept header is */*" do
+      log_in_as_some_user
+
+      u2 = Fabricate(:user, :username => "user1")
+      @u.follow! u2.feed
+
+      header "Accept", "*/*"
+      get "/users/#{@u.username}/following"
+
+      html = Nokogiri::HTML::Document.parse(last_response.body)
+      users = html.css("li.user")
+
+      users.first.text.must_match("user1")
+    end
+
+
     it "outputs json" do
       log_in_as_some_user
 

@@ -18,16 +18,30 @@ describe "update" do
     end
   end
 
-  it "renders the world's updates" do
-    log_in_as_some_user
+  describe "/updates" do
+    before do
+      u2 = Fabricate(:user)
+      @update = Fabricate(:update)
+      u2.feed.updates << @update
+    end
 
-    u2 = Fabricate(:user)
-    update = Fabricate(:update)
-    u2.feed.updates << update
+    it "renders the world's updates" do
+      visit "/updates"
+      within "li.hentry" do
+        assert has_content? @update.text
+      end
+    end
 
-    visit "/updates"
+    it "responds with HTML by default if Accept header is */*" do
+      header "Accept", "*/*"
+      get "/updates"
 
-    assert_match update.text, page.body
+      html = Nokogiri::HTML::Document.parse(last_response.body)
+      update_lis = html.css("li.hentry")
+
+      update_lis.length.must_equal(1)
+      update_lis.first.text.must_match(@update.text)
+    end
   end
 
   it "makes an update" do
