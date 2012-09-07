@@ -30,8 +30,7 @@
       - if @user.twitter?
         %img.linked-image{:src => asset_path("twitter_newbird_blue.png"), :alt => "Twitter Account"}
         .linked-name="@#{@user.twitter.nickname}"
-        %form.profile-update{:action => "/users/#{@user.username}/auth/twitter", :method => "POST", :name => "profile_update_form"}
-          %input{:type => "hidden", :name => "_method", :value => "delete"}
+        = form_tag "/users/#{@user.username}/auth/twitter", :method => "delete", :class => "profile-update", :name => "profile_update_form" do
           %input.button{:type => "submit", :value => "Remove"}
       - else
         %form.profile-update{:action => "/auth/twitter", :method => "GET", :name => "profile_update_form"}
