@@ -16,6 +16,7 @@ module AcceptanceHelper
   include ShowMeTheCookies
 
   OmniAuth.config.test_mode = true
+  ActionController::Base.allow_forgery_protection = true
 
   if ENV["ENABLE_HTTPS"] == "yes"
     Capybara.app_host = 'https://www.example.com'
