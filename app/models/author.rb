@@ -26,10 +26,16 @@ class Author
   key :use_ssl,   Boolean
 
   validates_presence_of :domain
-  
+
   # Normalize the domain so we can use them the same way
   before_save :normalize_domain
+
+  # Make sure the image url uses https
   before_save :https_image_url
+
+  # Twitter has an SSL cert that doesn't match the domain but we can
+  # change the domain to match the cert and the avatars work
+  before_save :modify_twitter_image_url_domain
 
   # The Author has a profile and with that various entries
   key :name,      String
@@ -249,6 +255,10 @@ class Author
 
   def https_image_url
     self.image_url.sub!(/^http:/, 'https:') if self.image_url.present?
+  end
+
+  def modify_twitter_image_url_domain
+    self.image_url.sub!(/a\d.twimg.com/, "twimg0-a.akamaihd.net") if self.image_url.present?
   end
 
   def to_param
