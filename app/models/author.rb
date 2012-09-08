@@ -75,7 +75,7 @@ class Author
     username   = user['username']
     website    = user['urls']['Website']
     bio        = user['description']
-    image      = user['image']
+    image_url  = user['image']
     remote     = user['url']
 
     # Creates an Author object with the details
@@ -84,7 +84,7 @@ class Author
       username:   username,
       website:    website,
       bio:        bio,
-      image_url:  image,
+      image_url:  image_url,
       remote_url: remote,
       domain:     domain
     )
@@ -92,23 +92,23 @@ class Author
 
   def self.new_from_session!(session, params, domain)
     new(
-      :name     => session[:name],
-      :username => params[:username],
-      :website  => session[:website],
-      :bio      => session[:description],
-      :image    => session[:image],
-      :domain   => domain
+      :name      => session[:name],
+      :username  => params[:username],
+      :website   => session[:website],
+      :bio       => session[:description],
+      :image_url => session[:image],
+      :domain    => domain
     )
   end
 
   def self.create_from_session!(session, params, domain)
     create!(
-      :name     => session[:name],
-      :username => params[:username],
-      :website  => session[:website],
-      :bio      => session[:description],
-      :image    => session[:image],
-      :domain   => domain
+      :name      => session[:name],
+      :username  => params[:username],
+      :website   => session[:website],
+      :bio       => session[:description],
+      :image_url => session[:image],
+      :domain    => domain
     )
   end
 

@@ -11,6 +11,25 @@ describe Author do
     assert Author.create_from_hash!(hash, "rstat.us").is_a?(Author)
   end
 
+  describe "new_from_session!" do
+    it "has an image_url if the session has image" do
+      session_hash = {:image => "foo.png"}
+      a = Author.new_from_session!(session_hash, {}, "http://example.com")
+      a.save!
+
+      a.image_url.must_equal "foo.png"
+    end
+  end
+
+  describe "create_from_session!" do
+    it "has an image_url if the session has image" do
+      session_hash = {:image => "foo.png"}
+      a = Author.create_from_session!(session_hash, {}, "http://example.com")
+
+      a.image_url.must_equal "foo.png"
+    end
+  end
+
   it "stores the domain of a local user by normalizing the base url" do
     @author.domain = "http://example.com/"
     @author.save
