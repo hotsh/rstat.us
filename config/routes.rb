@@ -26,19 +26,21 @@ RstatUs::Application.routes.draw do
   # Users
   match 'users/:id.:format', :to => "users#show", :constraints => { :id => /[^\/]+/, :format => /json/ }
   resources :users, :constraints => { :id => /[^\/]+/ }
+  match 'users/:id/confirm_delete', :to => "users#confirm_delete", :constraints => { :id => /[^\/]+/ }, :as => "account_deletion_confirmation", :via => :get
   match "users/:id/feed", :to => "users#feed", :as => "user_feed", :constraints => { :id => /[^\/]+/ }
-
-  # other new route?
   match 'users/:id/followers', :to => "users#followers", :constraints => { :id => /[^\/]+/ }, :as => "followers"
   match 'users/:id/following', :to => "users#following", :constraints => { :id => /[^\/]+/ }, :as => "following"
+
+  # Users - confirm email
   match 'confirm_email/:token', :to => "users#confirm_email"
+
+  # Users - forgot/reset password
   match 'forgot_password', :to => "users#forgot_password_new", :via => :get, :as => "forgot_password"
   match 'forgot_password', :to => "users#forgot_password_create", :via => :post
   match 'forgot_password_confirm', :to => "users#forgot_password_confirm", :via => :get, :as => "forgot_password_confirm"
   match 'reset_password', :to => "users#reset_password_new", :via => :get
   match 'reset_password', :to => "users#reset_password_create", :via => :post
   match 'reset_password/:token', :to => "users#reset_password_with_token", :via => :get, :as => "reset_password"
-  match 'users/:id/confirm_delete', :to => "users#confirm_delete", :constraints => { :id => /[^\/]+/ }, :as => "account_deletion_confirmation", :via => :get
 
   # Updates
   resources :updates, :only => [:index, :show, :create, :destroy]
