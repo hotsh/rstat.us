@@ -51,16 +51,32 @@ describe Author do
     assert_equal @author.remote_url, @author.url
   end
 
-  it "ensures that image_url is always https" do
-    @author.image_url = 'http://example.net/cool-avatar'
-    @author.save!
-    assert_equal 'https://example.net/cool-avatar', @author.image_url
+  describe "https_image_url" do
+    it "ensures that image_url is always https" do
+      @author.image_url = 'http://example.net/cool-avatar'
+      @author.save!
+      assert_equal 'https://example.net/cool-avatar', @author.image_url
+    end
+
+    it "ensures that https image_urls are untouched" do
+      @author.image_url = 'https://example.net/cool-avatar'
+      @author.save!
+      assert_equal 'https://example.net/cool-avatar', @author.image_url
+    end
   end
 
-  it "ensures that https image_urls are untouched" do
-    @author.image_url = 'https://example.net/cool-avatar'
-    @author.save!
-    assert_equal 'https://example.net/cool-avatar', @author.image_url
+  describe "modify_twitter_image_url_domain" do
+    it "changes a twitter image URL to use the domain that matches the cert" do
+      @author.image_url = 'https://a3.twimg.com/whatever'
+      @author.save!
+      assert_equal 'https://twimg0-a.akamaihd.net/whatever', @author.image_url
+    end
+
+    it "leaves other image urls alone" do
+      @author.image_url = 'https://example.net/cool-avatar'
+      @author.save!
+      assert_equal 'https://example.net/cool-avatar', @author.image_url
+    end
   end
 
   describe "#fully_qualified_name" do
