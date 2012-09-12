@@ -128,6 +128,7 @@ describe "edit profile" do
         it "shows you the avatar whose URL came from twitter" do
           within ".avatar .avatar-management" do
             assert has_selector?(:xpath, "//img[@src='https://example.com/avatar.png']")
+            assert has_content?("Saved from a linked account")
           end
         end
 
@@ -140,6 +141,23 @@ describe "edit profile" do
             assert has_no_selector?(:xpath, "//img[@src='https://example.com/avatar.png']")
           end
         end
+      end
+
+      describe "with email" do
+        before do
+          @u.author.email = "test@example.com"
+          @u.author.save
+          visit "/users/#{@u.username}/edit"
+        end
+
+        it "shows you the gravatar with your email address" do
+          within ".avatar .avatar-management" do
+            assert has_selector?(:xpath, "//img[@src='#{@u.author.gravatar_url}']")
+            assert has_content?("Gravatar using test@example.com")
+            assert has_link?("Go to Gravatar to change")
+          end
+        end
+
       end
     end
 

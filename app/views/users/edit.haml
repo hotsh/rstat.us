@@ -23,15 +23,20 @@
       %input.button{:type => "submit", :value => "Save"}
 
 - content_for :bottom do
-  - if @user.author.image_url.present?
-    .avatar.bottom-block
-      %h4 Avatar
-      .avatar-management
+  .avatar.bottom-block
+    %h4 Avatar
+    .avatar-management
+      - if @user.author.image_url.present?
         = image_tag(@user.author.avatar_url, :class => "photo user-image", :alt => "avatar")
         %span.description
           Saved from a linked account
         = form_tag(avatar_path(@user.author), :method => "delete", :name => "avatar_delete_form", :id => "avatar-delete") do
           %input.button.destructive_action{:type => "submit", :value => "Remove Avatar"}
+      - elsif @user.author.email.present?
+        = image_tag(@user.author.avatar_url, :class => "photo user-image", :alt => "avatar")
+        %span.description
+          = "Gravatar using #{@user.author.email}"
+        = link_to "Go to Gravatar to change", Author::GRAVATAR_SIGNUP, :class => "button"
 
 
   .linked-accounts.bottom-block
