@@ -2,6 +2,7 @@ language: ruby
 rvm:
   - 1.9.2
   - 1.9.3
+services: mongodb
 env:
   - SECRET_TOKEN=fb2983af6f913598429698388a894f1c502adc42dba959917fd82e6a7595182a5299731e53f3159fb01ff33c4681dd8bb62aea36946a5ae0cb904e4902c7ae43
 script: "bundle exec rake test"
