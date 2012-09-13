@@ -72,6 +72,8 @@ bug_. For example, [this is an issue with running a development environment on
 windows](https://github.com/hotsh/rstat.us/issues/547) that we need to fix.
 Please report any issues you have.
 
+If you use RVM, you'll want to copy `.rvmrc.example` to `.rvmrc`. 
+
 ### Getting a local version running
 
 First off: you will need MongoDB (www.mongodb.org).  They have a [quickstart
