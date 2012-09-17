@@ -37,7 +37,12 @@
         %span.description
           = "Gravatar using #{@user.author.email}"
         = link_to "Go to Gravatar to change", Author::GRAVATAR_SIGNUP, :class => "button"
-
+      - else
+        = image_tag(asset_path(RstatUs::DEFAULT_AVATAR), :class => "photo user-image", :alt => "avatar")
+        %span.description
+          = "Add an email to your profile above in order to use "
+          = link_to("Gravatar", Author::GRAVATAR_SIGNUP)
+          = " to set a custom avatar!"
 
   .linked-accounts.bottom-block
     %h4 Linked Accounts

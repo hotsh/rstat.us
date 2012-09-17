@@ -157,7 +157,21 @@ describe "edit profile" do
             assert has_link?("Go to Gravatar to change")
           end
         end
+      end
 
+      describe "with neither image_url nor email" do
+        before do
+          @u.author.email = ""
+          @u.author.save
+          visit "/users/#{@u.username}/edit"
+        end
+
+        it "says you should add an email address and use gravatar" do
+          within ".avatar .avatar-management" do
+            assert has_selector?(:xpath, "//img[contains(@src, '#{RstatUs::DEFAULT_AVATAR}')]")
+            assert has_content?("Add an email to your profile above")
+          end
+        end
       end
     end
 
