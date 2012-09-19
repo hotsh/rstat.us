@@ -10,6 +10,7 @@ group :assets do
   gem 'compass-rails', "~> 1.0.3"
   gem 'coffee-rails', "~> 3.2.2"
   gem 'uglifier', "~> 1.0.0"
+  gem 'jquery-ui-rails', "~> 2.0.0"
 end
 
 gem "haml", "~> 3.1.4"

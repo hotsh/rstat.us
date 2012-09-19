@@ -18,6 +18,10 @@ jQuery $ ->
 
   textarea.keypress(updateCounter).keyup(updateCounter)
 
+  textarea.triggeredAutocomplete
+    trigger: "@"
+    source: "/autocomplete"
+
   updateTickyboxes = ->
     if userTickiedBox
       return

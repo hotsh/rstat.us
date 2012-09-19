@@ -106,6 +106,12 @@ class UsersController < ApplicationController
     end
   end
 
+  def autocomplete
+    @json = current_user.autocomplete(params[:term])
+
+    render :json => @json
+  end
+
   # This is pretty much the same thing as /feeds/your_feed_id.atom, but we
   # wanted to have a really nice URL for it, and not just the ugly one.
   def feed

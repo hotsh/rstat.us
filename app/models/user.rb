@@ -236,6 +236,20 @@ class User
     res = http.post(uri.path, envelope, {"Content-Type" => "application/magic-envelope+xml"})
   end
 
+  def autocomplete(query)
+    if query.nil? || query.blank?
+      return []
+    end
+
+    query = '^' + query.downcase + '.*'
+    following.inject([]) do |result, obj|
+      if /#{query}/i =~ obj.author.username
+        result << { :label => obj.author.username.downcase }
+      end
+      result
+    end
+  end
+
   def followed_by?(f)
     followers.include? f
   end

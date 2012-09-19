@@ -48,6 +48,9 @@ RstatUs::Application.routes.draw do
   # Search
   resource :search, :only => :show
 
+  # Autocomplete
+  get "/autocomplete" => "users#autocomplete", :format => "json"
+
   # feeds
   resources :feeds, :only => :show
 
