@@ -289,6 +289,39 @@ describe User do
     end
   end
 
+  describe "#autocomplete" do
+    before do
+      @bob = Fabricate(:user, :username => "bob")
+      @rob = Fabricate(:user, :username => "rob")
+      @bob.follow!(@rob.feed)
+    end
+
+    it "returns a followed user starting with query" do
+      @result = @bob.autocomplete('r')
+      assert_equal @rob.username, @result.first[:label]
+    end
+
+    it "returns a followed user if we use a different case" do
+      @result = @bob.autocomplete('R')
+      assert_equal @rob.username, @result.first[:label]
+    end
+
+    it "returns an empty array if query is nil" do
+      @result = @bob.autocomplete(nil)
+      assert_equal [], @result
+    end
+
+    it "returns an empty array if query is blank" do
+      @result = @bob.autocomplete('')
+      assert_equal [], @result
+    end
+
+    it "returns an empty array if query is not matched" do
+      @result = @bob.autocomplete('ta')
+      assert_equal [], @result
+    end
+  end
+
   describe "self#find_by_case_insensitive_username" do
     before do
       @u = Fabricate(:user, :username => "oMg")
