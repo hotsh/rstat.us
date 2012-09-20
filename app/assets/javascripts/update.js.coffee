@@ -21,6 +21,7 @@ jQuery $ ->
   textarea.triggeredAutocomplete
     trigger: "@"
     source: "/autocomplete"
+    maxLength: 10
 
   updateTickyboxes = ->
     if userTickiedBox
