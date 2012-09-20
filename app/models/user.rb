@@ -243,8 +243,8 @@ class User
 
     query = '^' + query.downcase + '.*'
     following.inject([]) do |result, obj|
-      if /#{query}/i =~ obj.author.username
-        result << { :label => obj.author.username.downcase }
+      if /#{query}/i =~ obj.author.fully_qualified_name
+        result << { :label => obj.author.fully_qualified_name.downcase }
       end
       result
     end
