@@ -122,7 +122,7 @@ class Feed
   # Pings hub
   # needs absolute url for feed to give to hub for callback
   def ping_hubs
-    feed_url = "#{url}.atom"
+    feed_url = url(:format => :atom)
     OPub::Publisher.new(feed_url, hubs).ping_hubs
   end
 
@@ -130,7 +130,9 @@ class Feed
     remote_url.nil?
   end
 
-  def url(atom_format = false)
+  def url(params = {})
+    atom_format = params.fetch(:format, false) == :atom
+
     if local? && author
       protocol = author.use_ssl ? "https" : "http"
       url = "#{protocol}://#{author.domain}/feeds/#{id}"
