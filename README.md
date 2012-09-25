@@ -89,9 +89,15 @@ Then do:
 Then update your gemset:
 
     $ gem install bundler && bundle install
+    
+The config.yml file will be automatically copied/generated for you when you
+start the server and it does not exist. In dev mode the SECRET_TOKEN will be
+generated for you and your config.yml file updated. When you run tests a new
+random SECRET_TOKEN will be generated each time. You can always copy 
+config/config.yml.sample to config/config.yml and edit it on your own beforehand.
 
-Copy the file `config/config.yml.sample` to `config/config.yml` and set a
-value for SECRET_TOKEN for both the development and test environments.
+- encoding is UTF-8 by default for ruby 1.9.3
+- Notes about config settings are in the example file (config/config.yml.example)
 
 And start the server:
 

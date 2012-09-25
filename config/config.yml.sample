@@ -26,7 +26,6 @@ development:
     domain: localhost.localdomain
 
 test:
-  SECRET_TOKEN:
   CONSUMER_KEY: asdf
   CONSUMER_SECRET: asdf
   BLOG_URL:
