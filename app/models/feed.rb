@@ -131,7 +131,7 @@ class Feed
   end
 
   def url(atom_format = false)
-    if remote_url.nil? && author
+    if local? && author
       protocol = author.use_ssl ? "https" : "http"
       url = "#{protocol}://#{author.domain}/feeds/#{id}"
     else
