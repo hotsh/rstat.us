@@ -1,0 +1,27 @@
+<%= form_for([:oauth, application]) do |f| %>
+  <fieldset>
+    <% if application.errors.any? %>
+      <div class="alert-message error" data-alert><a class="close" href="#">×</a><p>Whoops! Check your form for possible errors</p></div>
+    <% end %>
+
+    <div class="clearfix">
+      <%= f.label :name %>
+      <div class="input">
+        <%= f.text_field :name %>
+      </div>
+    </div>
+
+    <div class="clearfix">
+      <%= f.label :redirect_uri %>
+      <div class="input">
+        <%= f.text_field :redirect_uri %>
+      </div>
+    </div class="clearfix">
+
+    <div class="actions">
+      <%= f.submit :Submit, :class => "btn primary" %>
+      <%= link_to "Cancel", oauth_applications_path, :class => "btn" %>
+    </div>
+  </fieldset>
+<% end %>
+
