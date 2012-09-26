@@ -7,12 +7,6 @@ Doorkeeper.configure do
   resource_owner_authenticator do |routes|
     User.first(:id => session[:user_id]) ||
       redirect_to(routes.login_path(return_to: request.fullpath))
-    # Put your resource owner authentication logic here.
-    # If you want to use named routes from your app, you need to call them on the routes object.
-    # For example:
-    #   routes.new_user_session_path
-    # Example implementation:
-    #   User.find_by_id(session[:user_id]) || redirect_to(routes.new_user_session_url)
   end
 
   # If you want to restrict access to the web interface for adding oauth authorized applications, you need to declare the block below.
@@ -37,12 +31,12 @@ Doorkeeper.configure do
   # Optional parameter :confirmation => true (default false) if you want to enforce ownership of
   # a registered application
   # Note: you must also run the rails g doorkeeper:application_owner generator to provide the necessary support
-  # enable_application_owner :confirmation => false
+  enable_application_owner :confirmation => true
 
   # Define access token scopes for your provider
   # For more information go to https://github.com/applicake/doorkeeper/wiki/Using-Scopes
-  # default_scopes  :public
-  # optional_scopes :write, :update
+  default_scopes  :read
+  optional_scopes :write
 
   # Change the way client credentials are retrieved from the request object.
   # By default it retrieves first from the `HTTP_AUTHORIZATION` header, then
