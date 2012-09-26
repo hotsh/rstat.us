@@ -5,9 +5,10 @@ module Doorkeeper
 
     before_filter :require_user
     before_filter :authenticate_admin!
+    before_filter :find_application, :only => [:show, :edit, :update, :destroy]
 
     def index
-      @applications = Application.all
+      @applications = Application.where(:owner_id => current_user.id)
     end
 
     def new
@@ -29,15 +30,12 @@ module Doorkeeper
     end
 
     def show
-      @application = Application.find(params[:id])
     end
 
     def edit
-      @application = Application.find(params[:id])
     end
 
     def update
-      @application = Application.find(params[:id])
       if @application.update_attributes(params[:application])
         flash[:notice] = I18n.t(:notice, :scope => [:doorkeeper, :flash, :applications, :update])
         respond_with [:oauth, @application]
@@ -47,9 +45,18 @@ module Doorkeeper
     end
 
     def destroy
-      @application = Application.find(params[:id])
       flash[:notice] = I18n.t(:notice, :scope => [:doorkeeper, :flash, :applications, :destroy]) if @application.destroy
       redirect_to oauth_applications_url
+    end
+
+    private
+
+    def find_application
+      @application = Application.first(:id => params[:id], :owner_id => current_user.id)
+      if @application.nil?
+        render :file => "#{::Rails.root}/public/404", :status => 404
+        return
+      end
     end
   end
 end
