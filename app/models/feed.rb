@@ -124,6 +124,8 @@ class Feed
   def ping_hubs
     feed_url = url(:format => :atom)
     OPub::Publisher.new(feed_url, hubs).ping_hubs
+  rescue SocketError => e
+    logger.error "Feed#ping_hubs error: could not reach hubs; check the network connection."
   end
 
   def local?
