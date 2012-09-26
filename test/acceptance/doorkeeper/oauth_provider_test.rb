@@ -1,5 +1,4 @@
-require 'require_relative' if RUBY_VERSION[0,3] == '1.8'
-require_relative 'acceptance_helper'
+require_relative '../acceptance_helper'
 
 describe "OAuth Provider" do
   include AcceptanceHelper
@@ -15,10 +14,6 @@ describe "OAuth Provider" do
     end
 
     describe "logged out" do
-      before do
-        visit "/logout"
-      end
-
       it "redirects to the login page" do
         visit "/oauth/authorize"
         page.current_url.must_match(/\/login/)
@@ -89,29 +84,6 @@ describe "OAuth Provider" do
         it "lets you revoke previous authorizations" do
           skip
         end
-      end
-    end
-  end
-
-  describe "creating applications" do
-    describe "not logged in" do
-      it "does not allow unauthenticated users to create an application" do
-        skip
-      end
-    end
-
-    describe "logged in" do
-      it "has a developers page" do
-        visit "/developers"
-        skip
-      end
-
-      it "lets you create an application" do
-        skip
-      end
-
-      it "doesn't let you see other developers' applications" do
-        skip
       end
     end
   end
