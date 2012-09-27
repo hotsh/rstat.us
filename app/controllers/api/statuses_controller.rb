@@ -12,6 +12,14 @@ module Api
     #
     before_filter :require_user
 
+    def show 
+      @update = Update.first(:id => params[:id])
+      respond_to do |format|
+        format.json do
+          render :json => UpdateJsonDecorator.decorate(@update)
+        end
+      end
+    end
     #
     # POST /api/statuses/update.json
     #

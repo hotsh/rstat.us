@@ -49,7 +49,6 @@ RstatUs::Application.routes.draw do
   resources :updates, :only => [:index, :show, :create, :destroy]
   match "/timeline", :to => "updates#timeline"
   match "/replies", :to => "updates#replies"
-
   # Search
   resource :search, :only => :show
 
@@ -77,5 +76,6 @@ RstatUs::Application.routes.draw do
     match 'statuses/home_timeline.:format', :to => "statuses#home_timeline", :via => :get, :constraints => { :format => "json" }
     match 'statuses/user_timeline.:format', :to => "statuses#user_timeline", :via => :get, :constraints => { :format => "json" }
     match 'statuses/mention.:format', :to => "statuses#mention", :via => :get, :constraints => { :format => "json" }
+    match "statuses/show/:id", :to => "statuses#show"
   end
 end
