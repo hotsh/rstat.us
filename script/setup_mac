@@ -62,9 +62,9 @@ echo
 # Start the server and open the site
 echo "### Setup complete, starting the sever and opening localhost ###"
 echo
-rails server -d
+thin start -d
 open http://localhost:3000
 
-PID=$(ps aux | grep "rails server -d" | grep -v grep | awk '{print $2}')
+PID=$(ps aux | grep "thin server" | grep -v grep | awk '{print $2}')
 echo "### To stop the server, run kill -9 $PID ###"
 echo
