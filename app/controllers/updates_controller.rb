@@ -58,7 +58,9 @@ class UpdatesController < ApplicationController
       flash[:notice] = "Update created."
     end
 
-    if request.referrer
+    reply_redirect = request.referrer.include?("reply=") ? true : false 
+
+    if request.referrer and reply_redirect == false
       redirect_to request.referrer
     else
       redirect_to root_path
