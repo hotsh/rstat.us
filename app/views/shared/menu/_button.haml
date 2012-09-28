@@ -1,0 +1,11 @@
+%div#small_menu_container
+  %div#menu_button
+  %ul#little_menu_options
+    != menu_item("Home", "/", :rel => "index")
+    != menu_item("Updates", "/updates", :rel => "messages-all")
+    != menu_item("Search", "/search", :rel => "messages-search")
+    != menu_item("Users", "/users", :rel => "users-search")
+    - if current_user
+      != menu_item("Profile", "/users/#{current_user.username}")
+      %li.log_out
+        = link_to "Log Out", logout_path, :method => :post

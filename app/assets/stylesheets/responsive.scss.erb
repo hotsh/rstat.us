@@ -1,0 +1,79 @@
+@import "lib/base.css.scss";
+
+@media all
+and (min-width: 320px)
+and (max-width: 700px) {
+  body {
+    min-width: 0;
+  }
+  // prevents window from resizing
+  // without freezing zoom
+  input[type='text'],textarea {
+    font-size: 16px !important;
+  }
+  #header, #page, #footer {
+    width: auto;
+  }
+  #header {
+    #main {
+      display: none;
+    }
+    #profile_menu {
+      display: none;
+    }
+    #small_menu_container {
+      display: block;
+      #menu_button {
+        border: 1px solid white;
+        border-radius: 5px;
+        height: 6px;
+        width: 10px;
+        margin: 16px 11px 0 0;
+        padding: 10px;
+        background-image: url('<%= asset_path 'icons_sprite.png' %>');
+        background-position: -12px -148px;
+        background-repeat: no-repeat;
+        background-size: 70px auto;
+        background-origin: content-box;
+        background-color: $content_background;
+        float: right;
+      }
+      #menu_button.active {
+        transform: rotate(180deg);
+        background-position: -47px -148px;
+      }
+      ul {
+        display: none;
+        z-index: 999;
+        font-size: 150%;
+        padding: 8px 12px 8px 8px;
+        list-style: none;
+        float: right;
+        position: absolute;
+        top: 50px;
+        right: 0;
+        background-color: $header_color;
+        border-radius: 0 0 0 5px;
+      }
+    }
+  }
+  #sidebar {
+    display: none;
+  }
+  #content-wrap {
+    width: auto;
+    margin-right: 0px;
+    #updates-menu {
+      li {
+        padding-right: .5em;
+      }
+    }
+    .updates .update .entry-content {
+      padding-right: .5em;
+    }
+  }
+  #footer #footer-logo {
+    padding-right: .5em;
+    margin-right: 0;
+  }
+}
