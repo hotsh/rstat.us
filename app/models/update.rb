@@ -1,3 +1,4 @@
+# encoding: utf-8
 # An Update is a particular status message sent by one of our users.
 
 class Update
@@ -77,7 +78,7 @@ class Update
   end
 
   def get_tags
-    self[:tags] = self.text.scan(/#([\w\-\.]*)/).flatten
+    self[:tags] = self.text.scan(/#([[:alpha:]\-\.]*)/).flatten
   end
 
   # Return OStatus::Entry instance describing this Update
@@ -211,7 +212,7 @@ class Update
       end
     end
 
-    out.gsub!(/(^|\s+)#(\w+)/) do |match|
+    out.gsub!( /(^|\s+)#(\p{Word}+)/ ) do |match|
       "#{$1}<a href='/search?search=%23#{$2}'>##{$2}</a>"
     end
 

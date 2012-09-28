@@ -1,3 +1,4 @@
+# encoding: utf-8
 require_relative '../test_helper'
 
 describe Update do
@@ -149,6 +150,20 @@ describe Update do
       u = Fabricate(:update, :text => "#lots #of #hash #tags")
       assert_equal ["lots", "of", "hash", "tags"], u.tags
     end
+
+    it "extracts hashtags when international symbols exist in hashtag" do
+      u = Fabricate(:update, :text => "#Cantábrico is an international hashtag")
+      assert_equal ["Cantábrico"], u.tags
+    end
+
+    it "makes links for international hashtag and a URL (after create)" do
+      hashtag = "#Cantábrico"
+      u = Fabricate(:update, :text => "This is a message with a #{hashtag}.")
+      proper_link = "<a href='/search\?search=%23#{hashtag.gsub(/^#/, '')}'>#{hashtag}</a>"
+      # Hacky method because MiniTest assert_match method insisted on escaping utf-8 characters within the regex
+      assert( u.to_html.include?(proper_link),
+            "#{u.to_html} does not match #{proper_link}")
+     end
   end
 
   describe "twitter" do
