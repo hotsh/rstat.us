@@ -7,7 +7,7 @@ class Update
 
   include Tire::Model::Search
   include Tire::Model::Callbacks
-
+  index_name ELASTICSEARCH_INDEX_NAME
 
   # Determines what constitutes a username inside an update text
   USERNAME_REGULAR_EXPRESSION = /(^|[ \t\n\r\f"'\(\[{]+)@([^ \t\n\r\f&?=@%\/\#]*[^ \t\n\r\f&?=@%\/\#.!:;,"'\]}\)])(?:@([^ \t\n\r\f&?=@%\/\#]*[^ \t\n\r\f&?=@%\/\#.!:;,"'\]}\)]))?/
@@ -50,8 +50,6 @@ class Update
   key :referral_id
   # Remote Update url: (nil if local)
   key :referral_url, String
-
-  index_name 'mongo-updates'
 
   def to_indexed_json
     self.to_json
