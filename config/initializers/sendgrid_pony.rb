@@ -1,12 +1,16 @@
-Pony.options = {
-  :via => :smtp,
-  :via_options => {
-    :address => 'smtp.sendgrid.net',
-    :port => '587',
-    :domain => 'heroku.com',
-    :user_name => ENV['SENDGRID_USERNAME'],
-    :password => ENV['SENDGRID_PASSWORD'],
-    :authentication => :plain,
-    :enable_starttls_auto => true
+if ENV['SENDGRID_USERNAME'].present? &&
+   ENV['SENDGRID_PASSWORD'].present?
+
+  Pony.options = {
+    :via => :smtp,
+    :via_options => {
+      :address => 'smtp.sendgrid.net',
+      :port => '587',
+      :domain => 'heroku.com',
+      :user_name => ENV['SENDGRID_USERNAME'],
+      :password => ENV['SENDGRID_PASSWORD'],
+      :authentication => :plain,
+      :enable_starttls_auto => true
+    }
   }
-}
+end
