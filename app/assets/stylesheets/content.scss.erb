@@ -318,6 +318,28 @@
   @include content-block;
 }
 
+.avatar {
+  .avatar-management {
+    @include clearfix;
+    img {
+      vertical-align: middle;
+      width: 48px;
+    }
+    .description {
+      margin-left: 10px;
+    }
+    form {
+      float: right;
+      margin-top: 7px;
+      margin-bottom: 0;
+    }
+    .button {
+      float: right;
+      margin-top: 7px;
+    }
+  }
+}
+
 .linked-accounts {
   .linked {
     @include clearfix;
