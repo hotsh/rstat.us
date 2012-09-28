@@ -67,6 +67,23 @@ with Ruby as of 1.9.2), and [bundler](http://gembundler.com/) on your machine.
 If not, each of those links has instructions, and we're willing to help via
 one of the contact methods above if you have issues.
 
+### Automation
+
+There is an automated script to get your dev environment setup on Mac OS X.
+From the app root directory, run ./script/setup_mac and enjoy the ride.
+If everything installs correctly and no errors are reported that you need to fix,
+you'll see the site loaded in your favorite browser.
+
+- mongodb
+  - Homebrew preferred for installing mongodb
+  - MacPorts should also work
+  - Take a look at the [mongodb-prefpane](https://github.com/ivanvc/mongodb-prefpane)
+
+
+If there are any errors reported, fix what you can and let us know what you can't.
+
+### Manual Setup
+
 If you have any problems with the following rstat.us specific steps, _it is a
 bug_. For example, [this is an issue with running a development environment on
 windows](https://github.com/hotsh/rstat.us/issues/547) that we need to fix.
