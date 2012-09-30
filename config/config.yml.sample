@@ -12,6 +12,10 @@ development:
   CONSUMER_KEY: asdf
   CONSUMER_SECRET: asdf
 
+  # ElasticSearch configuration.
+  # If empty, a default regex search will be used.
+  ELASTICSEARCH_INDEX_URL:
+
   #set this to the URL of a status blog or the like.
   #if empty, the Blog footer link won't show.
   BLOG_URL:
@@ -28,4 +32,5 @@ development:
 test:
   CONSUMER_KEY: asdf
   CONSUMER_SECRET: asdf
+  ELASTICSEARCH_INDEX_URL:
   BLOG_URL:

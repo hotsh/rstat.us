@@ -5,9 +5,25 @@ class Update
   require 'cgi'
   include MongoMapper::Document
 
-  include Tire::Model::Search
-  include Tire::Model::Callbacks
-  index_name ELASTICSEARCH_INDEX_NAME
+  if ENV['BONSAI_INDEX_URL'] || ENV['ELASTICSEARCH_INDEX_URL']
+    include Tire::Model::Search
+    include Tire::Model::Callbacks
+    index_name ELASTICSEARCH_INDEX_NAME
+  else
+    # Fallback if elasticsearch is not enabled
+    def self.search(query, params = {})
+      leading_char = '\b'
+      if query[0] == '#'
+        leading_char = ''
+      end
+      self.where(:text => /#{leading_char}#{Regexp.quote(query)}\b/i).
+           paginate(
+             :page => params[:page],
+             :per_page => params[:per_page],
+             :order => :created_at.desc
+          )
+    end
+  end
 
   # Determines what constitutes a username inside an update text
   USERNAME_REGULAR_EXPRESSION = /(^|[ \t\n\r\f"'\(\[{]+)@([^ \t\n\r\f&?=@%\/\#]*[^ \t\n\r\f&?=@%\/\#.!:;,"'\]}\)])(?:@([^ \t\n\r\f&?=@%\/\#]*[^ \t\n\r\f&?=@%\/\#.!:;,"'\]}\)]))?/

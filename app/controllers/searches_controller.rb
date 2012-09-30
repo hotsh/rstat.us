@@ -4,12 +4,11 @@ class SearchesController < ApplicationController
     @updates = []
     if params[:search]
       set_params_page
-      leading_char = '\b'
-      if params[:search][0] == '#'
-        leading_char = ''
-      end
 
-      @updates = Update.search(params[:search], load:true)
+      @updates = Update.search(
+        params[:search],
+        {:load => true}.merge(params)
+      )
       set_pagination_buttons(@updates, :search => params[:search])
     end
   end

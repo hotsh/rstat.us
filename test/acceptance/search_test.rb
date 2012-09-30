@@ -12,7 +12,11 @@ describe "search" do
 
   before do
     @update_text = "These aren't the droids you're looking for!"
-    Fabricate(:update, :text => @update_text)
+    log_in_as_some_user
+    VCR.use_cassette('publish_update') do
+      fill_in 'update-textarea', :with => @update_text
+      click_button :'update-button'
+    end
   end
 
   describe "logged in" do
@@ -87,13 +91,24 @@ describe "search" do
       assert has_link? "#hashtag"
     end
 
-    it "gets a match for words in the update out of order" do
-      visit "/search"
+    # Not testing for BONSAI_INDEX_URL here since that is only for
+    # production on heroku.
+    if ENV['ELASTICSEARCH_INDEX_URL']
+      describe "with elasticsearch" do
+        it "gets a match for words in the update out of order" do
+          search_for("for looking")
 
-      fill_in "q", :with => "for looking"
-      click_button "Search"
+          assert_match @update_text, page.body
+        end
+      end
+    else
+      describe "without elasticsearch" do
+        it "does not get a match for words in the update out of order" do
+          search_for("for looking")
 
-      assert_match @update_text, page.body
+          assert has_no_content? @update_text
+        end
+      end
     end
 
   end
