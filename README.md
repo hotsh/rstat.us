@@ -128,6 +128,51 @@ secret from Twitter. Here are the steps to do that:
 
 Now you should be able to sign in to your development version with Twitter!
 
+### Local ElasticSearch configuration
+
+The Rstat.us code is able to use
+[ElasticSearch](http://www.elasticsearch.org/) to improve the quality of the
+search of statuses. This is optional for development, test, and production.
+The code will fall back to a simpler regular expression search should you
+choose not to enable the ElasticSearch support.
+
+Local development and test:
+
+If you are using OSX and homebrew, you can install ElasticSearch using:
+
+    $ brew install elasticsearch
+
+Otherwise, you can download and install the latest release from [the
+ElasticSearch website](http://www.elasticsearch.org/download/).
+
+If you are running ElasticSearch on the default port of 9200, specify this as
+the ELASTICSEARCH_INDEX_URL in your `config/config.yml` file in either or both
+the development and test environments:
+
+   ELASTICSEARCH_INDEX_URL: http://localhost:9200/
+
+Production on heroku:
+
+The code is set up to work with the [Bonsai Heroku
+addon](https://devcenter.heroku.com//articles/bonsai). Check that article for
+the most up-to-date instructions. As of this writing you should simply be able
+to do:
+
+    $ heroku addons:add bonsai:test
+
+This will add a heroku config value for BONSAI_INDEX_URL that will
+automatically be picked up by the code for all new statuses entered.
+
+To index existing updates, run:
+
+    $ heroku run rake environment tire:import CLASS='Update'
+
+Production on other hosts:
+
+If you are hosting your node somewhere other than heroku and have installed
+ElasticSearch on your own, set the environment variable
+ELASTICSEARCH_INDEX_URL to the domain where your ElasticSearch service is.
+
 ### Running the tests
 
 To run the tests you may want to make use of `bundle exec` so you don't get
