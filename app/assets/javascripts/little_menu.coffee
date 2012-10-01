@@ -5,6 +5,6 @@ $ ->
 
   $('body').click (e) ->
     console.log e.target.id
-    unless e.target.id is 'menu_button' or 'little_menu_options'
+    unless e.target.id == 'menu_button' || e.target.id == 'little_menu_options' || $(e.target).parents('ul').length > 0
       $('#menu_button').removeClass('active')
       $('ul#little_menu_options').hide()

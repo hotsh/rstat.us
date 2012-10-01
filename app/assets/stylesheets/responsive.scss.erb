@@ -1,14 +1,93 @@
 @import "lib/base.css.scss";
-
+div#small_menu_container {
+  display: none;
+}
 @media all
 and (min-width: 320px)
 and (max-width: 700px) {
   body {
     min-width: 0;
   }
+  form {
+    .form-submit, .form-section {
+      width: auto !important;
+      .button {
+        display: block;
+      }
+    }
+    #email {
+      margin-bottom: 5px;
+    }
+    .form-field {
+      label {
+        width: 60px !important;
+      }
+      .input {
+        width: auto;
+        input, textarea {
+          width: auto !important;
+        }
+      }
+    }
+  }
+  #home {
+    #content-wrap {
+      width: auto;
+      margin-right: 0px;
+      #content {
+        margin: 0;
+      }
+    }
+    #sidebar {
+      width: auto;
+    }
+    #manifesto {
+      p {
+        margin-right: .8em;
+      }
+    }
+    .wrap {
+      width: auto;
+    }
+    #pitch {
+      .col {
+        width: auto;
+        margin: 0 auto;
+        float: none;
+        border-right: none;
+        img {
+          display: block;
+          margin: 0 auto;
+        }
+      }
+      .wrap {
+        width: auto;
+      }
+    }
+    #welcome #intro {
+      float: none;
+      margin-bottom: .5em;
+    }
+    #signup {
+      float: none;
+      h3 {
+        float: none;
+        text-align: center;
+        padding-top: 0px;
+        padding-bottom: 10px;
+      }
+      .option {
+        padding-right: 0px;
+      }
+      .username {
+        float: right;
+        margin-right: 0;
+      }
+    }
+  }
   // prevents window from resizing
   // without freezing zoom
-  input[type='text'],textarea {
+  input[type='text'], input[type='password'],textarea {
     font-size: 16px !important;
   }
   #header, #page, #footer {
@@ -39,6 +118,7 @@ and (max-width: 700px) {
         float: right;
       }
       #menu_button.active {
+        -webkit-transform: rotate(180deg);
         transform: rotate(180deg);
         background-position: -47px -148px;
       }
