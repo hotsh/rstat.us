@@ -320,6 +320,11 @@ describe User do
       @result = @bob.autocomplete('ta')
       assert_equal [], @result
     end
+
+    it "escapes special characters" do
+      @result = @bob.autocomplete('r+(')
+      assert_equal [], @result
+    end
   end
 
   describe "self#find_by_case_insensitive_username" do
