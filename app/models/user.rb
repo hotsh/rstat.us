@@ -241,7 +241,7 @@ class User
       return []
     end
 
-    query = '^' + query.downcase + '.*'
+    query = '^' + Regexp.escape(query) + '.*'
     following.inject([]) do |result, obj|
       if /#{query}/i =~ obj.author.fully_qualified_name
         result << { :label => obj.author.fully_qualified_name.downcase }
