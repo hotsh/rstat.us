@@ -20,10 +20,16 @@ class Update
       if query[0] == '#'
         leading_char = ''
       end
+      # See explanation in searches_controller.rb about why we are
+      # switching back to page and per_page when not using
+      # ElasticSearch.
+      page = params[:from] / params[:size] + 1
+      per_page = params[:size]
+
       self.where(:text => /#{leading_char}#{Regexp.quote(query)}\b/i).
            paginate(
-             :page => params[:page],
-             :per_page => params[:per_page],
+             :page => page,
+             :per_page => per_page,
              :order => :created_at.desc
           )
     end

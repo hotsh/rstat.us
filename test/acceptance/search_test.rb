@@ -110,7 +110,6 @@ describe "search" do
         end
       end
     end
-
   end
 
   describe "pagination" do
@@ -137,8 +136,8 @@ describe "search" do
     end
 
     it "paginates backward only if on the last page" do
-      30.times do
-        Fabricate(:update, :text => "Testing pagination LIKE A BOSS")
+      30.times do |i|
+        Fabricate(:update, :text => "#{i} Testing pagination LIKE A BOSS")
       end
 
       search_for("boss")
