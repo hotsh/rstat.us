@@ -69,6 +69,20 @@ describe "update" do
       assert_match url, page.current_url, "Ended up on #{page.current_url}, expected to be on #{url}"
     end
   end
+  
+  it "it redirect to the home page after making an update as a reply to another update found on the original updater's profile page" do
+    log_in_as_some_user
+    u2 = Fabricate(:user)
+    reply_update = Fabricate(:update)
+    u2.feed.updates << reply_update
+
+    visit "/users/#{u2.username}"
+    click_link "reply"
+    fill_in "text", :with => "@#{u2.username} This is a great reply update"
+    VCR.use_cassette('publish_to_hub') { click_button "Share" }
+
+    assert_equal false, page.current_url.include?("reply="), "Ended up on #{page.current_url}, expected to be on http://www.example.com/"
+  end
 
   it "shows one update" do
     update = Fabricate(:update)
