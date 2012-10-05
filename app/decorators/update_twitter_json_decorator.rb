@@ -3,6 +3,7 @@ class UpdateTwitterJsonDecorator < ApplicationDecorator
 
   def as_json(options={})
     referral = (update.referral ? update.referral : nil)
+    author = update.author
     result = {
       :id => update.id,
       :id_str => update.id.to_s,
@@ -20,8 +21,8 @@ class UpdateTwitterJsonDecorator < ApplicationDecorator
       :in_reply_to_screen_name => nil,
       :place => nil,
       :user => {
-        :id_str => update.id.to_s,
-        :id => update.id
+        :id_str => author.id.to_s,
+        :id => author.id
       }
     }
     if options[:include_entities]
@@ -32,8 +33,21 @@ class UpdateTwitterJsonDecorator < ApplicationDecorator
         :user_mentions => []
       }
     end
-    unless result[:trim_user]
-      # TODO expand response[:user]
+    unless options[:trim_user]
+      author_decorator = AuthorDecorator.decorate(author)
+      author_info = {
+        :url => author_decorator.absolute_website_url,
+        :screen_name => author.username,
+        :name => author.display_name,
+        :profile_image_url => author_decorator.absolute_avatar_url,
+        :created_at => format_timestamp(author.created_at),
+        :description => author.bio,
+        :statuses_count => author.feed.updates.count,
+        :friends_count => author.user.following.length,
+        :followers_count => author.user.followers.length
+      }
+      author_info[:profile_image_url].prepend("http://rstat.us") if author_info[:profile_image_url] == ActionController::Base.helpers.asset_path(RstatUs::DEFAULT_AVATAR)
+      result[:user].merge!(author_info)
     end
     result
   end

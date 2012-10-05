@@ -13,12 +13,20 @@ module Api
     before_filter :require_user
 
     def show 
-      @update = Update.first(:id => params[:id])
-      respond_to do |format|
-        format.json do
-          render :json => UpdateJsonDecorator.decorate(@update)
+      update = Update.find(params[:id])
+      if !update.nil?
+        respond_to do |format|
+          format.json do
+            include_entities = (params[:include_entities] == "true")
+            trim_user = (params[:trim_user] == "true")
+            update = UpdateTwitterJsonDecorator.decorate(update)
+            render :json => update.as_json(:include_entities => include_entities,:trim_user => trim_user)
+          end
         end
+      else
+        render :nothing => true, :status => 404
       end
+
     end
     #
     # POST /api/statuses/update.json
