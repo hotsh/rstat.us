@@ -69,8 +69,8 @@ describe "update" do
       assert_match url, page.current_url, "Ended up on #{page.current_url}, expected to be on #{url}"
     end
   end
-  
-  it "it redirect to the home page after making an update as a reply to another update found on the original updater's profile page" do
+
+  it "redirects to the home page after making an update as a reply to another update found on the original updater's profile page" do
     log_in_as_some_user
     u2 = Fabricate(:user)
     reply_update = Fabricate(:update)
