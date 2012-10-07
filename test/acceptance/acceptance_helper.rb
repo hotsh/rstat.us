@@ -30,6 +30,17 @@ module AcceptanceHelper
   def teardown
     DatabaseCleaner.clean
     Capybara.reset_sessions!
+    delete_elasticsearch_index
+  end
+
+  def delete_elasticsearch_index
+    if ENV['ELASTICSEARCH_INDEX_URL']
+      begin
+        RestClient.delete "#{ENV['ELASTICSEARCH_INDEX_URL']}/#{ELASTICSEARCH_INDEX_NAME}"
+      rescue RestClient::ResourceNotFound
+        # We don't care if we're deleting something that doesn't exist
+      end
+    end
   end
 
   def omni_mock(username, options={})
