@@ -13,3 +13,4 @@ test/coverage
 log/*.log*
 capybara*
 .DS_Store
+.bundle
