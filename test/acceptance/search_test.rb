@@ -1,12 +1,6 @@
 require 'require_relative' if RUBY_VERSION[0,3] == '1.8'
 require_relative 'acceptance_helper'
 
-def search_for(query)
-  visit "/search"
-  fill_in "search", :with => query
-  click_button "Search"
-end
-
 describe "search" do
   include AcceptanceHelper
 

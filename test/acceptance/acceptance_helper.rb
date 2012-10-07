@@ -128,4 +128,10 @@ module AcceptanceHelper
       assert has_no_content?("Log Out")
     end
   end
+
+  def search_for(query)
+    visit "/search"
+    fill_in "search", :with => query
+    click_button "Search"
+  end
 end
