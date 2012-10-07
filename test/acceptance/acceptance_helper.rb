@@ -30,16 +30,24 @@ module AcceptanceHelper
   def teardown
     DatabaseCleaner.clean
     Capybara.reset_sessions!
-    delete_elasticsearch_index
+    if ENV['ELASTICSEARCH_INDEX_URL']
+      delete_elasticsearch_index
+    end
   end
 
   def delete_elasticsearch_index
-    if ENV['ELASTICSEARCH_INDEX_URL']
-      begin
-        RestClient.delete "#{ENV['ELASTICSEARCH_INDEX_URL']}/#{ELASTICSEARCH_INDEX_NAME}"
-      rescue RestClient::ResourceNotFound
-        # We don't care if we're deleting something that doesn't exist
-      end
+    begin
+      RestClient.delete "#{ENV['ELASTICSEARCH_INDEX_URL']}/#{ELASTICSEARCH_INDEX_NAME}"
+    rescue RestClient::ResourceNotFound
+      # We don't care if we're deleting something that doesn't exist
+    end
+  end
+
+  if ENV['ELASTICSEARCH_INDEX_URL']
+    class ::Update
+      # This makes the document searchable immediately but affects
+      # performance in production.
+      after_save lambda { tire.index.refresh }
     end
   end
 

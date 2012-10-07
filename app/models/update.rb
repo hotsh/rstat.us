@@ -9,10 +9,6 @@ class Update
     include Tire::Model::Search
     include Tire::Model::Callbacks
     index_name ELASTICSEARCH_INDEX_NAME
-
-    # This makes the document searchable immediately, which is nice when
-    # you're running fast automated tests.
-    after_save lambda { tire.index.refresh } if Rails.env.test?
   else
     # Fallback if elasticsearch is not enabled
     def self.search(query, params = {})
