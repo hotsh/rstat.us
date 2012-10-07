@@ -84,26 +84,6 @@ describe "search" do
 
       assert has_link? "#hashtag"
     end
-
-    # Not testing for BONSAI_INDEX_URL here since that is only for
-    # production on heroku.
-    if ENV['ELASTICSEARCH_INDEX_URL']
-      describe "with elasticsearch" do
-        it "gets a match for words in the update out of order" do
-          search_for("for looking")
-
-          assert_match @update_text, page.body
-        end
-      end
-    else
-      describe "without elasticsearch" do
-        it "does not get a match for words in the update out of order" do
-          search_for("for looking")
-
-          assert has_no_content? @update_text
-        end
-      end
-    end
   end
 
   describe "pagination" do
