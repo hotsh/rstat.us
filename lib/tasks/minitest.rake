@@ -1,17 +1,21 @@
 require 'rake/testtask'
 
-desc "Run all tests"
+desc "Run all tests, except for optional enhancements"
 task :test do
-  test_task = Rake::TestTask.new("alltests") do |t|
-    t.test_files = Dir.glob(File.join("test", "**", "*_test.rb"))
+  test_task = Rake::TestTask.new("tests_without_enhancements") do |t|
+    t.test_files = FileList.new(File.join("test", "**", "*_test.rb")).
+                            exclude(File.join("test", "enhancements", "*_test.rb"))
   end
-  task("alltests").execute
+  task("tests_without_enhancements").execute
 end
 
 namespace :test do
-  desc "Run all tests (you can just do `rake test` now)"
+  desc "Run all tests, including optional enhancements"
   task :all do
-    Rake::Task["test"].invoke
+    test_task = Rake::TestTask.new("alltests") do |t|
+      t.test_files = Dir.glob(File.join("test", "**", "*_test.rb"))
+    end
+    task("alltests").execute
   end
 
   Dir.foreach("test") do |dirname|

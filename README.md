@@ -72,7 +72,7 @@ bug_. For example, [this is an issue with running a development environment on
 windows](https://github.com/hotsh/rstat.us/issues/547) that we need to fix.
 Please report any issues you have.
 
-If you use RVM, you'll want to copy `.rvmrc.example` to `.rvmrc`. 
+If you use RVM, you'll want to copy `.rvmrc.example` to `.rvmrc`.
 
 ### Getting a local version running
 
@@ -89,11 +89,11 @@ Then do:
 Then update your gemset:
 
     $ gem install bundler && bundle install
-    
+
 The config.yml file will be automatically copied/generated for you when you
 start the server and it does not exist. In dev mode the SECRET_TOKEN will be
 generated for you and your config.yml file updated. When you run tests a new
-random SECRET_TOKEN will be generated each time. You can always copy 
+random SECRET_TOKEN will be generated each time. You can always copy
 config/config.yml.sample to config/config.yml and edit it on your own beforehand.
 
 - encoding is UTF-8 by default for ruby 1.9.3
@@ -128,60 +128,25 @@ secret from Twitter. Here are the steps to do that:
 
 Now you should be able to sign in to your development version with Twitter!
 
-### Local ElasticSearch configuration
-
-The Rstat.us code is able to use
-[ElasticSearch](http://www.elasticsearch.org/) to improve the quality of the
-search of statuses. This is optional for development, test, and production.
-The code will fall back to a simpler regular expression search should you
-choose not to enable the ElasticSearch support.
-
-Local development and test:
-
-If you are using OSX and homebrew, you can install ElasticSearch using:
-
-    $ brew install elasticsearch
-
-Otherwise, you can download and install the latest release from [the
-ElasticSearch website](http://www.elasticsearch.org/download/).
-
-If you are running ElasticSearch on the default port of 9200, specify this as
-the ELASTICSEARCH_INDEX_URL in your `config/config.yml` file in either or both
-the development and test environments:
-
-   ELASTICSEARCH_INDEX_URL: http://localhost:9200/
-
-Production on heroku:
-
-The code is set up to work with the [Bonsai Heroku
-addon](https://devcenter.heroku.com//articles/bonsai). Check that article for
-the most up-to-date instructions. As of this writing you should simply be able
-to do:
-
-    $ heroku addons:add bonsai:test
-
-This will add a heroku config value for BONSAI_INDEX_URL that will
-automatically be picked up by the code for all new statuses entered.
-
-To index existing updates, run:
-
-    $ heroku run rake environment tire:import CLASS='Update'
-
-Production on other hosts:
-
-If you are hosting your node somewhere other than heroku and have installed
-ElasticSearch on your own, set the environment variable
-ELASTICSEARCH_INDEX_URL to the domain where your ElasticSearch service is.
-
 ### Running the tests
 
 To run the tests you may want to make use of `bundle exec` so you don't get
 mixed up with different versions of gems that might or might not work with
 the current rstat.us branch.
 
-Run all the tests:
+Run all the tests except for the optional enhancements. This is fine for
+smaller features that are not likely to affect enhancements:
 
     $ bundle exec rake test
+
+Run all the tests including those for all the optional enhancements. This
+requires that you have all the enhancements configured locally (see the
+section on **Configuring optional enhancements** below). This is
+recommended if you're working on a larger feature that touches many parts of
+the application and is required if you're working on an enhancement. This is
+the command that [Travis.ci](http://travis-ci.org/#!/hotsh/rstat.us) runs.
+
+    $ bundle exec rake test:all
 
 You can run convenient subsets of the tests during development; run `bundle
 exec rake -T` to see all the options. You can also run one test file (for
@@ -262,3 +227,57 @@ Running your own node
 We're working on making this super easy, but right now, we're not quite there.
 
 If you do run your own node, please keep current with upstream.
+
+
+### Configuring optional enhancements
+
+When running your own node, you will be able to make choices about what
+features your node should offer. These will typically require additional
+configuration or setup. The currently available enhancements are:
+
+* [ElasticSearch](http://www.elasticsearch.org/)
+
+#### ElasticSearch
+
+The Rstat.us code is able to use
+[ElasticSearch](http://www.elasticsearch.org/) to improve the quality of the
+search of statuses. This is optional for development, test, and production.
+The code will fall back to a simpler regular expression search should you
+choose not to enable the ElasticSearch support.
+
+Local development and test:
+
+If you are using OSX and homebrew, you can install ElasticSearch using:
+
+    $ brew install elasticsearch
+
+Otherwise, you can download and install the latest release from [the
+ElasticSearch website](http://www.elasticsearch.org/download/).
+
+If you are running ElasticSearch on the default port of 9200, specify this as
+the ELASTICSEARCH_INDEX_URL in your `config/config.yml` file in either or both
+the development and test environments:
+
+   ELASTICSEARCH_INDEX_URL: http://localhost:9200/
+
+Production on heroku:
+
+The code is set up to work with the [Bonsai Heroku
+addon](https://devcenter.heroku.com//articles/bonsai). Check that article for
+the most up-to-date instructions. As of this writing you should simply be able
+to do:
+
+    $ heroku addons:add bonsai:test
+
+This will add a heroku config value for BONSAI_INDEX_URL that will
+automatically be picked up by the code for all new statuses entered.
+
+To index existing updates, run:
+
+    $ heroku run rake environment tire:import CLASS='Update'
+
+Production on other hosts:
+
+If you are hosting your node somewhere other than heroku and have installed
+ElasticSearch on your own, set the environment variable
+ELASTICSEARCH_INDEX_URL to the domain where your ElasticSearch service is.
