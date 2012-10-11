@@ -34,20 +34,8 @@ class UpdateTwitterJsonDecorator < ApplicationDecorator
       }
     end
     unless options[:trim_user]
-      author_decorator = AuthorDecorator.decorate(author)
-      author_info = {
-        :url => author_decorator.absolute_website_url,
-        :screen_name => author.username,
-        :name => author.display_name,
-        :profile_image_url => author_decorator.absolute_avatar_url,
-        :created_at => format_timestamp(author.created_at),
-        :description => author.bio,
-        :statuses_count => author.feed.updates.count,
-        :friends_count => author.user.following.length,
-        :followers_count => author.user.followers.length
-      }
-      author_info[:profile_image_url].prepend("http://rstat.us") if author_info[:profile_image_url] == ActionController::Base.helpers.asset_path(RstatUs::DEFAULT_AVATAR)
-      result[:user].merge!(author_info)
+      user_decorator = UserTwitterJsonDecorator.decorate(author.user)
+      result[:user].merge!(user_decorator.as_json)
     end
     result
   end

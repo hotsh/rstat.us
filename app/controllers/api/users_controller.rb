@@ -8,7 +8,7 @@ module Api
       respond_to do |format|
         format.json do
           user = UserTwitterJsonDecorator.decorate(user)
-          render :json => user.as_json
+          render :json => user.as_json(:include_status => true)
         end
       end
     end
