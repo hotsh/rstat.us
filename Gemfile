@@ -19,7 +19,10 @@ gem 'jquery-rails', "~> 1.0.12"
 
 gem 'airbrake', "~> 3.0.9"
 gem 'bcrypt-ruby', "~> 3.0.0"
-gem 'unicorn', "~> 4.0.1"
+
+group :production do
+  gem 'unicorn', "~> 4.0.1"
+end
 
 gem 'omniauth', "~> 1.1.0"
 gem "omniauth-twitter", "~> 0.0.12"
