@@ -6,15 +6,6 @@ class UserTwitterJsonDecorator < ApplicationDecorator
       :id => user.id,
       :username => user.username
     } 
-
-    if options[:include_entities]
-      # TODO populate response[:entities]
-      result[:entities] = {
-        :urls => [],
-        :hashtags => [],
-        :user_mentions => []
-      }
-    end
     result
   end
 end
