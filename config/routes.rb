@@ -77,5 +77,7 @@ RstatUs::Application.routes.draw do
     match 'statuses/user_timeline.:format', :to => "statuses#user_timeline", :via => :get, :constraints => { :format => "json" }
     match 'statuses/mention.:format', :to => "statuses#mention", :via => :get, :constraints => { :format => "json" }
     match 'statuses/show/:id.:format', :to => "statuses#show", :via => :get, :constraints => { :id => /[^\/]+/, :format => 'json'}
+    match 'friendships/destroy', :to => "subscriptions#destroy", :via => :post, :constraints => { :format => 'json'}
+    match 'friendships/destroy', :to => "subscriptions#destroy", :via => :delete, :constraints => { :format => 'json'}
   end
 end
