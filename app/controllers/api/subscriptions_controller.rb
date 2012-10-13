@@ -12,8 +12,7 @@ module Api
     #
     #
 
-    before_filter :require_user
-
+    before_filter :require_user, :except => [:exists]
     rescue_from StandardError, :with => :handle_error
 
     def destroy
@@ -31,6 +30,16 @@ module Api
           end
         end
       end
+    end
+
+    def exists
+      params[:user_id] = params[:user_id_a]
+      params[:screen_name] = params[:screen_name_a]
+      user_a = requested_user!
+      params[:user_id] = params[:user_id_b]
+      params[:screen_name] = params[:screen_name_b]
+      user_b = requested_user!
+      render :json => user_a.following_url?(user_b.feed.url).to_json
     end
 
   end
