@@ -24,6 +24,8 @@ group :production do
   gem 'unicorn', "~> 4.0.1"
 end
 
+gem 'thin', "~> 1.5.0"
+
 gem 'omniauth', "~> 1.1.0"
 gem "omniauth-twitter", "~> 0.0.12"
 

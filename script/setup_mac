@@ -1,0 +1,70 @@
+#!/bin/bash
+
+# Make sure we're on a Mac
+echo "### Checking we're on a Mac before moving on. ###"
+echo
+if [ "`uname -a | awk '{print $1}'`" !=  Darwin ] ; then
+  echo "### This is the automated setup script for Mac OS X only. ###"
+  exit 0
+else
+  echo "### We're good, checking for mongodb next. ###"
+  echo
+fi
+
+# Check for mongodb and installing it if missing
+if ! which mongod >/dev/null 2>&1 ; then
+  if which brew >/dev/null 2>&1 ; then
+    echo "### Installing mongodb. ###"
+    echo
+    brew update # potential for errors
+    brew install mongodb
+  elif which port >/dev/null 2>&1 ; then
+    echo "### Installing mongodb. ###"
+    echo
+    port install mongodb
+  else
+    echo "### You'll need to install from source since you don't have Homebrew or MacPorts installed. ###"
+    echo
+    open http://docs.mongodb.org/manual/tutorial/install-mongodb-on-os-x/#installing-from-10gen-builds
+    exit 1
+  fi
+else
+  # Make sure mongod is running
+  if ! ps aux | grep [m]ongod ; then
+    echo "### Starting mongodb. ###"
+    echo
+    mongod >/dev/null 2>&1 &
+  fi
+  echo "### mongodb is ready. Next up, Gems. ###"
+  echo
+fi
+
+# If rvm exists, lets copy the .rvmrc.example to .rvmrc before we do gem and bundle things
+echo "### Checking for rvm and getting our .rvmrc in place. ###"
+echo
+if which rvm >/dev/null 2>&1 ; then
+  $( cd "$( dirname "$0" )" && cd .. && cp .rvmrc.example .rvmrc )
+else
+  echo "### Didn't find rvm, moving right along. ###"
+  echo
+fi
+
+# Let's do the Gem dance
+echo "### Installing the 'bundler' gem if it's missing, then bundling our gems. ###"
+echo
+if ! which bundle >/dev/null 2>&1 ; then
+  gem install bundler
+fi
+# And now we bundle
+bundle install | grep -v 'Using'
+echo
+
+# Start the server and open the site
+echo "### Setup complete, starting the sever and opening localhost ###"
+echo
+thin start -d
+open http://localhost:3000
+
+PID=$(ps aux | grep "thin server" | grep -v grep | awk '{print $2}')
+echo "### To stop the server, run kill -9 $PID ###"
+echo
