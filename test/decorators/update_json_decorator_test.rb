@@ -5,7 +5,7 @@ describe UpdateJsonDecorator do
 
   describe '#to_json, which implicitly calls as_json' do
     before do
-      @update           = Fabricate(:update)
+      @update           = Fabricate.build(:update, :created_at => Time.now)
       @decorated_update = UpdateJsonDecorator.decorate(@update)
       @json             = @decorated_update.to_json
       @parsed_json      = JSON.parse(@json)

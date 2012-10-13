@@ -27,6 +27,12 @@ rescue Mongo::ConnectionFailure => e
   exit 1
 end
 
+VCR.config do |c|
+  c.cassette_library_dir = 'test/data/vcr_cassettes'
+  c.stub_with :webmock
+  c.ignore_localhost = true
+end
+
 Fabrication.configure do |config|
   fabricator_dir = "test/fabricators"
 end

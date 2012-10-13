@@ -32,6 +32,7 @@ gem "mongo", "= 1.6.2"
 gem "bson", "= 1.6.2"
 gem "bson_ext", "= 1.6.2"
 gem "i18n", "~> 0.6.0"
+gem "tire", "~> 0.4.1"
 gem "twitter", "~> 3.5.0"
 gem "pony", "~> 1.3"
 gem "rdiscount", "~> 1.6.8"
@@ -46,6 +47,7 @@ gem "rsa", "~> 0.1.4"
 gem "exceptional", "~> 2.0.32"
 gem "newrelic_rpm", "~> 3.3.1"
 gem "draper", "~> 0.11.1"
+
 
 # background job queue
 gem "delayed_job", :git => "git://github.com/collectiveidea/delayed_job.git", :tag => "v2.1.4"

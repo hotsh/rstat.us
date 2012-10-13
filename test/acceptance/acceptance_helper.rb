@@ -2,11 +2,6 @@ require_relative '../test_helper'
 
 require 'rack/test'
 
-VCR.config do |c|
-  c.cassette_library_dir = 'test/data/vcr_cassettes'
-  c.stub_with :webmock
-end
-
 module AcceptanceHelper
   require 'capybara/dsl'
   require 'capybara/rails'
@@ -35,6 +30,25 @@ module AcceptanceHelper
   def teardown
     DatabaseCleaner.clean
     Capybara.reset_sessions!
+    if ENV['ELASTICSEARCH_INDEX_URL']
+      delete_elasticsearch_index
+    end
+  end
+
+  def delete_elasticsearch_index
+    begin
+      RestClient.delete "#{ENV['ELASTICSEARCH_INDEX_URL']}/#{ELASTICSEARCH_INDEX_NAME}"
+    rescue RestClient::ResourceNotFound
+      # We don't care if we're deleting something that doesn't exist
+    end
+  end
+
+  if ENV['ELASTICSEARCH_INDEX_URL']
+    class ::Update
+      # This makes the document searchable immediately but affects
+      # performance in production.
+      after_save lambda { tire.index.refresh }
+    end
   end
 
   def omni_mock(username, options={})
@@ -121,5 +135,11 @@ module AcceptanceHelper
     within "#header" do
       assert has_no_content?("Log Out")
     end
+  end
+
+  def search_for(query)
+    visit "/search"
+    fill_in "search", :with => query
+    click_button "Search"
   end
 end

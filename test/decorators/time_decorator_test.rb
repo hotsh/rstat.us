@@ -5,7 +5,7 @@ describe TimeDecorator do
 
   before do
     @update = TimeDecorator.decorate(
-                Fabricate(:update,
+                Fabricate.build(:update,
                   :created_at => Time.parse("2012-07-04 22:44:11 EDT")
                 )
               )

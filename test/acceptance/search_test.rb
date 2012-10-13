@@ -1,18 +1,16 @@
 require 'require_relative' if RUBY_VERSION[0,3] == '1.8'
 require_relative 'acceptance_helper'
 
-def search_for(query)
-  visit "/search"
-  fill_in "search", :with => query
-  click_button "Search"
-end
-
 describe "search" do
   include AcceptanceHelper
 
   before do
     @update_text = "These aren't the droids you're looking for!"
-    Fabricate(:update, :text => @update_text)
+    log_in_as_some_user
+    VCR.use_cassette('publish_update') do
+      fill_in 'update-textarea', :with => @update_text
+      click_button :'update-button'
+    end
   end
 
   describe "logged in" do
@@ -112,8 +110,8 @@ describe "search" do
     end
 
     it "paginates backward only if on the last page" do
-      30.times do
-        Fabricate(:update, :text => "Testing pagination LIKE A BOSS")
+      30.times do |i|
+        Fabricate(:update, :text => "#{i} Testing pagination LIKE A BOSS")
       end
 
       search_for("boss")
