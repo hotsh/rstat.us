@@ -24,6 +24,14 @@ require_relative '../acceptance_helper'
         parsed_json = JSON.parse(source)
         parsed_json[0].must_equal("You are not following this user")
       end
+      it "returns the unfollowed user using the delete method" do
+        log_in_as_some_user
+        zebra = Fabricate(:user, :username => "zebra")
+        @u.follow! zebra.feed
+        page.driver.delete "/api/friendships/destroy.json", {:user_id => zebra.id}
+        parsed_json = JSON.parse(source)
+        parsed_json["id"].must_equal(zebra.id.to_s)
+      end
       it "returns the unfollowed user" do
         log_in_as_some_user
         zebra = Fabricate(:user, :username => "zebra")
