@@ -33,6 +33,9 @@ class User
   # Tokens are valid for 2 days, they're checked against this
   key :perishable_token_set, DateTime, :default => nil
 
+  # Global preference set via user's profile controlling the state of the Post to Twitter checkbox
+  key :always_send_to_twitter, Boolean, :default => true
+
   validate :email_already_confirmed
   validates_uniqueness_of :username, :allow_nil => :true, :case_sensitive => false
 
@@ -341,8 +344,10 @@ class User
       end
     end
 
-    self.email_confirmed = self.email == params[:email]
-    self.email = params[:email]
+    self.email_confirmed        = (self.email == params[:email])
+    self.email                  = params[:email]
+
+    self.always_send_to_twitter = params[:always_post_updates_to_twitter]
 
     self.save
 
