@@ -32,12 +32,24 @@ form {
         font-size: 1.1em;
         width: 268px;
       }
-      textarea {
-      }
       input[type="checkbox"] {
-        margin-left: -0.25em;
-        margin-top: 0.75em;
+        width: auto;
       }
+    }
+  }
+  .preferences {
+    .section-label {
+      padding-top: 0.65em;
+      @include column(4);
+      font-weight: bold;
+    }
+    .input {
+      padding-top: 0.65em;
+      @include column(7);
+      @include last;
+    }
+    label {
+      font-weight: normal;
     }
   }
   input[type="text"] {

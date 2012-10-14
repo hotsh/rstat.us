@@ -20,8 +20,10 @@
       = render :partial => "shared/field", :locals => {:obj => @user.author, :attr => :bio, :as => :text, :params => params}
 
     - if @user.twitter?
-      .form-section
-        .form-field
+      .form-section.preferences
+        .section-label
+          Preferences
+        .input
           = f.check_box("always_send_to_twitter")
           %label{:for => "user_always_send_to_twitter"}
             Always post updates to Twitter?
