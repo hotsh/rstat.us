@@ -347,7 +347,7 @@ class User
     self.email_confirmed        = (self.email == params[:email])
     self.email                  = params[:email]
 
-    self.always_send_to_twitter = params[:always_post_updates_to_twitter]
+    self.always_send_to_twitter = params[:always_send_to_twitter]
 
     self.save
 
