@@ -6,7 +6,7 @@
 #profile
   %h3= "Edit Profile for @#{@user.username}"
 
-  = form_tag(user_path(@user.username), :method => "put", :name => "profile_update_form", :id => "profile-update") do |f|
+  = form_for @user, :html => {:name => "profile_update_form", :id => "profile-update"} do |f|
     .form-section
       = render :partial => "shared/field", :locals => {:obj => @user.author, :attr => :name, :params => params}
 
@@ -22,11 +22,9 @@
     - if @user.twitter?
       .form-section
         .form-field
-          %label
-          = hidden_field_tag "always_send_to_twitter", false
-          = check_box_tag "always_send_to_twitter", true, true
-
-          Always post updates to Twitter?
+          = f.check_box("always_send_to_twitter")
+          %label{:for => "user_always_send_to_twitter"}
+            Always post updates to Twitter?
 
     .form-submit
       %input.button{:type => "submit", :value => "Save"}

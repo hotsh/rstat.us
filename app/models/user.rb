@@ -34,7 +34,7 @@ class User
   key :perishable_token_set, DateTime, :default => nil
 
   # Global preference set via user's profile controlling the state of the Post to Twitter checkbox
-  key :always_send_to_twitter, Boolean, :default => true
+  key :always_send_to_twitter, Integer, :default => 1
 
   validate :email_already_confirmed
   validates_uniqueness_of :username, :allow_nil => :true, :case_sensitive => false
@@ -347,7 +347,7 @@ class User
     self.email_confirmed        = (self.email == params[:email])
     self.email                  = params[:email]
 
-    self.always_send_to_twitter = params[:always_send_to_twitter]
+    self.always_send_to_twitter = params[:user] && params[:user][:always_send_to_twitter].to_i
 
     self.save
 
