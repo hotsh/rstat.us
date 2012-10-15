@@ -29,6 +29,42 @@ describe "twitter-api" do
   end
 
   describe "statuses" do
+    describe "destroy" do
+      it "returns an error message when the status is not found" do
+        log_in_as_some_user
+        page.driver.post "/api/statuses/destroy/some-random-id.json"
+        parsed_json = JSON.parse(source)
+        parsed_json[0].must_equal("Status ID does not exist: some-random-id")
+      end
+      it "returns an error message when the user attempting to destroy the status is not the author" do
+        log_in_as_some_user
+        update = Fabricate(:update,
+                         :text => "Hello World I'm on RStatus")
+        page.driver.post "/api/statuses/destroy/#{update.id}.json"
+        parsed_json = JSON.parse(source)
+        parsed_json[0].must_equal("I'm afraid I can't let you do that, #{@u.username}.")
+      end
+      it "returs the status when it is succesfully destroyed" do
+        log_in_as_some_user
+        update = Fabricate(:update,
+                         :text => "Hello World I'm on RStatus",
+                         :author => @u.author)
+
+        page.driver.post "/api/statuses/destroy/#{update.id}.json"
+        author_decorator = AuthorDecorator.decorate(@u.author)
+        parsed_json = JSON.parse(source)
+        parsed_json["text"].must_equal(update.text)
+        parsed_json["user"]["url"].must_equal(author_decorator.absolute_website_url)
+        parsed_json["user"]["screen_name"].must_equal(author_decorator.username)
+        parsed_json["user"]["name"].must_equal(author_decorator.display_name)
+        parsed_json["user"]["profile_image_url"].wont_be_nil
+        Time.parse(parsed_json["user"]["created_at"]).to_i.must_equal(author_decorator.created_at.to_i)
+        parsed_json["user"]["description"].must_equal(author_decorator.bio)
+        parsed_json["user"]["statuses_count"].must_equal(author_decorator.feed.updates.count)
+        parsed_json["user"]["friends_count"].must_equal(@u.following.length)
+        parsed_json["user"]["followers_count"].must_equal(@u.followers.length)
+      end
+    end
     it "returns a single status" do
       log_in_as_some_user
       u = Fabricate(:user)
@@ -53,7 +89,6 @@ describe "twitter-api" do
       parsed_json["user"]["friends_count"].must_equal(u.following.length)
       parsed_json["user"]["followers_count"].must_equal(u.followers.length)
     end
-
     it "returns a single status with trimmed user" do
       log_in_as_some_user
       u = Fabricate(:user)
