@@ -49,6 +49,7 @@ RstatUs::Application.routes.draw do
   resources :updates, :only => [:index, :show, :create, :destroy]
   match "/timeline", :to => "updates#timeline"
   match "/replies", :to => "updates#replies"
+  match "/export", :to => "updates#export", :via => :get
 
   # Search
   resource :search, :only => :show
