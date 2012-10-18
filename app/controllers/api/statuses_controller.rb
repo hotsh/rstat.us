@@ -11,6 +11,8 @@ module Api
     # TODO replace with OAuth goodness.
     #
     before_filter :require_user
+    
+    rescue_from StandardError, :with => :handle_error
 
     def show 
       update = Update.find(params[:id])
@@ -78,6 +80,27 @@ module Api
                            :trim_user => options[:trim_user])
           end
           render :json => json
+        end
+      end
+    end
+
+    def destroy
+      update = Update.find_by_id(params[:id])
+      if update.nil?
+        raise NotFound, "Status ID does not exist: #{params[:id]}"
+      end
+      if update.author != current_user.author
+        raise BadRequest, "I'm afraid I can't let you do that, #{current_user.username}."
+      end
+      update.destroy
+
+      respond_to do |fmt|
+        fmt.json do
+          include_entities = (params[:include_entities] == "true")
+          trim_user = (params[:trim_user] == "true")
+          u = UpdateTwitterJsonDecorator.decorate(update)
+          render :json => u.as_json(:include_entities => include_entities,
+                                    :trim_user => trim_user)
         end
       end
     end
