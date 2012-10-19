@@ -7,14 +7,12 @@ module Api
     #
     skip_before_filter :verify_authenticity_token
 
-    #
-    # TODO replace with OAuth goodness.
-    #
-    before_filter :require_user
-    
+    doorkeeper_for :home_timeline, :mention, :scopes => [:read]
+    doorkeeper_for :update, :destroy, :scopes => [:write]
+
     rescue_from StandardError, :with => :handle_error
 
-    def show 
+    def show
       update = Update.find(params[:id])
       if !update.nil?
         respond_to do |format|
@@ -28,11 +26,8 @@ module Api
       else
         render :nothing => true, :status => 404
       end
-
     end
-    #
-    # POST /api/statuses/update.json
-    #
+
     def update
       u = current_user.feed.add_update(update_options)
 
@@ -160,6 +155,5 @@ module Api
         :twitter => (params[:tweet] == "true")
       }
     end
-
   end
 end
