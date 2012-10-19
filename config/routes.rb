@@ -1,4 +1,6 @@
 RstatUs::Application.routes.draw do
+  use_doorkeeper
+
   root :to => "static#homepage", :constraints => lambda {|x| x.session[:user_id] == nil}
   root :to => "updates#timeline", :constraints => lambda {|x| x.session[:user_id] != nil}
 
