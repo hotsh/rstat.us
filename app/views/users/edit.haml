@@ -6,7 +6,7 @@
 #profile
   %h3= "Edit Profile for @#{@user.username}"
 
-  = form_tag(user_path(@user.username), :method => "put", :name => "profile_update_form", :id => "profile-update") do |f|
+  = form_for @user, :html => {:name => "profile_update_form", :id => "profile-update"} do |f|
     .form-section
       = render :partial => "shared/field", :locals => {:obj => @user.author, :attr => :name, :params => params}
 
@@ -19,9 +19,17 @@
       = render :partial => "shared/field", :locals => {:obj => @user.author, :attr => :website, :params => params}
       = render :partial => "shared/field", :locals => {:obj => @user.author, :attr => :bio, :as => :text, :params => params}
 
+    - if @user.twitter?
+      .form-section.preferences
+        .section-label
+          Preferences
+        .input
+          = f.check_box("always_send_to_twitter")
+          %label{:for => "user_always_send_to_twitter"}
+            Always post updates to Twitter?
+
     .form-submit
       %input.button{:type => "submit", :value => "Save"}
-
 - content_for :bottom do
   .avatar.bottom-block
     %h4 Avatar
@@ -46,13 +54,14 @@
 
   .linked-accounts.bottom-block
     %h4 Linked Accounts
-
     .linked
       - if @user.twitter?
         %img.linked-image{:src => asset_path("twitter_newbird_blue.png"), :alt => "Twitter Account"}
         .linked-name="@#{@user.twitter.nickname}"
+
         = form_tag "/users/#{@user.username}/auth/twitter", :method => "delete", :class => "profile-update", :name => "profile_update_form" do
           %input.button.destructive_action{:type => "submit", :value => "Remove"}
+
       - else
         %form.profile-update{:action => "/auth/twitter", :method => "GET", :name => "profile_update_form"}
           %input.button{:type => "submit", :value => "Add Twitter Account"}

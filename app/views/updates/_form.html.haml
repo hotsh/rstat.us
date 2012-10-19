@@ -7,7 +7,7 @@
       #repost-services
         .info Post to:
         .input-checkbox
-          %input{:type => "checkbox", :name => "tweet", :id => "tweet", :checked => "checked", :value => "1"}
+          %input{:type => "checkbox", :name => "tweet", :id => "tweet", :checked => current_user.always_send_to_twitter > 0, :value => "1"}
           %label{:for => "tweet"} Twitter
 
     %input#update-referral{:type => 'hidden', :name => 'referral_id', :value => @update_id}

@@ -237,20 +237,54 @@ describe "Authorization" do
   end
 
   describe "profile" do
-    it "has an add twitter account button if no twitter auth" do
-      log_in_as_some_user(:with => :username)
-      visit "/users/#{@u.username}/edit"
+    describe "without twitter" do
+      before do
+        log_in_as_some_user(:with => :username)
+        visit "/users/#{@u.username}/edit"
+      end
 
-      assert_match page.body, /Add Twitter Account/
+      it "has an add twitter account button" do
+        assert_match page.body, /Add Twitter Account/
+      end
+
+      it "does not have the post to twitter preference" do
+        assert has_no_field? "Always post updates to Twitter?"
+      end
     end
 
-    it "shows twitter nickname if twitter auth" do
-      u = Fabricate(:user)
-      a = Fabricate(:authorization, :user => u, :nickname => "Awesomeo the Great")
-      log_in(u, a.uid, :nickname => a.nickname)
-      visit "/users/#{u.username}/edit"
+    describe "with twitter" do
+      before do
+        @u = Fabricate(:user)
+        a = Fabricate(:authorization, :user => @u, :nickname => "Awesomeo the Great")
+        log_in(@u, a.uid, :nickname => a.nickname)
+        visit "/users/#{@u.username}/edit"
+      end
 
-      assert_match page.body, /Awesomeo the Great/
+      it "shows the user's twitter nickname" do
+        assert_match page.body, /Awesomeo the Great/
+      end
+
+      it "has a preference about whether to always post updates to twitter" do
+        assert has_checked_field? "Always post updates to Twitter?"
+      end
+
+      it "saves your updated preference to not always post to twitter" do
+        uncheck "Always post updates to Twitter?"
+        click_button "Save"
+        visit "/users/#{@u.username}/edit"
+
+        assert has_unchecked_field? "Always post updates to Twitter?"
+      end
+
+      it "saves your updated preference to always post to twitter after setting it to not" do
+        uncheck "Always post updates to Twitter?"
+        click_button "Save"
+        visit "/users/#{@u.username}/edit"
+        check "Always post updates to Twitter?"
+        click_button "Save"
+        visit "/users/#{@u.username}/edit"
+        assert has_checked_field? "Always post updates to Twitter?"
+      end
     end
   end
 
@@ -260,7 +294,22 @@ describe "Authorization" do
         log_in_as_some_user(:with => :twitter)
 
         assert_match page.body, /Twitter/
-        assert find_field('tweet').checked?
+        assert has_checked_field? 'tweet'
+      end
+
+      it "has twitter send unchecked if your preference is to not always send to twitter" do
+        @u = Fabricate(:user)
+        a = Fabricate(:authorization, :user => @u)
+        log_in(@u, a.uid)
+        visit "/users/#{@u.username}/edit"
+        uncheck "Always post updates to Twitter?"
+        VCR.use_cassette('update_twitter_preferences') do
+          click_button "Save"
+        end
+        visit "/"
+
+        assert_match page.body, /Twitter/
+        assert has_unchecked_field? 'tweet'
       end
 
       it "sends updates to twitter" do
