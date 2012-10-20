@@ -4,14 +4,14 @@
 
 <div class="span16">
   <% if @authorization.scopes %>
-  <p>
+  <div class="oauth_application_permissions">
     This application will be able to:
-  </p>
-  <ul>
-    <% @authorization.scopes.each do |scope| %>
-      <li><%= t scope, :scope => [:doorkeeper, :scopes]  %></li>
-    <% end %>
-  </ul>
+    <ul>
+      <% @authorization.scopes.each do |scope| %>
+        <li><%= t scope, :scope => [:doorkeeper, :scopes]  %></li>
+      <% end %>
+    </ul>
+  </div>
   <% end %>
 
   <div class="inline_block">
@@ -21,7 +21,7 @@
       <%= f.hidden_field :state %>
       <%= f.hidden_field :response_type %>
       <%= f.hidden_field :scope %>
-      <%= f.submit "Authorize", :class => "btn success" %> or
+      <%= f.submit "Authorize", :class => "button" %> or
     <% end %>
   </div>
   <div class="inline_block">
@@ -31,7 +31,7 @@
       <%= f.hidden_field :state %>
       <%= f.hidden_field :response_type %>
       <%= f.hidden_field :scope %>
-      <%= f.submit "Deny", :class => "btn" %>
+      <%= f.submit "Deny", :class => "button destructive_action" %>
     <% end %>
   </div>
 </div>
