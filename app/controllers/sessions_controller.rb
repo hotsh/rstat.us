@@ -1,6 +1,7 @@
 class SessionsController < ApplicationController
   def new
     @title = "sign in"
+    session[:return_to] = params[:return_to] if params[:return_to]
     redirect_to root_path && return if logged_in?
   end
 
@@ -28,7 +29,12 @@ class SessionsController < ApplicationController
           @user.save
           sign_in(@user)
           flash[:notice] = "Thanks for signing up!"
-          redirect_to root_path
+          if session[:return_to]
+            redirect_to session[:return_to]
+            session[:return_to] = nil
+          else
+            redirect_to root_path
+          end
           return
         else
           @user.errors.add(:password, "can't be empty")
@@ -46,7 +52,12 @@ class SessionsController < ApplicationController
       if user = User.authenticate(params[:username], params[:password])
         sign_in(user)
         flash[:notice] = "Login successful."
-        redirect_to root_path
+        if session[:return_to]
+          redirect_to session[:return_to]
+          session[:return_to] = nil
+        else
+          redirect_to root_path
+        end
         return
       end
       flash[:error] = "The password given for username \"#{params[:username]}\" is incorrect.

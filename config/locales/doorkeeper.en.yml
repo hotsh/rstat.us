@@ -30,6 +30,9 @@ en:
               invalid_uri: 'must be a valid URI.'
               relative_uri: 'must be an absolute URI.'
   doorkeeper:
+    scopes:
+      read: 'Read your public data'
+      write: 'Post on your behalf and update your information'
     errors:
       messages:
         # Common error messages
