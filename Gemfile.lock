@@ -1,4 +1,11 @@
 GIT
+  remote: git://github.com/applicake/doorkeeper.git
+  revision: c87dd11584886367e44232dfe33bab8f6fd8fe10
+  specs:
+    doorkeeper (0.6.0.dev)
+      railties (~> 3.1)
+
+GIT
   remote: git://github.com/collectiveidea/delayed_job.git
   revision: 8dc3930f20eb7363ef0d451ac05a3851eb0caaf6
   tag: v2.1.4
@@ -32,13 +39,6 @@ GIT
     rocco (0.8.2)
       mustache
       redcarpet (~> 1.17)
-
-GIT
-  remote: git@github.com:applicake/doorkeeper.git
-  revision: 275cfe68cb55d94bdefa2a3d43d314a27b9a540f
-  specs:
-    doorkeeper (0.6.0.dev)
-      railties (~> 3.1)
 
 GEM
   remote: http://rubygems.org/
