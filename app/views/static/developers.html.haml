@@ -1,0 +1,47 @@
+#developers
+  :markdown
+    # Developers
+
+    Part of being a [100% Open Source](/open_source) platform, to us, also
+    means having an open access API. By that, we mean:
+
+    * We will develop the API [in the
+      open](https://github.com/hotsh/rstat.us/) with input from the community
+      of developers and end users
+    * We will do our best to maintain backwards
+      compatibility
+    * We will not be limiting access to the API except in
+      cases of malicious use or due to lack of resources
+
+
+    Because of the federated nature of OStatus in general and Rstat.us in
+    particular, even if the node at [rstat.us](http://rstat.us) shuts down,
+    anyone could run [the rstat.us code](https://github.com/hotsh/rstat.us/)
+    at another domain. Users can follow anyone from any OStatus site and just
+    access the network of people they're following through the API running on
+    their preferred node. In this way, client application developers would
+    never have to worry about their API access being taken away.
+
+    ## Details
+
+    [Rstat.us](http://rstat.us) nodes are [OAuth
+    2](http://tools.ietf.org/html/draft-ietf-oauth-v2-22) providers. We use
+    [doorkeeper](https://github.com/applicake/doorkeeper) for the
+    implementation, which is based on [version 22 of the OAuth 2
+    spec](http://tools.ietf.org/html/draft-ietf-oauth-v2-22).
+
+    We have two APIs currently under development: a JSON API compatible with
+    Twitter's API for ease of reuse of existing Twitter clients that support
+    changing the base URL, and a hypermedia API based on the ALPS
+    microblogging spec.
+
+    Please see our [github issues](https://github.com/hotsh/rstat.us/issues)
+    for the current state of the API and what is outstanding. In particular,
+    we could use better documentation!
+
+    To get started writing a client against either API, if you need to
+    authenticate the end user (for example, to enable posting updates), you
+    will need to [create an OAuth application](/oauth/applications). This will
+    get you an application ID and an application secret that can be used to
+    get end user authorization. What are you waiting for? [Get
+    started!](/oauth/applications)

@@ -15,6 +15,7 @@ RstatUs::Application.routes.draw do
   match "contact" => "static#contact"
   match "about" => "static#about"
   match "open_source" => "static#open_source"
+  match "developers" => "static#developers"
   match "help" => "static#help"
 
   # External Auth
