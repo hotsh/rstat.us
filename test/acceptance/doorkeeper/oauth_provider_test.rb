@@ -101,8 +101,6 @@ describe "OAuth Provider" do
 
           visit "/oauth/authorized_applications"
 
-          save_and_open_page
-
           assert has_content? @app.name
           assert has_link? "Revoke"
         end
