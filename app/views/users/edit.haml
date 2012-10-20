@@ -66,6 +66,11 @@
         %form.profile-update{:action => "/auth/twitter", :method => "GET", :name => "profile_update_form"}
           %input.button{:type => "submit", :value => "Add Twitter Account"}
 
+  .authorized-applications.bottom-block
+    %h4 Authorized Applications
+
+    = link_to "View and edit the list of the apps you have authorized to access your account", oauth_authorized_applications_path
+
   .delete-account.bottom-block
     %h4 Delete Account
 
