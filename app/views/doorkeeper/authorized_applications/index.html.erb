@@ -14,7 +14,6 @@
           <th>Application</th>
           <th>Authorized at</th>
           <th></th>
-          <th></th>
         </tr>
       </thead>
       <tbody>
@@ -22,7 +21,7 @@
           <tr>
             <td><%= application.name %></td>
             <td><%= application.created_at %></td>
-            <td><%= link_to 'Revoke', oauth_authorized_application_path(application), :data => { :confirm => 'Are you sure?' }, :method => :delete, :class => 'btn danger' %></td>
+            <td><%= link_to 'Revoke', oauth_authorized_application_path(application), :data => { :confirm => 'Are you sure?' }, :method => :delete, :class => 'button destructive_action' %></td>
           </tr>
         <% end %>
       </tbody>
