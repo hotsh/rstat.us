@@ -1,5 +1,5 @@
 module Api
-  class SubscriptionsController < ApiController 
+  class SubscriptionsController < ApiController
     #
     # Disable CSRF protection
     #
@@ -7,12 +7,8 @@ module Api
     #
     skip_before_filter :verify_authenticity_token
 
-    #
-    # TODO replace with OAuth goodness.
-    #
-    #
+    doorkeeper_for :destroy, :scopes => [:write]
 
-    before_filter :require_user, :except => [:exists]
     rescue_from StandardError, :with => :handle_error
 
     def destroy
@@ -36,9 +32,11 @@ module Api
       params[:user_id] = params[:user_id_a]
       params[:screen_name] = params[:screen_name_a]
       user_a = requested_user!
+
       params[:user_id] = params[:user_id_b]
       params[:screen_name] = params[:screen_name_b]
       user_b = requested_user!
+
       render :json => user_a.following_url?(user_b.feed.url).to_json
     end
 
