@@ -49,6 +49,26 @@ describe "friendships" do
       parsed_json[0].must_equal("You must specify either user_id or screen_name")
     end
   end
+
+  describe "create" do
+    it "returns a user not found error" do 
+      log_in_as_some_user
+      user_id = "some-random-id"
+      page.driver.post "/api/friendships/create.json", {:user_id => user_id}
+      parsed_json = JSON.parse(source)
+      parsed_json[0].must_equal("User ID does not exist: #{user_id}")
+    end
+    
+    it "returns the followed user" do
+      log_in_as_some_user
+      zebra = Fabricate(:user, :username => "zebra")
+      @u.follow! zebra.feed
+      page.driver.post "/api/friendships/create.json", {:user_id => zebra.id}
+      parsed_json = JSON.parse(source)
+      parsed_json["id"].must_equal(zebra.id.to_s)
+    end
+  end
+
   describe "exists" do
     it "returns true when the relationship exists" do
       zebra = Fabricate(:user, :username => "Zebra")

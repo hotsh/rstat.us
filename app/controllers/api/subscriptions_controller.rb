@@ -15,6 +15,17 @@ module Api
     before_filter :require_user, :except => [:exists]
     rescue_from StandardError, :with => :handle_error
 
+    def create
+      user = requested_user!
+      current_user.follow! user.feed if user != current_user
+      respond_to do |format|
+        format.json do
+          user  = UserTwitterJsonDecorator.decorate(user)
+          render :json => user.as_json
+        end
+      end
+    end
+
     def destroy
       user = requested_user!
       if user == current_user

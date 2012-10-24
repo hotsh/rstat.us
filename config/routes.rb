@@ -80,6 +80,7 @@ RstatUs::Application.routes.draw do
     match 'statuses/destroy/:id.:format', :to => "statuses#destroy", :via => :post, :constraints => { :id => /[^\/]+/, :format => 'json'}
     match 'friendships/destroy', :to => "subscriptions#destroy", :via => :post, :constraints => { :format => 'json'}
     match 'friendships/destroy', :to => "subscriptions#destroy", :via => :delete, :constraints => { :format => 'json'}
+    match 'friendships/create', :to => "subscriptions#create", :via => :post, :constraints => { :format => 'json'}
     match 'friendships/exists', :to => "subscriptions#exists", :via => :get, :constraints => { :format => 'json'}
     match 'users/show', :to => "users#show", :via => :get, :constraints => { :format => 'json'}
   end
