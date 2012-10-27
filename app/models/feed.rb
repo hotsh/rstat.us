@@ -51,9 +51,8 @@ class Feed
   end
 
   def populate(finger_data)
-    # TODO: More entropy would be nice
-    self.verify_token = Digest::MD5.hexdigest(rand.to_s)
-    self.secret = Digest::MD5.hexdigest(rand.to_s)
+    self.verify_token = SecureRandom.hex
+    self.secret       = SecureRandom.hex
 
     ostatus_feed = OStatus::Feed.from_url(url)
 
