@@ -113,7 +113,10 @@ describe "friendships" do
 
     describe "unauthenticated" do
       it "doesnt allow unauthorized access" do
-        post "/api/friendships/create.json"
+        zebra = Fabricate(:user, :username => "zebra")
+        post "/api/friendships/create.json", {
+          :user_id => zebra.id
+        }
         last_response.status.must_equal 401
       end
     end

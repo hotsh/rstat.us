@@ -7,7 +7,7 @@ module Api
     #
     skip_before_filter :verify_authenticity_token
 
-    doorkeeper_for :destroy, :scopes => [:write]
+    doorkeeper_for :create, :destroy, :scopes => [:write]
 
     rescue_from StandardError, :with => :handle_error
 
