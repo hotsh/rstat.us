@@ -7,14 +7,12 @@ module Api
     #
     skip_before_filter :verify_authenticity_token
 
-    #
-    # TODO replace with OAuth goodness.
-    #
-    before_filter :require_user
-    
+    doorkeeper_for :home_timeline, :mention, :scopes => [:read]
+    doorkeeper_for :update, :destroy, :scopes => [:write]
+
     rescue_from StandardError, :with => :handle_error
 
-    def show 
+    def show
       update = Update.find(params[:id])
       if !update.nil?
         respond_to do |format|
@@ -28,11 +26,8 @@ module Api
       else
         render :nothing => true, :status => 404
       end
-
     end
-    #
-    # POST /api/statuses/update.json
-    #
+
     def update
       u = current_user.feed.add_update(update_options)
 
@@ -107,38 +102,6 @@ module Api
 
     protected
 
-    def requested_user!
-      if params[:user_id].blank? && params[:screen_name].blank?
-        #
-        # TODO this is an assumption. Verify against Twitter API.
-        #
-        raise BadRequest, "You must specify either user_id or screen_name"
-      elsif !params[:user_id].blank? && !params[:screen_name].blank?
-        #
-        # TODO verify if/how Twitter deals with this. Edge case, anyway.
-        #
-        raise BadRequest, "You can't specify both user_id and screen_name"
-      end
-
-      #
-      # Try to find a user by user_id first, then screen_name
-      #
-      user = nil
-      user = User.first(params[:user_id]) if !params[:user_id].blank?
-      if user.nil?
-        if !params[:screen_name].blank?
-          user = User.first(:username => params[:screen_name])
-          if user.nil?
-            raise NotFound, "User does not exist: #{params[:screen_name]}"
-          end
-        else
-          raise NotFound, "User ID does not exist: #{params[:user_id]}"
-        end
-      end
-
-      user
-    end
-
     def timeline_for(user)
       options = timeline_options
       updates = user.timeline(options)
@@ -192,6 +155,5 @@ module Api
         :twitter => (params[:tweet] == "true")
       }
     end
-
   end
 end

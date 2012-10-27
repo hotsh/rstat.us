@@ -1,4 +1,11 @@
 GIT
+  remote: git://github.com/applicake/doorkeeper.git
+  revision: 275cfe68cb55d94bdefa2a3d43d314a27b9a540f
+  specs:
+    doorkeeper (0.6.0.dev)
+      railties (~> 3.1)
+
+GIT
   remote: git://github.com/collectiveidea/delayed_job.git
   revision: 8dc3930f20eb7363ef0d451ac05a3851eb0caaf6
   tag: v2.1.4
@@ -290,6 +297,7 @@ DEPENDENCIES
   database_cleaner (~> 0.6.7)
   delayed_job!
   delayed_job_mongo_mapper!
+  doorkeeper!
   draper (~> 0.11.1)
   exceptional (~> 2.0.32)
   fabrication (~> 1.2.0)

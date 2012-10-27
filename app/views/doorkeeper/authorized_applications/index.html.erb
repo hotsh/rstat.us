@@ -1,0 +1,30 @@
+<div class="span16">
+  <header class="page-header">
+    <h2>Your authorized applications</h2>
+  </header>
+
+  <% if @applications.empty? %>
+    <div>
+      You have not authorized any applications to use your account.
+    </div>
+  <% else %>
+    <table class="zebra-striped">
+      <thead>
+        <tr>
+          <th>Application</th>
+          <th>Authorized at</th>
+          <th></th>
+        </tr>
+      </thead>
+      <tbody>
+        <% @applications.each do |application| %>
+          <tr>
+            <td><%= application.name %></td>
+            <td><%= application.created_at %></td>
+            <td><%= link_to 'Revoke', oauth_authorized_application_path(application), :data => { :confirm => 'Are you sure?' }, :method => :delete, :class => 'button destructive_action' %></td>
+          </tr>
+        <% end %>
+      </tbody>
+    </table>
+  <% end %>
+</div>

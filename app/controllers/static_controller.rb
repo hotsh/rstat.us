@@ -8,6 +8,10 @@ class StaticController < ApplicationController
     @title = "open source"
   end
 
+  def developers
+    @title = "developers"
+  end
+
   def about
     @title = "about us"
   end

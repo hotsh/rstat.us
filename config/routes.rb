@@ -1,11 +1,13 @@
 RstatUs::Application.routes.draw do
+  use_doorkeeper
+
   root :to => "static#homepage", :constraints => lambda {|x| x.session[:user_id] == nil}
   root :to => "updates#timeline", :constraints => lambda {|x| x.session[:user_id] != nil}
 
   # Sessions
   resources :sessions, :only => [:new, :create, :destroy]
-  match "/login", :to => "sessions#new"
-  match "/logout", :to => "sessions#destroy", :via => :post
+  match "/login", :to => "sessions#new", :as => "login"
+  match "/logout", :to => "sessions#destroy", :via => :post, :as => "logout"
 
   match "/follow", :to => "static#follow", :via => :get
 
@@ -13,6 +15,7 @@ RstatUs::Application.routes.draw do
   match "contact" => "static#contact"
   match "about" => "static#about"
   match "open_source" => "static#open_source"
+  match "developers" => "static#developers"
   match "help" => "static#help"
 
   # External Auth

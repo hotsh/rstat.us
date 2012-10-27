@@ -3,6 +3,11 @@ module Api
 
   protected
 
+    def current_user
+      @current_user ||= User.find(doorkeeper_token.resource_owner_id)
+    end
+
+
     def format_errors(errors)
       errors = errors.full_messages.map do |error|
         #
@@ -18,7 +23,7 @@ module Api
       end
       {:errors => errors}.to_json
     end
-    
+
     def handle_error(e)
       respond_to do |fmt|
         fmt.json do
