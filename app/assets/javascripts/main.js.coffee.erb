@@ -108,7 +108,7 @@ jQuery $ ->
     if(textarea.val() != "")
       firstLetter = textarea.val()[0]
 
-    enabled = true
+    enabled = $("#tweet").attr('checked')
     if firstLetter == "@"
       enabled = false
 
