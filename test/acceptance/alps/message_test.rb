@@ -6,12 +6,8 @@ describe "ALPS li.message descendants" do
 
   before do
     @a_user = Fabricate(:user)
-    @an_update = Fabricate(:update,
-                           :author => @a_user.author,
-                           :created_at => Time.parse(
-                             "Jan 1, 2012 09:34:16 UTC"
-                           )
-                          )
+    @an_update = Fabricate(:update, :author     => @a_user.author,
+                                    :created_at => Time.parse("Jan 1, 2012 09:34:16 UTC"))
     @a_user.feed.updates << @an_update
 
     visit "/updates"
