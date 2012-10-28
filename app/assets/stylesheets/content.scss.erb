@@ -273,7 +273,6 @@
     }
   }
 }
-
 #current_user_block, #profile {
   .stats {
     color: $text_color + #222;
@@ -290,6 +289,16 @@
       font-size: 0.9em;
 
       a {
+        display: block;
+        color: $text_color + #222;
+        &:hover {
+          text-decoration: none;
+          background-color: #f9f9f9;
+        }
+      }
+
+      .number {
+        color: #439FC3;
         font-size: 1.3em;
         padding-right: 0.25em;
       }
@@ -301,10 +310,14 @@
         @include image_replaced('<%= asset_path 'icons_sprite.png' %>', 24px, 16px);
       }
 
-      &.rss .icon {
-        @include image_replaced('<%= asset_path 'feed-icon-16x16.png' %>', 16px, 16px);
-        margin-left: 4px;
-        margin-right: 10px;
+      &.rss {
+        line-height: 2;
+
+        .icon {
+          @include image_replaced('<%= asset_path 'feed-icon-16x16.png' %>', 16px, 16px);
+          margin-left: 4px;
+          margin-right: 10px;
+        }
       }
     }
 
@@ -319,7 +332,11 @@
     }
   }
 }
-
+#current_user_block {
+  .stats {
+    margin-right: 0;
+  }
+}
 .bottom-block {
   @include content-block;
 }
