@@ -19,8 +19,16 @@ module Api
           format.json do
             include_entities = (params[:include_entities] == "true")
             trim_user = (params[:trim_user] == "true")
+
+            json_options = {:include_entities => include_entities}
+            unless trim_user
+              json_options[:user] = UserTwitterJsonDecorator.
+                                      decorate(update.author.user).
+                                      as_json(:root_url => root_url)
+            end
+
             update = UpdateTwitterJsonDecorator.decorate(update)
-            render :json => update.as_json(:include_entities => include_entities,:trim_user => trim_user)
+            render :json => update.to_json(json_options)
           end
         end
       else
@@ -29,9 +37,9 @@ module Api
     end
 
     def update
-      u = current_user.feed.add_update(update_options)
+      update = current_user.feed.add_update(update_options)
 
-      if u.valid?
+      if update.valid?
         current_user.feed.save
         current_user.save
         current_user.feed.ping_hubs
@@ -40,14 +48,24 @@ module Api
           fmt.json do
             include_entities = (params[:include_entities] == "true")
             trim_user = (params[:trim_user] == "true")
-            u = UpdateTwitterJsonDecorator.decorate(u)
-            render :json => u.as_json(:include_entities => include_entities,
-                                      :trim_user => trim_user)
+
+            json_options = {:include_entities => include_entities}
+            unless trim_user
+              json_options[:user] = UserTwitterJsonDecorator.
+                                      decorate(update.author.user).
+                                      as_json(:root_url => root_url)
+            end
+
+            update = UpdateTwitterJsonDecorator.decorate(update)
+            render :json => update.to_json(json_options)
           end
         end
       else
         respond_to do |fmt|
-          fmt.json { render :status => :bad_request, :json => format_errors(u.errors) }
+          fmt.json {
+            render :status => :bad_request,
+                   :json   => format_errors(update.errors)
+          }
         end
       end
     end
@@ -69,10 +87,19 @@ module Api
       updates = current_user.at_replies(options)
       respond_to do |fmt|
         fmt.json do
+          include_entities = (params[:include_entities] == "true")
+          trim_user = (params[:trim_user] == "true")
+
           json = updates.map do |update|
+            json_options = {:include_entities => include_entities}
+            unless trim_user
+              json_options[:user] = UserTwitterJsonDecorator.
+                                      decorate(update.author.user).
+                                      as_json(:root_url => root_url)
+            end
+
             update = UpdateTwitterJsonDecorator.decorate(update)
-            update.as_json(:include_entities => options[:include_entities],
-                           :trim_user => options[:trim_user])
+            update.as_json(json_options)
           end
           render :json => json
         end
@@ -93,9 +120,16 @@ module Api
         fmt.json do
           include_entities = (params[:include_entities] == "true")
           trim_user = (params[:trim_user] == "true")
-          u = UpdateTwitterJsonDecorator.decorate(update)
-          render :json => u.as_json(:include_entities => include_entities,
-                                    :trim_user => trim_user)
+
+          json_options = {:include_entities => include_entities}
+          unless trim_user
+            json_options[:user] = UserTwitterJsonDecorator.
+                                    decorate(update.author.user).
+                                    as_json(:root_url => root_url)
+          end
+
+          update = UpdateTwitterJsonDecorator.decorate(update)
+          render :json => update.to_json(json_options)
         end
       end
     end
@@ -107,10 +141,19 @@ module Api
       updates = user.timeline(options)
       respond_to do |fmt|
         fmt.json do
+          include_entities = options[:include_entities]
+          trim_user = options[:trim_user]
+
           json = updates.map do |update|
+            json_options = {:include_entities => include_entities}
+            unless trim_user
+              json_options[:user] = UserTwitterJsonDecorator.
+                                      decorate(update.author.user).
+                                      as_json(:root_url => root_url)
+            end
+
             update = UpdateTwitterJsonDecorator.decorate(update)
-            update.as_json(:include_entities => options[:include_entities],
-                           :trim_user => options[:trim_user])
+            update.as_json(json_options)
           end
           render :json => json
         end
