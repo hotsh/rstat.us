@@ -31,6 +31,8 @@
             - if @author.user == current_user
               .edit
                 %a{:href => edit_user_path(@author.username)} Edit
+              .export
+                %a= link_to "Export all updates", export_path
 
           - unless @author.website.blank? or @author.bio.blank?
             .info
