@@ -1,7 +1,7 @@
 class UpdateTwitterJsonDecorator < ApplicationDecorator
   decorates :update
 
-  def as_json(options={})
+  def as_json(options = {})
     referral = (update.referral ? update.referral : nil)
     author = update.author
     result = {
@@ -33,9 +33,8 @@ class UpdateTwitterJsonDecorator < ApplicationDecorator
         :user_mentions => []
       }
     end
-    unless options[:trim_user]
-      user_decorator = UserTwitterJsonDecorator.decorate(author.user)
-      result[:user].merge!(user_decorator.as_json)
+    if options[:user]
+      result[:user] = options[:user]
     end
     result
   end

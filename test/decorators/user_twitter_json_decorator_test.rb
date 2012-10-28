@@ -12,12 +12,18 @@ describe UserTwitterJsonDecorator do
 
         @root_url       = "https://example.com"
         @decorated_user = UserTwitterJsonDecorator.decorate(@user)
-        @json           = @decorated_user.to_json
-        @parsed_json    = JSON.parse(@json)
       end
 
       it "can handle a user with the default avatar" do
+        @json        = @decorated_user.to_json(:root_url => @root_url)
+        @parsed_json = JSON.parse(@json)
         @parsed_json["profile_image_url"].must_equal "#{@root_url}/assets/avatar.png"
+      end
+
+      it "requires a root_url option" do
+        lambda {
+          @json = @decorated_user.to_json
+        }.must_raise ArgumentError
       end
     end
   end

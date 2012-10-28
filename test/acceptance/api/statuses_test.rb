@@ -130,24 +130,37 @@ describe "Statuses API endpoints" do
   end
 
   describe "user_timeline" do
-    it "returns valid json for a user's timeline" do
-      u = Fabricate(:user)
+    before do
+      @u = Fabricate(:user)
 
       5.times do |index|
         update = Fabricate(:update,
-                           :text   => "Update test is #{index}",
+                           :text    => "Update test is #{index}",
                            :twitter => true,
-                           :author => u.author
+                           :author  => @u.author
                          )
-       u.feed.updates << update
+       @u.feed.updates << update
       end
+    end
 
-      visit "/api/statuses/user_timeline.json?screen_name=#{u.username}"
+    it "returns valid json for a user's timeline" do
+      visit "/api/statuses/user_timeline.json?screen_name=#{@u.username}"
 
       parsed_json = JSON.parse(source)
       parsed_json.length.must_equal 5
       parsed_json[0]["text"].must_equal("Update test is 4")
+    end
 
+    it "doesn't freak out if the user has the default avatar" do
+      @u.author.email = ""
+      @u.author.save
+
+      visit "/api/statuses/user_timeline.json?screen_name=#{@u.username}"
+      parsed_json = JSON.parse(source)
+      parsed_json[0]["user"]["screen_name"].must_equal(@u.username)
+      parsed_json[0]["user"]["profile_image_url"].must_match(
+        "http://www.example.com/assets/avatar.png"
+      )
     end
   end
 
