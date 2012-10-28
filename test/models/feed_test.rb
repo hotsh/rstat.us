@@ -3,6 +3,10 @@ require_relative '../test_helper'
 describe Feed do
   include TestHelper
 
+  def setup
+    @feed = Fabricate(:feed)
+  end
+
   describe ".create_and_populate!" do
     let(:feed_data)             { mock }
     let(:feed_data_url)         { mock }
@@ -42,55 +46,51 @@ describe Feed do
   describe "#populate_entries" do
     describe "new update" do
       it "creates a new update" do
-        f = Fabricate(:feed)
-        updates_before = f.updates.length
+        updates_before = @feed.updates.length
 
-        f.populate_entries([
+        @feed.populate_entries([
           stub_everything(
             :url => "http://foo.com",
             :content => "I will take care of Yoshi"
           )
         ])
 
-        f.updates.size.must_equal(updates_before + 1)
+        @feed.updates.size.must_equal(updates_before + 1)
       end
 
       it "does nothing if the entry's URL is nil (just going to toss these until ostatus bug #4 is fixed)" do
-        f = Fabricate(:feed)
-        Fabricate(:update, :feed => f, :text => "Nacho update")
-        updates_before = f.updates.length
+        Fabricate(:update, :feed => @feed, :text => "Nacho update")
+        updates_before = @feed.updates.length
 
-        f.populate_entries([
+        @feed.populate_entries([
           stub_everything(:url => nil, :content => "I do not smirk.")
         ])
 
-        f.updates.size.must_equal(updates_before)
-        f.updates.last.text.must_equal("Nacho update")
+        @feed.updates.size.must_equal(updates_before)
+        @feed.updates.last.text.must_equal("Nacho update")
       end
     end
 
     describe "existing update" do
       it "does not create a new update if this update already exists" do
-        f = Fabricate(:feed)
-        u = Fabricate(:update, :feed => f, :remote_url => "http://a.b/1")
+        u = Fabricate(:update, :feed => @feed, :remote_url => "http://a.b/1")
         update_text_before = u.text
-        updates_before = f.updates.length
+        updates_before = @feed.updates.length
 
-        f.populate_entries([
+        @feed.populate_entries([
           stub_everything(:url => u.remote_url, :content => "I do not smirk.")
         ])
 
-        f.updates.size.must_equal(updates_before)
-        f.updates.last.text.must_equal(update_text_before)
+        @feed.updates.size.must_equal(updates_before)
+        @feed.updates.last.text.must_equal(update_text_before)
       end
 
       it "does not change the existing update if the verb isn't update" do
-        f = Fabricate(:feed)
-        u = Fabricate(:update, :feed => f, :remote_url => "http://a.b/1")
+        u = Fabricate(:update, :feed => @feed, :remote_url => "http://a.b/1")
         update_text_before = u.text
-        updates_before = f.updates.length
+        updates_before = @feed.updates.length
 
-        f.populate_entries([
+        @feed.populate_entries([
           stub_everything(
             :url => u.remote_url,
             :content => "I do not smirk.",
@@ -98,17 +98,16 @@ describe Feed do
           )
         ])
 
-        f.updates.size.must_equal(updates_before)
-        f.updates.last.text.must_equal(update_text_before)
+        @feed.updates.size.must_equal(updates_before)
+        @feed.updates.last.text.must_equal(update_text_before)
       end
 
       it "changes the existing update if the verb is update" do
-        f = Fabricate(:feed)
-        u = Fabricate(:update, :feed => f, :remote_url => "http://a.b/1")
+        u = Fabricate(:update, :feed => @feed, :remote_url => "http://a.b/1")
         update_text_before = u.text
-        updates_before = f.updates.length
+        updates_before = @feed.updates.length
 
-        f.populate_entries([
+        @feed.populate_entries([
           stub_everything(
             :url => u.remote_url,
             :content => "I do not smirk.",
@@ -116,21 +115,20 @@ describe Feed do
           )
         ])
 
-        f.updates.size.must_equal(updates_before)
-        f.updates.last.text.must_equal("I do not smirk.")
+        @feed.updates.size.must_equal(updates_before)
+        @feed.updates.last.text.must_equal("I do not smirk.")
       end
     end
   end
 
   describe "#atom" do
     before do
-      @f = Fabricate(:feed)
-      @later = Fabricate(:update, :feed => @f, :created_at => 1.day.ago)
-      @earlier = Fabricate(:update, :feed => @f, :created_at => 2.days.ago)
+      @later   = Fabricate(:update, :feed => @feed, :created_at => 1.day.ago)
+      @earlier = Fabricate(:update, :feed => @feed, :created_at => 2.days.ago)
     end
 
     it "sorts updates in reverse chronological order by created_at" do
-      atom = @f.atom("http://example.com")
+      atom = @feed.atom("http://example.com")
       xml = Nokogiri.XML(atom)
       entries = xml.xpath("//xmlns:entry")
 
@@ -138,8 +136,8 @@ describe Feed do
       entries.last.at_xpath("xmlns:id").content.must_match(/#{@earlier.id}/)
     end
 
-    it "can limit the number of entries returned" do
-      atom = @f.atom("http://example.com", :num => 1)
+    it "limits the number of entries returned" do
+      atom = @feed.atom("http://example.com", :num => 1)
       xml = Nokogiri.XML(atom)
       entries = xml.xpath("//xmlns:entry")
 
@@ -147,8 +145,8 @@ describe Feed do
       entries.first.at_xpath("xmlns:id").content.must_match(/#{@later.id}/)
     end
 
-    it "can limit the entries returned by date" do
-      atom = @f.atom("http://example.com", :since => 36.hours.ago)
+    it "limits the entries returned by date" do
+      atom = @feed.atom("http://example.com", :since => 36.hours.ago)
       xml = Nokogiri.XML(atom)
       entries = xml.xpath("//xmlns:entry")
 
@@ -159,23 +157,21 @@ describe Feed do
 
   describe "#last_update" do
     it "returns the most recently created update" do
-      f = Fabricate(:feed)
-      later = Fabricate(:update, :feed => f, :created_at => 1.day.ago)
-      earlier = Fabricate(:update, :feed => f, :created_at => 2.days.ago)
 
-      f.last_update.must_equal(later)
+      later = Fabricate(:update, :feed => @feed, :created_at => 1.day.ago)
+      earlier = Fabricate(:update, :feed => @feed, :created_at => 2.days.ago)
+
+      @feed.last_update.must_equal(later)
     end
   end
 
   describe "#url" do
     it "does not end in .atom by default" do
-      f = Fabricate(:feed)
-      f.url.wont_match(/\.atom$/)
+      @feed.url.wont_match(/\.atom$/)
     end
 
     it "does end in .atom if we ask it to" do
-      f = Fabricate(:feed)
-      f.url(:format => :atom).must_match(/\.atom$/)
+      @feed.url(:format => :atom).must_match(/\.atom$/)
     end
   end
 end
