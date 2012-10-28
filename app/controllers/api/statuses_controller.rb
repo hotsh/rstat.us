@@ -29,9 +29,9 @@ module Api
     end
 
     def update
-      u = current_user.feed.add_update(update_options)
+      update = current_user.feed.add_update(update_options)
 
-      if u.valid?
+      if update.valid?
         current_user.feed.save
         current_user.save
         current_user.feed.ping_hubs
@@ -40,14 +40,17 @@ module Api
           fmt.json do
             include_entities = (params[:include_entities] == "true")
             trim_user = (params[:trim_user] == "true")
-            u = UpdateTwitterJsonDecorator.decorate(u)
-            render :json => u.as_json(:include_entities => include_entities,
+            update = UpdateTwitterJsonDecorator.decorate(update)
+            render :json => update.as_json(:include_entities => include_entities,
                                       :trim_user => trim_user)
           end
         end
       else
         respond_to do |fmt|
-          fmt.json { render :status => :bad_request, :json => format_errors(u.errors) }
+          fmt.json {
+            render :status => :bad_request,
+                   :json   => format_errors(update.errors)
+          }
         end
       end
     end
@@ -93,8 +96,8 @@ module Api
         fmt.json do
           include_entities = (params[:include_entities] == "true")
           trim_user = (params[:trim_user] == "true")
-          u = UpdateTwitterJsonDecorator.decorate(update)
-          render :json => u.as_json(:include_entities => include_entities,
+          update = UpdateTwitterJsonDecorator.decorate(update)
+          render :json => update.as_json(:include_entities => include_entities,
                                     :trim_user => trim_user)
         end
       end
