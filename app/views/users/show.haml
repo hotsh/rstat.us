@@ -56,5 +56,9 @@
               .icon
               %a{ :href => "/users/#{@author.username}/followers"}= @author.user.followers.length
               Followers
+            %li.rss
+              .icon
+              = link_to "rss feed", user_feed_path(@author.username)
+
 
 = render :partial => "updates/list", :locals => {:updates => @updates, :id => "profile_updates", :no_highlight => true, :list_class => "messages-user"}

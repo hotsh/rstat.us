@@ -300,6 +300,12 @@
         margin-right: 0.5em;
         @include image_replaced('<%= asset_path 'icons_sprite.png' %>', 24px, 16px);
       }
+
+      &.rss .icon {
+        @include image_replaced('<%= asset_path 'feed-icon-16x16.png' %>', 16px, 16px);
+        margin-left: 4px;
+        margin-right: 10px;
+      }
     }
 
     .following-count .icon {
