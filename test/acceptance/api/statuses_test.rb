@@ -38,15 +38,14 @@ describe "Statuses API endpoints" do
 
       parsed_json = JSON.parse(source)
       parsed_json["text"].must_equal(update.text)
-      parsed_json["user"].wont_include("url","url should not be included in trimmed status")
-      parsed_json["user"].wont_include("screen_name","screen_name should not be included in trimmed status")
-      parsed_json["user"].wont_include("name","name should not be included in trimmed status")
-      parsed_json["user"].wont_include("profile_image_url","profile_image_url should not be included in trimmed status")
-      parsed_json["user"].wont_include("created_at","created_at should not be included in trimmed status")
-      parsed_json["user"].wont_include("description","description should not be included in trimmed status")
-      parsed_json["user"].wont_include("statuses_count","statuses_count should not be included in trimmed status")
-      parsed_json["user"].wont_include("friends_count","friends_count should not be included in trimmed status")
-      parsed_json["user"].wont_include("followers_count","followers_count should not be included in trimmed status")
+      ["url", "screen_name", "name", "profile_image_url", "created_at",
+        "description", "statuses_count", "friends_count", "followers_count"
+      ].each do |trimmed_attribute|
+        parsed_json["user"].wont_include(
+          trimmed_attribute,
+          "#{trimmed_attribute} should not be included in trimmed status"
+        )
+      end
     end
   end
 
