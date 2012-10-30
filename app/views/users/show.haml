@@ -62,7 +62,7 @@
             %li.rss
               %a{ :href => user_feed_path(@author.username)}
                 %span.icon
-                rss feed
+                Atom feed
 
 
 = render :partial => "updates/list", :locals => {:updates => @updates, :id => "profile_updates", :no_highlight => true, :list_class => "messages-user"}
