@@ -50,6 +50,17 @@ describe FingerService do
       subject
     end
 
+    describe "with a local rstat.us email address that doesn't have a corresponding user" do
+      let(:target) { "nobody@rstat.us" }
+      before do
+        Redfinger.stubs(:finger).with(target).raises(RestClient::ResourceNotFound)
+      end
+
+      it "raises a RestClient::ResourceNotFound exception" do
+        lambda { subject }.must_raise RstatUs::InvalidSubscribeTo
+      end
+    end
+
     describe "with an invalid ostatus email address" do
       let(:target) { "ladygaga@twitter" }
 
@@ -57,10 +68,8 @@ describe FingerService do
         Redfinger.stubs(:finger).with(target).raises(SocketError)
       end
 
-      it "raises a socket error" do
-        lambda {
-          FingerService.new(target).finger!
-        }.must_raise RstatUs::InvalidSubscribeTo
+      it "raises a SocketError exception" do
+        lambda { subject }.must_raise RstatUs::InvalidSubscribeTo
       end
     end
   end

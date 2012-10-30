@@ -13,8 +13,9 @@ class FingerService
     @feed_data.url          = data.url
     @feed_data.finger_data  = data
     @feed_data
-
   # TODO: other exceptions to rescue; check what Redfinger raises
+  rescue RestClient::ResourceNotFound
+    raise RstatUs::InvalidSubscribeTo
   rescue SocketError
     raise RstatUs::InvalidSubscribeTo
   end
