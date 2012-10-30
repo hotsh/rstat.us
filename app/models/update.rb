@@ -9,25 +9,30 @@ class Update
     include Tire::Model::Search
     include Tire::Model::Callbacks
     index_name ELASTICSEARCH_INDEX_NAME
-  else
-    # Fallback if elasticsearch is not enabled
-    def self.search(query, params = {})
-      leading_char = '\b'
-      if query[0] == '#'
-        leading_char = ''
-      end
-      # See explanation in searches_controller.rb about why we are
-      # switching back to page and per_page when not using
-      # ElasticSearch.
+
+    class << self
+      alias :elastic_search :search
+    end
+  end
+
+  def self.search(query, params = {})
+    params[:from] ||= 0
+    params[:size] ||= 20
+
+    if query.nil? || query.blank?
+      # Fallback to display all updates when query is blank
       page = params[:from] / params[:size] + 1
       per_page = params[:size]
-
-      self.where(:text => /#{leading_char}#{Regexp.quote(query)}\b/i).
-           paginate(
-             :page => page,
-             :per_page => per_page,
-             :order => :created_at.desc
-          )
+      self.paginate(
+        :page => page,
+        :per_page => per_page,
+        :order => :created_at.desc)
+    elsif ENV['BONSAI_INDEX_URL'] || ENV['ELASTICSEARCH_INDEX_URL']
+      # Tire adds a search method
+      self.elastic_search(query, params)
+    else
+      # Fallback if elasticsearch is not enabled
+      self.basic_search(query, params)
     end
   end
 
@@ -170,6 +175,24 @@ class Update
   end
 
   protected
+
+  def self.basic_search(query, params)
+    leading_char = '\b'
+    if query[0] == '#'
+      leading_char = ''
+    end
+    # See explanation in searches_controller.rb about why we are
+    # switching back to page and per_page when not using
+    # ElasticSearch.
+    page = params[:from] / params[:size] + 1
+    per_page = params[:size]
+
+    self.where(:text => /#{leading_char}#{Regexp.quote(query)}\b/i).
+      paginate(
+        :page => page,
+        :per_page => per_page,
+        :order => :created_at.desc)
+  end
 
   def get_mentions
     self.mentions = []
