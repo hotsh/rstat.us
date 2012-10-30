@@ -4,6 +4,27 @@ require_relative '../test_helper'
 describe Update do
   include TestHelper
 
+  describe "search" do
+    it "returns all updates when the query is blank" do
+      20.times { |count| Fabricate(:update, :text => "This is update #{count}") }
+      assert_equal 20, Update.search("", {:from => 0, :size => 20}).count
+    end
+
+    it "returns an update that matches the given query" do
+      10.times { |count| Fabricate(:update, :text => "This is update #{count}") }
+      Fabricate(:update, :text => "Something different to look for")
+      10.times { |count| Fabricate(:update, :text => "This is update #{count+10}") }
+      assert_equal 1, Update.basic_search("something different", {:from => 0, :size => 20}).count
+    end
+
+    it "returns updates that match the given query" do
+      5.times { |count| Fabricate(:update, :text => "This is update #{count}") }
+      3.times { |count| Fabricate(:update, :text => "Something else to look for") }
+      15.times { |count| Fabricate(:update, :text => "This is update #{count}") }
+      assert_equal 3, Update.basic_search("look for", {:from => 0, :size => 20}).count
+    end
+  end
+
   describe "text length" do
     it "is not valid without any text" do
       u = Fabricate.build(:update, :text => "")
@@ -163,7 +184,7 @@ describe Update do
       # Hacky method because MiniTest assert_match method insisted on escaping utf-8 characters within the regex
       assert( u.to_html.include?(proper_link),
             "#{u.to_html} does not match #{proper_link}")
-     end
+    end
   end
 
   describe "twitter" do

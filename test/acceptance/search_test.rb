@@ -49,6 +49,13 @@ describe "search" do
 
       assert_match @update_text, page.body
     end
+
+    it "returns updates on blank search" do
+      search_for("")
+
+      assert_match @update_text, page.body
+    end
+
   end
 
   describe "behavior regardless of authenticatedness" do
