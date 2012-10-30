@@ -365,7 +365,8 @@ class User
 
   # A better name would be very welcome.
   def self.find_by_case_insensitive_username(username)
-    User.first(:username => /^#{Regexp.escape(username)}$/i)
+    username = Regexp.escape(username)
+    User.first(:username => /^#{username}$/i)
   end
 
   def token_expired?
