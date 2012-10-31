@@ -88,5 +88,6 @@ RstatUs::Application.routes.draw do
     match 'friendships/create', :to => "subscriptions#create", :via => :post, :constraints => { :format => 'json'}
     match 'friendships/exists', :to => "subscriptions#exists", :via => :get, :constraints => { :format => 'json'}
     match 'users/show', :to => "users#show", :via => :get, :constraints => { :format => 'json'}
+    match 'account/verify_credentials', :to => "account#verify_credentials", :via => :get, :constraints => { :format => 'json' }
   end
 end
