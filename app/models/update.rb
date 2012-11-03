@@ -19,7 +19,7 @@ class Update
     params[:from] ||= 0
     params[:size] ||= 20
 
-    if query.nil? || query.blank?
+    if query.blank?
       # Fallback to display all updates when query is blank
       page = params[:from] / params[:size] + 1
       per_page = params[:size]
