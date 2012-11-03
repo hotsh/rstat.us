@@ -5,9 +5,21 @@ describe Update do
   include TestHelper
 
   describe "search" do
-    it "returns all updates when the query is blank" do
-      20.times { |count| Fabricate(:update, :text => "This is update #{count}") }
-      assert_equal 20, Update.search("", {:from => 0, :size => 20}).count
+    describe "blank query" do
+      before do
+        20.times { |count| Fabricate(:update, :text => "This is update #{count}") }
+      end
+
+      it "returns all updates when the query is blank" do
+        assert_equal 20, Update.search("", {:from => 0, :size => 20}).count
+      end
+
+      it "can paginate through all updates" do
+        page_1_updates = Update.search("", {:from => 0, :size => 3})
+        page_2_updates = Update.search("", {:from => 3, :size => 3})
+
+        page_1_updates.wont_equal page_2_updates
+      end
     end
 
     it "returns an update that matches the given query" do
