@@ -125,7 +125,6 @@ describe "update" do
     end
 
     it "destroys own update" do
-      skip "Passing locally but failing on Travis and we don't know why"
       visit "/users/#{@u.username}"
       click_button "I Regret This"
 
@@ -135,7 +134,6 @@ describe "update" do
     end
 
     it "doesn't destroy not own update" do
-      skip "Passing locally but failing on Travis and we don't know why"
       author = Fabricate(:author)
       visit "/users/#{@u.username}"
 
@@ -158,7 +156,6 @@ describe "update" do
     end
 
     it "clicks the reply link from update on a user's page" do
-      skip "Passing locally but failing on Travis and we don't know why"
       visit "/users/#{@u2.username}"
       click_link "reply"
       assert_match "What's Going On?", page.body
@@ -166,7 +163,6 @@ describe "update" do
     end
 
     it "clicks the share link from update on a user's page" do
-      skip "Passing locally but failing on Travis and we don't know why"
       visit "/users/#{@u2.username}"
       click_link "share"
       assert_match "What's Going On?", page.body
