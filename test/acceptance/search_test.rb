@@ -49,6 +49,22 @@ describe "search" do
 
       assert_match @update_text, page.body
     end
+
+    it "returns updates on blank search" do
+      search_for("")
+
+      within "#search" do
+        assert has_content? @update_text
+      end
+    end
+
+    it "returns updates when you click on the search tab (no search)" do
+      visit "/search"
+
+      within "#search" do
+        assert has_content? @update_text
+      end
+    end
   end
 
   describe "behavior regardless of authenticatedness" do

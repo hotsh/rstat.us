@@ -125,26 +125,36 @@ describe "update" do
     end
 
     it "destroys own update" do
-      skip "Passing locally but failing on Travis and we don't know why"
-      visit "/users/#{@u.username}"
-      click_button "I Regret This"
+      heisenbug_log do
+        visit "/users/#{@u.username}"
+        if has_button? "I Regret This"
+          click_button "I Regret This"
+        else
+          raise Heisenbug
+        end
 
-      within 'div.flash' do
-        assert has_content? "Update Deleted!"
+        within 'div.flash' do
+          assert has_content? "Update Deleted!"
+        end
       end
     end
 
     it "doesn't destroy not own update" do
-      skip "Passing locally but failing on Travis and we don't know why"
-      author = Fabricate(:author)
-      visit "/users/#{@u.username}"
+      heisenbug_log do
+        author = Fabricate(:author)
+        visit "/users/#{@u.username}"
 
-      Update.any_instance.stubs(:author).returns(author)
+        Update.any_instance.stubs(:author).returns(author)
 
-      click_button "I Regret This"
+        if has_button? "I Regret This"
+          click_button "I Regret This"
+        else
+          raise Heisenbug
+        end
 
-      within 'div.flash' do
-        assert has_content? "I'm afraid I can't let you do that, #{@u.username}."
+        within 'div.flash' do
+          assert has_content? "I'm afraid I can't let you do that, #{@u.username}."
+        end
       end
     end
   end
@@ -158,19 +168,33 @@ describe "update" do
     end
 
     it "clicks the reply link from update on a user's page" do
-      skip "Passing locally but failing on Travis and we don't know why"
-      visit "/users/#{@u2.username}"
-      click_link "reply"
-      assert_match "What's Going On?", page.body
-      assert_match "foo", page.body
+      heisenbug_log do
+        visit "/users/#{@u2.username}"
+
+        if has_link? "reply"
+          click_link "reply"
+        else
+          raise Heisenbug
+        end
+
+        assert_match "What's Going On?", page.body
+        assert_match "foo", page.body
+      end
     end
 
     it "clicks the share link from update on a user's page" do
-      skip "Passing locally but failing on Travis and we don't know why"
-      visit "/users/#{@u2.username}"
-      click_link "share"
-      assert_match "What's Going On?", page.body
-      assert_match "RS @#{@u2.username}: #{@u2.feed.updates.last.text}", page.body
+      heisenbug_log do
+        visit "/users/#{@u2.username}"
+
+        if has_link? "share"
+          click_link "share"
+        else
+          raise Heisenbug
+        end
+
+        assert_match "What's Going On?", page.body
+        assert_match "RS @#{@u2.username}: #{@u2.feed.updates.last.text}", page.body
+      end
     end
   end
 

@@ -1,6 +1,6 @@
 class UpdatesController < ApplicationController
   before_filter :process_params
-  before_filter :require_user, :only => [:timeline, :replies]
+  before_filter :require_user, :only => [:timeline, :replies, :export]
 
   def index
     @title = "updates"
@@ -25,6 +25,14 @@ class UpdatesController < ApplicationController
   def replies
     @list_class = "mentions"
     render_index(current_user.at_replies(params))
+  end
+
+  def export
+    updates = Update.where :author_id => current_user.author.id
+    json_updates = updates.to_json(:only => [:created_at, :text])
+    send_data(json_updates,
+              :filename => "#{current_user.username}-updates.json",
+              :type => "application/json")
   end
 
   def show

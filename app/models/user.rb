@@ -90,7 +90,7 @@ class User
 
   # Generate a multi-use token for account confirmation and password resets
   def set_perishable_token
-    self.perishable_token = Digest::MD5.hexdigest( rand.to_s )
+    self.perishable_token = SecureRandom.hex
     save
   end
 

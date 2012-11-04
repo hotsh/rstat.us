@@ -20,22 +20,26 @@ describe "profile" do
   end
 
   it "has the user's updates on the page in reverse chronological order" do
-    skip "Passing locally but failing on Travis and we don't know why"
+    heisenbug_log do
+      u = Fabricate(:user)
+      update1 = Fabricate(:update,
+                        :text       => "This is a message posted yesterday",
+                        :author     => u.author,
+                        :created_at => 1.day.ago)
+      update2 = Fabricate(:update,
+                        :text       => "This is a message posted last week",
+                        :author     => u.author,
+                        :created_at => 1.week.ago)
+      u.feed.updates << update1
+      u.feed.updates << update2
 
-    u = Fabricate(:user)
-    update1 = Fabricate(:update,
-                      :text       => "This is a message posted yesterday",
-                      :author     => u.author,
-                      :created_at => 1.day.ago)
-    update2 = Fabricate(:update,
-                      :text       => "This is a message posted last week",
-                      :author     => u.author,
-                      :created_at => 1.week.ago)
-    u.feed.updates << update1
-    u.feed.updates << update2
-
-    visit "/users/#{u.username}"
-    assert_match /#{update1.text}.*#{update2.text}/m, page.body
+      visit "/users/#{u.username}"
+      if page.body.match /#{update1.text}.*#{update2.text}/m
+        assert_match /#{update1.text}.*#{update2.text}/m, page.body
+      else
+        raise Heisenbug
+      end
+    end
   end
 
   it "responds with HTML by default if Accept header is */*" do

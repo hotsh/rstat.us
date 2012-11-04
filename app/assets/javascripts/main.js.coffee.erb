@@ -63,6 +63,11 @@ jQuery $ ->
 
   textarea.keypress(updateCounter).keyup(updateCounter)
 
+  textarea.triggeredAutocomplete
+    trigger: "@"
+    source: "/autocomplete"
+    maxLength: 10
+
   # Validate form on submit
   $("#update-form").submit ->
     false if textarea.val().length <= 0 || textarea.val().length > MAX_LENGTH
@@ -77,7 +82,7 @@ jQuery $ ->
 
     length = textarea.text().length
     textarea.keypress()
-    textarea[0].setSelectionRange(length,length)
+    textarea[0].setSelectionRange(length, length)
     textarea.focus()
     window.scrollTo(0, $(textarea).position().top)
 
@@ -103,7 +108,7 @@ jQuery $ ->
     if(textarea.val() != "")
       firstLetter = textarea.val()[0]
 
-    enabled = true
+    enabled = $("#tweet").attr('checked')
     if firstLetter == "@"
       enabled = false
 
