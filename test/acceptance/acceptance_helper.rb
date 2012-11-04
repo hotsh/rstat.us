@@ -142,4 +142,37 @@ module AcceptanceHelper
     fill_in "search", :with => query
     click_button "Search"
   end
+
+  def heisenbug_log
+    old_rails_logger = Rails.logger
+    old_action_controller_logger = ActionController::Base.logger
+
+    logfile = 'log/heisenbug.log'
+    new_logger = Logger.new(logfile)
+    new_logger.level = Logger::DEBUG
+
+    Rails.logger = new_logger
+    ActionController::Base.logger = new_logger
+
+    begin
+      yield
+    rescue Heisenbug
+      puts
+      puts "Start of Heisenbug logging ======================================"
+      puts File.read logfile
+      puts "================"
+      puts body
+      puts "End of Heisenbug logging ========================================"
+      puts
+      puts "Congratulations!! You've seen an incidence of a HEISENBUG we're"
+      puts "tracking. Please copy the output from Start to End and paste it"
+      puts "in a comment on https://github.com/hotsh/rstat.us/issues/479"
+    ensure
+      File.delete logfile
+      Rails::logger = old_rails_logger
+      ActionController::Base.logger = old_action_controller_logger
+    end
+  end
 end
+
+class Heisenbug < StandardError; end

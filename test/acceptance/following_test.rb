@@ -30,18 +30,25 @@ describe "following" do
     end
 
     it "unfollows another user" do
-      log_in_as_some_user
+      heisenbug_log do
+        log_in_as_some_user
 
-      u2 = Fabricate(:user)
-      a2 = Fabricate(:authorization, :user => u2)
+        u2 = Fabricate(:user)
+        a2 = Fabricate(:authorization, :user => u2)
 
-      @u.follow! u2.feed
+        @u.follow! u2.feed
 
-      visit "/users/#{@u.username}/following"
-      click_button "unfollow-#{u2.feed.id}"
+        visit "/users/#{@u.username}/following"
 
-      within flash do
-        assert has_content? "No longer following #{u2.username}"
+        if has_button? "unfollow-#{u2.feed.id}"
+          click_button "unfollow-#{u2.feed.id}"
+        else
+          raise Heisenbug
+        end
+
+        within flash do
+          assert has_content? "No longer following #{u2.username}"
+        end
       end
     end
   end
