@@ -26,7 +26,7 @@ describe "finding or creating a new feed" do
 
     before do
       Feed.expects(:first).with(:id => @subscriber_id).returns(nil)
-      
+
       @feed_url = "http://some.url"
       @feed_data = FeedData.new(@feed_url, nil)
 
@@ -39,7 +39,7 @@ describe "finding or creating a new feed" do
       stub_converts_subscriber.expects(:get_feed_data!)
         .returns(@feed_data)
     end
-    
+
     describe "when a feed exists with the remote url" do
       it "should return the feed with the remote url " do
         Feed.expects(:first).with(:remote_url => @feed_url).returns(@feed)
@@ -53,7 +53,7 @@ describe "finding or creating a new feed" do
     describe "when a feed does not exist with the remote url" do
       it "should create a new feed from the data" do
         Feed.expects(:first).with(:remote_url => @feed_url).returns(nil)
-        Feed.expects(:create_from_feed_data).with(@feed_data).returns(@feed)
+        Feed.expects(:create_and_populate!).with(@feed_data).returns(@feed)
 
         feed = FindsOrCreatesFeeds.find_or_create(@subscriber_id)
 

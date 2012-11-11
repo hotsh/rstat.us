@@ -3,6 +3,42 @@ require_relative '../test_helper'
 describe Feed do
   include TestHelper
 
+  describe ".create_and_populate!" do
+    let(:feed_data)             { mock }
+    let(:feed_data_url)         { mock }
+    let(:feed_data_finger_data) { mock }
+    let(:feed)                  { mock }
+
+    before do
+      feed_data.stubs(:url).returns(feed_data_url)
+      Feed.stubs(:create).returns(feed)
+      feed_data.stubs(:finger_data).returns(feed_data_finger_data)
+      feed.stubs(:populate)
+    end
+
+    subject { Feed.create_and_populate!(feed_data) }
+
+    it "gets the url from the feed data" do
+      feed_data.expects(:url).returns(feed_data_url)
+      subject
+    end
+
+    it "creates a feed from the feed data" do
+      Feed.expects(:create).with(:remote_url => feed_data_url).returns(feed)
+      subject
+    end
+
+    it "gets the finger_data from the feed data" do
+      feed_data.expects(:finger_data).returns(feed_data_finger_data)
+      subject
+    end
+
+    it "populates the feed with the finger data" do
+      feed.expects(:populate).with(feed_data_finger_data)
+      subject
+    end
+  end
+
   describe "#populate_entries" do
     describe "new update" do
       it "creates a new update" do

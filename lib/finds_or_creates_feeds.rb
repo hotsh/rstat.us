@@ -20,7 +20,7 @@ class FindsOrCreatesFeeds
   end
 
   def self.create_feed_from_feed_data(feed_data)
-    Feed.create_from_feed_data(feed_data)
+    Feed.create_and_populate!(feed_data)
   end
 
 end
