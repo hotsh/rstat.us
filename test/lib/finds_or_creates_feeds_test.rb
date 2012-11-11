@@ -30,8 +30,13 @@ describe "finding or creating a new feed" do
       @feed_url = "http://some.url"
       @feed_data = FeedData.new(@feed_url, nil)
 
-      ConvertsSubscriberToFeedData.expects(:get_feed_data)
+      stub_converts_subscriber = stub
+
+      ConvertsSubscriberToFeedData.expects(:new)
         .with(@subscriber_id)
+        .returns(stub_converts_subscriber)
+
+      stub_converts_subscriber.expects(:get_feed_data!)
         .returns(@feed_data)
     end
     

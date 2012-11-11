@@ -5,7 +5,7 @@ class FindsOrCreatesFeeds
     feed = Feed.first(:id => subscribe_to)
 
     unless feed
-      feed_data = ConvertsSubscriberToFeedData.get_feed_data(subscribe_to)
+      feed_data = ConvertsSubscriberToFeedData.new(subscribe_to).get_feed_data!
       feed = Feed.first(:remote_url => feed_data.url) || Feed.create_from_feed_data(feed_data)
     end
 
