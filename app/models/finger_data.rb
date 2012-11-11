@@ -4,15 +4,26 @@ class FingerData
   end
 
   def url
-    @xrd.links.find { |l| l['rel'] == 'http://schemas.google.com/g/2010#updates-from' }.to_s
+    find('http://schemas.google.com/g/2010#updates-from')
   end
 
   def public_key
-    public_key_href = @xrd.links.find { |l| l['rel'].downcase == 'magic-public-key' }.href
-    public_key_href[/^.*?,(.*)$/,1]
+    public_key = find('magic-public-key')
+    public_key.split(",")[1] || ""
   end
 
   def salmon_url
-    @xrd.links.find { |l| l['rel'].downcase == 'salmon' }.href
+    find('salmon')
+  end
+
+  private
+
+  def find(rel)
+    element_hash = links.find { |link| link['rel'].downcase == rel } || {}
+    element_hash.fetch("href") { "" }
+  end
+
+  def links
+    @xrd.links || []
   end
 end
