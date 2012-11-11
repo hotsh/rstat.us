@@ -26,5 +26,44 @@ describe UserTwitterJsonDecorator do
         }.must_raise ArgumentError
       end
     end
+
+    describe "include_status => true" do
+      describe "with updates" do
+        it "returns the latest update" do
+          user = Fabricate(:user)
+          update = Fabricate(:update,
+                             :text => "Hello World I'm on RStatus",
+                             :author => user.author)
+          user.feed.updates << update
+
+          root_url       = "https://example.com"
+          decorated_user = UserTwitterJsonDecorator.decorate(user)
+
+          json           = decorated_user.to_json(
+                             :root_url       => root_url,
+                             :include_status => true
+                           )
+          parsed_json    = JSON.parse(json)
+
+          parsed_json["status"]["text"].must_equal(update.text)
+        end
+      end
+
+      describe "without any updates" do
+        it "doesnt freak out" do
+          user           = Fabricate(:user)
+          root_url       = "https://example.com"
+          decorated_user = UserTwitterJsonDecorator.decorate(user)
+
+          json           = decorated_user.to_json(
+                             :root_url       => root_url,
+                             :include_status => true
+                           )
+          parsed_json    = JSON.parse(json)
+
+          parsed_json["id"].must_equal user.id.to_s
+        end
+      end
+    end
   end
 end

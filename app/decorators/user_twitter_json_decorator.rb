@@ -5,7 +5,7 @@ class UserTwitterJsonDecorator < ApplicationDecorator
     unless options[:root_url]
       raise ArgumentError.new "root_url must be specified"
     end
-    update = UpdateTwitterJsonDecorator.decorate(user.updates.last)
+
     author_decorator = AuthorDecorator.decorate(user.author)
     result = {
       :id => user.id,
@@ -20,7 +20,12 @@ class UserTwitterJsonDecorator < ApplicationDecorator
       :friends_count => author.user.following.length,
       :followers_count => author.user.followers.length
     }
-    result[:status] = update.as_json(:trim_user => true)  if options[:include_status] == true
+
+    if options[:include_status] == true && !user.updates.empty?
+      update = UpdateTwitterJsonDecorator.decorate(user.updates.last)
+      result[:status] = update.as_json(:trim_user => true)
+    end
+
     unless result[:profile_image_url].match(/^http/)
       resolved_url = (
                        URI(options[:root_url]) +
