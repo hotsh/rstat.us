@@ -1,6 +1,5 @@
 require_relative "queries_web_finger"
-
-FeedData = Struct.new(:url, :finger_data)
+require_relative '../app/models/feed_data'
 
 class ConvertsSubscriberToFeedData
   def self.get_feed_data(subscriber_url)
