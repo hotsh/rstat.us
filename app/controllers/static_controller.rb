@@ -21,4 +21,7 @@ class StaticController < ApplicationController
   def follow
     @title = "follow a user"
   end
+
+  def help
+  end
 end
