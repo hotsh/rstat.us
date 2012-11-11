@@ -1,8 +1,7 @@
 require 'minitest/autorun'
 require 'mocha'
 require 'socket'
-
-require_relative '../../lib/finds_or_creates_feeds'
+require_relative '../../lib/converts_subscriber_to_feed_data'
 
 FakeFingerData = Struct.new(:url)
 

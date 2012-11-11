@@ -60,17 +60,17 @@ class SubscriptionsController < ApplicationController
   def create
     require_login! :return => request.referrer
 
-    subscribe_to_feed = FindsOrCreatesFeeds.find_or_create(params[:subscribe_to])
+    target = FeedService.new(params[:subscribe_to]).find_or_create!
 
     # Stop and return a nice message if already following this feed
-    if current_user.following_feed? subscribe_to_feed
-      flash[:notice] = "You're already following #{subscribe_to_feed.author.username}."
+    if current_user.following_feed? target
+      flash[:notice] = "You're already following #{target.author.username}."
       redirect_to request.referrer
       return
     end
 
     # Actually follow!
-    f = current_user.follow! subscribe_to_feed
+    f = current_user.follow! target
 
     unless f
       flash[:error] = "There was a problem following #{params[:subscribe_to]}."
