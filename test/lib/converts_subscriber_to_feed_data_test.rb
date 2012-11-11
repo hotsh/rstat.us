@@ -10,16 +10,16 @@ module RstatUs
   class InvalidSubscribeTo < StandardError; end
 end
 
-describe "converting subscriber to feed data" do
-  describe "when the subscriber info has feed in it" do
-    it "should replace the feed with http" do
+describe "converting a subscriber to feed data" do
+  describe "when a Safari 'feed://' scheme is provided" do
+    it "should replace feed:// with http://" do
       feed_data = ConvertsSubscriberToFeedData.new("feed://stuff").get_feed_data!
 
       assert_equal "http://stuff", feed_data.url
     end
   end
 
-  describe "when the subscriber info is an email address" do
+  describe "when an email address is provided" do
     it "should finger the user" do
       email = "somebody@somewhere.com"
       finger_data = FakeFingerData.new("url")
@@ -31,15 +31,17 @@ describe "converting subscriber to feed data" do
     end
   end
 
-  describe "when the subscriber info is an http url" do
-    it "should use the subscriber url as the feed url" do
+  describe "when an http:// URL is provided" do
+    it "should use the subscriber URL as the feed URL" do
       feed_url  = "http://feed.me"
       feed_data = ConvertsSubscriberToFeedData.new(feed_url).get_feed_data!
 
       assert_equal feed_url, feed_data.url
     end
+  end
 
-    it "should use an https subscriber url as the feed url" do
+  describe "when an https:// URL is provided" do
+    it "should use the subscriber URL as the feed URL" do
       feed_url  = "https://feed.me"
       feed_data = ConvertsSubscriberToFeedData.new(feed_url).get_feed_data!
 
@@ -47,7 +49,7 @@ describe "converting subscriber to feed data" do
     end
   end
 
-  describe "when the subscriber info is neither an email address nor an http url" do
+  describe "when we cannot currently understand the subscriber URL" do
     it "should raise an exception so that we dont try and look it up as a file" do
       feed_url  = "Gemfile.lock"
 
@@ -58,7 +60,7 @@ describe "converting subscriber to feed data" do
   end
 
   describe "when a network error occurs retrieving the subscriber info" do
-    it "should not raise a socket error" do
+    it "consumes the SocketError and re-raises at an RstatUs exception" do
       email = "ladygaga@twitter"
       QueriesWebFinger.expects(:query).with(email).throws(SocketError)
       lambda {
