@@ -127,6 +127,10 @@ class Feed
     remote_url.nil?
   end
 
+  def remote?
+    !local?
+  end
+
   def url(params = {})
     atom_format = params.fetch(:format, false) == :atom
 

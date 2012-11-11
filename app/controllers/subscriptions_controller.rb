@@ -79,7 +79,7 @@ class SubscriptionsController < ApplicationController
     end
 
     # Attempt to inform the hub for remote feeds
-    unless f.local? || f.hubs.empty?
+    if f.remote? && f.hubs.any?
       hub_url = f.hubs.first
 
       sub = OSub::Subscription.new(subscription_url(f.id, :format => "atom"), f.url, f.secret)
