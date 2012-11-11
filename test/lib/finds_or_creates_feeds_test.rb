@@ -13,7 +13,7 @@ describe "finding or creating a new feed" do
   end
 
   describe "when feed exists with the subscriber id" do
-    it "should return the feed" do
+    it "returns the feed" do
       Feed.expects(:first).with(:id => @subscriber_id).returns(@feed)
 
       feed = FindsOrCreatesFeeds.find_or_create(@subscriber_id)
