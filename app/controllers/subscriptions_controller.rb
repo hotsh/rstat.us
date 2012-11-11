@@ -70,23 +70,23 @@ class SubscriptionsController < ApplicationController
     end
 
     # Actually follow!
-    f = current_user.follow! target
+    target_feed = current_user.follow! target
 
-    unless f
+    unless target_feed
       flash[:error] = "There was a problem following #{params[:subscribe_to]}."
       redirect_to request.referrer
       return
     end
 
     # Attempt to inform the hub for remote feeds
-    if f.remote? && f.hubs.any?
-      hub_url = f.hubs.first
+    if target_feed.remote? && target_feed.hubs.any?
+      hub_url = target_feed.hubs.first
 
-      sub = OSub::Subscription.new(subscription_url(f.id, :format => "atom"), f.url, f.secret)
-      sub.subscribe(hub_url, true, f.verify_token)
+      sub = OSub::Subscription.new(subscription_url(target_feed.id, :format => "atom"), target_feed.url, target_feed.secret)
+      sub.subscribe(hub_url, true, target_feed.verify_token)
     end
 
-    flash[:notice] = "Now following #{f.author.username}."
+    flash[:notice] = "Now following #{target_feed.author.username}."
     redirect_to request.referrer
 
   rescue RstatUs::InvalidSubscribeTo => e
