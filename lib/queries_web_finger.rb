@@ -1,4 +1,4 @@
-require_relative "finger_data"
+require_relative "../app/models/finger_data"
 
 class QueriesWebFinger
   def self.query(email)

@@ -4,7 +4,7 @@ class FingerData
   end
 
   def url
-   @xrd.links.find { |l| l['rel'] == 'http://schemas.google.com/g/2010#updates-from' }.to_s
+    @xrd.links.find { |l| l['rel'] == 'http://schemas.google.com/g/2010#updates-from' }.to_s
   end
 
   def public_key

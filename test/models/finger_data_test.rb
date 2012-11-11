@@ -1,7 +1,7 @@
 require 'minitest/autorun'
 require 'mocha'
 
-require_relative '../../lib/finger_data'
+require_relative '../../app/models/finger_data'
 
 describe "when querying web finger" do
 
