@@ -67,7 +67,7 @@ group :development, :test do
   gem "vcr", "~> 1.10.3"
   gem "simplecov", "~> 0.4.0", :require => false
   gem "launchy", "~> 2.0.5"
-  gem "minitest", "~> 2.12.1"
+  gem "minitest", "~> 4.2.0"
   gem "quiet_assets", "~> 1.0.0"
 end
 

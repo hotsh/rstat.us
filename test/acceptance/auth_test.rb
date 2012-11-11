@@ -244,7 +244,7 @@ describe "Authorization" do
       end
 
       it "has an add twitter account button" do
-        assert_match page.body, /Add Twitter Account/
+        assert has_button? "Add Twitter Account"
       end
 
       it "does not have the post to twitter preference" do
@@ -261,7 +261,9 @@ describe "Authorization" do
       end
 
       it "shows the user's twitter nickname" do
-        assert_match page.body, /Awesomeo the Great/
+        within ".linked-accounts" do
+          text.must_include "Awesomeo the Great"
+        end
       end
 
       it "has a preference about whether to always post updates to twitter" do
@@ -293,7 +295,7 @@ describe "Authorization" do
       it "has the twitter send checkbox" do
         log_in_as_some_user(:with => :twitter)
 
-        assert_match page.body, /Twitter/
+
         assert has_checked_field? 'tweet'
       end
 
@@ -308,7 +310,6 @@ describe "Authorization" do
         end
         visit "/"
 
-        assert_match page.body, /Twitter/
         assert has_unchecked_field? 'tweet'
       end
 
