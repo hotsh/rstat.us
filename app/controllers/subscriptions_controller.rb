@@ -62,32 +62,30 @@ class SubscriptionsController < ApplicationController
 
     target = FeedService.new(params[:subscribe_to]).find_or_create!
 
-    # Stop and return a nice message if already following this feed
     if current_user.following_feed? target
+      # Stop and return a nice message if already following this feed
       flash[:notice] = "You're already following #{target.author.username}."
       redirect_to request.referrer
       return
+    else
+      # Actually follow!
+      target_feed = current_user.follow! target
+
+      if target_feed
+        # Attempt to inform the hub for remote feeds
+        if target_feed.remote? && target_feed.hubs.any?
+          hub_url = target_feed.hubs.first
+
+          sub = OSub::Subscription.new(subscription_url(target_feed.id, :format => "atom"), target_feed.url, target_feed.secret)
+          sub.subscribe(hub_url, true, target_feed.verify_token)
+        end
+
+        flash[:notice] = "Now following #{target_feed.author.username}."
+        redirect_to request.referrer
+      else
+        raise RstatUs::InvalidSubscribeTo
+      end
     end
-
-    # Actually follow!
-    target_feed = current_user.follow! target
-
-    unless target_feed
-      flash[:error] = "There was a problem following #{params[:subscribe_to]}."
-      redirect_to request.referrer
-      return
-    end
-
-    # Attempt to inform the hub for remote feeds
-    if target_feed.remote? && target_feed.hubs.any?
-      hub_url = target_feed.hubs.first
-
-      sub = OSub::Subscription.new(subscription_url(target_feed.id, :format => "atom"), target_feed.url, target_feed.secret)
-      sub.subscribe(hub_url, true, target_feed.verify_token)
-    end
-
-    flash[:notice] = "Now following #{target_feed.author.username}."
-    redirect_to request.referrer
 
   rescue RstatUs::InvalidSubscribeTo => e
     # This means the user's entry was neither a webfinger identifier
