@@ -34,10 +34,6 @@ class Feed
 
   after_create :default_hubs
 
-  def self.find_or_create(subscribe_to)
-    FindsOrCreatesFeeds.find_or_create(subscribe_to)
-  end
-
   def self.create_from_feed_data(feed_data)
     feed = Feed.create(:remote_url => feed_data.url)
     feed.populate(feed_data.finger_data)

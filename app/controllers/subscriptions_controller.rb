@@ -60,7 +60,7 @@ class SubscriptionsController < ApplicationController
   def create
     require_login! :return => request.referrer
 
-    subscribe_to_feed = Feed.find_or_create(params[:subscribe_to])
+    subscribe_to_feed = FindsOrCreatesFeeds.find_or_create(params[:subscribe_to])
 
     # Stop and return a nice message if already following this feed
     if current_user.following_feed? subscribe_to_feed
