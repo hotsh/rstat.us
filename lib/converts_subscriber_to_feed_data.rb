@@ -1,4 +1,4 @@
-require_relative "queries_web_finger"
+require_relative '../app/services/finger_service'
 require_relative '../app/models/feed_data'
 
 class ConvertsSubscriberToFeedData
@@ -42,9 +42,7 @@ class ConvertsSubscriberToFeedData
   end
 
   def query_web_finger
-    finger_data            = QueriesWebFinger.query(@subscriber_url)
-    @feed_data.url         = finger_data.url
-    @feed_data.finger_data = finger_data
+    @feed_data     = FingerService.new(@subscriber_url).finger!
   end
 
   def http_https_subscriber

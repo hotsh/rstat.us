@@ -22,12 +22,17 @@ describe "converting a subscriber to feed data" do
   describe "when an email address is provided" do
     it "should finger the user" do
       email = "somebody@somewhere.com"
+
+      mock_finger_service = mock
+      FingerService.expects(:new).with(email).returns(mock_finger_service)
+
       finger_data = FakeFingerData.new("url")
-      QueriesWebFinger.expects(:query).with(email).returns(finger_data)
+      mock_finger_service.expects(:finger!).returns(finger_data)
+
       new_feed_data = ConvertsSubscriberToFeedData.new(email).get_feed_data!
 
       assert_equal "url", new_feed_data.url
-      assert_equal finger_data, new_feed_data.finger_data
+      assert_equal finger_data, new_feed_data
     end
   end
 
@@ -62,7 +67,11 @@ describe "converting a subscriber to feed data" do
   describe "when a network error occurs retrieving the subscriber info" do
     it "consumes the SocketError and re-raises at an RstatUs exception" do
       email = "ladygaga@twitter"
-      QueriesWebFinger.expects(:query).with(email).throws(SocketError)
+
+      mock_finger_service = mock
+      FingerService.expects(:new).with(email).returns(mock_finger_service)
+      mock_finger_service.expects(:finger!).throws(SocketError)
+
       lambda {
         ConvertsSubscriberToFeedData.new(email).get_feed_data!
       }.must_raise(RstatUs::InvalidSubscribeTo)
