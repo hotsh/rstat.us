@@ -1,5 +1,6 @@
 require 'require_relative' if RUBY_VERSION[0,3] == '1.8'
 require_relative 'acceptance_helper'
+require 'uri'
 
 describe "following remote users" do
   include AcceptanceHelper
@@ -54,6 +55,16 @@ describe "following remote users" do
 
       within flash do
         assert has_content? "You're already following steveklabnik."
+      end
+    end
+
+    it "follows users on the current node even if you try to follow them like remote users" do
+      local_user = Fabricate(:user)
+
+      follow_remote_user!("#{local_user.username}@example.com")
+
+      within flash do
+        assert has_content? "Now following #{local_user.username}."
       end
     end
   end

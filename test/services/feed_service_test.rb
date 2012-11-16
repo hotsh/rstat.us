@@ -10,8 +10,6 @@ describe FeedService do
     let(:existing_feed) { mock }
     let(:new_feed)      { mock }
 
-    subject { service.find_or_create! }
-
     describe "when the feed can be found by ID" do
       # the BSON ID of user 'gavinlaking@rstat.us' (follow me!)
       let(:target_feed)   { "505cc1beb4f2cd000200022c" }
@@ -20,9 +18,39 @@ describe FeedService do
         service.stubs(:find_feed_by_id).returns(existing_feed)
       end
 
-      it "the feed is returned" do
+      it "returns the feed" do
         service.find_or_create!.must_equal existing_feed
-        subject
+      end
+    end
+
+    describe "when the feed has a local URL" do
+      let(:target_feed) { "someone@example.com" }
+      let(:service)     { FeedService.new(target_feed, "http://example.com/") }
+      let(:user)        { mock }
+      let(:author)      { mock }
+      let(:feed)        { mock }
+
+      describe "when the feed exists" do
+        before do
+          User.stubs(:find_by_case_insensitive_username).returns(user)
+          user.stubs(:author).returns(author)
+          author.stubs(:feed).returns(feed)
+        end
+
+        it "returns the feed" do
+          service.find_or_create!.must_equal feed
+        end
+      end
+
+      describe "when the feed does not exist" do
+        before do
+          User.stubs(:find_by_case_insensitive_username).returns(nil)
+          service.stubs(:find_feed_by_remote_url).returns(existing_feed)
+        end
+
+        it "moves on to trying to find by remote url" do
+          service.find_or_create!.must_equal existing_feed
+        end
       end
     end
 
@@ -32,12 +60,12 @@ describe FeedService do
 
       before do
         service.stubs(:find_feed_by_id).returns nil
+        service.stubs(:find_feed_by_username).returns nil
         service.stubs(:find_feed_by_remote_url).returns(existing_feed)
       end
 
-      it "the feed is returned" do
+      it "returns the feed" do
         service.find_or_create!.must_equal existing_feed
-        subject
       end
     end
 
@@ -46,15 +74,14 @@ describe FeedService do
 
       before do
         service.stubs(:find_feed_by_id).returns nil
+        service.stubs(:find_feed_by_username).returns nil
         service.stubs(:find_feed_by_remote_url).returns nil
         service.stubs(:create_feed_from_feed_data).returns(new_feed)
       end
 
-      it "must be created instead" do
+      it "creates the feed" do
         service.find_or_create!.must_equal new_feed
-        subject
       end
     end
-
   end
 end

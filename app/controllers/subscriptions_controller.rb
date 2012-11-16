@@ -60,7 +60,7 @@ class SubscriptionsController < ApplicationController
   def create
     require_login! :return => request.referrer
 
-    target = FeedService.new(params[:subscribe_to]).find_or_create!
+    target = FeedService.new(params[:subscribe_to], root_url).find_or_create!
 
     if current_user.following_feed? target
       # Stop and return a nice message if already following this feed
