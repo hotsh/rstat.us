@@ -398,9 +398,10 @@ class User
   end
 
   def email_already_confirmed
+    return if self.email.nil?
     if User.where(:email => self.email,
-      :email_confirmed => true,
-      :username.ne => self.username).count > 0
+                  :email_confirmed => true,
+                  :id.ne => self.id).count > 0
       errors.add(:email, "is already taken.")
     end
   end
