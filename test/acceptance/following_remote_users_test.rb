@@ -59,8 +59,11 @@ describe "following remote users" do
   end
 
   describe "failure" do
-    it "doesn't look up something that doesn't look like either a webfinger id or a URL" do
+    before do
       log_in_as_some_user
+    end
+
+    it "doesn't look up something that doesn't look like either a webfinger id or a URL" do
       visit "/"
       click_link "Follow Remote User"
 
@@ -78,7 +81,6 @@ describe "following remote users" do
     end
 
     it "especially doesn't look up something that looks like a local file" do
-      log_in_as_some_user
       visit "/"
       click_link "Follow Remote User"
 
