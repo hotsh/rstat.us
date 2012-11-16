@@ -47,6 +47,15 @@ describe User do
   end
 
   describe "username" do
+    it "can be changed" do
+      u = Fabricate(:user)
+
+      stub_superfeedr_request_for_user u
+
+      u.edit_user_profile(:username => 'foobar')
+      assert_equal 'foobar', u.username
+    end
+
     it "must be unique" do
       Fabricate(:user, :username => "steve")
       u = Fabricate.build(:user, :username => "steve")

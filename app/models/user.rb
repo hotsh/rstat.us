@@ -37,11 +37,16 @@ class User
   key :always_send_to_twitter, Integer, :default => 1
 
   validate :email_already_confirmed
-  validates_uniqueness_of :username, :allow_nil => :true, :case_sensitive => false
+  validates_uniqueness_of :username,
+                          :allow_nil => :true,
+                          :case_sensitive => false,
+                          :message => "has already been taken."
 
   # The maximum is arbitrary
   # Twitter has 15, let's be different
-  validates_length_of :username, :maximum => 17, :message => "must be 17 characters or fewer."
+  validates_length_of :username,
+                      :maximum => 17,
+                      :message => "must be 17 characters or fewer."
 
   # Validate users don't have special characters in their username
   validate :no_malformed_username
@@ -341,29 +346,33 @@ class User
         self.password = params[:password]
         self.save
       else
-        return "Passwords must match"
+        self.errors.add(:password, "doesn't match confirmation.")
+        return
       end
     end
 
-    self.email_confirmed        = (self.email == params[:email])
+    params[:email] = nil if params[:email].blank?
+
+    self.username               = params[:username]
+
+    self.email_confirmed        = self.email == params[:email]
     self.email                  = params[:email]
 
     self.always_send_to_twitter = params[:user] && params[:user][:always_send_to_twitter].to_i
 
-    self.save
+    return unless self.save
 
-    author.name    = params[:name]
-    author.email   = params[:email]
-    author.website = params[:website]
-    author.bio     = params[:bio]
+    author.username = params[:username]
+    author.name     = params[:name]
+    author.email    = params[:email]
+    author.website  = params[:website]
+    author.bio      = params[:bio]
     author.save
 
     # TODO: Send out notice to other nodes
     # To each remote domain that is following you via hub
     # and to each remote domain that you follow via salmon
     author.feed.ping_hubs
-
-    return true
   end
 
   # A better name would be very welcome.
