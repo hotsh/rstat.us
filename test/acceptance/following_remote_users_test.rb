@@ -21,15 +21,18 @@ describe "following remote users" do
 
     it "follows users on other sites" do
       follow_remote_user!
-      assert_match "Now following steveklabnik.", page.body
       assert "/", current_path
+      within flash do
+        assert has_content? "Now following steveklabnik."
+      end
     end
 
     it "has users on other sites on /following" do
       follow_remote_user!
       visit "/users/#{@u.username}/following"
-
-      assert_match "steveklabnik", page.body
+      within "#content" do
+        assert has_content? "steveklabnik"
+      end
     end
 
     it "unfollows users from other sites" do
@@ -40,15 +43,18 @@ describe "following remote users" do
         click_button "Unfollow"
       end
 
-      assert_match "No longer following steveklabnik", page.body
+      within flash do
+        assert has_content? "No longer following steveklabnik"
+      end
     end
 
     it "doesn't follow those you already follow, and reports an error" do
       follow_remote_user!
       follow_remote_user!
 
-      assert has_content? "You're already following steveklabnik."
-      assert_match "Unfollow", page.body
+      within flash do
+        assert has_content? "You're already following steveklabnik."
+      end
     end
   end
 
