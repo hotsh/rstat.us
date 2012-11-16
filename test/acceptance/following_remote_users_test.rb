@@ -4,30 +4,36 @@ require_relative 'acceptance_helper'
 describe "following remote users" do
   include AcceptanceHelper
 
+  def follow_remote_user!(webfinger_id = "steveklabnik@identi.ca")
+    visit "/"
+    click_link "Follow Remote User"
+
+    VCR.use_cassette('subscribe_remote') do
+      fill_in 'subscribe_to', :with => webfinger_id
+      click_button "Follow"
+    end
+  end
+
   describe "success" do
     before do
       log_in_as_some_user
-      visit "/"
-      click_link "Follow Remote User"
-
-      VCR.use_cassette('subscribe_remote') do
-        fill_in 'subscribe_to', :with => "steveklabnik@identi.ca"
-        click_button "Follow"
-      end
     end
 
     it "follows users on other sites" do
+      follow_remote_user!
       assert_match "Now following steveklabnik.", page.body
       assert "/", current_path
     end
 
     it "has users on other sites on /following" do
+      follow_remote_user!
       visit "/users/#{@u.username}/following"
 
       assert_match "steveklabnik", page.body
     end
 
     it "unfollows users from other sites" do
+      follow_remote_user!
       visit "/users/#{@u.username}/following"
 
       VCR.use_cassette('unsubscribe_remote') do
@@ -37,20 +43,11 @@ describe "following remote users" do
       assert_match "No longer following steveklabnik", page.body
     end
 
-    it "only creates one Feed per remote_url" do
-      log_in_as_some_user
-      visit "/"
-      click_link "Follow Remote User"
+    it "doesn't follow those you already follow, and reports an error" do
+      follow_remote_user!
+      follow_remote_user!
 
-      assert_match "OStatus Sites", page.body
-
-      VCR.use_cassette('subscribe_remote') do
-        fill_in 'subscribe_to', :with => "steveklabnik@identi.ca"
-        click_button "Follow"
-      end
-
-      visit "/users/#{@u.username}/following"
-
+      assert has_content? "You're already following steveklabnik."
       assert_match "Unfollow", page.body
     end
   end
