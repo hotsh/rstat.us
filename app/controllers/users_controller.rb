@@ -61,7 +61,7 @@ class UsersController < ApplicationController
 
   def update
     if @user == current_user
-      response = @user.edit_user_profile(params)
+      @user.update_profile!(params)
 
       unless @user.errors.any?
         unless @user.email.blank? || @user.email_confirmed

@@ -340,14 +340,14 @@ class User
   end
 
   # Edit profile information
-  def edit_user_profile(params)
+  def update_profile!(params)
     unless params[:password].nil? or params[:password].empty?
       if params[:password] == params[:password_confirm]
         self.password = params[:password]
         self.save
       else
         self.errors.add(:password, "doesn't match confirmation.")
-        return
+        return false
       end
     end
 
@@ -360,7 +360,7 @@ class User
 
     self.always_send_to_twitter = params[:user] && params[:user][:always_send_to_twitter].to_i
 
-    return unless self.save
+    return false unless self.save
 
     author.username = params[:username]
     author.name     = params[:name]
@@ -373,6 +373,8 @@ class User
     # To each remote domain that is following you via hub
     # and to each remote domain that you follow via salmon
     author.feed.ping_hubs
+
+    return self
   end
 
   # A better name would be very welcome.
