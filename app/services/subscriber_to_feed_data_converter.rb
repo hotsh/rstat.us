@@ -1,7 +1,4 @@
-require_relative '../app/services/finger_service'
-require_relative '../app/models/feed_data'
-
-class ConvertsSubscriberToFeedData
+class SubscriberToFeedDataConverter
 
   def initialize(subscriber_url)
     @subscriber_url = subscriber_url

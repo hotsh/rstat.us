@@ -1,5 +1,3 @@
-require_relative '../../lib/converts_subscriber_to_feed_data'
-
 class FeedService
   def initialize(target_feed)
     @target_feed  = target_feed
@@ -28,6 +26,6 @@ class FeedService
   end
 
   def get_feed_data_for_target
-    ConvertsSubscriberToFeedData.new(@target_feed).get_feed_data!
+    SubscriberToFeedDataConverter.new(@target_feed).get_feed_data!
   end
 end

@@ -1,7 +1,7 @@
 require 'minitest/autorun'
 require 'mocha'
 require 'socket'
-require_relative '../../lib/converts_subscriber_to_feed_data'
+require_relative '../../app/services/subscriber_to_feed_data_converter'
 
 FakeFingerData = Struct.new(:url)
 
@@ -12,7 +12,7 @@ end
 describe "converting a subscriber to feed data" do
   describe "when a Safari 'feed://' scheme is provided" do
     it "should replace feed:// with http://" do
-      feed_data = ConvertsSubscriberToFeedData.new("feed://stuff").get_feed_data!
+      feed_data = SubscriberToFeedDataConverter.new("feed://stuff").get_feed_data!
 
       assert_equal "http://stuff", feed_data.url
     end
@@ -28,7 +28,7 @@ describe "converting a subscriber to feed data" do
       finger_data = FakeFingerData.new("url")
       mock_finger_service.expects(:finger!).returns(finger_data)
 
-      new_feed_data = ConvertsSubscriberToFeedData.new(email).get_feed_data!
+      new_feed_data = SubscriberToFeedDataConverter.new(email).get_feed_data!
 
       assert_equal "url", new_feed_data.url
       assert_equal finger_data, new_feed_data
@@ -38,7 +38,7 @@ describe "converting a subscriber to feed data" do
   describe "when an http:// URL is provided" do
     it "should use the subscriber URL as the feed URL" do
       feed_url  = "http://feed.me"
-      feed_data = ConvertsSubscriberToFeedData.new(feed_url).get_feed_data!
+      feed_data = SubscriberToFeedDataConverter.new(feed_url).get_feed_data!
 
       assert_equal feed_url, feed_data.url
     end
@@ -47,7 +47,7 @@ describe "converting a subscriber to feed data" do
   describe "when an https:// URL is provided" do
     it "should use the subscriber URL as the feed URL" do
       feed_url  = "https://feed.me"
-      feed_data = ConvertsSubscriberToFeedData.new(feed_url).get_feed_data!
+      feed_data = SubscriberToFeedDataConverter.new(feed_url).get_feed_data!
 
       assert_equal feed_url, feed_data.url
     end
@@ -58,7 +58,7 @@ describe "converting a subscriber to feed data" do
       feed_url  = "Gemfile.lock"
 
       lambda {
-        ConvertsSubscriberToFeedData.new(feed_url).get_feed_data!
+        SubscriberToFeedDataConverter.new(feed_url).get_feed_data!
       }.must_raise(RstatUs::InvalidSubscribeTo)
     end
   end
@@ -72,7 +72,7 @@ describe "converting a subscriber to feed data" do
       mock_finger_service.expects(:finger!).throws(SocketError)
 
       lambda {
-        ConvertsSubscriberToFeedData.new(email).get_feed_data!
+        SubscriberToFeedDataConverter.new(email).get_feed_data!
       }.must_raise(RstatUs::InvalidSubscribeTo)
     end
   end
