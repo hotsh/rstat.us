@@ -21,7 +21,7 @@ class AuthorDecorator < ApplicationDecorator
     h.image_tag(
       absolute_avatar_url,
       :class => "photo user-image",
-      :alt => "avatar"
+      :alt => ""
     )
   end
 
