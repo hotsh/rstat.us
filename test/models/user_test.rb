@@ -32,8 +32,8 @@ describe User do
       update = Fabricate(:update, :text => "@steve oh hai!")
       Fabricate(:update, :text => "just some other update")
 
-      assert_equal 1, u.at_replies({}).count
-      assert_equal update.id, u.at_replies({}).first.id
+      assert_equal 1, u.at_replies.count
+      assert_equal update.id, u.at_replies.first.id
     end
 
     it "returns all at_replies for a username containing ." do
@@ -41,8 +41,8 @@ describe User do
       u1 = Fabricate(:user, :username => "helloothere")
       update = Fabricate(:update, :text => "@hello.there how _you_ doin'?")
 
-      assert_equal 1, u.at_replies({}).count
-      assert_equal 0, u1.at_replies({}).count
+      assert_equal 1, u.at_replies.count
+      assert_equal 0, u1.at_replies.count
     end
   end
 
