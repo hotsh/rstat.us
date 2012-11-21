@@ -287,14 +287,14 @@ class User
   timestamps!
 
   # Retrieve the list of Updates in the user's timeline
-  def timeline(params = nil)
+  def timeline
     following_plus_me = following.map(&:author_id)
     following_plus_me << self.author.id
     Update.where(:author_id => following_plus_me).order(['created_at', 'descending'])
   end
 
   # Retrieve the list of Updates that are replies to this user
-  def at_replies(params)
+  def at_replies
     Update.where(:text => /^@#{Regexp.quote(username)}\b/).order(['created_at', 'descending'])
   end
 
