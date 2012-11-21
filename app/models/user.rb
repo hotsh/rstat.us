@@ -409,7 +409,7 @@ class User
   end
 
   def email_already_confirmed
-    return if self.email.nil?
+    return if self.email.blank?
     if User.where(:email => self.email,
                   :email_confirmed => true,
                   :id.ne => self.id).count > 0
