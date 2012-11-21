@@ -14,7 +14,7 @@ describe "update" do
     visit "/feeds/#{feed.id}.atom"
 
     feed.updates.each do |update|
-      assert_match page.body, /#{update.text}/
+      text.must_include update.text
     end
   end
 
@@ -28,7 +28,7 @@ describe "update" do
     it "renders the world's updates" do
       visit "/updates"
       within "li.hentry" do
-        assert has_content? @update.text
+        text.must_include @update.text
       end
     end
 
@@ -55,7 +55,7 @@ describe "update" do
       click_button :'update-button'
     end
 
-    assert_match page.body, /#{update_text}/
+    text.must_include update_text
   end
 
   ["/updates", "/replies", "/"].each do |url|
@@ -88,7 +88,9 @@ describe "update" do
     update = Fabricate(:update)
 
     visit "/updates/#{update.id}"
-    assert_match page.body, /#{update.text}/
+    within "#page" do
+      text.must_include update.text
+    end
   end
 
   it "shows an update in reply to another update" do
@@ -98,8 +100,10 @@ describe "update" do
     update2.save
 
     visit "/updates/#{update2.id}"
-    assert_match page.body, /#{update2.text}/
-    assert_match page.body, /#{update.text}/
+    within "#page" do
+      text.must_include update2.text
+      text.must_include update.text
+    end
   end
 
   describe "update with hashtag" do
@@ -112,7 +116,11 @@ describe "update" do
 
       visit "/updates"
       click_link "#coolstorybro"
-      assert_match "Search Updates", page.body
+
+      within "h2" do
+        text.must_include "Search Updates"
+      end
+
       assert has_link? "#coolstorybro"
     end
   end
@@ -134,7 +142,7 @@ describe "update" do
         end
 
         within 'div.flash' do
-          assert has_content? "Update Deleted!"
+          text.must_include "Update Deleted!"
         end
       end
     end
@@ -153,7 +161,7 @@ describe "update" do
         end
 
         within 'div.flash' do
-          assert has_content? "I'm afraid I can't let you do that, #{@u.username}."
+          text.must_include "I'm afraid I can't let you do that, #{@u.username}."
         end
       end
     end
@@ -176,9 +184,8 @@ describe "update" do
         else
           raise Heisenbug
         end
-
-        assert_match "What's Going On?", page.body
-        assert_match "foo", page.body
+        assert has_field? "update-textarea"
+        find("#update-textarea").text.must_match @u2.username
       end
     end
 
@@ -192,8 +199,7 @@ describe "update" do
           raise Heisenbug
         end
 
-        assert_match "What's Going On?", page.body
-        assert_match "RS @#{@u2.username}: #{@u2.feed.updates.last.text}", page.body
+        assert has_field? "update-textarea", :with => "RS @#{@u2.username}: #{@u2.feed.updates.last.text}"
       end
     end
   end
@@ -206,8 +212,10 @@ describe "update" do
 
       visit "/updates"
 
-      refute_match "Previous", page.body
-      refute_match "Next", page.body
+      within ".pagination" do
+        text.wont_include "Previous"
+        text.wont_include "Next"
+      end
     end
 
     it "paginates forward only if on the first page" do
@@ -217,8 +225,10 @@ describe "update" do
 
       visit "/updates"
 
-      refute_match "Previous", page.body
-      assert_match "Next", page.body
+      within ".pagination" do
+        text.wont_include "Previous"
+        text.must_include "Next"
+      end
     end
 
     it "paginates backward only if on the last page" do
@@ -229,8 +239,10 @@ describe "update" do
       visit "/updates"
       click_link "next_button"
 
-      assert_match "Previous", page.body
-      refute_match "Next", page.body
+      within ".pagination" do
+        text.must_include "Previous"
+        text.wont_include "Next"
+      end
     end
 
     it "paginates forward and backward if on a middle page" do
@@ -241,26 +253,28 @@ describe "update" do
       visit "/updates"
       click_link "next_button"
 
-      assert_match "Previous", page.body
-      assert_match "Next", page.body
+      within ".pagination" do
+        text.must_include "Previous"
+        text.must_include "Next"
+      end
     end
   end
 
   describe "Post to message" do
     it "displays for a twitter user" do
       log_in_as_some_user(:with => :twitter)
-
       visit "/updates"
 
-      assert_match page.body, /Post to/
+      within "#repost-services" do
+        text.must_include "Post to"
+      end
     end
 
     it "does not display for a username user" do
       log_in_as_some_user(:with => :username)
-
       visit "/updates"
 
-      refute_match page.body, /Post to/
+      text.wont_include "Post to"
     end
   end
 
@@ -271,17 +285,23 @@ describe "update" do
 
     it "renders tagline default for timeline" do
       visit "/timeline"
-      assert_match page.body, /There are no updates here yet/
+      within "#content" do
+        text.must_include "There are no updates here yet"
+      end
     end
 
     it "renders tagline default for replies" do
       visit "/replies"
-      assert_match page.body, /There are no updates here yet/
+      within "#content" do
+        text.must_include "There are no updates here yet"
+      end
     end
 
     it "renders locals[:tagline] for search" do
       visit "/search"
-      assert_match page.body, /No statuses match your search/
+      within "#content" do
+        text.must_include "No statuses match your search"
+      end
     end
   end
 
@@ -293,8 +313,11 @@ describe "update" do
     it "has a status of myself in my timeline" do
       update = Fabricate(:update, :author => @u.author)
       @u.feed.updates << update
+
       visit "/"
-      assert_match page.body, /#{update.text}/
+      within "#content" do
+        text.must_include update.text
+      end
     end
 
     it "has a status of someone i'm following in my timeline" do
@@ -304,7 +327,9 @@ describe "update" do
       @u.follow! u2.feed
 
       visit "/"
-      assert_match page.body, /#{update.text}/
+      within "#content" do
+        text.must_include update.text
+      end
     end
 
     it "does not have a status of someone i'm not following in my timeline" do
@@ -313,7 +338,7 @@ describe "update" do
       u2.feed.updates << update
 
       visit "/"
-      refute_match page.body, /#{update.text}/
+      refute_match page.body, update.text
     end
   end
 
@@ -327,7 +352,9 @@ describe "update" do
       @u.feed.updates << update
 
       visit "/updates"
-      assert_match page.body, /#{update.text}/
+      within "#content" do
+        text.must_include update.text
+      end
     end
 
     it "has someone i'm following in the world view" do
@@ -337,7 +364,9 @@ describe "update" do
       @u.follow! u2.feed
 
       visit "/updates"
-      assert_match page.body, /#{update.text}/
+      within "#content" do
+        text.must_include update.text
+      end
     end
 
     it "has someone i'm not following in the world view" do
@@ -346,7 +375,9 @@ describe "update" do
       u2.feed.updates << update
 
       visit "/updates"
-      assert_match page.body, /#{update.text}/
+      within "#content" do
+        text.must_include update.text
+      end
     end
   end
 end

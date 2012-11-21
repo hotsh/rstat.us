@@ -1,5 +1,5 @@
 require 'minitest/autorun'
-require 'mocha'
+require 'mocha/setup'
 
 require_relative '../../app/models/salmon_interpreter'
 
