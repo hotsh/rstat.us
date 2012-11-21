@@ -235,9 +235,6 @@ describe User do
         end
       end
     end
-
-    describe "remote users" do
-    end
   end
 
   describe "#timeline" do
