@@ -100,22 +100,7 @@ describe User do
     end
   end
 
-  describe "email" do
-    it "changes email" do
-      u = Fabricate(:user)
-
-      stub_superfeedr_request_for_user u
-
-      u.edit_user_profile(:email => 'team@jackhq.com')
-      u.save
-      refute u.email_confirmed
-    end
-
-    it "does not change email" do
-      u = Fabricate(:user)
-      assert_nil u.email_confirmed
-    end
-
+  describe "perishable token" do
     it "sets the token" do
       u = Fabricate(:user)
       assert_nil u.perishable_token
@@ -134,16 +119,7 @@ describe User do
     end
   end
 
-  describe "reset password" do
-    it "sets the token" do
-      u = Fabricate(:user)
-      assert_nil u.perishable_token
-      assert_nil u.perishable_token_set
-      u.create_token
-      refute_nil u.perishable_token
-      refute_nil u.perishable_token_set
-    end
-
+  describe "#reset_password" do
     it "changes the password" do
       u = Fabricate(:user)
       u.password = "test_password"
@@ -155,6 +131,21 @@ describe User do
   end
 
   describe "email confirmation" do
+    it "has an unconfirmed email initially" do
+      u = Fabricate(:user)
+      assert_nil u.email_confirmed
+    end
+
+    it "changes email and requires reconfirmation" do
+      u = Fabricate(:user)
+
+      stub_superfeedr_request_for_user u
+
+      u.edit_user_profile(:email => 'team@jackhq.com')
+      u.save
+      refute u.email_confirmed
+    end
+
     it "allows unconfirmed emails to be entered more than once" do
       u = Fabricate(:user)
 
