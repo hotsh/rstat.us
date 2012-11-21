@@ -240,13 +240,6 @@ describe User do
     end
   end
 
-  describe "#feed" do
-    it "has a local feed" do
-      u = Fabricate(:user)
-      assert u.feed.local?
-    end
-  end
-
   describe "#timeline" do
     it "includes my updates" do
       u = Fabricate(:user)
