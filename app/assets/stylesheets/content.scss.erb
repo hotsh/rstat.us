@@ -1,4 +1,14 @@
 @import "lib/base.css.scss";
+/* ****************************** */
+/* Avatars */
+/* ****************************** */
+.avatar {
+  img {
+    background: url('<%= asset_path RstatUs::DEFAULT_AVATAR %>') no-repeat;
+    width: 48px;
+    height: 48px;
+  }
+}
 
 /* ****************************** */
 /* Updates Navigation */
@@ -88,9 +98,6 @@
         position: absolute;
         top: 1em;
         left: 1em;
-        a img {
-          width: 48px;
-        }
       }
       .fn, .nickname {
         a {
@@ -176,10 +183,7 @@
 
       a {
         color: black;
-        .avatar img {
-          width: 48px;
       }
-    }
     }
     .update-text {
 
@@ -346,7 +350,6 @@
     @include clearfix;
     img {
       vertical-align: middle;
-      width: 48px;
     }
     .description {
       margin-left: 10px;
@@ -416,8 +419,6 @@
   .avatar {
     padding-right: 1em;
     img {
-      width: 48px;
-      background: white;
       padding: 0.35em;
     }
   }
@@ -446,10 +447,6 @@
 
     .avatar, .info {
       float: left;
-
-      a img {
-        width: 48px;
-      }
     }
     .info {
       @include column(8);
