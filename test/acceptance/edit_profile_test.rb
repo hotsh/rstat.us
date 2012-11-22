@@ -42,9 +42,7 @@ describe "edit profile" do
 
       fill_in "username", :with => "foobar"
 
-      VCR.use_cassette("update_profile_username") do
-        click_button "Save"
-      end
+      click_button "Save"
 
       within flash do
         assert has_content?("Username has already been taken")
@@ -68,9 +66,7 @@ describe "edit profile" do
 
       fill_in "username", :with => "#foobar."
 
-      VCR.use_cassette("update_profile_invalid_username") do
-        click_button "Save"
-      end
+      click_button "Save"
 
       within flash do
         assert has_content?("Username contains restricted characters")
@@ -97,9 +93,7 @@ describe "edit profile" do
       fill_in "password", :with => "new_password"
       fill_in "password_confirm", :with => "bunk"
 
-      VCR.use_cassette("update_profile_password_mismatch") do
-        click_button "Save"
-      end
+      click_button "Save"
 
       within flash do
         assert has_content?("Sorry, 1 error we need you to fix:")
@@ -117,9 +111,7 @@ describe "edit profile" do
       fill_in "password", :with => "new_password"
       fill_in "password_confirm", :with => "bunk"
 
-      VCR.use_cassette("update_profile_multiple_errors") do
-        click_button "Save"
-      end
+      click_button "Save"
 
       within flash do
         assert has_content?("Sorry, 3 errors we need you to fix:")
