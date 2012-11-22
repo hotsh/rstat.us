@@ -341,15 +341,6 @@ class User
 
   # Edit profile information
   def update_profile!(params)
-    unless params[:password].blank?
-      if params[:password] == params[:password_confirm]
-        self.password = params[:password]
-        self.save
-      else
-        self.errors.add(:password, "doesn't match confirmation.")
-        return false
-      end
-    end
 
     params[:email] = nil if params[:email].blank?
 
@@ -360,21 +351,48 @@ class User
 
     self.always_send_to_twitter = params[:user] && params[:user][:always_send_to_twitter].to_i
 
-    return false unless self.save
+    # I can't figure out how to use a real rails validator to confirm that
+    # password matches password_confirm, since these two attributes are
+    # virtual and we only want to check this in this particular case of
+    # updating a user.
 
-    author.username = params[:username]
-    author.name     = params[:name]
-    author.email    = params[:email]
-    author.website  = params[:website]
-    author.bio      = params[:bio]
-    author.save
+    # Additionally, running the other validations clears self.errors, so
+    # we need to add our own errors AFTER calling valid?. But we shouldn't
+    # save the record at all if the password change isn't valid.
 
-    # TODO: Send out notice to other nodes
-    # To each remote domain that is following you via hub
-    # and to each remote domain that you follow via salmon
-    author.feed.ping_hubs
+    self.valid?
 
-    return self
+    unless params[:password].blank?
+      if params[:password] == params[:password_confirm]
+        self.password = params[:password]
+        self.save
+      else
+        self.errors.add(:password, "doesn't match confirmation.")
+      end
+    end
+
+    # Calling valid? again here would make the validators run again, which
+    # would clear self.errors again. We may have added an error about the
+    # password not matching the confirmation.
+    if self.errors.present?
+      return false
+    else
+      self.save
+
+      author.username = params[:username]
+      author.name     = params[:name]
+      author.email    = params[:email]
+      author.website  = params[:website]
+      author.bio      = params[:bio]
+      author.save
+
+      # TODO: Send out notice to other nodes
+      # To each remote domain that is following you via hub
+      # and to each remote domain that you follow via salmon
+      author.feed.ping_hubs
+
+      return self
+    end
   end
 
   # A better name would be very welcome.

@@ -73,9 +73,9 @@ class UsersController < ApplicationController
 
         redirect_to user_path(@user)
       else
-        error_message = @user.errors.full_messages.first
-
-        flash[:error] = "Profile could not be saved: #{error_message}"
+        error_message = render_to_string :partial => 'users/errors',
+                                         :locals => {:user => @user}
+        flash[:error] = error_message.html_safe
 
         render :edit
       end

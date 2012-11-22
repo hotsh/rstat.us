@@ -25,7 +25,7 @@ describe "signup" do
       fill_in "password", :with => "baseball"
       click_button "Log in"
 
-      assert_match /1 error prohibited your account from being created:/, page.body
+      assert_match /Sorry, 1 error we need you to fix:/, page.body
       assert_match /contains restricted characters\./, page.body
     end
 
@@ -34,7 +34,7 @@ describe "signup" do
       fill_in "password", :with => "baseball"
       click_button "Log in"
 
-      assert_match /1 error prohibited your account from being created:/, page.body
+      assert_match /Sorry, 1 error we need you to fix:/, page.body
       assert_match /Username can't be blank/, page.body
     end
 
@@ -70,7 +70,7 @@ describe "signup" do
 
       click_button "Log in"
 
-      assert_match /1 error prohibited your account from being created:/, page.body
+      assert_match /Sorry, 1 error we need you to fix:/, page.body
       assert_match /Username must be 17 characters or fewer\./, page.body
     end
   end
@@ -86,7 +86,7 @@ describe "signup" do
       fill_in "username", :with => "taken"
       click_button "Finish Signup"
 
-      assert_match /1 error prohibited your account from being created:/, page.body
+      assert_match /Sorry, 1 error we need you to fix:/, page.body
       assert_match /Username has already been taken/, page.body
 
       fill_in "username", :with => "nottaken"

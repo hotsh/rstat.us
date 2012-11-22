@@ -102,10 +102,31 @@ describe "edit profile" do
       end
 
       within flash do
-        assert has_content?("Profile could not be saved: Password doesn't match confirmation.")
+        assert has_content?("Sorry, 1 error we need you to fix:")
+        assert has_content?("Password doesn't match confirmation.")
       end
 
       assert has_field?("password")
+    end
+
+    it "shows multiple error messages if there are multiple problems" do
+      visit "/users/#{@u.username}/edit"
+
+      fill_in "username", :with => "something too_long&with invalid#chars."
+
+      fill_in "password", :with => "new_password"
+      fill_in "password_confirm", :with => "bunk"
+
+      VCR.use_cassette("update_profile_multiple_errors") do
+        click_button "Save"
+      end
+
+      within flash do
+        assert has_content?("Sorry, 3 errors we need you to fix:")
+        assert has_content?("Password doesn't match confirmation.")
+        assert has_content?("Username contains restricted characters.")
+        assert has_content?("Username must be 17 characters or fewer.")
+      end
     end
 
     it "verifies your email if you change it" do
