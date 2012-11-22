@@ -348,4 +348,19 @@ describe User do
       assert_equal nil, User.find_by_case_insensitive_username(".mg")
     end
   end
+
+  describe "accounts that only have twitter auth, no password" do
+    it "should not error if you try to log in with a password" do
+      u = Fabricate(:user)
+
+      # This is contrived; users should no longer end up in this state.
+      u.update_attribute(:hashed_password, nil)
+
+      # Issue #532 is this throwing a BCrypt::Errors::InvalidHash exception;
+      # the correct behavior is returning nil.
+      authenticated_user = User.authenticate(u.username, "anything")
+
+      assert authenticated_user.nil?
+    end
+  end
 end
