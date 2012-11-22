@@ -341,7 +341,7 @@ class User
 
   # Edit profile information
   def update_profile!(params)
-    unless params[:password].nil? or params[:password].empty?
+    unless params[:password].blank?
       if params[:password] == params[:password_confirm]
         self.password = params[:password]
         self.save
