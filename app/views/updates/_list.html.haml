@@ -6,14 +6,15 @@
       - unless defined?(no_highlight) and no_highlight
         - mine = current_user.nil? ? false : (update.author.user == current_user)
         - mentioned = current_user.nil? ? false : update.mentioned?(current_user.username)
-      %li.update.hentry.message{:class => (mentioned ? "mention " : "") + (mine ? "mine " : ""), :id => "update-#{update.id}", "data-id" => update.id, "data-name" => update.author.fully_qualified_name}
-        .author.vcard
-          %a.url{:href => update.author.url, :rel => "user"}
-            = AuthorDecorator.decorate(update.author).avatar
-          %span.fn
-            %a.url{:href => update.author.url}
-              = update.author.display_name
-              (<span class="nickname user-text">#{update.author.username}</span>)
+      %li.update.hentry.message{:class => (mentioned ? "mention " : "") + (mine ? "mine " : ""), :id => "update-#{update.id}", "data-id" => update.id, "data-name" => update.author ? update.author.fully_qualified_name : ""}
+        - if update.author
+          .author.vcard
+            %a.url{:href => update.author.url, :rel => "user"}
+              = AuthorDecorator.decorate(update.author).avatar
+            %span.fn
+              %a.url{:href => update.author.url}
+                = update.author.display_name
+                (<span class="nickname user-text">#{update.author.username}</span>)
         .entry-content
           %span.message-text
             != update.to_html
@@ -25,7 +26,10 @@
           %span.in-reply
             %a{:href => "/updates/#{update.referral.id}"}
               in reply to
-              %span.name= update.referral.author.username
+              - if update.referral.author
+                %span.name= update.referral.author.username
+              - else
+                an update
         - elsif !update.referral_url.nil?
           %span.in-reply
             %a{:href => update.referral_url}

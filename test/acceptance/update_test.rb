@@ -106,6 +106,23 @@ describe "update" do
     end
   end
 
+  it "shows an update in reply to another update that has a nil author" do
+    # Not sure how this happens, but it does. author_id exists but the
+    # associated author does not.
+    update = Fabricate(:update, :author_id => "999999")
+
+    update2 = Fabricate(:update)
+    update2.referral_id = update.id
+    update2.save
+
+    visit "/updates"
+
+    within "#page" do
+      text.must_include update2.text
+      text.must_include update.text
+    end
+  end
+
   describe "update with hashtag" do
     it "creates a working hashtag link" do
       log_in_as_some_user
