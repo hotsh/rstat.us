@@ -1,6 +1,8 @@
 require "minitest/autorun"
 require "webmock/test_unit"
 
+require "mocha/setup"
+
 ENV["RAILS_ENV"] = "test"
 begin
   require File.expand_path('../../config/environment', __FILE__)

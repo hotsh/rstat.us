@@ -32,8 +32,8 @@ describe User do
       update = Fabricate(:update, :text => "@steve oh hai!")
       Fabricate(:update, :text => "just some other update")
 
-      assert_equal 1, u.at_replies({}).count
-      assert_equal update.id, u.at_replies({}).first.id
+      assert_equal 1, u.at_replies.count
+      assert_equal update.id, u.at_replies.first.id
     end
 
     it "returns all at_replies for a username containing ." do
@@ -41,8 +41,8 @@ describe User do
       u1 = Fabricate(:user, :username => "helloothere")
       update = Fabricate(:update, :text => "@hello.there how _you_ doin'?")
 
-      assert_equal 1, u.at_replies({}).count
-      assert_equal 0, u1.at_replies({}).count
+      assert_equal 1, u.at_replies.count
+      assert_equal 0, u1.at_replies.count
     end
   end
 
@@ -346,6 +346,21 @@ describe User do
 
     it "escapes regex chars so that regexing isnt allowed" do
       assert_equal nil, User.find_by_case_insensitive_username(".mg")
+    end
+  end
+
+  describe "accounts that only have twitter auth, no password" do
+    it "should not error if you try to log in with a password" do
+      u = Fabricate(:user)
+
+      # This is contrived; users should no longer end up in this state.
+      u.update_attribute(:hashed_password, nil)
+
+      # Issue #532 is this throwing a BCrypt::Errors::InvalidHash exception;
+      # the correct behavior is returning nil.
+      authenticated_user = User.authenticate(u.username, "anything")
+
+      assert authenticated_user.nil?
     end
   end
 end

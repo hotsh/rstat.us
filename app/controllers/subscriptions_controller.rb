@@ -27,7 +27,7 @@ class SubscriptionsController < ApplicationController
   # A DELETE call will unsubscribe you from that particular feed. We make
   # sure that you're logged in first, because otherwise, it's nonsensical.
   def destroy
-    require_login! :return => request.referrer
+    require_login! :return => request.referrer and return
 
     @author = @feed.author
 
@@ -58,7 +58,7 @@ class SubscriptionsController < ApplicationController
   # A POST is how you subscribe to someone's feed. We want to make sure
   # that you're logged in for this one, too.
   def create
-    require_login! :return => request.referrer
+    require_login! :return => request.referrer and return
 
     # Find or create the Feed
     begin

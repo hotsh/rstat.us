@@ -19,12 +19,12 @@ class UpdatesController < ApplicationController
 
   def timeline
     @list_class = "friends"
-    render_index(current_user.timeline(params))
+    render_index(current_user.timeline)
   end
 
   def replies
     @list_class = "mentions"
-    render_index(current_user.at_replies(params))
+    render_index(current_user.at_replies)
   end
 
   def export

@@ -1,5 +1,5 @@
 require 'minitest/autorun'
-require 'mocha'
+require 'mocha/setup'
 require 'socket'
 
 require_relative '../../lib/finds_or_creates_feeds'

@@ -1,4 +1,6 @@
 class StaticController < ApplicationController
+  before_filter :require_user, :only => :follow
+
   def homepage
     @list_class = ""
     render :layout => false
@@ -18,5 +20,9 @@ class StaticController < ApplicationController
 
   def contact
     @title = "contact us"
+  end
+
+  def follow
+    @title = "follow a user"
   end
 end

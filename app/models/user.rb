@@ -303,7 +303,7 @@ class User
   end
 
   # Retrieve the list of Updates that are replies to this user
-  def at_replies(params)
+  def at_replies
     Update.where(:text => /^@#{Regexp.quote(username)}\b/).order(['created_at', 'descending'])
   end
 
@@ -338,6 +338,7 @@ class User
   def self.authenticate(username, pass)
     user = User.find_by_case_insensitive_username(username)
     return nil if user.nil?
+    return nil unless user.hashed_password
     return user if BCrypt::Password.new(user.hashed_password) == pass
     nil
   end
