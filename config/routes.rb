@@ -1,5 +1,11 @@
 RstatUs::Application.routes.draw do
   use_doorkeeper
+  match "/oauth/request_token", :to => "doorkeeper/tokens#create"
+
+  scope "api" do
+    use_doorkeeper
+    match "/oauth/request_token", :to => "doorkeeper/tokens#create"
+  end
 
   root :to => "static#homepage", :constraints => lambda {|x| x.session[:user_id] == nil}
   root :to => "updates#timeline", :constraints => lambda {|x| x.session[:user_id] != nil}
