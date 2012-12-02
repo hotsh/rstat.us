@@ -1,6 +1,6 @@
 class UpdatesController < ApplicationController
   before_filter :process_params
-  before_filter :require_user, :only => [:timeline, :replies, :export, :create]
+  before_filter :require_user, :only => [:timeline, :replies, :export, :create, :destroy]
 
   def index
     @title = "updates"

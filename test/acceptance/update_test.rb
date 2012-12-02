@@ -190,6 +190,13 @@ describe "update" do
         end
       end
     end
+
+    it "doesn't let you directly send a delete request without a valid user" do
+      u = Fabricate(:update)
+      delete "/updates/#{u.id}"
+
+      last_response.status.must_equal 302
+    end
   end
 
   describe "reply and share links for each update" do
