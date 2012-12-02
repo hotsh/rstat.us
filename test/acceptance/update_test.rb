@@ -44,18 +44,26 @@ describe "update" do
     end
   end
 
-  it "makes an update" do
-    log_in_as_some_user
+  describe "create a new update" do
+    it "makes an update" do
+      log_in_as_some_user
 
-    update_text = "Testing, testing"
+      update_text = "Testing, testing"
 
-    VCR.use_cassette('publish_update') do
-      visit "/"
-      fill_in 'update-textarea', :with => update_text
-      click_button :'update-button'
+      VCR.use_cassette('publish_update') do
+        visit "/"
+        fill_in 'update-textarea', :with => update_text
+        click_button :'update-button'
+      end
+
+      text.must_include update_text
     end
 
-    text.must_include update_text
+    it "does not allow unauthenticated users to create an update" do
+      post "/updates", {:text => "probably spam"}
+
+      last_response.status.must_equal 302
+    end
   end
 
   ["/updates", "/replies", "/"].each do |url|
