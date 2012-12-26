@@ -58,4 +58,5 @@ RstatUs::Application.configure do
 
   config.assets.initialize_on_precompile = false
 
+  config.eager_load = true
 end
