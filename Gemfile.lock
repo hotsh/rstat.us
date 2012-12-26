@@ -1,22 +1,4 @@
 GIT
-  remote: git://github.com/collectiveidea/delayed_job.git
-  revision: 8dc3930f20eb7363ef0d451ac05a3851eb0caaf6
-  tag: v2.1.4
-  specs:
-    delayed_job (2.1.4)
-      activesupport (~> 3.0)
-      daemons
-
-GIT
-  remote: git://github.com/earbits/delayed_job_mongo_mapper.git
-  revision: 50ae64ec0a80e3dc6c86b3b851a8703ba5845cb4
-  specs:
-    delayed_job_mongo_mapper (1.0.0)
-      delayed_job (~> 2.1.1)
-      mongo_mapper (~> 0.9)
-      rails (>= 3.0.0)
-
-GIT
   remote: git://github.com/hotsh/redfinger.git
   revision: b73861b87c7d0bd8d3669c49134a5d416f5ac9f3
   specs:
@@ -271,9 +253,6 @@ GEM
     webmock (1.6.4)
       addressable (~> 2.2, > 2.2.5)
       crack (>= 0.1.7)
-    whenever (0.6.8)
-      aaronh-chronic (>= 0.3.9)
-      activesupport (>= 2.3.4)
     xpath (0.1.4)
       nokogiri (~> 1.3)
 
@@ -289,8 +268,6 @@ DEPENDENCIES
   coffee-rails (~> 3.2.2)
   compass-rails (~> 1.0.3)
   database_cleaner (~> 0.6.7)
-  delayed_job!
-  delayed_job_mongo_mapper!
   draper (~> 0.11.1)
   exceptional (~> 2.0.32)
   fabrication (~> 1.2.0)
@@ -333,4 +310,3 @@ DEPENDENCIES
   unicorn (~> 4.0.1)
   vcr (~> 1.10.3)
   webmock (~> 1.6.4)
-  whenever (~> 0.6.8)
