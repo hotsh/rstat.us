@@ -8,12 +8,121 @@ GIT
       rest-client (>= 1.5.0)
 
 GIT
+  remote: git://github.com/rails/actionpack-action_caching.git
+  revision: 7f73ed137614c9cadd4c28494c28ad692f7151cd
+  specs:
+    actionpack-action_caching (0.0.1)
+      actionpack (>= 4.0.0.beta, < 5.0)
+
+GIT
+  remote: git://github.com/rails/actionpack-page_caching.git
+  revision: 01b98bcbe65e05093d1ec2d8512b925e1b52985c
+  specs:
+    actionpack-page_caching (0.0.1)
+      actionpack (>= 4.0.0.beta, < 5.0)
+
+GIT
+  remote: git://github.com/rails/activeresource.git
+  revision: 08baa3b0c2dd9e6ebf0d1d62bbaa495d029d2f28
+  specs:
+    activeresource (4.0.0.beta)
+      activemodel (~> 4.0.0.beta)
+      activesupport (~> 4.0.0.beta)
+
+GIT
+  remote: git://github.com/rails/coffee-rails.git
+  revision: 052634e6d02d4800d7b021201cc8d5829775b3cd
+  specs:
+    coffee-rails (4.0.0.beta)
+      coffee-script (>= 2.2.0)
+      railties (>= 4.0.0.beta, < 5.0)
+
+GIT
+  remote: git://github.com/rails/journey.git
+  revision: e64274443f8420df2518cf2206a2c640d9d8e196
+  specs:
+    journey (2.0.0.20120723141804)
+
+GIT
+  remote: git://github.com/rails/protected_attributes.git
+  revision: 369818eedeaaafc5c1609ec6a274d35979ba977b
+  specs:
+    protected_attributes (0.0.1)
+      activemodel (>= 4.0.0.beta, < 5.0)
+
+GIT
+  remote: git://github.com/rails/rails-observers.git
+  revision: d80f56f6e075f8d4987c275524b1b142a31d428b
+  specs:
+    rails-observers (0.1.1)
+
+GIT
+  remote: git://github.com/rails/rails.git
+  revision: 227d4e9bdd445f936ff2a2752b4e42d401b6e3cb
+  specs:
+    actionmailer (4.0.0.beta)
+      actionpack (= 4.0.0.beta)
+      mail (~> 2.5.3)
+    actionpack (4.0.0.beta)
+      activesupport (= 4.0.0.beta)
+      builder (~> 3.1.0)
+      erubis (~> 2.7.0)
+      rack (~> 1.4.1)
+      rack-test (~> 0.6.1)
+    activemodel (4.0.0.beta)
+      activesupport (= 4.0.0.beta)
+      builder (~> 3.1.0)
+    activerecord (4.0.0.beta)
+      activemodel (= 4.0.0.beta)
+      activerecord-deprecated_finders (= 0.0.1)
+      activesupport (= 4.0.0.beta)
+      arel (~> 3.0.2)
+    activesupport (4.0.0.beta)
+      i18n (~> 0.6)
+      minitest (~> 4.1)
+      multi_json (~> 1.3)
+      thread_safe (~> 0.1)
+      tzinfo (~> 0.3.33)
+    rails (4.0.0.beta)
+      actionmailer (= 4.0.0.beta)
+      actionpack (= 4.0.0.beta)
+      activerecord (= 4.0.0.beta)
+      activesupport (= 4.0.0.beta)
+      bundler (>= 1.2.2, < 2.0)
+      railties (= 4.0.0.beta)
+      sprockets-rails (~> 2.0.0.rc1)
+    railties (4.0.0.beta)
+      actionpack (= 4.0.0.beta)
+      activesupport (= 4.0.0.beta)
+      rake (>= 0.8.7)
+      rdoc (~> 3.4)
+      thor (>= 0.15.4, < 2.0)
+
+GIT
+  remote: git://github.com/rails/sass-rails.git
+  revision: ae8138a89cac397c0df903dd533e2862902ce8f5
+  specs:
+    sass-rails (4.0.0.beta)
+      railties (>= 4.0.0.beta, < 5.0)
+      sass (>= 3.1.10)
+      sprockets-rails (~> 2.0.0.rc0)
+      tilt (~> 1.3)
+
+GIT
   remote: git://github.com/rtomayko/rocco.git
   revision: 727c510d635ba3b6fcf18caf3b0f89e16ef7e8f3
   specs:
     rocco (0.8.2)
       mustache
       redcarpet (~> 1.17)
+
+PATH
+  remote: ~/Ruby/mongomapper
+  specs:
+    mongo_mapper (0.12.0)
+      activemodel (>= 3.0)
+      activesupport (>= 3.0)
+      plucky (~> 0.5.2)
 
 GEM
   remote: http://rubygems.org/
@@ -51,28 +160,26 @@ GEM
       activesupport
       builder
     arel (3.0.2)
+    atomic (1.0.1)
     bcrypt-ruby (3.0.1)
-    bson (1.7.0)
-    bson_ext (1.7.0)
-      bson (~> 1.7.0)
-    builder (3.0.4)
-    capybara (1.1.2)
+    bson (1.7.1)
+    bson_ext (1.7.1)
+      bson (~> 1.7.1)
+    builder (3.1.4)
+    capybara (1.1.4)
       mime-types (>= 1.16)
       nokogiri (>= 1.3.3)
       rack (>= 1.0.0)
       rack-test (>= 0.5.4)
       selenium-webdriver (~> 2.0)
       xpath (~> 0.1.4)
-    childprocess (0.3.5)
+    childprocess (0.3.6)
       ffi (~> 1.0, >= 1.0.6)
     chunky_png (1.2.6)
-    coffee-rails (3.2.2)
-      coffee-script (>= 2.2.0)
-      railties (~> 3.2.0)
     coffee-script (2.2.0)
       coffee-script-source
       execjs
-    coffee-script-source (1.3.3)
+    coffee-script-source (1.4.0)
     compass (0.12.2)
       chunky_png (~> 1.2)
       fssm (>= 0.2.7)
@@ -86,14 +193,14 @@ GEM
       activesupport (>= 2.3.10)
     erubis (2.7.0)
     eventmachine (1.0.0)
-    exceptional (2.0.32)
+    exceptional (2.0.33)
       rack
     execjs (1.4.0)
       multi_json (~> 1.0)
     fabrication (1.2.0)
     faraday (0.8.4)
       multipart-post (~> 1.1)
-    ffi (1.1.5)
+    ffi (1.2.0)
     fssm (0.2.9)
     haml (3.1.7)
     haml-rails (0.3.5)
@@ -105,11 +212,10 @@ GEM
     hashr (0.0.22)
     hike (1.2.1)
     i18n (0.6.1)
-    journey (1.0.4)
-    jquery-rails (1.0.19)
-      railties (~> 3.0)
-      thor (~> 0.14)
-    jquery-ui-rails (2.0.1)
+    jquery-rails (2.1.4)
+      railties (>= 3.0, < 5.0)
+      thor (>= 0.14, < 2.0)
+    jquery-ui-rails (2.0.2)
       jquery-rails
       railties (>= 3.1.0)
     json (1.7.6)
@@ -117,29 +223,25 @@ GEM
     launchy (2.0.5)
       addressable (~> 2.2.6)
     libv8 (3.3.10.4)
-    libwebsocket (0.1.5)
+    libwebsocket (0.1.7.1)
       addressable
+      websocket
     libxml-ruby (2.3.3)
-    mail (2.4.4)
+    mail (2.5.3)
       i18n (>= 0.4.0)
       mime-types (~> 1.16)
       treetop (~> 1.4.8)
     metaclass (0.0.1)
     mime-types (1.19)
     minitest (4.2.0)
-    mocha (0.13.0)
+    mocha (0.13.1)
       metaclass (~> 0.0.1)
-    mongo (1.7.0)
-      bson (~> 1.7.0)
-    mongo_mapper (0.12.0)
-      activemodel (~> 3.0)
-      activesupport (~> 3.0)
-      plucky (~> 0.5.2)
+    mongo (1.7.1)
+      bson (~> 1.7.1)
     multi_json (1.5.0)
     multipart-post (1.1.5)
     mustache (0.99.4)
-    newrelic_rpm (3.3.5)
-    nokogiri (1.5.5)
+    nokogiri (1.5.6)
     oauth (0.4.7)
     omniauth (1.1.1)
       hashie (~> 1.2)
@@ -147,7 +249,7 @@ GEM
     omniauth-oauth (1.0.1)
       oauth
       omniauth (~> 1.0)
-    omniauth-twitter (0.0.13)
+    omniauth-twitter (0.0.14)
       multi_json (~> 1.3)
       omniauth-oauth (~> 1.0)
     opub (0.0.1)
@@ -162,30 +264,12 @@ GEM
     pony (1.4)
       mail (> 2.0)
     pygmentize (0.0.3)
-    quiet_assets (1.0.1)
-      railties (~> 3.1)
-    rack (1.4.3)
-    rack-cache (1.2)
-      rack (>= 0.4)
-    rack-ssl (1.3.2)
-      rack
+    rack (1.4.1)
     rack-test (0.6.2)
       rack (>= 1.0)
-    rails (3.2.11)
-      actionmailer (= 3.2.11)
-      actionpack (= 3.2.11)
-      activerecord (= 3.2.11)
-      activeresource (= 3.2.11)
-      activesupport (= 3.2.11)
-      bundler (~> 1.0)
-      railties (= 3.2.11)
-    railties (3.2.11)
-      actionpack (= 3.2.11)
-      activesupport (= 3.2.11)
-      rack-ssl (~> 1.3.2)
-      rake (>= 0.8.7)
-      rdoc (~> 3.4)
-      thor (>= 0.14.6, < 2.0)
+    rails4_upgrade (0.0.3)
+      bundler (>= 1.2.2)
+      terminal-table (>= 1.4.5)
     raindrops (0.10.0)
     rake (10.0.3)
     ratom (0.7.2)
@@ -200,11 +284,7 @@ GEM
     ruby-hmac (0.4.0)
     rubyzip (0.9.9)
     sass (3.1.21)
-    sass-rails (3.2.5)
-      railties (~> 3.2.0)
-      sass (>= 3.1.10)
-      tilt (~> 1.3)
-    selenium-webdriver (2.25.0)
+    selenium-webdriver (2.27.2)
       childprocess (>= 0.2.5)
       libwebsocket (~> 0.1.3)
       multi_json (~> 1.0)
@@ -215,11 +295,16 @@ GEM
     simplecov (0.4.2)
       simplecov-html (~> 0.4.4)
     simplecov-html (0.4.5)
-    sprockets (2.2.2)
+    sprockets (2.8.2)
       hike (~> 1.2)
       multi_json (~> 1.0)
       rack (~> 1.0)
       tilt (~> 1.1, != 1.3.0)
+    sprockets-rails (2.0.0.rc1)
+      actionpack (>= 3.0)
+      activesupport (>= 3.0)
+      sprockets (~> 2.8)
+    terminal-table (1.4.5)
     therubyracer (0.9.10)
       libv8 (~> 3.3.10)
     thin (1.5.0)
@@ -227,6 +312,8 @@ GEM
       eventmachine (>= 0.12.6)
       rack (>= 1.0.0)
     thor (0.16.0)
+    thread_safe (0.1.0)
+      atomic
     tilt (1.3.3)
     tire (0.4.3)
       activemodel (>= 3.0)
@@ -253,6 +340,7 @@ GEM
     webmock (1.6.4)
       addressable (~> 2.2, > 2.2.5)
       crack (>= 0.1.7)
+    websocket (1.0.6)
     xpath (0.1.4)
       nokogiri (~> 1.3)
 
@@ -260,12 +348,15 @@ PLATFORMS
   ruby
 
 DEPENDENCIES
+  actionpack-action_caching!
+  actionpack-page_caching!
+  activeresource!
   airbrake (~> 3.0.9)
   bcrypt-ruby (~> 3.0.0)
   bson (~> 1.7.0)
   bson_ext (~> 1.7.0)
   capybara (~> 1.1.2)
-  coffee-rails (~> 3.2.2)
+  coffee-rails!
   compass-rails (~> 1.0.3)
   database_cleaner (~> 0.6.7)
   draper (~> 0.11.1)
@@ -274,14 +365,14 @@ DEPENDENCIES
   haml (~> 3.1.4)
   haml-rails (~> 0.3.4)
   i18n (~> 0.6.0)
-  jquery-rails (~> 1.0.12)
+  journey!
+  jquery-rails (~> 2.1.4)
   jquery-ui-rails (~> 2.0.0)
   launchy (~> 2.0.5)
   minitest (~> 4.2.0)
   mocha (~> 0.13.0)
   mongo (~> 1.7.0)
-  mongo_mapper (~> 0.12.0)
-  newrelic_rpm (~> 3.3.1)
+  mongo_mapper!
   nokogiri (~> 1.5.0)
   omniauth (~> 1.1.0)
   omniauth-twitter (~> 0.0.12)
@@ -289,16 +380,18 @@ DEPENDENCIES
   ostatus (~> 0.0.12)
   osub (~> 0.0.6)
   pony (~> 1.3)
+  protected_attributes!
   pygmentize (~> 0.0.3)
-  quiet_assets (~> 1.0.0)
-  rails (= 3.2.11)
+  rails!
+  rails-observers!
+  rails4_upgrade
   ratom (~> 0.7.2)
   rdiscount (~> 1.6.8)
   redfinger!
   rocco!
   rsa (~> 0.1.4)
   sass (~> 3.1.10)
-  sass-rails (~> 3.2.5)
+  sass-rails!
   show_me_the_cookies (~> 1.1.0)
   simplecov (~> 0.4.0)
   therubyracer (~> 0.9.9)

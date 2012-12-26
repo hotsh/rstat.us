@@ -1,27 +1,41 @@
 source 'http://rubygems.org'
 
-gem 'rails',                    '3.2.11'
+gem 'rails4_upgrade'
+gem 'rails', github: 'rails/rails'
+
+gem 'journey', github: 'rails/journey'
+
+gem 'protected_attributes',
+  github: 'rails/protected_attributes'
+gem 'activeresource',
+  github: 'rails/activeresource'
+gem 'actionpack-action_caching',
+  github: 'rails/actionpack-action_caching'
+gem 'actionpack-page_caching',
+  github: 'rails/actionpack-page_caching'
+gem 'rails-observers',
+  github: 'rails/rails-observers'
 
 # Gems used only for assets and not required
 # in production environments by default.
 group :assets do
   gem "sass",                   "~> 3.1.10"
-  gem 'sass-rails',             "~> 3.2.5"
+  gem 'sass-rails', github: 'rails/sass-rails'
   gem 'compass-rails',          "~> 1.0.3"
-  gem 'coffee-rails',           "~> 3.2.2"
+  gem 'coffee-rails', github: 'rails/coffee-rails'
   gem 'uglifier',               "~> 1.0.0"
   gem 'jquery-ui-rails',        "~> 2.0.0"
 end
 
 gem "haml",                     "~> 3.1.4"
 gem "haml-rails",               "~> 0.3.4"
-gem 'jquery-rails',             "~> 1.0.12"
+gem 'jquery-rails',             "~> 2.1.4"
 gem 'airbrake',                 "~> 3.0.9"
 gem 'bcrypt-ruby',              "~> 3.0.0"
 gem 'thin',                     "~> 1.5.0"
 gem 'omniauth',                 "~> 1.1.0"
 gem "omniauth-twitter",         "~> 0.0.12"
-gem "mongo_mapper",             "~> 0.12.0"
+gem "mongo_mapper", path: '~/Ruby/mongomapper'
 gem "mongo",                    "~> 1.7.0"
 gem "bson",                     "~> 1.7.0"
 gem "bson_ext",                 "~> 1.7.0"
@@ -39,7 +53,6 @@ gem "nokogiri",                 "~> 1.5.0"
 gem "tzinfo",                   "~> 0.3.29"
 gem "rsa",                      "~> 0.1.4"
 gem "exceptional",              "~> 2.0.32"
-gem "newrelic_rpm",             "~> 3.3.1"
 gem "draper",                   "~> 0.11.1"
 
 group :production do
@@ -53,12 +66,11 @@ group :development, :test do
   gem "show_me_the_cookies",    "~> 1.1.0"
   gem "rocco",                  :git => "git://github.com/rtomayko/rocco.git"
   gem "pygmentize",             "~> 0.0.3"
-  gem "mocha",                  "~> 0.13.0", :require => false
+  gem "mocha",                  "~> 0.13.0", require: false
   gem "vcr",                    "~> 1.10.3"
   gem "simplecov",              "~> 0.4.0", :require => false
   gem "launchy",                "~> 2.0.5"
   gem "minitest",               "~> 4.2.0"
-  gem "quiet_assets",           "~> 1.0.0"
 end
 
 group :test do
