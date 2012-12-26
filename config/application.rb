@@ -4,19 +4,13 @@ require File.expand_path('../boot', __FILE__)
 # require 'rails/all'
 require "action_controller/railtie"
 require "action_mailer/railtie"
-require "active_resource/railtie"
 require "sprockets/railtie"
 
 # We don't want test_unit or tasks like db:test:prepare, so we commented out
 # require "rails/test_unit/railtie"
 
-if defined?(Bundler)
-  # If you precompile assets before deploying to production, use this line
-  Bundler.require *Rails.groups(:assets) if defined?(Bundler)
-
-  # If you want your assets lazily compiled in production, use this line
-  # Bundler.require(:default, :assets, Rails.env)
-end
+# Assets should be precompiled for production (so we don't need the gems loaded then)
+Bundler.require(*Rails.groups(assets: %w(development test)))
 
 module RstatUs
   class Application < Rails::Application
