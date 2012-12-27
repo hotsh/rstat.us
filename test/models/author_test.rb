@@ -37,12 +37,20 @@ describe Author do
   end
 
   it "sets the use_ssl flag to true when https is used to create the author" do
-    author = Fabricate :author, :username => "james", :domain => "https://example.com", :email => nil, :image_url => nil, :created_at => 3.days.ago
+    author = Fabricate(:author, :username   => "james",
+                                :domain     => "https://example.com",
+                                :email      => nil,
+                                :image_url  => nil,
+                                :created_at => 3.days.ago)
     assert_equal author.use_ssl, true
   end
 
   it "sets the use_ssl flag to false when http is used to create the author" do
-    author = Fabricate :author, :username => "james", :domain => "http://example.com", :email => nil, :image_url => nil, :created_at => 3.days.ago
+    author = Fabricate(:author, :username   => "james",
+                                :domain     => "http://example.com",
+                                :email      => nil,
+                                :image_url  => nil,
+                                :created_at => 3.days.ago)
     assert_equal author.use_ssl, false
   end
 
