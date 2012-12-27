@@ -6,12 +6,14 @@ describe Author do
     @author = Fabricate :author, :username => "james", :email => nil, :image_url => nil, :created_at => 3.days.ago
   end
 
-  it "creates an author from a hash" do
-    hash = {"info" => {"name" => "james", "nickname" => "jim", "urls" => {}} }
-    assert Author.create_from_hash!(hash, "rstat.us").is_a?(Author)
+  describe "#create_from_hash!" do
+    it "creates an author from a hash" do
+      hash = {"info" => {"name" => "james", "nickname" => "jim", "urls" => {}} }
+      assert Author.create_from_hash!(hash, "rstat.us").is_a?(Author)
+    end
   end
 
-  describe "new_from_session!" do
+  describe "#new_from_session!" do
     it "has an image_url if the session has image" do
       session_hash = {:image => "foo.png"}
       a = Author.new_from_session!(session_hash, {}, "http://example.com")
@@ -21,7 +23,7 @@ describe Author do
     end
   end
 
-  describe "create_from_session!" do
+  describe "#create_from_session!" do
     it "has an image_url if the session has image" do
       session_hash = {:image => "foo.png"}
       a = Author.create_from_session!(session_hash, {}, "http://example.com")
@@ -30,65 +32,72 @@ describe Author do
     end
   end
 
-  it "stores the domain of a local user by normalizing the base url" do
-    @author.domain = "http://example.com/"
-    @author.save
-    assert_equal @author.domain, "example.com"
-  end
-
-  it "sets the use_ssl flag to true when https is used to create the author" do
-    author = Fabricate(:author, :username   => "james",
-                                :domain     => "https://example.com",
-                                :email      => nil,
-                                :image_url  => nil,
-                                :created_at => 3.days.ago)
-    assert_equal author.use_ssl, true
-  end
-
-  it "sets the use_ssl flag to false when http is used to create the author" do
-    author = Fabricate(:author, :username   => "james",
-                                :domain     => "http://example.com",
-                                :email      => nil,
-                                :image_url  => nil,
-                                :created_at => 3.days.ago)
-    assert_equal author.use_ssl, false
-  end
-
-  it "returns remote_url as the url if set" do
-    @author.remote_url = "some_url.com"
-    assert_equal @author.remote_url, @author.url
-  end
-
-  describe "https_image_url" do
-    it "ensures that image_url is always https" do
-      @author.image_url = 'http://example.net/cool-avatar'
-      @author.save!
-      assert_equal 'https://example.net/cool-avatar', @author.image_url
+  describe "before_save callbacks" do
+    describe "#normalize_domain" do
+      it "stores the domain of a local user by normalizing the base url" do
+        @author.domain = "http://example.com/"
+        @author.save
+        assert_equal @author.domain, "example.com"
+      end
     end
 
-    it "ensures that https image_urls are untouched" do
-      @author.image_url = 'https://example.net/cool-avatar'
-      @author.save!
-      assert_equal 'https://example.net/cool-avatar', @author.image_url
+    describe "#set_default_use_ssl" do
+      it "sets the use_ssl flag to true when https is used to create the author" do
+        author = Fabricate(:author, :username   => "james",
+                                    :domain     => "https://example.com",
+                                    :email      => nil,
+                                    :image_url  => nil,
+                                    :created_at => 3.days.ago)
+        assert_equal author.use_ssl, true
+      end
+
+      it "sets the use_ssl flag to false when http is used to create the author" do
+        author = Fabricate(:author, :username   => "james",
+                                    :domain     => "http://example.com",
+                                    :email      => nil,
+                                    :image_url  => nil,
+                                    :created_at => 3.days.ago)
+        assert_equal author.use_ssl, false
+      end
+    end
+
+    describe "#https_image_url" do
+      it "ensures that image_url is always https" do
+        @author.image_url = 'http://example.net/cool-avatar'
+        @author.save!
+        assert_equal 'https://example.net/cool-avatar', @author.image_url
+      end
+
+      it "ensures that https image_urls are untouched" do
+        @author.image_url = 'https://example.net/cool-avatar'
+        @author.save!
+        assert_equal 'https://example.net/cool-avatar', @author.image_url
+      end
+    end
+
+    describe "#modify_twitter_image_url_domain" do
+      it "changes a twitter image URL to use the domain that matches the cert" do
+        @author.image_url = 'https://a3.twimg.com/whatever'
+        @author.save!
+        assert_equal 'https://twimg0-a.akamaihd.net/whatever', @author.image_url
+      end
+
+      it "leaves other image urls alone" do
+        @author.image_url = 'https://example.net/cool-avatar'
+        @author.save!
+        assert_equal 'https://example.net/cool-avatar', @author.image_url
+      end
     end
   end
 
-  describe "modify_twitter_image_url_domain" do
-    it "changes a twitter image URL to use the domain that matches the cert" do
-      @author.image_url = 'https://a3.twimg.com/whatever'
-      @author.save!
-      assert_equal 'https://twimg0-a.akamaihd.net/whatever', @author.image_url
-    end
-
-    it "leaves other image urls alone" do
-      @author.image_url = 'https://example.net/cool-avatar'
-      @author.save!
-      assert_equal 'https://example.net/cool-avatar', @author.image_url
+  describe "#url" do
+    it "returns remote_url as the url if set" do
+      @author.remote_url = "some_url.com"
+      assert_equal @author.remote_url, @author.url
     end
   end
 
   describe "#fully_qualified_name" do
-
     it "returns simple name if a local user" do
       assert_equal "james", @author.fully_qualified_name
     end
@@ -100,7 +109,6 @@ describe Author do
   end
 
   describe "#avatar_url" do
-
     it "returns image_url as avatar_url if image_url is set" do
       image_url = 'https://example.net/cool-avatar'
       @author.image_url = image_url
