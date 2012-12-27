@@ -150,24 +150,22 @@ class User
   end
 
   # Follow a particular feed
-  def follow!(f)
-    # can't follow yourself
-    if f == self.feed
-      return
-    end
+  def follow!(target_feed)
+    return false if target_feed == self.feed # can't follow yourself
 
-    following << f
-    save
+    self.following << target_feed
+    self.save
 
-    if f.local?
+    if target_feed.local?
       # Add the inverse relationship
-      followee = User.first(:author_id => f.author.id)
+      followee = User.first(:author_id => target_feed.author.id)
       followee.followed_by! self.feed
     else
       # Queue a notification job
-      self.delay.send_follow_notification(f.id)
+      self.delay.send_follow_notification(target_feed.id)
     end
-    f
+
+    target_feed
   end
 
   # Send Salmon notification so that the remote user
@@ -368,7 +366,8 @@ class User
 
   # A better name would be very welcome.
   def self.find_by_case_insensitive_username(username)
-    User.first(:username => /^#{Regexp.escape(username)}$/i)
+    username = Regexp.escape(username)
+    User.first(:username => /^#{username}$/i)
   end
 
   def token_expired?

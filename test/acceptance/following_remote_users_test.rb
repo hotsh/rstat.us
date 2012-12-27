@@ -1,63 +1,80 @@
 require 'require_relative' if RUBY_VERSION[0,3] == '1.8'
 require_relative 'acceptance_helper'
+require 'uri'
 
 describe "following remote users" do
   include AcceptanceHelper
 
+  def follow_remote_user!(webfinger_id = "steveklabnik@identi.ca")
+    visit "/"
+    click_link "Follow Remote User"
+
+    VCR.use_cassette('subscribe_remote') do
+      fill_in 'subscribe_to', :with => webfinger_id
+      click_button "Follow"
+    end
+  end
+
   describe "success" do
     before do
       log_in_as_some_user
-      visit "/"
-      click_link "Follow Remote User"
-
-      VCR.use_cassette('subscribe_remote') do
-        fill_in 'subscribe_to', :with => "steveklabnik@identi.ca"
-        click_button "Follow"
-      end
     end
 
     it "follows users on other sites" do
-      assert_match "Now following steveklabnik.", page.body
+      follow_remote_user!
       assert "/", current_path
+      within flash do
+        assert has_content? "Now following steveklabnik."
+      end
     end
 
     it "has users on other sites on /following" do
+      follow_remote_user!
       visit "/users/#{@u.username}/following"
-
-      assert_match "steveklabnik", page.body
+      within "#content" do
+        assert has_content? "steveklabnik"
+      end
     end
 
     it "unfollows users from other sites" do
+      follow_remote_user!
       visit "/users/#{@u.username}/following"
 
       VCR.use_cassette('unsubscribe_remote') do
         click_button "Unfollow"
       end
 
-      assert_match "No longer following steveklabnik", page.body
+      within flash do
+        assert has_content? "No longer following steveklabnik"
+      end
     end
 
-    it "only creates one Feed per remote_url" do
-      log_in_as_some_user
-      visit "/"
-      click_link "Follow Remote User"
+    it "doesn't follow those you already follow, and reports an error" do
+      follow_remote_user!
+      follow_remote_user!
 
-      assert_match "OStatus Sites", page.body
-
-      VCR.use_cassette('subscribe_remote') do
-        fill_in 'subscribe_to', :with => "steveklabnik@identi.ca"
-        click_button "Follow"
+      within flash do
+        assert has_content? "You're already following steveklabnik."
       end
+    end
 
-      visit "/users/#{@u.username}/following"
+    it "follows users on the current node even if you try to follow them like remote users" do
+      local_user = Fabricate(:user)
 
-      assert_match "Unfollow", page.body
+      follow_remote_user!("#{local_user.username}@example.com")
+
+      within flash do
+        assert has_content? "Now following #{local_user.username}."
+      end
     end
   end
 
   describe "failure" do
-    it "doesn't look up something that doesn't look like either a webfinger id or a URL" do
+    before do
       log_in_as_some_user
+    end
+
+    it "doesn't look up something that doesn't look like either a webfinger id or a URL" do
       visit "/"
       click_link "Follow Remote User"
 
@@ -75,7 +92,6 @@ describe "following remote users" do
     end
 
     it "especially doesn't look up something that looks like a local file" do
-      log_in_as_some_user
       visit "/"
       click_link "Follow Remote User"
 
