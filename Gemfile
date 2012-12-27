@@ -58,7 +58,7 @@ group :development, :test do
   gem "show_me_the_cookies",    "~> 1.1.0"
   gem "rocco",                  :git => "git://github.com/rtomayko/rocco.git"
   gem "pygmentize",             "~> 0.0.3"
-  gem "mocha",                  "~> 0.13.0"
+  gem "mocha",                  "~> 0.13.0", :require => false
   gem "vcr",                    "~> 1.10.3"
   gem "simplecov",              "~> 0.4.0", :require => false
   gem "launchy",                "~> 2.0.5"

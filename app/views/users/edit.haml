@@ -4,10 +4,11 @@
   = render :partial => "shared/sidebar/gravatar", :locals => {:user => @user}
 
 #profile
-  %h3= "Edit Profile for @#{@user.username}"
+  %h3= "Edit Profile for @#{current_user.username}"
 
-  = form_for @user, :html => {:name => "profile_update_form", :id => "profile-update"} do |f|
+  = form_for current_user, :html => {:name => "profile_update_form", :id => "profile-update"} do |f|
     .form-section
+      = render :partial => "shared/field", :locals => {:obj => @user.author, :attr => :username, :params => params}
       = render :partial => "shared/field", :locals => {:obj => @user.author, :attr => :name, :params => params}
 
     .form-section

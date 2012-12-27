@@ -61,9 +61,9 @@ class UsersController < ApplicationController
 
   def update
     if @user == current_user
-      response = @user.edit_user_profile(params)
-      if response == true
+      @user.update_profile!(params)
 
+      unless @user.errors.any?
         unless @user.email.blank? || @user.email_confirmed
           Notifier.send_confirm_email_notification(@user.email, @user.create_token)
           flash[:notice] = "A link to confirm your updated email address has been sent to #{@user.email}."
@@ -71,10 +71,12 @@ class UsersController < ApplicationController
           flash[:notice] = "Profile saved!"
         end
 
-        redirect_to user_path(params[:id])
-
+        redirect_to user_path(@user)
       else
-        flash[:error] = "Profile could not be saved: #{response}"
+        error_message = render_to_string :partial => 'users/errors',
+                                         :locals => {:user => @user}
+        flash[:error] = error_message.html_safe
+
         render :edit
       end
     else

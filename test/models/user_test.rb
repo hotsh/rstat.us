@@ -47,6 +47,15 @@ describe User do
   end
 
   describe "username" do
+    it "can be changed" do
+      u = Fabricate(:user)
+
+      stub_superfeedr_request_for_user u
+
+      u.update_profile!(:username => 'foobar')
+      assert_equal 'foobar', u.username
+    end
+
     it "must be unique" do
       Fabricate(:user, :username => "steve")
       u = Fabricate.build(:user, :username => "steve")
@@ -97,6 +106,22 @@ describe User do
       u = Fabricate(:user)
       a = Fabricate(:authorization, :user => u)
       assert_equal a, u.twitter
+    end
+  end
+
+  describe "email" do
+    it "can be changed" do
+      u = Fabricate(:user)
+
+      stub_superfeedr_request_for_user u
+
+      u.update_profile!(:email => 'team@jackhq.com')
+      refute u.email_confirmed
+    end
+
+    it "does not change email" do
+      u = Fabricate(:user)
+      assert_nil u.email_confirmed
     end
   end
 
@@ -151,7 +176,7 @@ describe User do
 
       stub_superfeedr_request_for_user u
 
-      u.edit_user_profile(:email => 'team@jackhq.com')
+      u.update_profile!(:email => 'team@jackhq.com')
 
       u2 = Fabricate(:user)
       u2.email = 'team@jackhq.com'
@@ -161,13 +186,13 @@ describe User do
     it "does not allow confirmed emails to be entered more than once" do
       u = Fabricate(:user)
       stub_superfeedr_request_for_user u
-      u.edit_user_profile(:email => 'team@jackhq.com')
+      u.update_profile!(:email => 'team@jackhq.com')
       u.email_confirmed = true
       u.save
 
       u2 = Fabricate(:user)
       stub_superfeedr_request_for_user u2
-      u2.edit_user_profile(:email => 'team@jackhq.com')
+      u2.update_profile!(:email => 'team@jackhq.com')
 
       refute u2.valid?
     end
