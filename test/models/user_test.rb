@@ -166,7 +166,7 @@ describe User do
 
       stub_superfeedr_request_for_user u
 
-      u.edit_user_profile(:email => 'team@jackhq.com')
+      u.update_profile!(:email => 'team@jackhq.com')
       u.save
       refute u.email_confirmed
     end
