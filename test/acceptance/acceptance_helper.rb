@@ -14,7 +14,9 @@ module AcceptanceHelper
   ActionController::Base.allow_forgery_protection = true
 
   if ENV["ENABLE_HTTPS"] == "yes"
-    Capybara.app_host = 'https://www.example.com'
+    Capybara.app_host = 'https://example.com'
+  else
+    Capybara.app_host = 'http://example.com'
   end
 
   def app

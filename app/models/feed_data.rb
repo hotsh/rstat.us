@@ -1,0 +1,1 @@
+class FeedData < Struct.new(:url, :finger_data); end

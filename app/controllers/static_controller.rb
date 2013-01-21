@@ -1,6 +1,25 @@
 class StaticController < ApplicationController
   before_filter :require_user, :only => :follow
 
+  def about
+    @title = "about us"
+  end
+
+  def contact
+    @title = "contact us"
+  end
+
+  def developers
+    @title = "developers"
+  end
+
+  def follow
+    @title = "follow a user"
+  end
+
+  def help
+  end
+
   def homepage
     @list_class = ""
     render :layout => false
@@ -10,19 +29,4 @@ class StaticController < ApplicationController
     @title = "open source"
   end
 
-  def developers
-    @title = "developers"
-  end
-
-  def about
-    @title = "about us"
-  end
-
-  def contact
-    @title = "contact us"
-  end
-
-  def follow
-    @title = "follow a user"
-  end
 end

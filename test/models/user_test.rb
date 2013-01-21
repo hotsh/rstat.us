@@ -47,6 +47,15 @@ describe User do
   end
 
   describe "username" do
+    it "can be changed" do
+      u = Fabricate(:user)
+
+      stub_superfeedr_request_for_user u
+
+      u.update_profile!(:username => 'foobar')
+      assert_equal 'foobar', u.username
+    end
+
     it "must be unique" do
       Fabricate(:user, :username => "steve")
       u = Fabricate.build(:user, :username => "steve")
@@ -101,13 +110,12 @@ describe User do
   end
 
   describe "email" do
-    it "changes email" do
+    it "can be changed" do
       u = Fabricate(:user)
 
       stub_superfeedr_request_for_user u
 
-      u.edit_user_profile(:email => 'team@jackhq.com')
-      u.save
+      u.update_profile!(:email => 'team@jackhq.com')
       refute u.email_confirmed
     end
 
@@ -115,7 +123,9 @@ describe User do
       u = Fabricate(:user)
       assert_nil u.email_confirmed
     end
+  end
 
+  describe "perishable token" do
     it "sets the token" do
       u = Fabricate(:user)
       assert_nil u.perishable_token
@@ -134,16 +144,7 @@ describe User do
     end
   end
 
-  describe "reset password" do
-    it "sets the token" do
-      u = Fabricate(:user)
-      assert_nil u.perishable_token
-      assert_nil u.perishable_token_set
-      u.create_token
-      refute_nil u.perishable_token
-      refute_nil u.perishable_token_set
-    end
-
+  describe "#reset_password" do
     it "changes the password" do
       u = Fabricate(:user)
       u.password = "test_password"
@@ -155,12 +156,27 @@ describe User do
   end
 
   describe "email confirmation" do
+    it "has an unconfirmed email initially" do
+      u = Fabricate(:user)
+      assert_nil u.email_confirmed
+    end
+
+    it "changes email and requires reconfirmation" do
+      u = Fabricate(:user)
+
+      stub_superfeedr_request_for_user u
+
+      u.update_profile!(:email => 'team@jackhq.com')
+      u.save
+      refute u.email_confirmed
+    end
+
     it "allows unconfirmed emails to be entered more than once" do
       u = Fabricate(:user)
 
       stub_superfeedr_request_for_user u
 
-      u.edit_user_profile(:email => 'team@jackhq.com')
+      u.update_profile!(:email => 'team@jackhq.com')
 
       u2 = Fabricate(:user)
       u2.email = 'team@jackhq.com'
@@ -170,13 +186,13 @@ describe User do
     it "does not allow confirmed emails to be entered more than once" do
       u = Fabricate(:user)
       stub_superfeedr_request_for_user u
-      u.edit_user_profile(:email => 'team@jackhq.com')
+      u.update_profile!(:email => 'team@jackhq.com')
       u.email_confirmed = true
       u.save
 
       u2 = Fabricate(:user)
       stub_superfeedr_request_for_user u2
-      u2.edit_user_profile(:email => 'team@jackhq.com')
+      u2.update_profile!(:email => 'team@jackhq.com')
 
       refute u2.valid?
     end
@@ -243,16 +259,6 @@ describe User do
           refute @u2.followed_by?(@u.feed)
         end
       end
-    end
-
-    describe "remote users" do
-    end
-  end
-
-  describe "#feed" do
-    it "has a local feed" do
-      u = Fabricate(:user)
-      assert u.feed.local?
     end
   end
 

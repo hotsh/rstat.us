@@ -15,8 +15,10 @@ class Author
   # public keys are good for 4 weeks
   PUBLIC_KEY_LEASE_DAYS = 28
 
+  # Schema
+
   # We've got a bunch of data that gets stored in Author. And basically none
-  # of it is val*idated right now. Fun. Then again, not all of it is neccesary.
+  # of it is validated right now. Fun. Then again, not all of it is neccesary.
   key :username,  String
 
   # This contains the domain that the author's feed originates.
@@ -24,18 +26,6 @@ class Author
 
   # When true, this author wishes ssl and https to be used for their endpoints
   key :use_ssl,   Boolean
-
-  validates_presence_of :domain
-
-  # Normalize the domain so we can use them the same way
-  before_save :normalize_domain
-
-  # Make sure the image url uses https
-  before_save :https_image_url
-
-  # Twitter has an SSL cert that doesn't match the domain but we can
-  # change the domain to match the cert and the avatars work
-  before_save :modify_twitter_image_url_domain
 
   # The Author has a profile and with that various entries
   key :name,      String
@@ -60,6 +50,9 @@ class Author
   # For sorting by signup, Authors require timestamps
   timestamps!
 
+  # Validations
+
+  validates_presence_of :domain
   # We cannot put a :unique tag above because of a MongoMapper bug
   validates_uniqueness_of :remote_url, :allow_nil => :true
 
@@ -70,9 +63,20 @@ class Author
   one :feed, :dependent => :destroy
   one :user
 
+  # Callbacks
+
+  # Normalize the domain so we can use them the same way
+  before_save :normalize_domain
+
+  # Make sure the image url uses https
+  before_save :https_image_url
+
+  # Twitter has an SSL cert that doesn't match the domain but we can
+  # change the domain to match the cert and the avatars work
+  before_save :modify_twitter_image_url_domain
+
   # This takes results from an omniauth reponse and generates an author
   def self.create_from_hash!(hash, domain)
-
     # Omniauth user information, as a hash
     user  = hash['info']
 
@@ -236,20 +240,21 @@ class Author
                :uri => author_url,
                :portable_contacts => poco,
                :links => [Atom::Link.new(:rel => "avatar",
-                                        :type => "image/png",
-                                        :href => avatar_url_abs)])
-
+                                         :type => "image/png",
+                                         :href => avatar_url_abs)])
     author
   end
 
   def normalize_domain
     set_default_use_ssl if use_ssl.nil?
 
-    norm = self.domain.gsub(/^.*:\/\//, "")
-    norm = norm.gsub(/^www./, "")
-    norm = norm.gsub(/\/.*$/, "")
-    norm = norm.gsub(/\?.*$/, "")
-    norm = norm.gsub(/#.*$/, "")
+    norm = self.domain
+    norm = norm.gsub(/^.*:\/\//, "")  # remove protocol
+    norm = norm.gsub(/^www./, "")     # remove www
+    norm = norm.gsub(/\/.*$/, "")     # remove trailing slash
+    norm = norm.gsub(/\?.*$/, "")     # remove query string
+    norm = norm.gsub(/#.*$/, "")      # remove anchors
+
     self.domain = norm
   end
 

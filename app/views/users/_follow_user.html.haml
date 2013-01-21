@@ -1,0 +1,3 @@
+= form_tag "/subscriptions" do
+  %input{:type => "hidden", :name => "subscribe_to", :value => feed_id}
+  %input.button.follow{:type => "submit", :value => "Follow", :id => "follow-#{feed_id}"}

@@ -15,14 +15,13 @@ RstatUs::Application.routes.draw do
   match "/login", :to => "sessions#new", :as => "login"
   match "/logout", :to => "sessions#destroy", :via => :post, :as => "logout"
 
-  match "/follow", :to => "static#follow", :via => :get
-
   # Static
-  match "contact" => "static#contact"
-  match "about" => "static#about"
-  match "open_source" => "static#open_source"
-  match "developers" => "static#developers"
-  match "help" => "static#help"
+  match "about",       :to => "static#about"
+  match "contact",     :to => "static#contact"
+  match "developers",  :to => "static#developers"
+  match "follow",      :to => "static#follow", :via => :get
+  match "help",        :to => "static#help"
+  match "open_source", :to => "static#open_source"
 
   # External Auth
   # If we add more valid auth providers, they will need to be added

@@ -15,9 +15,10 @@ describe "edit profile" do
       assert has_link? "Edit"
     end
 
-    attributes_without_confirmation = {"name"    => "Mark Zuckerberg",
-                                       "website" => "http://test.com",
-                                       "bio"     => "To be or not to be"}
+    attributes_without_confirmation = {"username" => "foobar",
+                                       "name"     => "Mark Zuckerberg",
+                                       "website"  => "http://test.com",
+                                       "bio"      => "To be or not to be"}
 
     attributes_without_confirmation.each do |key, value|
       it "updates your #{key}" do
@@ -31,6 +32,44 @@ describe "edit profile" do
         within profile(key) do
           assert has_content?(value), "Cannot find #{key} with text #{value}"
         end
+      end
+    end
+
+    it "does not update your username if the chosen username already exists" do
+      visit "/users/#{@u.username}/edit"
+
+      u = Fabricate(:user, :username => "foobar")
+
+      fill_in "username", :with => "foobar"
+
+      click_button "Save"
+
+      within flash do
+        assert has_content?("Username has already been taken")
+      end
+    end
+
+    it "redirects to your new name when you change your username" do
+      visit "/users/#{@u.username}/edit"
+
+      fill_in "username", :with => "foobar"
+
+      VCR.use_cassette("update_profile_username") do
+        click_button "Save"
+      end
+
+      assert_match /\/users\/foobar$/, page.current_url
+    end
+
+    it "does not allow you to change your username to something invalid" do
+      visit "/users/#{@u.username}/edit"
+
+      fill_in "username", :with => "#foobar."
+
+      click_button "Save"
+
+      within flash do
+        assert has_content?("Username contains restricted characters")
       end
     end
 
@@ -54,15 +93,32 @@ describe "edit profile" do
       fill_in "password", :with => "new_password"
       fill_in "password_confirm", :with => "bunk"
 
-      VCR.use_cassette("update_profile_password_mismatch") do
-        click_button "Save"
-      end
+      click_button "Save"
 
       within flash do
-        assert has_content?("Profile could not be saved: Passwords must match")
+        assert has_content?("Sorry, 1 error we need you to fix:")
+        assert has_content?("Password doesn't match confirmation.")
       end
 
       assert has_field?("password")
+    end
+
+    it "shows multiple error messages if there are multiple problems" do
+      visit "/users/#{@u.username}/edit"
+
+      fill_in "username", :with => "something too_long&with invalid#chars."
+
+      fill_in "password", :with => "new_password"
+      fill_in "password_confirm", :with => "bunk"
+
+      click_button "Save"
+
+      within flash do
+        assert has_content?("Sorry, 3 errors we need you to fix:")
+        assert has_content?("Password doesn't match confirmation.")
+        assert has_content?("Username contains restricted characters.")
+        assert has_content?("Username must be 17 characters or fewer.")
+      end
     end
 
     it "verifies your email if you change it" do
@@ -179,6 +235,7 @@ describe "edit profile" do
       u = Fabricate(:user, :username => "LADY_GAGA")
       a = Fabricate(:authorization, :user => u)
       log_in(u, a.uid)
+
       visit "/users/lady_gaga/edit"
       bio_text = "To be or not to be"
       fill_in "bio", :with => bio_text

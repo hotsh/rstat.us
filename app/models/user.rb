@@ -37,11 +37,16 @@ class User
   key :always_send_to_twitter, Integer, :default => 1
 
   validate :email_already_confirmed
-  validates_uniqueness_of :username, :allow_nil => :true, :case_sensitive => false
+  validates_uniqueness_of :username,
+                          :allow_nil => :true,
+                          :case_sensitive => false,
+                          :message => "has already been taken."
 
   # The maximum is arbitrary
   # Twitter has 15, let's be different
-  validates_length_of :username, :maximum => 17, :message => "must be 17 characters or fewer."
+  validates_length_of :username,
+                      :maximum => 17,
+                      :message => "must be 17 characters or fewer."
 
   # Validate users don't have special characters in their username
   validate :no_malformed_username
@@ -150,24 +155,22 @@ class User
   end
 
   # Follow a particular feed
-  def follow!(f)
-    # can't follow yourself
-    if f == self.feed
-      return
-    end
+  def follow!(target_feed)
+    return false if target_feed == self.feed # can't follow yourself
 
-    following << f
-    save
+    self.following << target_feed
+    self.save
 
-    if f.local?
+    if target_feed.local?
       # Add the inverse relationship
-      followee = User.first(:author_id => f.author.id)
+      followee = User.first(:author_id => target_feed.author.id)
       followee.followed_by! self.feed
     else
       # Queue a notification job
-      self.delay.send_follow_notification(f.id)
+      self.delay.send_follow_notification(target_feed.id)
     end
-    f
+
+    target_feed
   end
 
   # Send Salmon notification so that the remote user
@@ -344,40 +347,65 @@ class User
   end
 
   # Edit profile information
-  def edit_user_profile(params)
-    unless params[:password].nil? or params[:password].empty?
-      if params[:password] == params[:password_confirm]
-        self.password = params[:password]
-        self.save
-      else
-        return "Passwords must match"
-      end
-    end
+  def update_profile!(params)
 
-    self.email_confirmed        = (self.email == params[:email])
+    params[:email] = nil if params[:email].blank?
+
+    self.username               = params[:username]
+
+    self.email_confirmed        = self.email == params[:email]
     self.email                  = params[:email]
 
     self.always_send_to_twitter = params[:user] && params[:user][:always_send_to_twitter].to_i
 
-    self.save
+    # I can't figure out how to use a real rails validator to confirm that
+    # password matches password_confirm, since these two attributes are
+    # virtual and we only want to check this in this particular case of
+    # updating a user.
 
-    author.name    = params[:name]
-    author.email   = params[:email]
-    author.website = params[:website]
-    author.bio     = params[:bio]
-    author.save
+    # Additionally, running the other validations clears self.errors, so
+    # we need to add our own errors AFTER calling valid?. But we shouldn't
+    # save the record at all if the password change isn't valid.
 
-    # TODO: Send out notice to other nodes
-    # To each remote domain that is following you via hub
-    # and to each remote domain that you follow via salmon
-    author.feed.ping_hubs
+    self.valid?
 
-    return true
+    unless params[:password].blank?
+      if params[:password] == params[:password_confirm]
+        self.password = params[:password]
+        self.save
+      else
+        self.errors.add(:password, "doesn't match confirmation.")
+      end
+    end
+
+    # Calling valid? again here would make the validators run again, which
+    # would clear self.errors again. We may have added an error about the
+    # password not matching the confirmation.
+    if self.errors.present?
+      return false
+    else
+      self.save
+
+      author.username = params[:username]
+      author.name     = params[:name]
+      author.email    = params[:email]
+      author.website  = params[:website]
+      author.bio      = params[:bio]
+      author.save
+
+      # TODO: Send out notice to other nodes
+      # To each remote domain that is following you via hub
+      # and to each remote domain that you follow via salmon
+      author.feed.ping_hubs
+
+      return self
+    end
   end
 
   # A better name would be very welcome.
   def self.find_by_case_insensitive_username(username)
-    User.first(:username => /^#{Regexp.escape(username)}$/i)
+    username = Regexp.escape(username)
+    User.first(:username => /^#{username}$/i)
   end
 
   def token_expired?
@@ -407,9 +435,10 @@ class User
   end
 
   def email_already_confirmed
+    return if self.email.blank?
     if User.where(:email => self.email,
-      :email_confirmed => true,
-      :username.ne => self.username).count > 0
+                  :email_confirmed => true,
+                  :id.ne => self.id).count > 0
       errors.add(:email, "is already taken.")
     end
   end
