@@ -158,7 +158,7 @@ describe "Statuses API endpoints" do
       parsed_json = JSON.parse(source)
       parsed_json[0]["user"]["screen_name"].must_equal(@u.username)
       parsed_json[0]["user"]["profile_image_url"].must_match(
-        "http://www.example.com/assets/avatar.png"
+        /http:\/\/(www\.)?example\.com\/assets\/avatar\.png/
       )
     end
   end
