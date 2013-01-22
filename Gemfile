@@ -3,24 +3,14 @@ source 'http://rubygems.org'
 gem 'rails4_upgrade'
 gem 'rails', github: 'rails/rails'
 
-gem 'journey', github: 'rails/journey'
-
-gem 'protected_attributes',
-  github: 'rails/protected_attributes'
-gem 'activeresource',
-  github: 'rails/activeresource'
-gem 'actionpack-action_caching',
-  github: 'rails/actionpack-action_caching'
-gem 'actionpack-page_caching',
-  github: 'rails/actionpack-page_caching'
-gem 'rails-observers',
-  github: 'rails/rails-observers'
+gem 'arel', github: 'rails/arel', branch: 'master'
 
 # Gems used only for assets and not required
 # in production environments by default.
 group :assets do
   gem "sass",                   "~> 3.1.10"
   gem 'sass-rails', github: 'rails/sass-rails'
+  gem 'sprockets-rails', github: 'rails/sprockets-rails'
   gem 'compass-rails',          "~> 1.0.3"
   gem 'coffee-rails', github: 'rails/coffee-rails'
   gem 'uglifier',               "~> 1.0.0"
