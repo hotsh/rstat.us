@@ -25,7 +25,7 @@ gem 'bcrypt-ruby',              "~> 3.0.0"
 gem 'thin',                     "~> 1.5.0"
 gem 'omniauth',                 "~> 1.1.0"
 gem "omniauth-twitter",         "~> 0.0.12"
-gem "mongo_mapper", path: '~/Ruby/mongomapper'
+gem "mongo_mapper", github: "carols10cents/mongomapper", branch: "rails4"
 gem "mongo",                    "~> 1.8.0"
 gem "bson",                     "~> 1.8.0"
 gem "bson_ext",                 "~> 1.8.0"

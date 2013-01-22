@@ -1,4 +1,15 @@
 GIT
+  remote: git://github.com/carols10cents/mongomapper.git
+  revision: bddf6dfd72029dd95c03b20e4bbf379f0071bf4a
+  branch: rails4
+  specs:
+    mongo_mapper (0.12.0)
+      activemodel (>= 3.0)
+      activesupport (>= 3.0)
+      mongo (~> 1.8.0)
+      plucky (~> 0.6.2)
+
+GIT
   remote: git://github.com/hotsh/redfinger.git
   revision: b73861b87c7d0bd8d3669c49134a5d416f5ac9f3
   specs:
@@ -90,15 +101,6 @@ GIT
     rocco (0.8.2)
       mustache
       redcarpet (~> 1.17)
-
-PATH
-  remote: ~/Ruby/mongomapper
-  specs:
-    mongo_mapper (0.12.0)
-      activemodel (>= 3.0)
-      activesupport (>= 3.0)
-      mongo (~> 1.8.0)
-      plucky (~> 0.6.2)
 
 GEM
   remote: http://rubygems.org/
