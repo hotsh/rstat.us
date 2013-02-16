@@ -18,7 +18,6 @@ gem "haml-rails",               "~> 0.3.4"
 gem 'jquery-rails',             "~> 1.0.12"
 gem 'airbrake',                 "~> 3.0.9"
 gem 'bcrypt-ruby',              "~> 3.0.0"
-gem 'thin',                     "~> 1.5.0"
 gem 'omniauth',                 "~> 1.1.0"
 gem "omniauth-twitter",         "~> 0.0.12"
 gem "mongo_mapper",             "~> 0.12.0"
@@ -47,9 +46,9 @@ gem "delayed_job",              :git => "git://github.com/collectiveidea/delayed
 gem "delayed_job_mongo_mapper", :git => "git://github.com/earbits/delayed_job_mongo_mapper.git"
 gem "whenever",                 "~> 0.6.8"
 
-group :production do
-  gem 'unicorn',                "~> 4.0.1"
-end
+# web server
+
+gem "puma"
 
 group :development, :test do
   gem "database_cleaner",       "~> 0.6.7"
