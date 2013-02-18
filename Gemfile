@@ -48,7 +48,7 @@ gem "whenever",                 "~> 0.6.8"
 
 # web server
 
-gem "puma"
+gem "puma",                     "~> 1.6.3"
 
 group :development, :test do
   gem "database_cleaner",       "~> 0.6.7"
