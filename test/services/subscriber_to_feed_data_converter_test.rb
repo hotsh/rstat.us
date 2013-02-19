@@ -1,5 +1,5 @@
 require 'minitest/autorun'
-require 'mocha'
+require 'mocha/setup'
 require 'socket'
 require_relative '../../app/services/subscriber_to_feed_data_converter'
 

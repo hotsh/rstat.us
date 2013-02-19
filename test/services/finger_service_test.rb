@@ -1,5 +1,5 @@
 require 'minitest/autorun'
-require 'mocha'
+require 'mocha/setup'
 
 require_relative '../../app/services/finger_service'
 require_relative '../../app/models/feed_data'
