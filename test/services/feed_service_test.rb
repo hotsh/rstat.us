@@ -3,8 +3,6 @@ require_relative '../test_helper'
 require 'mocha/setup'
 
 describe FeedService do
-  include TestHelper
-
   describe "#find_or_create!" do
     let(:service)       { FeedService.new(target_feed) }
     let(:existing_feed) { mock }
