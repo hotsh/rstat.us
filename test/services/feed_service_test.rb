@@ -1,6 +1,6 @@
 require_relative '../test_helper'
 
-require 'mocha'
+require 'mocha/setup'
 
 describe FeedService do
   include TestHelper
