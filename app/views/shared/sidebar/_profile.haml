@@ -10,17 +10,17 @@
           @#{current_user.username}
       %ul.stats
         %li.update-count
-          %a{ :href => "/users/#{current_user.username}" }
+          %a{ :href => "/users/#{current_user.username}", :rel => 'messages-me' }
             .icon
             %span.number= current_user.feed.updates.count
             Updates
         %li.following-count
-          %a{ :href => "/users/#{current_user.username}/following" }
+          %a{ :href => "/users/#{current_user.username}/following", :rel => 'users-friends' }
             .icon
             %span.number= current_user.following.length
             Following
         %li.follower-count.last
-          %a{ :href => "/users/#{current_user.username}/followers" }
+          %a{ :href => "/users/#{current_user.username}/followers", :rel => 'users-followers' }
             .icon
             %span.number= current_user.followers.length
             Followers

@@ -57,5 +57,34 @@ describe "ALPS single user" do
     end
   end
 
+  it "has the followers link in a rel=users-followers" do
+    visit "/users/#{@user.username}"
+    within "li.user" do
+      assert has_selector?(
+        :xpath,
+        "//a[contains(@rel, 'users-followers') and @href='/users/#{@user.username}/followers']"
+      )
+    end
+  end
+
+  it "has the following link in a rel=users-friends" do
+    visit "/users/#{@user.username}"
+    within "li.user" do
+      assert has_selector?(
+        :xpath,
+        "//a[contains(@rel, 'users-friends') and @href='/users/#{@user.username}/following']"
+      )
+    end
+  end
+
+  it "has the updates link in a rel=messages-me" do
+    visit "/users/#{@user.username}"
+    within "li.user" do
+      assert has_selector?(
+        :xpath,
+        "//a[contains(@rel, 'messages-me') and @href='#profile_updates']"
+      )
+    end
+  end
 end
 
