@@ -58,8 +58,8 @@ gem "puma",                     "~> 1.6.3"
 group :development, :test do
   gem "database_cleaner",       "~> 0.6.7"
   gem "fabrication",            "~> 1.2.0"
-  gem "capybara",               "~> 2.1.0"
-  gem "show_me_the_cookies",    "~> 2.1.0"
+  gem "capybara",               "~> 2.0.3"
+  gem "show_me_the_cookies",    "~> 2.0.2"
   gem "rocco",                  :git => "git://github.com/rtomayko/rocco.git"
   gem "pygmentize",             "~> 0.0.3"
   gem "mocha",                  "~> 0.13.0", :require => false
