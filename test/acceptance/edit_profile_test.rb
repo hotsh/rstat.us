@@ -23,7 +23,8 @@ describe "edit profile" do
     attributes_without_confirmation.each do |key, value|
       it "updates your #{key}" do
         visit "/users/#{@u.username}/edit"
-        fill_in key, :with => value
+        find("##{key}").set value
+        #fill_in key, :with => value
 
         VCR.use_cassette("update_profile_#{key}") do
           click_button "Save"
@@ -144,7 +145,8 @@ describe "edit profile" do
       log_in(user_without_email, a.uid)
       visit "/users/#{user_without_email.username}/edit"
       name = "Mark Zuckerberg"
-      fill_in "name", :with => name
+      find('#name').set name
+      #fill_in '#name', :with => name
 
       VCR.use_cassette('update_profile_no_email') do
         click_button "Save"
@@ -160,7 +162,8 @@ describe "edit profile" do
     it "does not verify your email if you havent changed it" do
       visit "/users/#{@u.username}/edit"
       name = "Steve Jobs"
-      fill_in "name", :with => name
+      find('#name').set name
+      #fill_in "#name", :with => name
 
       VCR.use_cassette('update_profile_no_email') do
         click_button "Save"
