@@ -162,7 +162,7 @@ GEM
     omniauth-oauth (1.0.1)
       oauth
       omniauth (~> 1.0)
-    omniauth-twitter (0.0.18)
+    omniauth-twitter (1.0.0)
       multi_json (~> 1.3)
       omniauth-oauth (~> 1.0)
     opub (0.0.1)
@@ -301,7 +301,7 @@ DEPENDENCIES
   newrelic_rpm (~> 3.3.1)
   nokogiri (~> 1.5.0)
   omniauth (~> 1.1.0)
-  omniauth-twitter (~> 0.0.12)
+  omniauth-twitter (~> 1.0.0)
   opub (~> 0.0.1)
   ostatus (~> 0.0.12)
   osub (~> 0.0.6)
