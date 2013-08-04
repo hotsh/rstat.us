@@ -1,6 +1,6 @@
 source 'http://rubygems.org'
 
-gem 'rails',                    '3.2.12'
+gem 'rails',                    '3.2.14'
 
 # Gems used only for assets and not required
 # in production environments by default.
@@ -34,7 +34,7 @@ gem "tire",                     "~> 0.4.1"
 gem "twitter",                  "~> 4.8.0"
 gem "pony",                     "~> 1.3"
 gem "rdiscount",                "~> 1.6.8"
-gem "ratom",                    "~> 0.7.2"
+gem "ratom",                    :git => "git://github.com/jrgifford/ratom.git", :branch => 'make-it-work-on-ubuntu-systems'
 gem "ostatus",                  "~> 0.0.12"
 gem "osub",                     "~> 0.0.6"
 gem "opub",                     "~> 0.0.1"
