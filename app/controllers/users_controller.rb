@@ -260,49 +260,22 @@ class UsersController < ApplicationController
   # Submitted passwords are checked for length and confirmation. Once the
   # password has been reset the user is redirected to /
   def reset_password_create
-    user = nil
+    user = User.first(:perishable_token => params[:token]) if params[:token]
+    user = nil if user && user.token_expired?
 
-    if params[:token]
-      user = User.first(:perishable_token => params[:token])
-      if user and user.token_expired?
-        user = nil
-      end
-    end
+    redirect_to forgot_password_path unless user
+    password_service = PasswordService.new(user, params)
 
-    unless user.nil?
-      # XXX: yes, this is a code smell
-
-      if params[:password].size == 0
-        flash[:error] = "Password must be present"
-        redirect_to reset_password_path(params[:token])
-        return
-      end
-
-      if params[:password] != params[:password_confirm]
-        flash[:error] = "Passwords do not match"
-        redirect_to reset_password_path(params[:token])
-        return
-      end
-
-      # TODO: This may be unreachable, since we don't allow password reset
-      # without an email... look into this and remove this code if so.
-      if user.email.nil?
-        if params[:email].empty?
-          flash[:error] = "Email must be provided"
-          redirect_to reset_password_path(params[:token])
-          return
-        else
-          user.email = params[:email]
-        end
-      end
-
-      user.password = params[:password]
-      user.save
-      flash[:notice] = "Password successfully set"
-      redirect_to root_path
+    if password_service.invalid?
+      flash[:error] = password_service.message
+      url = reset_password_path(params[:token])
     else
-      redirect_to forgot_password_path
+      password_service.reset_password
+      flash[:notice] = "Password successfully set"
+      url = root_path
     end
+
+    redirect_to url
   end
 
   # Public reset password page, accessible via a valid token. Tokens are only
