@@ -12,7 +12,7 @@ class SessionsController < ApplicationController
   # is your run-of-the-mill login procedure.
   def create
     u = User.find_by_case_insensitive_username(params[:username])
-    if u.nil?
+    if u.nil? && admin_info.can_create_user?
       # Grab the domain for this author from the request url
       params[:domain] = root_url
 
@@ -28,7 +28,17 @@ class SessionsController < ApplicationController
           @user.save
           sign_in(@user)
           flash[:notice] = "Thanks for signing up!"
-          redirect_to root_path
+
+          if User.count == 1
+            # Administration options are available to the first user
+            @user.admin = true
+            @user.save
+
+            redirect_to "/admin"
+          else
+            redirect_to root_path
+          end
+
           return
         else
           @user.errors.add(:password, "can't be empty")

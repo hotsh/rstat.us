@@ -24,6 +24,12 @@ class User
   key :email, String
   key :email_confirmed, Boolean
 
+  key :admin, Boolean, :default => false
+
+  def admin?
+    self.admin
+  end
+
   # RSA for salmon usage
   key :private_key, String
 
