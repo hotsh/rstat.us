@@ -11,7 +11,7 @@ describe "Message searching" do
 
   it "has a form with the right attributes and input" do
     visit "/"
-    find(:xpath,  "//a[contains(@rel, 'messages-search')]").click
+    find(:xpath,  "(//a[contains(@rel, 'messages-search')])[1]").click
 
     form = find("form.messages-search")
     form["method"].must_match(/get/i)
@@ -24,12 +24,12 @@ describe "Message searching" do
     Fabricate(:update, :text => @update_text)
 
     visit "/"
-    find(:xpath,  "//a[contains(@rel, 'messages-search')]").click
+    find(:xpath,  "(//a[contains(@rel, 'messages-search')])[1]").click
 
     form = find("form.messages-search")
     visit "#{form["action"]}?search=droids"
 
-    within "div#messages ul.search li.message" do
+    within ".message-text" do
       assert has_content? @update_text
     end
   end

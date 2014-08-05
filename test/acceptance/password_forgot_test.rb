@@ -26,7 +26,7 @@ describe "forgotten password" do
     u = User.first(:email => "someone@somewhere.com")
 
     refute u.perishable_token.nil?
-    within "p" do
+    within "div#content p" do
       assert has_content? "A link to reset your password has been sent to someone@somewhere.com."
     end
   end

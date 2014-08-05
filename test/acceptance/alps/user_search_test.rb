@@ -11,7 +11,7 @@ describe "User searching" do
 
   it "has a form with the right attributes and input" do
     visit "/"
-    find(:xpath,  "//a[contains(@rel, 'users-search')]").click
+    find(:xpath,  "(//a[contains(@rel, 'users-search')])[1]").click
 
     form = find("form.users-search")
     form["method"].must_match(/get/i)
@@ -23,7 +23,7 @@ describe "User searching" do
     zebra = Fabricate(:user, :username => "zebra")
 
     visit "/"
-    find(:xpath,  "//a[contains(@rel, 'users-search')]").click
+    find(:xpath,  "(//a[contains(@rel, 'users-search')])[1]").click 
 
     form = find("form.users-search")
     visit "#{form["action"]}?search=zebra"
