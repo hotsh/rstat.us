@@ -304,8 +304,8 @@ class Update
           client = Twitter::REST::Client.new do |config|
             config.consumer_key = ENV["CONSUMER_KEY"]
             config.consumer_secret = ENV["CONSUMER_SECRET"]
-            config.oauth_token = author.user.twitter.oauth_token
-            config.oauth_token_secret = author.user.twitter.oauth_secret
+            config.access_token = author.user.twitter.oauth_token
+            config.access_token_secret = author.user.twitter.oauth_secret
           end
 
           client.update(text)

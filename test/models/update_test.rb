@@ -211,7 +211,7 @@ describe Update do
         at = Fabricate(:author, :feed => f)
         u = Fabricate(:user, :author => at)
         a = Fabricate(:authorization, :user => u)
-        Twitter.expects(:update)
+        Twitter::REST::Client.any_instance.expects(:update)
         u.feed.updates << Fabricate.build(:update, :text => "This is a message", :twitter => true, :author => at)
         assert_equal u.twitter?, true
       end
@@ -220,7 +220,7 @@ describe Update do
         f = Fabricate(:feed)
         at = Fabricate(:author, :feed => f)
         u = Fabricate(:user, :author => at)
-        Twitter.expects(:update).never
+        Twitter::REST::Client.any_instance.expects(:update).never
         u.feed.updates << Fabricate.build(:update, :text => "This is a message", :twitter => true, :author => at)
       end
     end
@@ -236,7 +236,7 @@ describe Update do
         at = Fabricate(:author, :feed => f)
         u = Fabricate(:user, :author => at)
         a = Fabricate(:authorization, :user => u)
-        Twitter.expects(:update).never
+        Twitter::REST::Client.any_instance.expects(:update).never
         u.feed.updates << Fabricate.build(:update, :text => "This is a message", :twitter => false, :author => at)
       end
     end
