@@ -8,7 +8,7 @@ class AdminController < ApplicationController
   def update
     return if admin_only!
 
-    admin_info.multiuser = (params["multiuser"] == "on")
+    admin_info.multiuser = params.has_key?("multiuser")
     admin_info.save
 
     redirect_to root_path

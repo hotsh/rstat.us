@@ -4,6 +4,10 @@ require_relative 'acceptance_helper'
 describe "signup" do
   include AcceptanceHelper
 
+  before do
+    Admin.create(:multiuser => true)
+  end
+
   describe "username" do
     it "signs up successfully" do
       u = User.first(:username => "new_user")
