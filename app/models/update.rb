@@ -301,14 +301,14 @@ class Update
       # send the update
       if self.twitter? && author.user.twitter?
         begin
-          Twitter.configure do |config|
+          client = Twitter::REST::Client.new do |config|
             config.consumer_key = ENV["CONSUMER_KEY"]
             config.consumer_secret = ENV["CONSUMER_SECRET"]
             config.oauth_token = author.user.twitter.oauth_token
             config.oauth_token_secret = author.user.twitter.oauth_secret
           end
 
-          Twitter.update(text)
+          client.update(text)
         rescue Exception => e
           #I should be shot for doing this.
         end
