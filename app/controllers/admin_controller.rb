@@ -1,13 +1,11 @@
 class AdminController < ApplicationController
-  def index
-    return if admin_only!
+  before_filter :admin_only!
 
+  def index
     @admin = admin_info
   end
 
   def update
-    return if admin_only!
-
     admin_info.multiuser = params.has_key?("multiuser")
     admin_info.save
 
