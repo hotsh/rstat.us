@@ -63,7 +63,7 @@ http://mydomain.tld/auth/twitter
 or, if you do not have your own domain:
 
 ```
-http://random-name.herokuapp.com
+http://random-name.herokuapp.com/auth/twitter
 ```
 
 And then "view API keys" and give them to heroku:
