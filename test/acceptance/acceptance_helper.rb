@@ -106,6 +106,19 @@ module AcceptanceHelper
     click_button "Log in"
   end
 
+  def log_in_admin(user)
+    User.stubs(:authenticate).returns(user)
+
+    visit "/login"
+
+    within("form") do
+      fill_in "username", :with => user.username
+      fill_in "password", :with => "anything"
+    end
+
+    click_button "Log in"
+  end
+
   def profile(section = nil)
     case section
     when "name"

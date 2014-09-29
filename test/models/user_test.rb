@@ -95,6 +95,24 @@ describe User do
     end
   end
 
+  describe "admin" do
+    it "must not be true as default" do
+      refute User.new.admin == true
+    end
+  end
+
+  describe "admin?" do
+    it "must return true when admin is true" do
+      u = Fabricate.build(:user, :admin => true)
+      assert u.admin? == true
+    end
+
+    it "must return false when admin is false" do
+      u = Fabricate.build(:user, :admin => false)
+      assert u.admin? == false
+    end
+  end
+
   describe "twitter auth" do
     it "has twitter" do
       u = Fabricate(:user)

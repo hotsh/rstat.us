@@ -5,6 +5,7 @@ class ApplicationController < ActionController::Base
 
   helper_method :current_user
   helper_method :logged_in?
+  helper_method :admin_info
   helper_method :admin_only!
   helper_method :require_user
   helper_method :set_params_page
@@ -29,11 +30,21 @@ class ApplicationController < ActionController::Base
     current_user
   end
 
+  # This function will retrieve the administration settings for this system.
+  def admin_info
+    @admin_info ||= (Admin.first || Admin.create)
+  end
+
   # Our `admin_only!` helper will only let admin users visit the page. If
   # they're not an admin, we redirect them to either / or the page that we
   # specified when we called it.
   def admin_only!(opts = {:return => "/"})
-    redirect_with_sorry(opts) unless logged_in? && current_user.admin?
+    unless (logged_in? && current_user.admin?)
+      redirect_with_sorry(opts)
+      return true
+    end
+
+    false
   end
 
   # Similar to `admin_only!`, `require_login!` only lets logged in users access

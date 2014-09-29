@@ -314,7 +314,7 @@ describe "Authorization" do
       end
 
       it "sends updates to twitter" do
-        Twitter.expects(:update)
+        Twitter::REST::Client.any_instance.expects(:update)
 
         log_in_as_some_user(:with => :twitter)
 
@@ -322,7 +322,7 @@ describe "Authorization" do
       end
 
       it "does not send updates to twitter if the checkbox is unchecked" do
-        Twitter.expects(:update).never
+        Twitter::REST::Client.any_instance.expects(:update).never
 
         log_in_as_some_user(:with => :twitter)
         uncheck("tweet")
@@ -342,7 +342,7 @@ describe "Authorization" do
       end
 
       it "does not send updates to twitter" do
-        Twitter.expects(:update).never
+        Twitter::REST::Client.any_instance.expects(:update).never
 
         log_in_as_some_user(:with => :username)
 

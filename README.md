@@ -1,11 +1,11 @@
-<pre>
+```
                .            .
  .___    ____ _/_     ___  _/_     ,   .   ____
  /   \  (      |     /   `  |      |   |  (
  |   '  `--.   |    |    |  |      |   |  `--.
  /     \___.'  \__/ `.__/|  \__/ / `._/| \___.'
 
-</pre>
+```
 
 rstat.us is a microblogging site built on top of the [ostatus
 protocol](http://status.net/wiki/OStatus).
@@ -27,8 +27,63 @@ everything you've put into rstat.us.
 
 [![Build Status](https://secure.travis-ci.org/hotsh/rstat.us.png?branch=master)](http://travis-ci.org/hotsh/rstat.us)
 
-Quick facts and links
----------------------
+## Deployment
+
+For heroku (free, $0):
+
+Create an account on heroku.com and install their toolchain: https://toolbelt.heroku.com
+
+```
+git clone https://github.com/hotsh/rstat.us
+
+heroku login
+heroku apps:create              # Creates with a random name
+heroku addons:add mongohq       # Adds free mongo db (512 MB)
+heroku addons:add sendgrid      # Adds free email
+
+heroku config:set SECRET_TOKEN=`rake secret`
+```
+
+To use your own domain (optional), register your domain from a domain service (small cost). Create a CNAME to point to your heroku app: http://random-name.herokuapp.com where random-name is the name it chose for you.
+
+```
+heroku domains:add mydomain.tld # Replace mydomain.tld with your registered name
+```
+
+You may have to wait a little while for your dns to resolve.
+
+To hook it up to your twitter account, go to http://dev.twitter.com and add an application.
+
+Use for callback url:
+
+```
+http://mydomain.tld/auth/twitter
+```
+
+or, if you do not have your own domain:
+
+```
+http://random-name.herokuapp.com/auth/twitter
+```
+
+And then "view API keys" and give them to heroku:
+
+```
+heroku config:set CONSUMER_KEY=key       # Fill in 'key'
+heroku config:set CONSUMER_SECRET=secret # Fill in 'secret'
+```
+
+Eventually:
+
+```
+git push heroku master
+```
+
+Bring up the node in your browser and create a user. Set up your system settings during signup. You may turn off new accounts during original signup or on the admin page at "/admin"
+
+Edit your profile and attach your twitter account if you want.
+
+## Quick facts and links
 
 - The stack: ruby/rails 3.2/mongodb
 - [The code][code]
@@ -45,8 +100,7 @@ Quick facts and links
 [capy]: https://github.com/jnicklas/capybara
 [docco]: https://github.com/jashkenas/docco
 
-How to get help
----------------
+## How to get help
 
 - If you think you've found a bug, please [file a new issue](http://github.com/hotsh/rstat.us/issues) and include:
   - What happened
@@ -55,8 +109,7 @@ How to get help
 - You can send questions, problems, or suggestions to [the mailing list](http://librelist.com/browser/rstatus/)
 - Chat with us on IRC in #rstatus on freenode
 
-Helping out with rstat.us
--------------------------
+## Helping out with rstat.us
 
 If you'd like to contribute, we'd love to have you! Your first order of
 business is setting up a development environment and making sure all the tests
@@ -231,20 +284,10 @@ before merging that branch into master).
 We reserve the right to take away this permission, but in general we trust you
 to give it to you. :heart: :heart:
 
-Source code documentation
--------------------------
+### Source code documentation
 
 We have documentation that explains our source code using rocco.
 You can view it [here](http://hotsh.github.com/rstat.us/).
-
-
-Running your own node
----------------------
-
-We're working on making this super easy, but right now, we're not quite there.
-
-If you do run your own node, please keep current with upstream.
-
 
 ### Configuring optional enhancements
 

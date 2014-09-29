@@ -22,30 +22,34 @@ class AuthController < ApplicationController
         redirect_to edit_user_path(current_user)
         return
       else
+        if admin_info.can_create_user?
+          # This situation here really sucks. I'd like to do something better,
+          # and maybe the correct answer is just session[:auth] = auth. This
+          # might be a nice refactoring.
+          session[:uid] = auth['uid']
+          session[:provider] = auth['provider']
+          session[:name] = auth['info']['name']
+          session[:nickname] = auth['info']['nickname']
+          session[:website] = auth['info']['urls']['Website']
+          session[:description] = auth['info']['description']
+          session[:image] = auth['info']['image']
+          session[:email] = auth['info']['email']
+          session[:oauth_token] = auth['credentials']['token']
+          session[:oauth_secret] = auth['credentials']['secret']
 
-        # This situation here really sucks. I'd like to do something better,
-        # and maybe the correct answer is just session[:auth] = auth. This
-        # might be a nice refactoring.
-        session[:uid] = auth['uid']
-        session[:provider] = auth['provider']
-        session[:name] = auth['info']['name']
-        session[:nickname] = auth['info']['nickname']
-        session[:website] = auth['info']['urls']['Website']
-        session[:description] = auth['info']['description']
-        session[:image] = auth['info']['image']
-        session[:email] = auth['info']['email']
-        session[:oauth_token] = auth['credentials']['token']
-        session[:oauth_secret] = auth['credentials']['secret']
+          # The username is checked to ensure it is unique, if it is not,
+          # the user is informed that they need to change it.
+          # Everyone is redirected to /users/new to confirm that they'd like
+          # to have their username.
+          if User.first :username => auth['info']['nickname']
+            flash[:error] = "Sorry, someone else has that username. Please pick another."
+          end
 
-        # The username is checked to ensure it is unique, if it is not,
-        # the user is informed that they need to change it.
-        # Everyone is redirected to /users/new to confirm that they'd like
-        # to have their username.
-        if User.first :username => auth['info']['nickname']
-          flash[:error] = "Sorry, someone else has that username. Please pick another."
+          redirect_to new_user_path
+        else
+          redirect_to "/login"
         end
 
-        redirect_to new_user_path
         return
       end
     end

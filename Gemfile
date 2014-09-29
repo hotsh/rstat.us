@@ -33,11 +33,11 @@ gem "bson",                     "~> 1.9.0"
 gem "bson_ext",                 "~> 1.9.0"
 gem "i18n",                     "~> 0.6.0"
 gem "tire",                     "~> 0.4.1"
-gem "twitter",                  "~> 4.8.0"
+gem "twitter",                  "~> 5.11.0"
 gem "pony",                     "~> 1.3"
 gem "rdiscount",                "~> 1.6.8"
-gem "ratom",                    :git => "git://github.com/jrgifford/ratom.git", :branch => 'make-it-work-on-ubuntu-systems'
-gem "ostatus",                  "~> 0.0.12"
+gem "ratom",                    "~> 0.8.2"
+gem "ostatus",                  "~> 1.0.0"
 gem "osub",                     "~> 0.0.6"
 gem "opub",                     "~> 0.0.1"
 gem "redfinger",                :git => "git://github.com/hotsh/redfinger.git"
@@ -56,7 +56,7 @@ gem "whenever",                 "~> 0.6.8"
 
 # web server
 
-gem "puma",                     "~> 1.6.3"
+gem "puma",                     "~> 2.9.0"
 
 group :development, :test do
   gem "database_cleaner",       "~> 0.6.7"
@@ -68,7 +68,7 @@ group :development, :test do
   gem "mocha",                  "~> 0.13.0", :require => false
   gem "vcr",                    "~> 1.10.3"
   gem "simplecov",              "~> 0.4.0", :require => false
-  gem "launchy",                "~> 2.0.5"
+  gem "launchy",                "~> 2.4.2"
   gem "minitest",               "~> 4.2.0"
   gem "quiet_assets",           "~> 1.0.0"
 end

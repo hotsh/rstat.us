@@ -14,12 +14,13 @@ class UpdatesController < ApplicationController
         render :json => @updates.map{ |u| UpdateJsonDecorator.decorate(u) }
       }
     end
-
   end
 
   def timeline
-    @list_class = "friends"
-    render_index(current_user.timeline)
+    if current_user
+      @list_class = "friends"
+      render_index(current_user.timeline)
+    end
   end
 
   def replies

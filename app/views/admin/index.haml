@@ -1,0 +1,18 @@
+- title("Admin")
+- content_for :title do
+  = "Admin"
+
+%h1
+  Administration
+
+%h2
+  User Accounts
+
+= form_for @admin, :url => "/admin", :html => {:name => "admin_form", :id => "admin-form", :class => "admin-form"} do |f| 
+  %label{:for => :multiuser}
+    Allow New Accounts
+    %input{:type => :checkbox, :name => :multiuser, :id => :multiuser, :checked => @admin.multiuser}
+
+  %br
+
+  %input{:type => :submit, :id => :submit, :value => :save}
