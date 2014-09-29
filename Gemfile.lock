@@ -260,46 +260,6 @@ GEM
       rake
       rest-client (~> 1.6)
     treetop (1.4.15)
-      polyglot
-      polyglot
-      polyglot
-      polyglot
-      polyglot
-      polyglot
-      polyglot
-      polyglot
-      polyglot
-      polyglot
-      polyglot
-      polyglot
-      polyglot
-      polyglot
-      polyglot
-      polyglot
-      polyglot
-      polyglot (>= 0.3.1)
-      polyglot (>= 0.3.1)
-      polyglot (>= 0.3.1)
-      polyglot (>= 0.3.1)
-      polyglot (>= 0.3.1)
-      polyglot (>= 0.3.1)
-      polyglot (>= 0.3.1)
-      polyglot (>= 0.3.1)
-      polyglot (>= 0.3.1)
-      polyglot (>= 0.3.1)
-      polyglot (>= 0.3.1)
-      polyglot (>= 0.3.1)
-      polyglot (>= 0.3.1)
-      polyglot (>= 0.3.1)
-      polyglot (>= 0.3.1)
-      polyglot (>= 0.3.1)
-      polyglot (>= 0.3.1)
-      polyglot (>= 0.3.1)
-      polyglot (>= 0.3.1)
-      polyglot (>= 0.3.1)
-      polyglot (>= 0.3.1)
-      polyglot (>= 0.3.1)
-      polyglot (>= 0.3.1)
       polyglot (>= 0.3.1)
     twitter (5.11.0)
       addressable (~> 2.3)

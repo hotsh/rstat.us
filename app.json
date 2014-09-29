@@ -1,0 +1,26 @@
+{
+  "name": "Rstat.us",
+  "description": "The simple, open microblogging platform",
+  "keywords": [
+    "microblogging",
+    "social"
+  ],
+  "website": "https://rstat.us/",
+  "repository": "https://github.com/hotsh/rstat.us",
+  "success_url": "/",
+  "env": {
+    "BUILDPACK_URL": "https://github.com/heroku/heroku-buildpack-ruby.git",
+    "SECRET_TOKEN": {
+      "description": "A secret key for verifying the integrity of signed cookies.",
+      "generator": "secret"
+    },
+    "WEB_CONCURRENCY": {
+      "description": "The number of processes to run.",
+      "value": "1"
+    }
+  },
+  "addons": [
+    "mongohq:sandbox",
+    "mandrill:starter"
+  ]
+}

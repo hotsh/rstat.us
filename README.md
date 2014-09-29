@@ -31,7 +31,13 @@ everything you've put into rstat.us.
 
 For heroku (free, $0):
 
-Create an account on heroku.com and install their toolchain: https://toolbelt.heroku.com
+Create an account on heroku.com. Then, either use this button:
+
+[![Deploy](https://www.herokucdn.com/deploy/button.png)](https://heroku.com/deploy)
+
+or follow the manual steps here:
+
+Install their toolchain: https://toolbelt.heroku.com
 
 ```
 git clone https://github.com/hotsh/rstat.us
