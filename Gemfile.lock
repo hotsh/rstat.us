@@ -176,7 +176,7 @@ GEM
     opub (0.0.1)
     ostatus (1.0.0)
       ratom (~> 0.8.2)
-    osub (0.0.7)
+    osub (1.0.0)
       ostatus
       ruby-hmac
     plucky (0.5.2)
@@ -321,7 +321,7 @@ DEPENDENCIES
   open_uri_redirections (~> 0.1.4)
   opub (~> 0.0.1)
   ostatus (~> 1.0.0)
-  osub (~> 0.0.6)
+  osub (~> 1.0.0)
   pony (~> 1.3)
   puma (~> 2.9.0)
   pygmentize (~> 0.0.3)
