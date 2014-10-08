@@ -32,7 +32,9 @@ describe "search" do
     it "allows access to search" do
       search_for("droids")
 
-      assert_match @update_text, page.body
+      within '#search' do
+        assert has_text? @update_text
+      end
     end
   end
 
@@ -47,7 +49,9 @@ describe "search" do
     it "allows access to search" do
       search_for("droids")
 
-      assert_match @update_text, page.body
+      within '#search' do
+        assert has_text? @update_text
+      end
     end
 
     it "returns updates on blank search" do
@@ -71,25 +75,33 @@ describe "search" do
     it "gets a match for a word in the update" do
       search_for("droids")
 
-      assert_match @update_text, page.body
+      within '#search' do
+        assert has_text? @update_text
+      end
     end
 
     it "doesn't get a match for a substring ending a word in the update" do
       search_for("roids")
 
-      assert_match "No statuses match your search.", page.body
+      within '#content' do
+        assert has_text? "No statuses match your search."
+      end
     end
 
     it "doesn't get a match for a substring starting a word in the update" do
       search_for("loo")
 
-      assert_match "No statuses match your search.", page.body
+      within '#content' do
+        assert has_text? "No statuses match your search."
+      end
     end
 
     it "gets a case-insensitive match for a word in the update" do
       search_for("DROIDS")
 
-      assert_match @update_text, page.body
+      within '#search' do
+        assert has_text? @update_text
+      end
     end
 
     it "gets a match for hashtag search" do

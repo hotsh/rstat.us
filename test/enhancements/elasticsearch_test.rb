@@ -22,6 +22,8 @@ describe "ElasticSearch" do
   it "gets a match for words in the update out of order" do
     search_for("for looking")
 
-    assert_match @update_text, page.body
+    within '#search' do
+      assert has_text? @update_text
+    end
   end
 end

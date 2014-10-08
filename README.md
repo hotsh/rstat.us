@@ -91,7 +91,7 @@ Edit your profile and attach your twitter account if you want.
 
 ## Quick facts and links
 
-- The stack: ruby/rails 3.2/mongodb
+- The stack: ruby (1.9.3 OR 2.0.0 OR 2.1.3)/rails 3.2/mongodb
 - [The code][code]
 - [The documentation][docs] (We could use lots of improvement here!)
 - [The Issues list][issues]
@@ -120,9 +120,9 @@ Edit your profile and attach your twitter account if you want.
 If you'd like to contribute, we'd love to have you! Your first order of
 business is setting up a development environment and making sure all the tests
 pass on your system. Rstat.us is a Ruby on Rails 3.2 application, so it's
-assumed you already have [Ruby](http://www.ruby-lang.org/en/downloads) (1.9.2
-or 1.9.3 preferred, 1.8.7 compatibility is not guaranteed), rubygems (comes
-with Ruby as of 1.9.2), and [bundler](http://gembundler.com/) on your machine.
+assumed you already have [Ruby](http://www.ruby-lang.org/en/downloads) (1.9.3, 2.0.0
+or 2.1.3 preferred, 1.8.7/1.9.2 compatibility is not guaranteed), rubygems (comes
+with Ruby), and [bundler](http://gembundler.com/) on your machine.
 If not, each of those links has instructions, and we're willing to help via
 one of the contact methods above if you have issues.
 
@@ -148,8 +148,6 @@ bug_. For example, [this is an issue with running a development environment on
 windows](https://github.com/hotsh/rstat.us/issues/547) that we need to fix.
 Please report any issues you have.
 
-If you use RVM, you'll want to copy `.rvmrc.example` to `.rvmrc`.
-
 ### Getting a local version running
 
 First off: you will need MongoDB (www.mongodb.org).  They have a [quickstart
@@ -172,7 +170,7 @@ generated for you and your config.yml file updated. When you run tests a new
 random SECRET_TOKEN will be generated each time. You can always copy
 config/config.yml.sample to config/config.yml and edit it on your own beforehand.
 
-- encoding is UTF-8 by default for ruby 1.9.3
+- encoding is UTF-8 by default
 - Notes about config settings are in the example file (config/config.yml.example)
 
 And start the server:
