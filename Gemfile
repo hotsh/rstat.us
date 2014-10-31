@@ -39,7 +39,7 @@ gem "nokogiri",                 "~> 1.5.0"
 gem "tzinfo",                   "~> 0.3.29"
 gem "rsa",                      "~> 0.1.4"
 gem "exceptional",              "~> 2.0.32"
-gem "newrelic_rpm",             "~> 3.3.1"
+gem "newrelic_rpm",             "~> 3.9.6"
 gem "draper",                   "~> 0.11.1"
 gem "open_uri_redirections",    "~> 0.1.4"
 
