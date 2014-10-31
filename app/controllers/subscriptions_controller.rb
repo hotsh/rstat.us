@@ -77,7 +77,7 @@ class SubscriptionsController < ApplicationController
           hub_url = target_feed.hubs.first
 
           sub = OSub::Subscription.new(subscription_url(target_feed.id, :format => "atom"), target_feed.url, target_feed.secret)
-          sub.subscribe(hub_url, true, target_feed.verify_token)
+          sub.subscribe(hub_url, target_feed.verify_token)
         end
 
         flash[:notice] = "Now following #{target_feed.author.username}."
