@@ -65,9 +65,6 @@ GEM
       i18n (~> 0.6, >= 0.6.4)
       multi_json (~> 1.0)
     addressable (2.3.6)
-    airbrake (3.0.9)
-      activesupport
-      builder
     arel (3.0.3)
     bcrypt-ruby (3.0.1)
     bson (1.9.2)
@@ -292,7 +289,6 @@ PLATFORMS
   ruby
 
 DEPENDENCIES
-  airbrake (~> 3.0.9)
   bcrypt-ruby (~> 3.0.0)
   bson (~> 1.9.0)
   bson_ext (~> 1.9.0)
