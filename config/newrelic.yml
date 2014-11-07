@@ -1,19 +1,20 @@
 ---
 production:
+  license_key: <%= ENV["NEW_RELIC_LICENSE_KEY"] %>
+  app_name: My Rstatus Instance
+  monitor_mode: true
+  developer_mode: false
+  log_level: info
+  browser_monitoring:
+    auto_instrument: true
+  audit_log:
+    enabled: false
+  capture_params: false
+  transaction_tracer:
+    enabled: true
+    transaction_threshold: apdex_f
+    record_sql: obfuscated
+    stack_trace_threshold: 0.500
   error_collector:
-    capture_source: true
     enabled: true
     ignore_errors: ActionController::RoutingError
-  apdex_t: 0.5
-  ssl: false
-  monitor_mode: true
-  license_key: <%= ENV["NEW_RELIC_LICENSE_KEY"] %>
-  developer_mode: false
-  app_name: <%= ENV["NEW_RELIC_APP_NAME"] %>
-  transaction_tracer:
-    record_sql: obfuscated
-    enabled: true
-    stack_trace_threshold: 0.5
-    transaction_threshold: apdex_f
-  capture_params: false
-  log_level: info
