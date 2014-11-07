@@ -173,7 +173,7 @@ GEM
     opub (0.0.1)
     ostatus (1.0.0)
       ratom (~> 0.8.2)
-    osub (1.0.0)
+    osub (1.0.1)
       ostatus
       ruby-hmac
     plucky (0.5.2)
