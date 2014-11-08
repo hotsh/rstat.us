@@ -193,6 +193,7 @@ GEM
       rack
     rack-test (0.6.2)
       rack (>= 1.0)
+    rack-timeout (0.1.0)
     rails (3.2.20)
       actionmailer (= 3.2.20)
       actionpack (= 3.2.20)
@@ -323,6 +324,7 @@ DEPENDENCIES
   puma (~> 2.9.0)
   pygmentize (~> 0.0.3)
   quiet_assets (~> 1.0.0)
+  rack-timeout
   rails (= 3.2.20)
   ratom (~> 0.8.2)
   rdiscount (~> 1.6.8)
